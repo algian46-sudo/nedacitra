@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEDACITRA - Website Sekolah</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #004aad; /* Biru Sekolah */
+            --secondary-color: #ffc107; /* Kuning Aksen */
+            --light-bg: #f8f9fa; /* Latar belakang halaman yang bersih */
+            --dark-footer: #1e3a5f; /* Warna biru gelap untuk footer */
+        }
+        
+        body { 
+    font-family: 'Poppins', sans-serif; 
+    /* Ganti var(--light-bg) dengan warna biru muda langsung */
+    background-color: #ccf2ff; /* Contoh kode Biru Muda yang Cerah */
+    color: #333;
+}
+
+        /* Top Bar */
+        .top-bar {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .top-bar small {
+            opacity: 0.9;
+        }
+
+        /* Navbar */
+        .navbar { 
+            box-shadow: 0 4px 12px rgba(0,0,0,.1); 
+            transition: all 0.3s;
+        }
+        .navbar-brand { 
+            font-weight: 800; 
+            color: var(--primary-color) !important; 
+            letter-spacing: -0.5px;
+        }
+        .nav-link { 
+            font-weight: 600; 
+            transition: color 0.3s, background-color 0.3s;
+            padding: 8px 12px !important;
+            border-radius: 6px;
+        }
+        .nav-link:hover, .nav-link.active { 
+            color: var(--secondary-color) !important; 
+            background-color: rgba(0, 74, 173, 0.05);
+        }
+        .btn-primary {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            transition: transform 0.2s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 74, 173, 0.4);
+        }
+
+        /* Carousel / Slider Enhancement */
+        .carousel-item {
+            height: 300px; 
+            min-height: 200px;
+            background: no-repeat center center scroll;
+            background-size: cover;
+            position: relative; /* Penting untuk overlay */
+        }
+        .carousel-item::before { /* Dynamic Overlay for Contrast */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+        .carousel-caption {
+            z-index: 2; /* Agar teks di atas overlay */
+            background: rgba(0, 0, 0, 0.6); /* Latar belakang teks agar lebih terbaca */
+            padding: 30px;
+            border-radius: 12px;
+            bottom: 50%; 
+            transform: translateY(50%);
+            left: 10%;
+            right: 10%;
+            max-width: 800px;
+            margin: auto;
+            backdrop-filter: blur(3px);
+        }
+        .carousel-caption h1 {
+            font-size: 3rem; 
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .carousel-caption h2 {
+            font-size: 2rem;
+        }
+        .btn-info-ppdb { 
+            background-color: var(--secondary-color) !important;
+            border-color: var(--secondary-color) !important;
+            color: var(--primary-color) !important;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(255, 193, 7, 0.6);
+            transition: transform 0.2s;
+        }
+        .btn-info-ppdb:hover {
+             transform: scale(1.05);
+        }
+
+        /* Sambutan Kepala Sekolah */
+        .Sambutan {
+            background-color: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        .kepsek-img {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border: 4px solid var(--primary-color);
+        }
+        .Sambutan p {
+            text-align: justify;
+            line-height: 1.7;
+            font-size: 1rem;
+            color: #555;
+        }
+        .Sambutan .section-title {
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+        }
+
+        /* Card Berita & Jurusan/Kurikulum */
+        .card {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        .card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        .section-title {
+            border-left: 6px solid var(--secondary-color);
+            padding-left: 20px;
+            margin-bottom: 30px;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 2.2rem;
+        }
+
+        /* Kurikulum Icon Styling */
+        .curriculum-content .icon-title i {
+            color: var(--primary-color); /* Default Blue */
+            transition: color 0.3s;
+        }
+        .curriculum-content .icon-title h3 {
+            font-weight: 700;
+            color: #444;
+        }
+        .curriculum-content .card:hover .icon-title i {
+            color: var(--secondary-color);
+        }
+        .curriculum-content p {
+             font-size: 0.95rem;
+        }
+
+        /* Video Dokumentasi - Menyesuaikan tema warna */
+        .wrap {
+             background: transparent !important;
+        }
+        .title h2 {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .player {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0e0e0;
+        }
+        .underline {
+            background: linear-gradient(90deg, var(--primary-color) 40%, rgba(0,0,0,0.08) 40%);
+        }
+        .thumb {
+            transition: transform 0.2s;
+        }
+        .thumb:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        .thumb .meta {
+            color: #444;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-footer);
+            color: #ecf0f1;
+            padding: 60px 0 30px 0;
+            border-top: 5px solid var(--secondary-color);
+        }
+        footer h5 {
+            color: var(--secondary-color);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        footer a { color: #bdc3c7; transition: color 0.3s; }
+        footer a:hover { color: white; text-decoration: underline; }
+        footer .fab, footer .fas {
+            color: var(--secondary-color);
+            margin-right: 8px;
+            transition: color 0.3s;
+        }
+        footer .fab:hover {
+            color: white;
+        }
+        .footer-logo-box {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: inline-block;
+        }
+
+        /* Kotak Saran Iframe */
+        #form_pendaftaran .card {
+            border-radius: 15px;
+        }
+        #form_pendaftaran h2 {
+            font-weight: 700;
+            font-size: 2.5rem;
+        }
+        #form_pendaftaran p {
+            font-style: italic;
+        }
+
+        /* Login Modal Enhancement */
+        .modal-header {
+            background-color: var(--primary-color) !important;
+            color: white !important;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            padding: 20px;
+            display: block; /* Agar h1 bisa ditaruh di sini */
+        }
+        .modal-header::before {
+             content: "Login Admin";
+             font-size: 1.5rem;
+             font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="top-bar py-1 d-none d-md-block">
+        <div class="container text-end font-monospace">
+            <small><i class="fas fa-phone me-2"></i>(0857) 7429 3159 | <i class="fas fa-envelope me-2"></i>smpn8citra@gmail.com</small>
+        </div>
+    </div>
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo Sekolah" height="40" class="d-inline-block align-text-center me-2">
+                
+                <a href="Index.html" class="navbar-brand">
+                    <span class="fw-bold navbar-dark p-0">
+                        SMP NEGERI 8 CIKARANG UTARA
+                    </span>
+                </a>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#">Beranda</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Profil</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Sejarah</a></li>
+                            <li><a class="dropdown-item" href="tujuan.html">Visi & Misi Dan Tujuan</a></li>
+                            <li><a class="dropdown-item" href="StrukturOrganigram.html">Struktur Organisasi</a></li>
+                            <li><a class="dropdown-item" href="Profil Guru.html">Profil Pendidik dan Tenaga Kependidikan</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#berita-terbaru">Berita</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#Pojok_Karya">Pojok Litersi Siswa</a></li>
+                    <button type="button" class="btn btn-primary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#loginModal">Login Admin</button>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+            
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            
+            <div class="carousel-inner">
+                
+                <div class="carousel-item active" style="background-image: url('https://i.imgur.com/0opDDHt.png')"> 
+                    <div class="carousel-caption d-none d-md-block" style="background-image: url('');">
+                        <h1>Selamat Datang di Website Resmi</h1>
+                        <h2>SMP NEGERI 8 CIKARANG UTARA</h2>
+                        <p>"Terwujudnya Peserta didik yang berakhlak mulia, kreatif, mandiri, dan berwawasan lingkungan"</p>
+                        <a href="#" class="btn btn-info-ppdb btn-lg mt-3">INFORMASI PPDB</a>
+                    </div>
+                </div>
+                
+                <div class="carousel-item" style="background-image: url('https://i.imgur.com/DEcharV.png')">
+                    <div class="carousel-caption d-none d-md-block" style="background-image: url('https://i.imgur.com/DEcharV.png');">
+                        <h1>Fasilitas Belajar Terbaik</h1>
+                        <h2>Tiga Laboratorium Komputer Modern</h2>
+                        <p>Kembangkan bakat digital Anda di fasilitas terbaru kami.</p>
+                        <a href="#" class="btn btn-info-ppdb btn-lg mt-3">GALERI FASILITAS</a>
+                    </div>
+                </div>
+                
+                <div class="carousel-item" style="background-image: url('https://i.imgur.com/JgESVbu.png')">
+                    <div class="carousel-caption d-none d-md-block" style="background-image: url('https://i.imgur.com/JgESVbu.png');">
+                        <h1>Siap Menghadapi Masa Depan</h1>
+                        <h2>Visi dan Misi SMPN 8 Cikarang Utara</h2>
+                        <p>"Terwujudnya Peserta didik yang berakhlak mulia, kreatif, mandiri, dan berwawasan lingkungan"</p>
+                        <a href="tujuan.html" class="btn btn-info-ppdb btn-lg mt-3">PELAJARI VISI KAMI</a>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </header>
+
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row align-items-center Sambutan">
+                <div class="col-md-4">
+                    <img src="https://i.imgur.com/bNuqo1A.png" alt="Kepala Sekolah" class="kepsek-img">
+                </div>
+                <div class="col-md-8">
+                    <h2 class="section-title">Sambutan Kepala Sekolah</h2>
+                    <p class="text-muted">Assalamu'alaikum Warahmatullahi Wabarakatuh,</p>
+                    <p>Puji syukur kita panjatkan ke hadirat Allah SWT. Website ini hadir sebagai sarana informasi dan komunikasi antara sekolah, siswa, orang tua, dan masyarakat. Kami berkomitmen untuk terus meningkatkan mutu pendidikan di era digital
+                        Website ini bukan sekadar halaman statis, melainkan sebuah sarana komunikasi interaktif yang dirancang untuk menjadi jembatan informasi yang efektif antara sekolah, siswa, orang tua/wali murid, alumni, dan masyarakat luas. Di dalamnya, Anda dapat menemukan berbagai informasi penting, mulai dari profil sekolah, visi dan misi, kurikulum yang diterapkan (Intrakurikuler, Kokurikuler, dan Ekstrakurikuler), pengumuman PPDB, hingga berita terkini mengenai kegiatan dan prestasi siswa-siswi kami.
+                        Kami menyadari sepenuhnya bahwa di tengah pesatnya perkembangan teknologi dan tuntutan era globalisasi, mutu pendidikan harus terus ditingkatkan. Oleh karena itu, SMP Negeri 8 Cikarang Utara bertekad untuk menjadi lembaga pendidikan yang adaptif, inovatif, dan relevan terhadap kebutuhan zaman. Kami berkomitmen untuk tidak hanya fokus pada pencapaian akademik, tetapi juga pada pembentukan karakter Profil Pelajar Pancasila yang berakhlak mulia, mandiri, bernalar kritis, serta kreatif.
+                        Kepada seluruh orang tua/wali murid, kami mengajak Anda untuk memanfaatkan website ini sebagai media untuk memantau perkembangan anak-anak Anda dan berpartisipasi aktif dalam setiap program sekolah. Kerjasama yang harmonis antara sekolah dan rumah adalah kunci utama keberhasilan pendidikan.
+                        Akhir kata, semoga website ini dapat memberikan manfaat yang sebesar-besarnya bagi kita semua dalam mewujudkan cita-cita bersama: mencetak generasi penerus bangsa yang unggul, cerdas, dan siap menghadapi tantangan masa depan.
+                    </p>
+                    <p class="fw-bold">  HASANAH AISAH, M.Pd</p>
+                    <p class="text-muted" style="margin-top: -20px;">  NIP. 196902031998052005</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <hr>
+
+    <section class="container my-5">
+        <h2 class="text-center mb-5 fw-bold" style="color: var(--primary-color);">STRUKTUR KURIKULUM</h2>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card p-4 h-100 curriculum-content">
+                    <div class="icon-title mb-3 text-primary">
+                        <i class="fas fa-book fa-3x"></i>
+                        <h3 class="mt-3 fw-bold">INTRAKURIKULER</h3>
+                    </div>
+                    <p>Kegiatan intrakurikuler di Sekolah Menengah Pertama dilaksanakan berdasarkan struktur Kurikulum Merdeka yang telah ditetapkan oleh Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi. Intrakurikuler mencakup seluruh mata pelajaran wajib sesuai ketentuan Kemendikdasmen, meliputi Bahasa Indonesia, Matematika, IPA, IPS, Pendidikan Pancasila dan Kewarganegaraan, Bahasa Inggris, Pendidikan Agama dan Budi Pekerti, Seni dan Prakarya, Pendidikan Jasmani, Olahraga dan Kesehatan, serta Informatika. Selain itu, sekolah juga menyelenggarakan muatan lokal yang dirancang sesuai dengan karakteristik, budaya, dan potensi daerah, sehingga pembelajaran tidak hanya berorientasi pada penguasaan kompetensi akademik, tetapi juga pada penguatan identitas, nilai-nilai kearifan lokal, dan pengembangan keterampilan khas daerah</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card p-4 h-100 curriculum-content">
+                    <div class="icon-title mb-3" style="color: #dc3545;">
+                        <i class="fas fa-house fa-3x"></i>
+                        <h3 class="mt-3 fw-bold">KOKURIKULER</h3>
+                    </div>
+                    <p>Kegiatan kokurikuler di sekolah merupakan aktivitas pembelajaran yang dirancang untuk mendukung dan memperkaya proses intrakurikuler. Kokurikuler berfokus pada pengembangan kompetensi siswa melalui berbagai proyek kerja, tugas terstruktur, maupun kegiatan pengalaman materi yang relevan dengan kurikulum. Tujuan utama dari kegiatan ini adalah menambah wawasan, memperluas pengalaman belajar, serta melatih keterampilan berpikir kritis, kolaborasi, dan kreativitas siswa. Dengan demikian, kokurikuler menjadi jembatan antara teori yang diperoleh di kelas dengan penerapan nyata dalam kehidupan sehari-hari.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card p-4 h-100 curriculum-content">
+                    <div class="icon-title mb-3" style="color: #28a745;">
+                        <i class="fas fa-windows fa-3x"></i>
+                        <h3 class="mt-3 fw-bold">EKSTRAKURIKULER</h3>
+                    </div>
+                    <p>Kegiatan ekstrakurikuler di sekolah merupakan aktivitas pengembangan diri yang dilaksanakan di luar jam intrakurikuler dan kokurikuler. Ekstrakurikuler bertujuan untuk menyalurkan minat, bakat, serta potensi siswa melalui berbagai kegiatan yang bersifat non-akademik, seperti olahraga, seni, keagamaan, kepemimpinan, maupun organisasi. Melalui kegiatan ini, siswa tidak hanya memperoleh pengalaman tambahan di luar mata pelajaran, tetapi juga dilatih untuk mengembangkan keterampilan sosial, kerja sama, disiplin, dan tanggung jawab. Dengan demikian, ekstrakurikuler menjadi sarana penting dalam membentuk karakter, memperkuat kepribadian, serta menumbuhkan rasa percaya diri dan kepedulian terhadap lingkungan sekitar.</p>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <hr>
+    
+   <!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dokumentasi Kegiatan Sekolah - Video</title>
+  <style>
+    :root{
+      --bg:#eef6f6;
+      --card:#fff;
+      --accent:#e11d48;
+      --muted:#6b7280;
+      --radius:10px;
+    }
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background:var(--bg);
+      color:#0f172a;
+      padding:28px;
+    }
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+    }
+    .title{
+      margin:0 0 14px 0;
+      display:flex;
+      align-items:flex-end;
+      gap:16px;
+    }
+    .title h2{
+      margin:0;
+      font-size:20px;
+    }
+    .title .sub{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:6px;
+    }
+    .underline{
+      width:68px;
+      height:6px;
+      background:linear-gradient(90deg,var(--accent) 40%, rgba(0,0,0,0.08) 40%);
+      border-radius:4px;
+    }
+
+    .player{
+      background:var(--card);
+      padding:14px;
+      border-radius:var(--radius);
+      box-shadow:0 6px 18px rgba(2,6,23,0.06);
+      margin-bottom:20px;
+    }
+    .video-wrapper{
+      position:relative;
+      width:100%;
+      padding-top:56.25%;
+      border-radius:8px;
+      overflow:hidden;
+      background:#000;
+    }
+    .video-wrapper iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+    }
+
+    .grid{
+      display:grid;
+      gap:14px;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    }
+    .thumb{
+      position:relative;
+      border-radius:8px;
+      overflow:hidden;
+      background:var(--card);
+      box-shadow:0 6px 12px rgba(2,6,23,0.05);
+      cursor:pointer;
+    }
+    .thumb img{
+      width:100%;
+      height:140px;
+      object-fit:cover;
+    }
+    .thumb .meta{
+      padding:8px;
+      font-size:13px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .thumb .meta .logo{
+      width:28px;
+      height:28px;
+      border-radius:50%;
+      background:#f3f4f6;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      color:#b91c1c;
+    }
+    .play-overlay{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .play-overlay .circle{
+      width:56px;
+      height:56px;
+      border-radius:50%;
+      background:rgba(0,0,0,0.55);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .play-overlay svg{
+      fill:#fff;
+      width:22px;
+      height:22px;
+      margin-left:4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="title">
+      <div class="underline"></div>
+      <div>
+        <h2>Dokumentasi Kegiatan Sekolah</h2>
+        <div class="sub">SMP NEGERI 8 CIKARANG UTARA</div>
+      </div>
+    </div>
+
+    <div class="player">
+      <div style="margin-bottom:10px;">
+        <img src="https://i.imgur.com/mRmw86t.jpeg" 
+             style="max-height:30px;border-radius:6px;">
+      </div>
+
+      <div class="video-wrapper">
+        <iframe
+  id="mainPlayer"
+  src="https://www.youtube-nocookie.com/embed/HuZcNJ_yFrI?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1"
+  title="YouTube video player"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowfullscreen
+  loading="lazy"
+  referrerpolicy="strict-origin-when-cross-origin"
+  style="width:100%; height:500px; border:0; border-radius:10px;"
+></iframe>
+
+      </div>
+    </div>
+
+    <div class="grid" id="thumbGrid"></div>
+
+  </div>
+
+  <script>
+    // Ganti daftar video Anda di sini
+    const videoIds = [
+      "o1zKPeYpAhc",
+      "KA33cVPQbnA",
+      "Tud3Hg2cGuM",
+      "2Bh2vJcJfVM",
+      "yLakHBi57Gs",
+      "T2TsB5PQNfc"
+    ];
+
+    const titles = [
+      "Kokurikuler Simulasi Pasar",
+      "Outing Class",
+      "Lombah AKSI PAI _ Zahra Alvira Rohman",
+      "Peringatan Maulid Nabi",
+      "Kegiatan Jum'at Bersih",
+      "Peringatan Hari Guru Nasional"
+    ];
+
+    const thumbGrid = document.getElementById("thumbGrid");
+    const mainPlayer = document.getElementById("mainPlayer");
+
+    function makeThumb(id, title){
+      const div = document.createElement("div");
+      div.className = "thumb";
+      div.dataset.videoId = id;
+
+      div.innerHTML = `
+        <img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" alt="${title}">
+        <div class="play-overlay">
+          <div class="circle">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <div class="meta">
+          <div>${title}</div>
+        </div>
+      `;
+
+      div.onclick = () => {
+        mainPlayer.src =
+          `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1&autoplay=1&mute=1`;
+      };
+
+      return div;
+    }
+
+    videoIds.forEach((id, i) => {
+      thumbGrid.appendChild(makeThumb(id, titles[i] || "Video"));
+    });
+  </script>
+</body>
+</html>
+    <hr> 
+    <section id="berita-terbaru" class="py-5">
+        <div class="container">
+            <div id="berita-terbaru-header" class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="section-title mb-0 fw-bold">Berita Terbaru</h2>
+                <a href="semua_berita.html" class="btn btn-outline-primary btn-lg rounded-pill px-4">Lihat Semua <i class="fas fa-arrow-right ms-2"></i></a>
+            </div>
+            
+            <div class="row" id="container-berita">
+                <div class="col-12 text-center text-secondary py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Memuat berita...</p>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            // STRUKTUR JAVASCRIPT TETAP
+            const APPS_SCRIPT_URL_JSON = 'https://script.google.com/macros/s/AKfycbwMAspEPRFJNPpS2r8SIXPnfSedBEubv8TyvkAGVt57JUWj64N-1Z3ftiHXDObNBMh_/exec'; 
+
+            function tampilkanBerita() {
+                const container = document.getElementById('container-berita');
+                const url_dengan_parameter = APPS_SCRIPT_URL_JSON + '?mode=read'; 
+
+                fetch(url_dengan_parameter)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Gagal mengambil data berita.');
+                        }
+                        return response.json();
+                    })
+                    .then(dataBerita => {
+                        let htmlKonten = '';
+
+                        if (dataBerita.length === 0) {
+                            container.innerHTML = '<div class="col-12 text-center mt-3"><p class="text-secondary">Belum ada berita yang tersedia.</p></div>';
+                            return;
+                        }
+
+                        // Ambil 3 berita terbaru untuk tampilan di Beranda
+                        const beritaUntukTampil = dataBerita.slice(0, 3); 
+
+                        beritaUntukTampil.forEach(berita => {
+                            const contentPreview = berita.content ? berita.content.substring(0, 100) + '...' : 'Baca Selengkapnya...';
+                            
+                            htmlKonten += `
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        <img src="${berita.imageLink}" class="card-img-top" alt="${berita.title}" style="height: 200px; object-fit: cover;">
+                                        <div class="card-body d-flex flex-column">
+                                            <p class="text-muted small mb-2">
+                                                <i class="far fa-calendar-alt me-1"></i> ${berita.date}
+                                            </p>
+                                            <h5 class="card-title fw-bold">${berita.title}</h5>
+                                            <p class="card-text">${contentPreview}</p>
+                                            <div class="mt-auto">
+                                                <a href="semua_berita.html" class="btn btn-primary btn-sm">Baca Selengkapnya</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        container.innerHTML = htmlKonten; 
+                    })
+                    .catch(error => {
+                        console.error("Terjadi kesalahan:", error);
+                        container.innerHTML = 
+                            '<div class="col-12 text-center mt-3"><p class="text-danger">❌ Gagal memuat data berita. (Cek URL Apps Script)</p></div>';
+                    });
+            }
+
+            document.addEventListener('DOMContentLoaded', tampilkanBerita);
+        </script>
+    </section>
+<hr>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <section id="Pojok_Karya" class="py-5">
+    <div class="container">
+            <div id="berita-terbaru-header" class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="section-title mb-0 fw-bold">Pojok Karya Siswa</h2>
+                <a href="Semua Karya.html" class="btn btn-outline-primary btn-lg rounded-pill px-4">Lihat Semua <i class="fas fa-arrow-right ms-2"></i></a>
+            </div>
+     <title>Karya Siswa</title>
+    <style>
+        /* Gaya ini hanya berlaku di dalam .student-works-section */
+        .student-works-section {
+            font-family: Arial, sans-serif;
+            margin: 20px auto; 
+            background: #f9f9f9;
+            padding: 20px;
+            max-width: 1280px; /* Batas lebar untuk tampilan 4 kartu yang baik */
+        }
+
+        .student-works-section h1 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .student-works-section .card-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            /* Tambahkan sedikit ruang negatif untuk mengatasi margin antar kartu */
+            gap: 20px; 
+            justify-content: space-between; /* Untuk meratakan kartu */
+        }
+
+        .student-works-section .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            /* Hitung lebar untuk 4 kartu dalam satu baris, dikurangi ruang antar kartu */
+            width: calc(25% - 15px); /* (100% / 4 kartu) - sedikit penyesuaian gap */
+            min-width: 250px; /* Lebar minimum agar kartu tidak terlalu kecil */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Penyesuaian untuk tampilan responsif pada layar kecil */
+        @media (max-width: 1024px) {
+            .student-works-section .card {
+                width: calc(50% - 10px); /* 2 kartu per baris */
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .student-works-section .card {
+                width: 100%; /* 1 kartu per baris */
+            }
+        }
+
+        .student-works-section .card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .student-works-section .card-content {
+            padding: 15px;
+            flex-grow: 1;
+        }
+
+        .student-works-section .tag {
+            display: inline-block;
+            background: #007BFF;
+            color: #fff;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .student-works-section .date {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .student-works-section .card h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+            line-height: 1.3;
+        }
+
+        .student-works-section .card p {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .student-works-section .read-more {
+            text-align: right;
+            padding: 0 15px 15px;
+        }
+
+        .student-works-section .read-more a {
+            font-size: 13px;
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="student-works-section">
+        <h1>Karya Terbaru Siswa</h1>
+        <div class="card-container" id="karya-container"></div>
+    </div>
+    
+    <script>
+        // ⭐ PERBAIKAN DI SINI: Tambahkan ?mode=read ke URL
+        const url = "https://script.google.com/macros/s/AKfycbz0Z6ak8N6FZQd18QQ1f9EPvOjNt3UvNfEfUXedIYd6hbeQSunA4u1nMn0Vx6Jqu5CU/exec?mode=read";
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                
+                // PENTING: Periksa apakah GAS mengembalikan error JSON. 
+                // Jika GAS mengembalikan {result: "error", message: "..."}, kita harus tangani.
+                if (data.result === 'error') {
+                    throw new Error(data.message || "GAS mengembalikan pesan error.");
+                }
+                
+                // Mengambil 4 item pertama
+                const top4 = data.slice(0, 4); 
+                const container = document.getElementById("karya-container");
+
+                container.innerHTML = '';
+
+                if (top4.length === 0) {
+                     container.innerHTML = "<p>Tidak ada karya yang ditemukan.</p>";
+                     return;
+                }
+
+                top4.forEach(item => {
+                    const card = document.createElement("div");
+                    card.className = "card";
+
+                    const summary = item.content ? item.content.slice(0, 100) + '...' : 'Tidak ada deskripsi.';
+
+                    card.innerHTML = `
+                        ${item.imageLink ? `<img src="${item.imageLink}" alt="${item.title}">` : ""}
+                        <div class="card-content">
+                            <div class="tag">${item.category || 'Umum'}</div>
+                            <div class="date">${item.date || new Date().toLocaleDateString('id-ID')}</div>
+                            <h3>${item.title || 'Tanpa Judul'}</h3>
+                            <p>${summary}</p>
+                        </div>
+                        <div class="read-more">
+                            <a href="Semua Karya.html">Baca Selengkapnya</a>
+                        </div>
+                    `;
+
+                    container.appendChild(card);
+                });
+            })
+            .catch(err => {
+                console.error("Gagal memuat data dari Apps Script:", err);
+                document.getElementById("karya-container").innerHTML = `<p>Gagal memuat data. (Error: ${err.message})</p>`;
+            });
+    </script>
+</body>
+</html>
+
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="footer-logo-box">
+                        <img src="c:\Users\mangg\OneDrive\Desktop\PROJECT WEBSITE\IMG-20250812-WA0065.png" 
+                            style="display: inline-block; height: 150px !important; width: 150px !important; border-radius: 8px;" alt="Logo Sekolah">
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Link Cepat</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#"><i class="fas fa-chevron-right me-2"></i> Profil Sekolah</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right me-2"></i> Tenaga Pendidik</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right me-2"></i> E-Learning</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right me-2"></i> Hubungi Kami</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Kontak</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> Kp. Bangkong Reang, RT/RW 001/001, Des. Wangunharja, Kec. Cikarang Utara, Kab. Bekasi</li>
+                        <li><i class="fas fa-phone me-2"></i> (0857) 7429 3159</li>
+                        <li><i class="fas fa-envelope me-2"></i> smpnegeri8citra@gmail.com</li>
+                    </ul>
+                    <div class="mt-3">
+                        <a href="#" class="me-3"><i class="fab fa-facebook fa-2x"></i></a>
+                        <a href="https://www.instagram.com/smpn8cikarangutara?igsh=MW52bTF4N2RwYnE0ZA==" class="me-3"><i class="fab fa-instagram fa-2x"></i></a>
+                        <a href="https://www.youtube.com/@nedacitra" class="me-3"><i class="fab fa-youtube fa-2x"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4 mb-3">
+            <div class="text-center small">
+                &copy; 2025 SMP NEGERI 8 CIKARANG UTARA. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+    
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                </div>
+                <div class="modal-body">
+                    <p class="text-secondary">Masukkan Username dan Password Anda untuk mengakses area input berita.</p>
+                    
+                    <form id="loginForm"> 
+                        <div class="mb-3">
+                            <label for="usernameInput" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="usernameInput" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="passwordInput" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="passwordInput" required>
+                        </div>
+                        
+                        <p id="error-message" class="text-danger fw-bold" style="display: none;"></p>
+                        
+                        <div class="d-grid gap-2 mt-3">
+                            <button type="button" class="btn btn-primary" onclick="validateLogin()">Login</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // STRUKTUR JAVASCRIPT VALIDATE LOGIN TETAP
+        function validateLogin() {
+            const correctUsername = "SMPN8CITRA";
+            const correctPassword = "Nedacitra@08";
+            const nextPage = "inputberita.html"; 
+
+            const usernameInput = document.getElementById("usernameInput").value;
+            const passwordInput = document.getElementById("passwordInput").value;
+            const errorMessage = document.getElementById("error-message");
+
+            if (usernameInput === correctUsername && passwordInput === correctPassword) {
+                errorMessage.style.display = 'none';
+                window.location.href = nextPage; 
+            } else {
+                errorMessage.textContent = "Username atau Password salah. Silakan coba lagi.";
+                errorMessage.style.display = 'block';
+                document.getElementById("passwordInput").value = ""; 
+            }
+        }
+    </script>
+    <script>
+        // STRUKTUR JAVASCRIPT VALIDATE LOGIN TETAP
+        function validateLogin() {
+            const correctUsername = "SMPN8CITRA";
+            const correctPassword = "SISWA";
+            const nextPage = "Input Karya.html"; 
+
+            const usernameInput = document.getElementById("usernameInput").value;
+            const passwordInput = document.getElementById("passwordInput").value;
+            const errorMessage = document.getElementById("error-message");
+
+            if (usernameInput === correctUsername && passwordInput === correctPassword) {
+                errorMessage.style.display = 'none';
+                window.location.href = nextPage; 
+            } else {
+                errorMessage.textContent = "Username atau Password salah. Silakan coba lagi.";
+                errorMessage.style.display = 'block';
+                document.getElementById("passwordInput").value = ""; 
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

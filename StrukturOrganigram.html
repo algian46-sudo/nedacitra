@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struktur Organisasi - SMP Negeri 8 Cikarang Utara</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === STYLE GLOBAL === */
+        :root {
+            --primary-color: #004aad;
+            --secondary-color: #007bff;
+            --accent-color: #ffc107;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            color: #444;
+            overflow-x: hidden;
+        }
+
+        /* Top Bar & Navbar (Konsisten) */
+        .top-bar { background: var(--primary-color); color: white; }
+        .navbar {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+        }
+        .nav-link { font-weight: 500; color: #333; transition: color 0.3s; }
+        .nav-link:hover, .nav-link.active { color: var(--primary-color) !important; }
+        .btn-login {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            transition: transform 0.2s;
+        }
+        .btn-login:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(0,74,173,0.3); }
+
+        /* === STYLE STRUKTUR ORGANISASI === */
+        
+        /* Garis Penghubung Hirarki (Tree Lines) */
+        .org-tree ul {
+            padding-top: 20px; 
+            position: relative;
+            transition: all 0.5s;
+            display: flex;
+            justify-content: center;
+        }
+
+        .org-tree li {
+            float: left; text-align: center;
+            list-style-type: none;
+            position: relative;
+            padding: 20px 10px 0 10px;
+            transition: all 0.5s;
+        }
+
+        /* Garis Vertikal dan Horizontal */
+        .org-tree li::before, .org-tree li::after {
+            content: '';
+            position: absolute; top: 0; right: 50%;
+            border-top: 2px solid #ccc;
+            width: 50%; height: 20px;
+        }
+        .org-tree li::after {
+            right: auto; left: 50%;
+            border-left: 2px solid #ccc;
+        }
+
+        /* Menghapus garis untuk elemen pertama dan terakhir */
+        .org-tree li:only-child::after, .org-tree li:only-child::before {
+            display: none;
+        }
+        .org-tree li:only-child{ padding-top: 0;}
+
+        .org-tree li:first-child::before, .org-tree li:last-child::after{
+            border: 0 none;
+        }
+        
+        .org-tree li:last-child::before{
+            border-right: 2px solid #ccc;
+            border-radius: 0 5px 0 0;
+        }
+        .org-tree li:first-child::after{
+            border-radius: 5px 0 0 0;
+        }
+
+        /* Garis Turun dari Parent */
+        .org-tree ul ul::before{
+            content: '';
+            position: absolute; top: 0; left: 50%;
+            border-left: 2px solid #ccc;
+            width: 0; height: 20px;
+        }
+
+        /* Kartu Organisasi */
+        .org-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            display: inline-block;
+            width: 220px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--primary-color);
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .org-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0,74,173,0.15);
+            border-top-color: var(--accent-color);
+        }
+
+        .org-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #f0f0f0;
+            margin-bottom: 10px;
+        }
+
+        .org-role {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+
+        .org-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .org-nip {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        /* Level Colors */
+        .level-1 .org-card { border-top-color: #d63384; transform: scale(1.1); } /* Kepala Sekolah */
+        .level-2 .org-card { border-top-color: #fd7e14; } /* Komite */
+        .level-3 .org-card { border-top-color: #0dcaf0; } /* Wakil & TAS */
+        .level-4 .org-card { border-top-color: #20c997; } /* PKS */
+        
+        /* Responsive Line Fixes for Mobile */
+        @media (max-width: 992px) {
+            .org-tree ul { display: block; padding-top: 0; }
+            .org-tree li { display: block; width: 100%; padding: 20px 0 0 0; }
+            .org-tree li::before, .org-tree li::after, .org-tree ul ul::before { display: none; }
+            .org-card { width: 100%; max-width: 350px; margin-bottom: 10px; }
+            .level-1 .org-card { transform: scale(1); }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="Index.html">
+                <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo Sekolah" height="45" class="me-2">
+                <span class="fw-bold" style="color: #004aad; font-size: 1.1rem;">SMPN 8 CIKARANG UTARA</span>
+            </a>
+            <button class="navbar-toggler shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="Index.html">Beranda</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" data-bs-toggle="dropdown">Profil</a>
+                        <ul class="dropdown-menu shadow border-0 rounded-3">
+                            <li><a class="dropdown-item" href="#">Sejarah</a></li>
+                            <li><a class="dropdown-item" href="tujuan.html">Visi & Misi Dan Tujuan</a></li>
+                            <li><a class="dropdown-item" href="StrukturOrganigram.html">Struktur Organisasi</a></li>
+                            <li><a class="dropdown-item" href="Profil Guru.html">Profil Pendidik dan Tenaga Kependidikan</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="Index.html#berita-terbaru">Berita</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Index.html#Pojok_Karya">Pojok Litersi Siswa</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="container my-5 pt-3">
+        <div class="text-center mb-5 fade-in-up">
+            <h1 class="display-5 fw-bold mb-2" style="color: #004aad;">STRUKTUR ORGANISASI</h1>
+            <h2 class="fs-4 text-muted fw-normal">TAHUN PELAJARAN 2024/2025</h2>
+            <div style="height: 4px; width: 80px; background: var(--accent-color); margin: 20px auto; border-radius: 2px;"></div>
+        </div>
+
+        <!-- ORGANIGRAM TREE -->
+        <div class="org-tree fade-in-up" style="animation-delay: 0.2s;">
+            <ul>
+                <!-- LEVEL 1: KEPALA SEKOLAH & KOMITE -->
+                <li>
+                    <div class="d-flex justify-content-center gap-4 flex-wrap">
+                        <div class="level-1">
+                            <div class="org-card">
+                                <img src="https://i.imgur.com/bNuqo1A.png" alt="Kepala Sekolah" class="org-img">
+                                <span class="org-role">KEPALA SEKOLAH</span>
+                                <div class="org-name">Hasanah Aisah, M.Pd</div>
+                                <div class="org-nip">NIP. 19690203 199802 2 005</div>
+                            </div>
+                        </div>
+                        <!-- Garis putus-putus biasanya ke Komite -->
+                        <div class="level-2">
+                            <div class="org-card">
+                                <img src="https://ui-avatars.com/api/?name=Komite+Sekolah&background=random" alt="Komite" class="org-img">
+                                <span class="org-role">KOMITE SEKOLAH</span>
+                                <div class="org-name">Bpk. H. Iwan</div>
+                                <div class="org-nip">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LEVEL 2: KA TATA USAHA (Di bawah Kepsek tapi sejajar PKS) -->
+                    <ul>
+                        <li>
+                            <div class="level-3">
+                                <div class="org-card">
+                                    <img src="https://i.imgur.com/kpV87dI.png" alt="Ka TU" class="org-img">
+                                    <span class="org-role">WAKIL KEPALA</span>
+                                    <div class="org-name">Purwaningsih, S.Pd</div>
+                                    <div class="org-nip">NIP. -</div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- LEVEL 3: WAKIL & PKS -->
+                    <ul>
+                        <!-- PKS KURIKULUM -->
+                        <li>
+                            <div class="level-4">
+                                <div class="org-card">
+                                    <img src="https://i.imgur.com/nom0nRn.png" alt="Kurikulum" class="org-img">
+                                    <span class="org-role">PKS KURIKULUM</span>
+                                    <div class="org-name">Uswatul Hasanah, S.Pd</div>
+                                    <div class="org-nip">NIP.19910322 202421 2 007</div>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <!-- PKS KESISWAAN -->
+                        <li>
+                            <div class="level-4">
+                                <div class="org-card">
+                                    <img src="https://i.imgur.com/DfsMY0y.png" alt="Kesiswaan" class="org-img">
+                                    <span class="org-role">PKS KESISWAAN</span>
+                                    <div class="org-name">Reshamayori Alvianita, S.Sos</div>
+                                    <div class="org-nip">NIP. 19951010 202421 2 011</div>
+                                </div>
+                            </div>
+                        </li>
+
+                        <!-- PKS SARPRAS -->
+                        <li>
+                            <div class="level-4">
+                                <div class="org-card">
+                                    <img src="https://i.imgur.com/DfsMY0y.png" alt="Sarpras" class="org-img">
+                                    <span class="org-role">PKS SARPRAS</span>
+                                    <div class="org-name">Algian Manggara, S.Agr</div>
+                                    <div class="org-nip">NIP. 19940412 202521 1 046</div>
+                                </div>
+                            </div>
+                        </li>
+
+                        <!-- PKS HUMAS -->
+                        <li>
+                            <div class="level-4">
+                                <div class="org-card">
+                                    <img src="https://i.imgur.com/WdEJpU9.png" alt="Humas" class="org-img">
+                                    <span class="org-role">PKS HUMAS</span>
+                                    <div class="org-name">Toyib, S.Pd</div>
+                                    <div class="org-nip">NIP. 20000513 202521 1 030</div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- LEVEL 2: KA TATA USAHA (Di bawah Kepsek tapi sejajar PKS) -->
+                    <ul>
+                        <li>
+                            <div class="level-3">
+                                <div class="org-card">
+                                    <img src="https://i.imgur.com/fu11Nvo.png" alt="Ka TU" class="org-img">
+                                    <span class="org-role">KEPALA TATA USAHA</span>
+                                    <div class="org-name">IRA YULYANTI, S.Kom</div>
+                                    <div class="org-nip">NIP. 19980717 202521 2 051</div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- LEVEL 4: GURU & SISWA -->
+                    <ul>
+                        <li>
+                            <div class="row mt-4 justify-content-center">
+                                <div class="col-md-5 mb-3">
+                                    <div class="card bg-light border-0 shadow-sm p-3">
+                                        <h5 class="fw-bold text-primary mb-0"><i class="fas fa-chalkboard-teacher me-2"></i>DEWAN GURU</h5>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 mb-3">
+                                    <div class="card bg-light border-0 shadow-sm p-3">
+                                        <h5 class="fw-bold text-success mb-0"><i class="fas fa-user-graduate me-2"></i>PESERTA DIDIK</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <footer class="bg-white py-4 mt-5 border-top">
+        <div class="container text-center">
+            <p class="mb-0 text-muted">&copy; 2024 SMP Negeri 8 Cikarang Utara. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
