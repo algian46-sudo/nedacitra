@@ -273,7 +273,7 @@
             <a class="navbar-brand" href="#">
                 <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo Sekolah" height="40" class="d-inline-block align-text-center me-2">
                 
-                <a href="Index.html" class="navbar-brand">
+                <a href="index.html" class="navbar-brand">
                     <span class="fw-bold navbar-dark p-0">
                         SMP NEGERI 8 CIKARANG UTARA
                     </span>
@@ -288,7 +288,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Profil</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Sejarah</a></li>
+                            <li><a class="dropdown-item" href="SejarahSekolah.html">Sejarah</a></li>
                             <li><a class="dropdown-item" href="tujuan.html">Visi & Misi Dan Tujuan</a></li>
                             <li><a class="dropdown-item" href="StrukturOrganigram.html">Struktur Organisasi</a></li>
                             <li><a class="dropdown-item" href="Profil Guru.html">Profil Pendidik dan Tenaga Kependidikan</a></li>
@@ -893,24 +893,65 @@
     </script>
 </body>
 </html>
+<style>/* Styling Khusus untuk Google Form Embed */
+.responsive-iframe {
+    width: 100%;
+    min-height: 1000px; /* Atur tinggi minimum agar form terlihat penuh */
+    border: none;
+}
+.form-container {
+    max-width: 800px; 
+    width: 100%;
+    background: white;
+    padding: 30px; /* Padding ditingkatkan */
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin: 40px auto; 
+    text-align: center;
+}
+.form-container h1 {
+    color: #004aad; /* Warna primer sekolah */
+    margin-bottom: 10px;
+    font-size: 2em;
+}
+.form-container p {
+    color: #555;
+    margin-bottom: 25px;
+}</style>
 
-
+<section class="section">
+    <section id="Form" class="py-5">
+    <div class="form-container">
+        <h1>Form Kritik, Saran dan Masukan</h1>
+        <p>Selamat datang! Silakan isi pesan terbaik anda untuk SMP Negeri 8 CIkarang Utara.</p>
+        
+        <iframe 
+            src="https://docs.google.com/forms/d/e/1FAIpQLSdpsmB8UTh2fgA5jhSrvPY_jugLh4nMRSIHKzUKoNlAj8-BVw/viewform?embedded=true" 
+            class="responsive-iframe" 
+            height="1000" 
+            frameborder="0" 
+            marginheight="0" 
+            marginwidth="0">
+            Memuat...
+        </iframe>
+    </div>
+</section>
     <footer>
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4">
                     <div class="footer-logo-box">
-                        <img src="c:\Users\mangg\OneDrive\Desktop\PROJECT WEBSITE\IMG-20250812-WA0065.png" 
+                        <img src="https://i.imgur.com/mRmw86t.jpeg" 
                             style="display: inline-block; height: 150px !important; width: 150px !important; border-radius: 8px;" alt="Logo Sekolah">
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <h5>Link Cepat</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#"><i class="fas fa-chevron-right me-2"></i> Profil Sekolah</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right me-2"></i> Tenaga Pendidik</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right me-2"></i> E-Learning</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right me-2"></i> Hubungi Kami</a></li>
+                        <li><a href="SejarahSekolah.html"><i class="fas fa-chevron-right me-2"></i> Profil Sekolah</a></li>
+                        <li><a href="Profil Guru.html"><i class="fas fa-chevron-right me-2"></i> Tenaga Pendidik</a></li>
+                        <li><a href="https://www.appsheet.com/start/4122ea5a-842e-4a97-b4e6-8d11cbed78ee"><i class="fas fa-chevron-right me-2"></i> E-Learning</a></li>
+                        <li><a href="#form"><i class="fas fa-chevron-right me-2"></i> Hubungi Kami</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 mb-4">
@@ -966,48 +1007,34 @@
         </div>
     </div>
     
-    <script>
-        // STRUKTUR JAVASCRIPT VALIDATE LOGIN TETAP
-        function validateLogin() {
-            const correctUsername = "SMPN8CITRA";
-            const correctPassword = "Nedacitra@08";
-            const nextPage = "inputberita.html"; 
+<script>
+    function validateLogin() {
+        // Ambil nilai input dari form
+        const usernameInput = document.getElementById("usernameInput").value;
+        const passwordInput = document.getElementById("passwordInput").value;
+        const errorMessage = document.getElementById("error-message");
 
-            const usernameInput = document.getElementById("usernameInput").value;
-            const passwordInput = document.getElementById("passwordInput").value;
-            const errorMessage = document.getElementById("error-message");
+        // --- SKENARIO 1: ADMIN (Input Berita) ---
+        if (usernameInput === "SMPN8CITRA" && passwordInput === "Nedacitra@08") {
+            // Jika Admin, sembunyikan pesan error dan arahkan
+            errorMessage.style.display = 'none';
+            window.location.href = "inputberita.html"; 
+        
+        // --- SKENARIO 2: SISWA (Input Karya) ---
+        } else if (usernameInput === "SMPN8CITRA" && passwordInput === "SISWA") {
+            // Jika Siswa, sembunyikan pesan error dan arahkan
+            errorMessage.style.display = 'none';
+            window.location.href = "Input Karya.html"; 
 
-            if (usernameInput === correctUsername && passwordInput === correctPassword) {
-                errorMessage.style.display = 'none';
-                window.location.href = nextPage; 
-            } else {
-                errorMessage.textContent = "Username atau Password salah. Silakan coba lagi.";
-                errorMessage.style.display = 'block';
-                document.getElementById("passwordInput").value = ""; 
-            }
+        // --- SKENARIO 3: SALAH ---
+        } else {
+            // Jika tidak cocok keduanya, tampilkan error
+            errorMessage.textContent = "Username atau Password salah. Silakan coba lagi.";
+            errorMessage.style.display = 'block';
+            document.getElementById("passwordInput").value = ""; // Kosongkan password
         }
-    </script>
-    <script>
-        // STRUKTUR JAVASCRIPT VALIDATE LOGIN TETAP
-        function validateLogin() {
-            const correctUsername = "SMPN8CITRA";
-            const correctPassword = "SISWA";
-            const nextPage = "Input Karya.html"; 
-
-            const usernameInput = document.getElementById("usernameInput").value;
-            const passwordInput = document.getElementById("passwordInput").value;
-            const errorMessage = document.getElementById("error-message");
-
-            if (usernameInput === correctUsername && passwordInput === correctPassword) {
-                errorMessage.style.display = 'none';
-                window.location.href = nextPage; 
-            } else {
-                errorMessage.textContent = "Username atau Password salah. Silakan coba lagi.";
-                errorMessage.style.display = 'block';
-                document.getElementById("passwordInput").value = ""; 
-            }
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<body>
+<html>
