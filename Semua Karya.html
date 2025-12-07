@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arsip Karya Siswa - SMP NEGERI 8 CIKARANG UTARA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+    
+    <style>
+        :root {
+            --primary-color: #004aad;
+            --secondary-color: #007bff;
+            --light-bg: #f3f6fb;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            color: #333;
+        }
+        .navbar {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(5px);
+        }
+        .navbar-brand {
+            font-weight: 700 !important;
+            color: var(--primary-color) !important;
+        }
+        .hero-section {
+            background: linear-gradient(rgba(0, 74, 173, 0.7), rgba(0, 188, 212, 0.7)), url('https://i.imgur.com/c1n4bWr.png') no-repeat center center/cover;
+            color: white;
+            padding: 80px 0;
+            margin-bottom: 50px !important;
+            box-shadow: 0 10px 20px rgba(0, 74, 173, 0.3);
+        }
+        .hero-section h1 {
+            color: white !important;
+            font-size: 3rem;
+        }
+        /* Kategori Tabs Styling */
+        #category-tabs .btn-kategori {
+            font-weight: 600;
+            border-radius: 50px;
+            margin: 5px;
+            transition: all 0.3s ease;
+            color: #555;
+            background-color: #e9ecef;
+            border: none;
+        }
+        #category-tabs .btn-kategori.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 74, 173, 0.3);
+        }
+        /* Card Styling */
+        .karya-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .karya-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+        }
+        .karya-card img {
+            width: 100%;
+            height: 200px; 
+            object-fit: cover;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        .karya-card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .karya-card h5 {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; 
+            -webkit-box-orient: vertical;
+        }
+        .karya-card p {
+            font-size: 0.9rem;
+            color: #666;
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; 
+            -webkit-box-orient: vertical;
+        }
+        .karya-card .tag {
+            display: inline-block;
+            background: #e0f7fa; 
+            color: #00bcd4;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        /* Detail View Styling */
+        #detail-view .detail-content-box {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        #detail-view .detail-img {
+            max-height: 500px;
+            width: 100%;
+            object-fit: contain; 
+            border-radius: 10px;
+        }
+        #detail-view .detail-text {
+            white-space: pre-wrap; 
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-school me-2"></i> SMPN 8 CIKARANG UTARA
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-primary px-3 rounded-pill" href="index.html">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali ke Beranda
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero-section">
+        <div class="container text-center">
+            <h1 class="fw-bold"><i class="fas fa-palette me-2"></i> Arsip Karya Siswa</h1>
+            <p class="lead">Galeri hasil karya kreatif dan inovatif seluruh siswa SMP NEGERI 8 CIKARANG UTARA.</p>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        
+        <div id="list-view">
+            <div class="text-center mb-5" id="category-tabs">
+                </div>
+
+            <div class="row" id="works-container">
+                <div class="text-center py-5" id="loading">
+                    <div class="spinner-grow text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3 text-secondary fw-bold">Sedang memuat data karya siswa...</p>
+                </div>
+            </div>
+            <div class="row justify-content-center" id="no-data" style="display:none;">
+                <div class="col-12">
+                    <div class="alert alert-warning text-center rounded-3 shadow-sm">Tidak ada karya yang ditemukan untuk kategori ini.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="detail-view" style="display:none;">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <button class="btn btn-outline-secondary mb-4" id="back-to-list-btn">
+                        <i class="fas fa-arrow-left me-2"></i> Kembali ke Daftar Karya
+                    </button>
+                    <div class="detail-content-box" id="detail-content">
+                        </div>
+                </div>
+            </div>
+        </div>
+        
+
+    </div>
+
+    <footer class="bg-dark text-white text-center py-4 mt-auto">
+        <small>&copy; 2025 SMP NEGERI 8 CIKARANG UTARA | Dibuat dengan semangat</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // PASTIKAN URL INI BENAR SESUAI DENGAN DEPLOYMENT ANDA
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0Z6ak8N6FZQd18QQ1f9EPvOjNt3UvNfEfUXedIYd6hbeQSunA4u1nMn0Vx6Jqu5CU/exec'; 
+        let allWorksData = []; 
+        let currentCategory = 'Semua Kategori'; 
+        let isDataLoaded = false; // Flag untuk mencegah re-load data
+
+        // ===========================================
+        // FUNGSI 1: Menampilkan Daftar Karya (List View)
+        // ===========================================
+        function displayWorks(category = currentCategory) {
+            currentCategory = category; 
+            
+            const container = document.getElementById('works-container');
+            const noDataMessage = document.getElementById('no-data');
+
+            // --- Logika Filter Data ---
+            const filteredWorks = (category === 'Semua Kategori') 
+                ? allWorksData
+                : allWorksData.filter(work => work.category === category);
+
+            // Perbarui tombol aktif
+            document.querySelectorAll('.btn-kategori').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.trim() === category) {
+                    btn.classList.add('active');
+                }
+            });
+
+            container.innerHTML = ''; 
+            noDataMessage.style.display = 'none';
+
+            if (filteredWorks.length === 0) {
+                noDataMessage.style.display = 'flex';
+                return;
+            }
+
+            // Urutkan berdasarkan Tanggal (Timestamp) terbaru ke terlama
+            filteredWorks.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            // Buat HTML untuk kartu
+            filteredWorks.forEach((work) => {
+                const fullContent = work.content || 'Tidak ada deskripsi.';
+                
+                const col = document.createElement('div');
+                col.className = 'col-lg-3 col-md-4 col-sm-6'; 
+                
+                // ⭐ Mencari indeks di array data GLOBAL (allWorksData) untuk fungsi detail
+                const globalIndex = allWorksData.findIndex(w => w.title === work.title && w.category === work.category);
+                
+                // Pastikan indeks ditemukan, jika tidak, skip atau beri nilai -1
+                if (globalIndex === -1) return;
+
+                col.innerHTML = `
+                    <div class="karya-card">
+                        <img src="${work.imageLink}" alt="${work.title}" onerror="this.src='https://via.placeholder.com/600x400?text=Gambar+Tidak+Tersedia'" loading="lazy">
+                        <div class="karya-card-content">
+                            <span class="tag">${work.category || 'Umum'}</span>
+                            <h5 class="card-title">${work.title || 'Tanpa Judul'}</h5>
+                            <p class="card-text">${fullContent}</p>
+                            <div class="metadata">
+                                <i class="far fa-calendar-alt me-1"></i> ${work.date || 'Tgl Tidak Diketahui'}
+                            </div>
+                            <button class="btn btn-sm btn-primary mt-2" onclick="showDetail(${globalIndex})">
+                                Lihat Detail Penuh
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(col);
+            });
+        }
+        
+        // ===========================================
+        // FUNGSI 2: Menampilkan Tampilan Detail (Single View)
+        // ===========================================
+        function showDetail(index) { 
+            const detailContainer = document.getElementById('detail-content');
+            const work = allWorksData[index]; 
+
+            if (!work) {
+                detailContainer.innerHTML = '<p class="text-danger">Karya tidak ditemukan.</p>';
+                return;
+            }
+
+            // Sembunyikan daftar dan tampilkan detail
+            document.getElementById('list-view').style.display = 'none';
+            document.getElementById('detail-view').style.display = 'block';
+
+            detailContainer.innerHTML = `
+                <h2 class="fw-bold mb-3">${work.title}</h2>
+                <div class="text-muted small mb-4">
+                    <span class="badge bg-info-subtle text-info me-2">${work.category || 'Umum'}</span>
+                    <i class="far fa-calendar-alt me-1"></i> Diposting: ${work.date || 'Tgl Tidak Diketahui'}
+                </div>
+                
+                <div class="mb-4 text-center">
+                    <img src="${work.imageLink}" class="detail-img img-fluid shadow-lg" alt="${work.title}" onerror="this.src='https://via.placeholder.com/1000x500?text=Gambar+Tidak+Tersedia'" loading="lazy">
+                </div>
+                
+                <div class="detail-text">
+                    ${work.content ? work.content.replace(/\n/g, '<br>') : 'Tidak ada deskripsi lengkap.'}
+                </div>
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // ===========================================
+        // FUNGSI 3: Menampilkan Daftar (Tanpa Loop Tak Terbatas)
+        // ===========================================
+        function showListView() {
+            // Tampilkan daftar dan sembunyikan detail
+            document.getElementById('list-view').style.display = 'block';
+            document.getElementById('detail-view').style.display = 'none';
+            // Hanya panggil displayWorks untuk me-refresh tampilan, BUKAN untuk memuat ulang data
+            displayWorks(currentCategory); 
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===========================================
+        // FUNGSI 4: Memuat Data dan Inisialisasi
+        // ===========================================
+        function loadWorksAndCategories() {
+            if (isDataLoaded) {
+                 displayWorks(currentCategory);
+                 return;
+            }
+            
+            const loading = document.getElementById('loading');
+            const tabsContainer = document.getElementById('category-tabs');
+            
+            // ⭐ PENTING: Menggunakan mode=read sesuai permintaan dan error sebelumnya
+            fetch(APPS_SCRIPT_URL + '?mode=read')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Gagal mengambil data: status HTTP ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    loading.style.display = 'none';
+                    allWorksData = Array.isArray(data) ? data : []; 
+                    isDataLoaded = true; // Set flag setelah data berhasil dimuat
+
+                    if (allWorksData.length === 0) {
+                        document.getElementById('no-data').style.display = 'flex';
+                        document.getElementById('no-data').querySelector('.alert').textContent = 'Belum ada karya siswa yang dipublikasikan atau data yang diterima kosong.';
+                        return;
+                    }
+                    
+                    // 1. Dapatkan daftar kategori unik
+                    let categories = new Set(allWorksData.map(work => work.category).filter(Boolean));
+                    categories = ['Semua Kategori', ...categories];
+
+                    // 2. Buat tombol filter
+                    tabsContainer.innerHTML = '';
+                    categories.forEach(category => {
+                        const button = document.createElement('button');
+                        button.className = 'btn btn-sm btn-kategori';
+                        button.textContent = category;
+                        button.onclick = () => displayWorks(category); 
+                        tabsContainer.appendChild(button);
+                    });
+
+                    // 3. Tampilkan semua karya saat pertama kali dimuat
+                    displayWorks('Semua Kategori');
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    loading.style.display = 'none';
+                    document.getElementById('works-container').innerHTML = '<div class="alert alert-danger text-center rounded-3 shadow-sm">Gagal memuat data. (Periksa konsol F12). Pastikan Izin Apps Script sudah "Anyone" dan fungsi doGet(e) mengembalikan JSON.</div>';
+                });
+        }
+        
+        // Event Listener untuk tombol Kembali
+        document.getElementById('back-to-list-btn').addEventListener('click', showListView);
+
+        // Jalankan fungsi saat halaman dibuka
+        document.addEventListener('DOMContentLoaded', loadWorksAndCategories);
+    </script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pembuat Teka-Teki Silang</title>
+  <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+  <style>
+    /* --- TAMPILAN EDITOR (LAYAR) --- */
+    body {
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+      padding: 20px; margin: 0;
+    }
+    
+    /* Judul Utama di Layar */
+    #mainTitleDisplay { 
+      text-align: center; color: #0f172a; margin-bottom: 5px; 
+      text-transform: uppercase; letter-spacing: 2px; font-size: 28px;
+    }
+    
+    .sub-title { 
+      text-align: center; margin-bottom: 30px; color: #64748b; font-size: 14px; font-style: italic; 
+    }
+    
+    .container {
+      display: flex; gap: 30px; justify-content: center; align-items: flex-start; flex-wrap: wrap;
+    }
+
+    .panel {
+      background: #fff; padding: 25px; border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 320px; border: 1px solid #e2e8f0;
+    }
+
+    label { display: block; margin-top: 12px; color: #475569; font-weight: 600; font-size: 0.9em; }
+    input, textarea, select {
+      width: 100%; box-sizing: border-box; margin: 5px 0; padding: 10px;
+      border-radius: 8px; border: 1px solid #cbd5e1;
+      background: #f8fafc; color: #334155; font-family: inherit;
+    }
+    textarea { min-height: 120px; white-space: pre; font-family: monospace; }
+    
+    button {
+      width: 100%; padding: 12px; border-radius: 8px; border: none;
+      font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s;
+    }
+    #generateBtn { background: #3b82f6; color: white; margin-bottom: 10px; }
+    #generateBtn:hover { background: #2563eb; }
+    #printBtn { background: #f59e0b; color: #fff; margin-top: 20px;}
+    #printBtn:hover { background: #d97706; }
+
+    .section-divider {
+        border-top: 1px dashed #cbd5e1; margin: 20px 0; position: relative;
+    }
+    .section-divider::after {
+        content: "PENGATURAN CETAK";
+        position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+        background: #fff; padding: 0 10px; font-size: 10px; color: #94a3b8; letter-spacing: 1px;
+    }
+
+    /* AREA PREVIEW */
+    .result-area {
+      background: #fff; padding: 40px; border-radius: 12px; min-width: 350px; max-width: 800px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      display: flex; flex-direction: column; align-items: center; border: 1px solid #e2e8f0;
+    }
+
+    table.preview-grid { border-collapse: collapse; margin-bottom: 20px; }
+    table.preview-grid td {
+      width: 34px; height: 34px; padding: 0;
+      text-align: center; position: relative; font-weight: bold; font-size: 16px; color: #000;
+    }
+    td.cell-filled { background: #fff; border: 1px solid #334155; }
+    td.cell-empty { background: transparent; border: none; } 
+
+    .num {
+      position: absolute; top: 1px; left: 2px; font-size: 9px; color: #333; z-index: 5; font-family: sans-serif; line-height: 1;
+    }
+
+    .clues-box { width: 100%; color: #334155; margin-top:20px; border-top: 2px solid #e2e8f0; padding-top: 10px; }
+    .clues-box h3 { color: #0f172a; font-size: 16px; margin-bottom: 5px; text-decoration: underline; text-decoration-color: #facc15; }
+    
+    /* CSS LIST: Hilangkan nomor urut default (1,2,3) agar tidak ganda */
+    .clues-box ul { list-style-type: none; padding-left: 0; margin: 0; }
+    .clues-box li { margin-bottom: 4px; }
+
+    .app-footer { margin-top: 40px; text-align: center; font-size: 12px; color: #94a3b8; width: 100%; }
+    /* Tombol Kembali ke Beranda */
+        .home-button {
+            padding: 8px 15px;
+            border-radius: 10px;
+            border: 1px solid var(--accent-main);
+            background: transparent;
+            color: var(--accent-main);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+        }
+  </style>
+</head>
+<body>
+  <h1 id="mainTitleDisplay">TEKA-TEKI SILANG</h1>
+  <div class="sub-title">Created by <strong>Algian Manggara, S.Agr</strong></div>
+                <a href="index.html" class="home-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                    Beranda
+                </a>
+  <div class="container">
+    <div class="panel">
+      <label>Judul Teka-Teki:</label>
+      <input id="puzzleTitle" type="text" value="TEKA-TEKI SILANG" placeholder="Contoh: Ulangan Harian IPA">
+
+      <label>Ukuran Grid:</label>
+      <input id="size" type="number" value="15" min="10" max="25">
+      
+      <label>Daftar Kata (KATA:Petunjuk)</label>
+      <textarea id="words" spellcheck="false"></textarea>
+      
+      <button id="generateBtn">🔄 1. Buat Soal (Generate)</button>
+      
+      <div class="section-divider"></div>
+      
+      <label>Nama Pembuat (Tertulis di Kertas):</label>
+      <input id="authorName" type="text" value="Algian Manggara, S.Agr" placeholder="Nama Guru / Pembuat">
+      
+      <label>Ukuran Kertas:</label>
+      <select id="paperSize">
+        <option value="A4">A4 (210 x 297 mm)</option>
+        <option value="Legal">F4 / Legal (215 x 330 mm)</option>
+      </select>
+
+      <label>Mode Jawaban:</label>
+      <select id="printMode">
+        <option value="empty">Soal Kosong (Siswa)</option>
+        <option value="filled">Kunci Jawaban (Guru)</option>
+      </select>
+
+      <button id="printBtn">🖨️ 2. Cetak / Print</button>
+    </div>
+
+    <div class="result-area">
+      <div id="puzzle"></div>
+      <div class="clues-box" id="clues"></div>
+    </div>
+  </div>
+
+  <div class="app-footer">© 2025 Algian Manggara, S.Agr. All Rights Reserved.</div>
+
+<script>
+  // --- DATA CONTOH ---
+  const defaultData = `MERDEKA:Bebas dari penjajahan
+INDONESIA:Negara kepulauan terbesar
+JAKARTA:Ibukota negara kita
+BENDERA:Lambang negara merah putih
+GARUDA:Burung lambang negara
+PANCASILA:Dasar negara
+PRESIDEN:Kepala negara
+RAKYAT:Penduduk suatu negara
+ADIL:Tidak memihak
+MAKMUR:Sejahtera serba kecukupan`;
+
+  let GRID = [];
+  let PLACEMENTS = [];
+  let SIZE = 15;
+  let NUM_MAP = {};
+
+  // --- LOGIC UTAMA ---
+  function createGrid(n) { return Array.from({ length: n }, () => Array(n).fill(null)); }
+  
+  function getWords() {
+    const val = document.getElementById("words").value.trim();
+    if(!val) return [];
+    return val.split('\n').map(line => {
+        const [w, ...c] = line.split(':');
+        return { word: (w||'').trim().toUpperCase().replace(/[^A-Z]/g,''), clue: c.join(':').trim() };
+    }).filter(x => x.word.length > 1).sort((a, b) => b.word.length - a.word.length);
+  }
+
+  function canPlace(grid, word, r, c, dir) {
+    const len = word.length;
+    if (dir === 'across') {
+      if (c + len > SIZE) return false;
+      if (c > 0 && grid[r][c-1] !== null) return false; 
+      if (c + len < SIZE && grid[r][c+len] !== null) return false;
+      for (let i=0; i<len; i++) {
+        const cell = grid[r][c+i];
+        if (cell !== null && cell !== word[i]) return false;
+        if (cell === null && ((r>0 && grid[r-1][c+i]!==null) || (r<SIZE-1 && grid[r+1][c+i]!==null))) return false;
+      }
+    } else {
+      if (r + len > SIZE) return false;
+      if (r > 0 && grid[r-1][c] !== null) return false;
+      if (r + len < SIZE && grid[r+len][c] !== null) return false;
+      for (let i=0; i<len; i++) {
+        const cell = grid[r+i][c];
+        if (cell !== null && cell !== word[i]) return false;
+        if (cell === null && ((c>0 && grid[r+i][c-1]!==null) || (c<SIZE-1 && grid[r+i][c+1]!==null))) return false;
+      }
+    }
+    return true;
+  }
+
+  function place(grid, word, clue, r, c, dir) {
+    for (let i=0; i<word.length; i++) {
+      if (dir === 'across') grid[r][c+i] = word[i]; else grid[r+i][c] = word[i];
+    }
+    PLACEMENTS.push({ word, clue, r, c, dir });
+  }
+
+  function generate() {
+    // Update Judul di Layar Preview
+    const title = document.getElementById("puzzleTitle").value || "TEKA-TEKI SILANG";
+    document.getElementById("mainTitleDisplay").innerText = title;
+
+    SIZE = Math.max(10, parseInt(document.getElementById("size").value) || 15);
+    const items = getWords();
+    GRID = createGrid(SIZE);
+    PLACEMENTS = [];
+
+    if(items.length === 0) return alert("Mohon isi daftar kata!");
+
+    const f = items[0];
+    place(GRID, f.word, f.clue, Math.floor(SIZE/2), Math.floor((SIZE-f.word.length)/2), 'across');
+
+    for (let i=1; i<items.length; i++) {
+      const cur = items[i];
+      let done = false;
+      // Logic Silang
+      for (const p of PLACEMENTS) {
+        if(done) break;
+        for (let j=0; j<p.word.length; j++) {
+          const l = p.word[j];
+          const pr = p.dir==='across'?p.r:p.r+j; const pc = p.dir==='across'?p.c+j:p.c;
+          for (let k=0; k<cur.word.length; k++) {
+            if (cur.word[k] === l) {
+               const nd = p.dir==='across'?'down':'across';
+               const nr = nd==='down'?pr-k:pr; const nc = nd==='across'?pc-k:pc;
+               if (nr>=0 && nc>=0 && canPlace(GRID, cur.word, nr, nc, nd)) {
+                 place(GRID, cur.word, cur.clue, nr, nc, nd); done=true; break;
+               }
+            }
+          }
+          if(done) break;
+        }
+      }
+      // Fallback Logic
+      if (!done) {
+        for(let r=0; r<SIZE && !done; r++) {
+          for(let c=0; c<SIZE && !done; c++) {
+            if(canPlace(GRID, cur.word, r, c, 'across')) {
+              place(GRID, cur.word, cur.clue, r, c, 'across'); done=true;
+            }
+          }
+        }
+      }
+    }
+    renderScreen();
+  }
+
+  function renderScreen() {
+    PLACEMENTS.sort((a,b) => (a.r - b.r) || (a.c - b.c));
+    NUM_MAP = {};
+    let ctr = 1;
+    PLACEMENTS.forEach(p => {
+      const key = `${p.r},${p.c}`;
+      if(!NUM_MAP[key]) NUM_MAP[key] = ctr++;
+      p.num = NUM_MAP[key];
+    });
+
+    let html = '<table class="preview-grid">';
+    for(let r=0; r<SIZE; r++) {
+      html += '<tr>';
+      for(let c=0; c<SIZE; c++) {
+        const cell = GRID[r][c];
+        const n = NUM_MAP[`${r},${c}`];
+        const cls = cell === null ? 'cell-empty' : 'cell-filled';
+        html += `<td class="${cls}">${n ? `<div class="num">${n}</div>` : ''}${cell || ''}</td>`;
+      }
+      html += '</tr>';
+    }
+    html += '</table>';
+    document.getElementById("puzzle").innerHTML = html;
+
+    const sorted = [...PLACEMENTS].sort((a,b) => a.num - b.num);
+    
+    // FIX: Menggunakan UL tanpa style bullet, jadi hanya nomor soal yang muncul
+    let ac = '<h3>MENDATAR</h3><ul style="list-style:none; padding-left:0;">';
+    let dn = '<h3>MENURUN</h3><ul style="list-style:none; padding-left:0;">';
+    
+    sorted.forEach(p => {
+      // Format: 1. Petunjuk
+      const li = `<li><strong>${p.num}.</strong> ${p.clue}</li>`;
+      if(p.dir==='across') ac += li; else dn += li;
+    });
+    
+    ac += '</ul>';
+    dn += '</ul>';
+
+    document.getElementById("clues").innerHTML = `<div style="display:flex; gap:30px; font-size:14px;">
+      <div style="flex:1">${ac}</div><div style="flex:1">${dn}</div>
+    </div>`;
+  }
+
+  // --- FUNGSI CETAK (UPDATED) ---
+  function printPage() {
+    const mode = document.getElementById("printMode").value;
+    const author = document.getElementById("authorName").value || "Guru / Pembuat Soal";
+    const title = document.getElementById("puzzleTitle").value || "TEKA-TEKI SILANG"; // Ambil judul custom
+    const paperSize = document.getElementById("paperSize").value;
+    
+    let cssSize = 'A4';
+    if(paperSize === 'Legal') cssSize = '215mm 330mm'; 
+
+    const w = window.open('', '', 'width=900,height=800');
+    
+    let gridHtml = '<table class="print-grid">';
+    for(let r=0; r<SIZE; r++) {
+      gridHtml += '<tr>';
+      for(let c=0; c<SIZE; c++) {
+        const cell = GRID[r][c]; 
+        const n = NUM_MAP[`${r},${c}`];
+        const typeClass = cell === null ? 'b' : 'w';
+        let content = '';
+        if (n) content += `<div class="num">${n}</div>`;
+        if (mode === 'filled' && cell) content += `<div class="letter">${cell}</div>`;
+        gridHtml += `<td class="${typeClass}">${content}</td>`;
+      }
+      gridHtml += '</tr>';
+    }
+    gridHtml += '</table>';
+
+    const cluesHtml = document.getElementById("clues").innerHTML;
+
+    w.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>${title}</title>
+        <style>
+          @page { size: ${cssSize}; margin: 15mm; }
+          
+          body { font-family: "Segoe UI", Arial, sans-serif; color: #000; padding: 0; margin: 0; }
+          h1 { text-align: center; margin: 0 0 5px 0; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; }
+          .meta { text-align: center; font-size: 14px; color: #444; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+          
+          table.print-grid { border-collapse: collapse; margin: 0 auto 20px auto; }
+          table.print-grid td { width: 28px; height: 28px; padding: 0; position: relative; text-align: center; vertical-align: middle; }
+          table.print-grid td.w { border: 1px solid #000; }
+          table.print-grid td.b { border: none; }
+          
+          .num { position: absolute; top: 1px; left: 1px; font-size: 8px; }
+          .letter { font-weight: bold; font-size: 16px; }
+
+          .clues-container { display: flex; gap: 30px; justify-content: center; }
+          .clues-container h3 { font-size: 14px; border-bottom: 1px solid #000; display: inline-block; margin-bottom: 5px; }
+          
+          /* LIST STYLE CETAK: Hilangkan bullet default */
+          .clues-container ul { list-style-type: none; padding-left: 0; margin-top:0; }
+          .clues-container li { font-size: 11px; margin-bottom: 2px; }
+          
+          .signature { margin-top: 40px; float: right; text-align: center; width: 200px; page-break-inside: avoid; }
+          .signature p { margin-top: 60px; border-top: 1px solid #000; font-weight: bold; }
+
+          /* TOMBOL HILANG SAAT PRINT */
+          .btn-print {
+             display: block; margin: 20px auto; padding: 12px 30px; 
+             font-weight: bold; cursor: pointer; background: #22c55e; color: white;
+             border: none; border-radius: 5px; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+          }
+          @media print { .no-print, .btn-print { display: none !important; } }
+        </style>
+      </head>
+      <body>
+        <h1>${title}</h1>
+        <div class="meta">
+           Dibuat oleh: <strong>${author}</strong>
+        </div>
+        
+        ${gridHtml}
+        
+        <div class="clues-container">
+           ${cluesHtml}
+        </div>
+
+        <div class="signature">
+           <div style="font-size:12px; margin-bottom:50px;">Mengetahui / Pembuat,</div>
+           <p>${author}</p>
+        </div>
+
+        <button class="btn-print" onclick="window.print()">🖨️ KLIK UNTUK MENCETAK</button>
+      </body>
+      </html>
+    `);
+    w.document.close();
+  }
+
+  window.onload = () => {
+    document.getElementById("words").value = defaultData;
+    document.getElementById("generateBtn").onclick = generate;
+    document.getElementById("printBtn").onclick = printPage;
+    generate();
+  };
+</script>
+</body>
+</html>

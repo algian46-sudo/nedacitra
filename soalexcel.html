@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Kuis Excel: Level 1–100</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+    <style>
+        /* Variabel CSS untuk tema Gradasi Biru Langit */
+        :root {
+            --bg-start: #0F3460; /* Biru gelap untuk gradasi */
+            --bg-end: #071F3F;   /* Biru lebih gelap */
+            --card-bg: rgba(255, 255, 255, 0.1); /* Latar belakang semi-transparan */
+            --text-primary: #EBF8FF; /* Biru muda cerah */
+            --text-secondary: #BEE3F8; /* Teks sekunder */
+            --accent-main: #63B3ED; /* Biru langit utama */
+            --accent-gradient: linear-gradient(135deg, #63B3ED 0%, #3182CE 100%);
+            --good: #48BB78; /* Hijau untuk benar */
+            --bad: #F56565; /* Merah untuk salah */
+            --warn: #F6E05E; /* Kuning untuk level saat ini */
+        }
+
+        html, body {
+            /* Gradasi Biru Langit Dinamis */
+            background: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-end) 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 95%;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            margin: 0;
+            font-weight: 800;
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px rgba(99, 179, 237, 0.5);
+        }
+
+        .sub {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        /* Tombol Kembali ke Beranda */
+        .home-button {
+            padding: 8px 15px;
+            border-radius: 10px;
+            border: 1px solid var(--accent-main);
+            background: transparent;
+            color: var(--accent-main);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .home-button:hover {
+            background-color: var(--accent-main);
+            color: var(--bg-end);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(99, 179, 237, 0.4);
+        }
+
+        .status {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0 25px;
+            font-size: 1rem;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .level {
+            font-weight: 700;
+            color: var(--accent-main);
+            font-size: 1.1rem;
+        }
+
+        .q {
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 5px solid var(--accent-main);
+            border-radius: 12px;
+            padding: 20px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .hint {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--text-primary);
+            outline: none;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent-main);
+            box-shadow: 0 0 10px rgba(99, 179, 237, 0.5);
+        }
+
+        input[type="text"]::placeholder { color: #8F9BB3; }
+
+        button {
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        button#submit {
+            background: var(--accent-gradient);
+            color: var(--bg-end);
+            box-shadow: 0 4px 15px rgba(99, 179, 237, 0.4);
+        }
+
+        button#submit:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        button.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        button.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .feedback {
+            min-height: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .ok { color: var(--good); }
+        .err { color: var(--bad); }
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .progress-wrap {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        progress {
+            width: 100%;
+            height: 15px;
+            border-radius: 7px;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Styling for the progress bar value */
+        progress::-webkit-progress-bar {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 7px;
+        }
+        progress::-webkit-progress-value {
+            background: var(--accent-gradient);
+            border-radius: 7px;
+            transition: width 0.4s ease;
+        }
+        progress::-moz-progress-bar {
+            background: var(--accent-gradient);
+            border-radius: 7px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(6px, 1fr));
+            gap: 4px;
+            margin-top: 15px;
+            padding: 0 5px;
+        }
+
+        .dot {
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.25);
+            transition: background-color 0.3s;
+        }
+
+        .dot.done { background: var(--accent-main); }
+        .dot.cur { 
+            background: var(--warn); 
+            box-shadow: 0 0 5px var(--warn);
+        }
+
+        .foot {
+            margin-top: 25px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .sub { font-size: 1rem; }
+            .card { padding: 20px; }
+            .status { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .pill { padding: 6px 10px; }
+            .q { font-size: 1rem; padding: 15px; }
+            .input-row { flex-direction: column; }
+            button { width: 100%; }
+            .toolbar { flex-direction: column; gap: 8px; }
+            .home-button { font-size: 0.85rem; padding: 6px 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header-section">
+                <h1>Kuis Excel</h1>
+                <a href="index.html" class="home-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                    Beranda
+                </a>
+            </div>
+            
+            <div class="sub">Selesaikan dari Level 1 hingga 100. Jawaban bisa berupa nilai hasil perhitungan atau formula Excel.</div>
+
+            <div class="status">
+                <div class="pill">Level saat ini: <span class="level" id="level">1</span></div>
+                <div class="pill">Benar: <strong id="correct">0</strong></div>
+                <div class="pill">Salah: <strong id="wrong">0</strong></div>
+            </div>
+
+            <div class="q" id="question"></div>
+            <div class="hint" id="hint"></div>
+
+            <div class="input-row">
+                <input id="answer" type="text" placeholder="Ketik jawaban di sini (mis. =SUM(A1:A10) atau 42)" autofocus />
+                <button id="submit">Jawab</button>
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+
+            <div class="toolbar">
+                <button class="secondary" id="skip">Lewati level ini</button>
+                <button class="secondary" id="reset">Reset progress</button>
+            </div>
+
+            <div class="progress-wrap">
+                <progress id="prog" value="0" max="100"></progress>
+                <div class="grid" id="dots"></div>
+            </div>
+
+            <div class="foot">Catatan: pemeriksaan formula mengabaikan huruf besar-kecil dan spasi. Pemeriksaan angka toleransi ±0.0001.</div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================
+        // 1) BANK SOAL (Level 1–100)
+        // ==========================
+        // Tipe soal:
+        // - type: "formula" -> cek string formula (normalize, case-insensitive)
+        // - type: "numeric" -> cek angka (toleransi kecil)
+        // - correct: string atau number
+        // - explain: deskripsi solusi singkat
+        const QUESTIONS = [
+            // Level 1–10: dasar referensi & SUM/AVERAGE
+            {
+                level: 1,
+                type: "formula",
+                question: "Tuliskan formula untuk menjumlahkan nilai di A1 hingga A10.",
+                hint: "Gunakan fungsi penjumlahan bawaan Excel.",
+                correct: "=SUM(A1:A10)",
+                explain: "SUM menjumlahkan rentang A1 sampai A10."
+            },
+            {
+                level: 2,
+                type: "formula",
+                question: "Rata-rata nilai pada rentang B2:B12. Tulis formulanya.",
+                hint: "Gunakan fungsi rata-rata.",
+                correct: "=AVERAGE(B2:B12)",
+                explain: "AVERAGE menghitung mean dari B2 hingga B12."
+            },
+            {
+                level: 3,
+                type: "formula",
+                question: "Hitung jumlah nilai di baris 5 dari kolom C hingga G.",
+                hint: "Gunakan SUM dengan referensi baris.",
+                correct: "=SUM(C5:G5)",
+                explain: "Menjumlahkan semua sel C5 sampai G5."
+            },
+            {
+                level: 4,
+                type: "formula",
+                question: "Ambil nilai terbesar dari D3:D20.",
+                hint: "Fungsi maksimum.",
+                correct: "=MAX(D3:D20)",
+                explain: "MAX mengembalikan nilai tertinggi."
+            },
+            {
+                level: 5,
+                type: "formula",
+                question: "Ambil nilai terkecil dari E1:E50.",
+                hint: "Fungsi minimum.",
+                correct: "=MIN(E1:E50)",
+                explain: "MIN mengembalikan nilai terendah."
+            },
+            {
+                level: 6,
+                type: "formula",
+                question: "Hitung jumlah hanya sel bernilai numerik pada F1:F100.",
+                hint: "Gunakan fungsi yang mengabaikan teks.",
+                correct: "=SUM(F1:F100)",
+                explain: "SUM menjumlahkan angka dan abaikan teks."
+            },
+            {
+                level: 7,
+                type: "formula",
+                question: "Hitung jumlah hanya sel yang memenuhi kriteria > 50 pada G1:G20.",
+                hint: "Gunakan fungsi dengan satu kriteria.",
+                correct: "=SUMIF(G1:G20,\">50\")",
+                explain: "SUMIF menjumlahkan jika memenuhi syarat."
+            },
+            {
+                level: 8,
+                type: "formula",
+                question: "Hitung jumlah dengan dua kriteria: H1:H100 dijumlahkan jika I1:I100 = \"Lulus\" dan J1:J100 > 80.",
+                hint: "Gunakan fungsi dengan kriteria berganda.",
+                correct: "=SUMIFS(H1:H100,I1:I100,\"Lulus\",J1:J100,\">80\")",
+                explain: "SUMIFS memungkinkan beberapa kriteria."
+            },
+            {
+                level: 9,
+                type: "formula",
+                question: "Hitung banyaknya sel di K1:K50 yang berisi angka.",
+                hint: "Fungsi untuk menghitung angka, bukan teks.",
+                correct: "=COUNT(K1:K50)",
+                explain: "COUNT menghitung sel berisi angka."
+            },
+            {
+                level: 10,
+                type: "formula",
+                question: "Hitung banyaknya sel tidak kosong pada L1:L50.",
+                hint: "Fungsi untuk menghitung sel terisi.",
+                correct: "=COUNTA(L1:L50)",
+                explain: "COUNTA menghitung sel berisi nilai/teks."
+            },
+
+            // Level 11–20: teks & tanggal
+            {
+                level: 11,
+                type: "formula",
+                question: "Gabungkan teks di A1 (nama depan) dan B1 (nama belakang) dengan spasi di tengah.",
+                hint: "Gunakan penggabungan string.",
+                correct: "=A1&\" \"&B1",
+                explain: "Penggunaan operator & untuk menggabungkan."
+            },
+            {
+                level: 12,
+                type: "formula",
+                question: "Ubah teks di C1 menjadi huruf besar semua.",
+                hint: "Fungsi kapitalisasi.",
+                correct: "=UPPER(C1)",
+                explain: "UPPER mengubah ke huruf besar."
+            },
+            {
+                level: 13,
+                type: "formula",
+                question: "Ambil 3 karakter pertama dari D1.",
+                hint: "Fungsi pemotongan dari kiri.",
+                correct: "=LEFT(D1,3)",
+                explain: "LEFT mengambil n karakter dari kiri."
+            },
+            {
+                level: 14,
+                type: "formula",
+                question: "Ambil 4 karakter terakhir dari E1.",
+                hint: "Fungsi pemotongan dari kanan.",
+                correct: "=RIGHT(E1,4)",
+                explain: "RIGHT mengambil n karakter dari kanan."
+            },
+            {
+                level: 15,
+                type: "formula",
+                question: "Ambil 5 karakter mulai dari posisi ke-3 di F1.",
+                hint: "Fungsi pemotongan tengah.",
+                correct: "=MID(F1,3,5)",
+                explain: "MID mengambil substring."
+            },
+            {
+                level: 16,
+                type: "formula",
+                question: "Hapus spasi berlebih (leading/trailing/multiple) dari G1.",
+                hint: "Fungsi normalisasi spasi.",
+                correct: "=TRIM(G1)",
+                explain: "TRIM merapikan spasi."
+            },
+            {
+                level: 17,
+                type: "formula",
+                question: "Konversi teks '2025-12-05' di H1 menjadi tanggal Excel.",
+                hint: "Fungsi parsing tanggal.",
+                correct: "=DATEVALUE(H1)",
+                explain: "DATEVALUE mengubah teks jadi tanggal."
+            },
+            {
+                level: 18,
+                type: "formula",
+                question: "Ambil hari dari tanggal di I1.",
+                hint: "Fungsi ekstraksi hari (1–31).",
+                correct: "=DAY(I1)",
+                explain: "DAY mengambil komponen hari."
+            },
+            {
+                level: 19,
+                type: "formula",
+                question: "Ambil bulan dari tanggal di J1.",
+                hint: "Fungsi ekstraksi bulan (1–12).",
+                correct: "=MONTH(J1)",
+                explain: "MONTH mengambil komponen bulan."
+            },
+            {
+                level: 20,
+                type: "formula",
+                question: "Ambil tahun dari tanggal di K1.",
+                hint: "Fungsi ekstraksi tahun (mis. 2025).",
+                correct: "=YEAR(K1)",
+                explain: "YEAR mengambil komponen tahun."
+            },
+
+            // Level 21–30: logika & lookup
+            {
+                level: 21,
+                type: "formula",
+                question: "Jika L1 >= 80 tulis \"Lulus\", jika tidak \"Tidak Lulus\".",
+                hint: "Gunakan fungsi logika.",
+                correct: "=IF(L1>=80,\"Lulus\",\"Tidak Lulus\")",
+                explain: "IF mengembalikan nilai berdasarkan kondisi."
+            },
+            {
+                level: 22,
+                type: "formula",
+                question: "Cek apakah M1 kosong. Jika kosong tulis \"Kosong\", selain itu tulis nilai M1.",
+                hint: "Kombinasikan IF dan fungsi pengecekan kosong.",
+                correct: "=IF(ISBLANK(M1),\"Kosong\",M1)",
+                explain: "ISBLANK mendeteksi sel kosong."
+            },
+            {
+                level: 23,
+                type: "formula",
+                question: "Cari nilai N1 di tabel A1:B100, kembalikan nilai di kolom ke-2 (pencarian tepat).",
+                hint: "Gunakan VLOOKUP dengan pencarian tepat.",
+                correct: "=VLOOKUP(N1,A1:B100,2,FALSE)",
+                explain: "FALSE artinya pencarian exact match."
+            },
+            {
+                level: 24,
+                type: "formula",
+                question: "Cari nilai O1 di tabel A1:D100 dan kembalikan kolom ke-4 menggunakan INDEX/MATCH.",
+                hint: "Pisahkan pencarian dan pengambilan.",
+                correct: "=INDEX(D1:D100,MATCH(O1,A1:A100,0))",
+                explain: "MATCH 0 untuk exact, INDEX ambil kolom D."
+            },
+            {
+                level: 25,
+                type: "formula",
+                question: "Hitung jumlah data unik di P1:P100 (Excel baru).",
+                hint: "Gunakan kombinasi COUNT dan UNIQUE (dinamis).",
+                correct: "=COUNTA(UNIQUE(P1:P100))",
+                explain: "UNIQUE menghasilkan daftar unik, COUNTA menghitung."
+            },
+            {
+                level: 26,
+                type: "formula",
+                question: "Hitung total jika Q1:Q100 berisi 'A' atau 'B' di kolom R1:R100.",
+                hint: "SUM dengan kriteria OR menggunakan SUMPRODUCT.",
+                correct: "=SUMPRODUCT((R1:R100)*((Q1:Q100=\"A\")+(Q1:Q100=\"B\")))",
+                explain: "SUMPRODUCT mendukung logika OR."
+            },
+            {
+                level: 27,
+                type: "formula",
+                question: "Ambil 10 nilai teratas dari S1:S100 (Excel dinamis).",
+                hint: "Gunakan fungsi ambil atas.",
+                correct: "=TAKE(SORT(S1:S100,-1),10)",
+                explain: "SORT menurun, TAKE ambil 10 teratas."
+            },
+            {
+                level: 28,
+                type: "formula",
+                question: "Filter T1:T100 untuk nilai > 70.",
+                hint: "Gunakan fungsi FILTER.",
+                correct: "=FILTER(T1:T100,T1:T100>70)",
+                explain: "FILTER menyaring berdasarkan kondisi."
+            },
+            {
+                level: 29,
+                type: "formula",
+                question: "Hitung jumlah hari antara dua tanggal di U1 (mulai) dan V1 (akhir).",
+                hint: "Selisih tanggal.",
+                correct: "=V1-U1",
+                explain: "Selisih tanggal menghasilkan jumlah hari."
+            },
+            {
+                level: 30,
+                type: "numeric",
+                question: "Jika nilai di W1=15 dan W2=9, berapa hasil W1*W2?",
+                hint: "Hitung nilai numerik.",
+                correct: 135,
+                explain: "15 × 9 = 135."
+            },
+
+            // Level 31–40: referensi & proteksi dasar
+            {
+                level: 31,
+                type: "formula",
+                question: "Gunakan referensi absolut untuk menjumlahkan X1 dengan Y1 lalu kalikan dengan konstanta di Z$5.",
+                hint: "Gunakan tanda $ untuk absolute.",
+                correct: "=(X1+Y1)*$Z$5",
+                explain: "Dollar lock baris & kolom."
+            },
+            {
+                level: 32,
+                type: "formula",
+                question: "Ambil baris ke-3 dari rentang AA1:AE10.",
+                hint: "Gunakan fungsi INDEX dengan baris spesifik.",
+                correct: "=INDEX(AA1:AE10,3,)",
+                explain: "INDEX baris=3, kolom dikosongkan."
+            },
+            {
+                level: 33,
+                type: "formula",
+                question: "Ambil kolom ke-2 dari rentang AB1:AF10.",
+                hint: "INDEX kolom spesifik.",
+                correct: "=INDEX(AB1:AF10,,2)",
+                explain: "Kolom=2, baris dikosongkan."
+            },
+            {
+                level: 34,
+                type: "formula",
+                question: "Buat daftar urut naik dari AG1:AG10.",
+                hint: "Gunakan SORT.",
+                correct: "=SORT(AG1:AG10,1,TRUE)",
+                explain: "Sortir kolom 1 ascending."
+            },
+            {
+                level: 35,
+                type: "formula",
+                question: "Gabungkan teks di AH1:AH3 menjadi satu baris dipisah koma.",
+                hint: "Gunakan TEXTJOIN.",
+                correct: "=TEXTJOIN(\", \",TRUE,AH1:AH3)",
+                explain: "TEXTJOIN menyatukan dengan delimiter."
+            },
+            {
+                level: 36,
+                type: "formula",
+                question: "Format angka di AI1 sebagai persen tanpa ubah nilai. (Jawab fungsi TEXT).",
+                hint: "Konversi ke teks terformat.",
+                correct: "=TEXT(AI1,\"0%\")",
+                explain: "TEXT menerapkan format."
+            },
+            {
+                level: 37,
+                type: "formula",
+                question: "Cek apakah AJ1 berisi teks 'ID' di awal.",
+                hint: "Gunakan LEFT + perbandingan.",
+                correct: "=LEFT(AJ1,2)=\"ID\"",
+                explain: "Ambil 2 huruf awal dan bandingkan."
+            },
+            {
+                level: 38,
+                type: "formula",
+                question: "Ganti semua 'a' menjadi 'o' pada teks di AK1.",
+                hint: "Gunakan SUBSTITUTE.",
+                correct: "=SUBSTITUTE(AK1,\"a\",\"o\")",
+                explain: "SUBSTITUTE mengganti substring."
+            },
+            {
+                level: 39,
+                type: "formula",
+                question: "Hitung jumlah huruf pada teks di AL1.",
+                hint: "Gunakan LEN.",
+                correct: "=LEN(AL1)",
+                explain: "LEN menghitung panjang string."
+            },
+            {
+                level: 40,
+                type: "numeric",
+                question: "Jika AM1=3, AM2=7, AM3=2, berapa (AM1+AM2)^AM3?",
+                hint: "Hitung pangkat.",
+                correct: Math.pow(3+7,2), // 100
+                explain: "(3+7)^2 = 100."
+            },
+
+            // Level 41–60: campuran (isi cepat)
+            ...Array.from({length: 20}, (_, i) => {
+                const lvl = 41 + i;
+                return {
+                    level: lvl,
+                    type: "numeric",
+                    question: `Hitung ${lvl}+${lvl}.`,
+                    hint: "Penjumlahan sederhana.",
+                    correct: lvl + lvl,
+                    explain: `Hasilnya ${lvl + lvl}.`
+                };
+            }),
+
+            // Level 61–80: formula variasi (isi cepat)
+            ...Array.from({length: 20}, (_, i) => {
+                const lvl = 61 + i;
+                return {
+                    level: lvl,
+                    type: "formula",
+                    question: `Tulis formula untuk mengalikan nilai di A1 dan B1.`,
+                    hint: "Gunakan operator perkalian.",
+                    correct: "=A1*B1",
+                    explain: "Operator * untuk kali."
+                };
+            }),
+
+            // Level 81–100: numeric variasi (isi cepat)
+            ...Array.from({length: 20}, (_, i) => {
+                const lvl = 81 + i;
+                return {
+                    level: lvl,
+                    type: "numeric",
+                    question: `Jika n=${lvl}, berapa n^2?`,
+                    hint: "Pangkat dua.",
+                    correct: lvl * lvl,
+                    explain: `n^2 = ${lvl * lvl}.`
+                };
+            })
+        ];
+
+        // ==========================
+        // 2) UTIL PEMERIKSAAN JAWABAN
+        // ==========================
+        function normalizeFormula(s) {
+            return String(s).trim().toUpperCase().replace(/\s+/g, "");
+        }
+        function isNumericAnswer(ans) {
+            const n = Number(ans);
+            return !isNaN(n);
+        }
+        function numericEqual(a, b, tol = 1e-4) {
+            return Math.abs(Number(a) - Number(b)) <= tol;
+        }
+
+        // ==========================
+        // 3) STATE & PERSISTENSI
+        // ==========================
+        const STORAGE_KEY = "excel_quiz_state_v1";
+        let state = {
+            currentLevel: 1,
+            correct: 0,
+            wrong: 0
+        };
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const obj = JSON.parse(raw);
+                    // Pastikan state yang dimuat valid
+                    if (obj && typeof obj.currentLevel === "number" && typeof obj.correct === "number" && typeof obj.wrong === "number") {
+                        state = obj;
+                    }
+                }
+            } catch (e) {
+                console.error("Gagal memuat state dari localStorage:", e);
+            }
+        }
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (e) {
+                console.error("Gagal menyimpan state ke localStorage:", e);
+            }
+        }
+
+        // ==========================
+        // 4) RENDER UI
+        // ==========================
+        const elLevel = document.getElementById("level");
+        const elQuestion = document.getElementById("question");
+        const elHint = document.getElementById("hint");
+        const elAnswer = document.getElementById("answer");
+        const elFeedback = document.getElementById("feedback");
+        const elCorrect = document.getElementById("correct");
+        const elWrong = document.getElementById("wrong");
+        const elProg = document.getElementById("prog");
+        const elDots = document.getElementById("dots");
+        const btnSubmit = document.getElementById("submit");
+        const btnReset = document.getElementById("reset");
+        const btnSkip = document.getElementById("skip");
+
+        function renderDots() {
+            elDots.innerHTML = "";
+            for (let i = 1; i <= 100; i++) {
+                const d = document.createElement("div");
+                d.className = "dot";
+                if (i < state.currentLevel) {
+                    d.classList.add("done");
+                } else if (i === state.currentLevel) {
+                    d.classList.add("cur");
+                }
+                elDots.appendChild(d);
+            }
+        }
+
+        function getQuestion(level) {
+            return QUESTIONS.find(q => q.level === level);
+        }
+
+        function render() {
+            elLevel.textContent = state.currentLevel;
+            const q = getQuestion(state.currentLevel);
+            
+            if (!q) {
+                // Selesai
+                elQuestion.innerHTML = "🎉 Selesai! Kamu telah menyelesaikan semua level (100 pertanyaan)!";
+                elHint.textContent = "Terima kasih telah bermain. Klik Reset Progress untuk mulai lagi.";
+                elFeedback.innerHTML = "";
+                elAnswer.disabled = true;
+                btnSubmit.disabled = true;
+                btnSkip.disabled = true;
+                elProg.value = 100;
+                renderDots();
+                return;
+            }
+
+            // Tampilkan Kuis
+            elQuestion.textContent = q.question;
+            elHint.textContent = "Petunjuk: " + q.hint;
+            elAnswer.value = "";
+            elAnswer.placeholder = q.type === "formula" ? "Contoh: =SUM(A1:A10)" : "Contoh: 42";
+            elFeedback.innerHTML = "";
+            elAnswer.disabled = false;
+            btnSubmit.disabled = false;
+            btnSkip.disabled = false;
+            elCorrect.textContent = state.correct;
+            elWrong.textContent = state.wrong;
+            elProg.value = Math.min((state.currentLevel - 1), 100);
+            renderDots();
+            elAnswer.focus();
+        }
+
+        // ==========================
+        // 5) LOGIKA PENILAIAN
+        // ==========================
+        function checkAnswer(input, q) {
+            if (q.type === "formula") {
+                return normalizeFormula(input) === normalizeFormula(q.correct);
+            } else if (q.type === "numeric") {
+                if (!isNumericAnswer(input)) return false;
+                return numericEqual(Number(input), Number(q.correct));
+            }
+            return false;
+        }
+
+        function submit() {
+            const q = getQuestion(state.currentLevel);
+            if (!q) return;
+            const val = elAnswer.value;
+            if (!val || !val.trim()) {
+                elFeedback.innerHTML = "<span class='err'>Jawaban tidak boleh kosong.</span>";
+                elAnswer.focus();
+                return;
+            }
+            
+            const ok = checkAnswer(val, q);
+            if (ok) {
+                state.correct += 1;
+                state.currentLevel += 1;
+                saveState();
+                elFeedback.innerHTML = `<span class='ok'>✅ Benar! Solusi: ${q.explain || "Bagus!"}</span>`;
+                // Nonaktifkan tombol sesaat untuk mencegah double-submit
+                btnSubmit.disabled = true;
+                btnSkip.disabled = true;
+                elAnswer.disabled = true;
+                setTimeout(() => {
+                    render();
+                }, 500); // Tunda sedikit agar user bisa membaca feedback
+            } else {
+                state.wrong += 1;
+                saveState();
+                elFeedback.innerHTML = `<span class='err'>❌ Masih belum tepat. Coba lagi atau lewati. Hint: ${q.hint}</span>`;
+                elAnswer.focus();
+                elAnswer.select(); // Pilih teks input agar mudah diganti
+            }
+            elCorrect.textContent = state.correct;
+            elWrong.textContent = state.wrong;
+            elProg.value = Math.min((state.currentLevel - 1), 100);
+            renderDots();
+        }
+
+        // ==========================
+        // 6) EVENT HANDLERS
+        // ==========================
+        btnSubmit.addEventListener("click", submit);
+        elAnswer.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") submit();
+        });
+        
+        btnReset.addEventListener("click", () => {
+            // Menggunakan modal kustom sebagai pengganti confirm
+            const isConfirmed = window.confirm("Apakah Anda yakin ingin me-reset semua progress? Skor dan level Anda akan kembali ke 0.");
+            if (!isConfirmed) return;
+
+            state = { currentLevel: 1, correct: 0, wrong: 0 };
+            saveState();
+            render();
+            // Beri feedback reset
+            elFeedback.innerHTML = "<span class='ok'>Progress telah direset! Mulai dari Level 1.</span>";
+        });
+
+        btnSkip.addEventListener("click", () => {
+            // Lewati level saat ini – tetap hemat waktu belajar
+            const q = getQuestion(state.currentLevel);
+            if (!q) return;
+
+            // Naik level
+            state.currentLevel = Math.min(state.currentLevel + 1, QUESTIONS.length + 1);
+            saveState();
+            
+            elFeedback.innerHTML = `<span class='warn'>Level ${q.level} dilewati. Solusi yang benar adalah: <code>${q.correct}</code>.</span>`;
+            
+            // Tunda sedikit untuk menampilkan feedback skip
+            btnSubmit.disabled = true;
+            btnSkip.disabled = true;
+            elAnswer.disabled = true;
+            setTimeout(() => {
+                 render();
+            }, 1000);
+        });
+
+        // Init
+        loadState();
+        render();
+    </script>
+</body>
+</html>
