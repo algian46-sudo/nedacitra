@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Card Excel</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+    <style>
+        /* Custom styles */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #89cff0 0%, #4682B4 100%); /* Gradasi Biru Langit */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem; /* Large rounded corners */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            max-width: 95%; /* Lebih lebar untuk menampung lebih banyak kartu */
+            width: 900px; /* Lebar maksimum desktop */
+        }
+
+        .grid { 
+            display: grid; 
+            /* 5 kolom untuk mobile/layar kecil (5x8 = 40 kartu) */
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 8px; /* Jarak yang lebih kecil */
+            margin-top: 20px;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Adjust for desktop/larger screens (8x5 = 40 cards) */
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(8, 1fr); 
+                gap: 10px;
+            }
+        }
+
+        .card { 
+            /* Default Card Style (Face down) */
+            background-color: #2563EB; /* Darker blue for face down */
+            height: 80px; /* Tinggi kartu dikurangi */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            font-weight: 700;
+            color: #FFFFFF;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            position: relative;
+            user-select: none;
+            text-align: center;
+            padding: 2px;
+            font-size: 0.75rem; /* Ukuran font dikurangi */
+            line-height: 1.1;
+        }
+        
+        /* Gaya lainnya tetap sama... */
+        .card-flipped {
+            background-color: #f3f4f6; /* Light gray when flipped */
+            color: #1f2937;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+            transform: rotateY(180deg);
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-matched {
+            background-color: #34D399 !important; /* Green for match */
+            color: #065F46;
+            pointer-events: none; 
+            opacity: 0.9;
+        }
+        
+        .card-flipped, .card-matched {
+            transform: none !important;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-size: 0.7rem; 
+            line-height: 1.1;
+        }
+        
+        .card div {
+            transform: rotateY(0deg); 
+        }
+        
+        #feedback {
+            min-height: 24px; 
+            font-weight: 600;
+        }
+        
+        .back-button {
+            padding: 0.5rem 1.5rem;
+            margin-top: 1.5rem;
+            background-color: #1E40AF; 
+            color: white;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.1s;
+            text-decoration: none;
+            box-shadow: 0 4px #1E40AF;
+        }
+        .back-button:hover {
+            background-color: #1C3FAA;
+            box-shadow: 0 2px #1C3FAA;
+            transform: translateY(2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container text-center">
+        <h2 class="text-3xl font-extrabold text-gray-800 mb-4">Memory Card Excel</h2>
+        <p class="text-gray-600 mb-6">Cocokkan Fungsi Excel dengan Deskripsinya</p>
+
+        <div class="grid" id="grid">
+            <!-- Cards will be inserted here by JavaScript -->
+        </div>
+        
+        <p id="feedback" class="text-lg mt-6 text-indigo-600"></p>
+        
+        <button id="reset-button" class="mt-4 px-6 py-2 bg-yellow-500 text-white font-bold rounded-lg shadow-md hover:bg-yellow-600 transition-colors">
+            Mulai Ulang Game
+        </button>
+        
+        <div id="win-message" class="hidden mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+            Selamat! Anda telah menemukan semua pasangan!
+        </div>
+    </div>
+    
+    <a href="index.html" class="back-button">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Kembali ke Beranda
+    </a>
+
+    <script>
+        // DATA KARTU DIPERBARUI (20 PASANGAN / 40 KARTU TOTAL)
+        const cardsData = [
+            {text:"SUM", pair:"Menjumlahkan nilai dalam rentang"},
+            {text:"AVERAGE", pair:"Menghitung rata-rata nilai dalam rentang"},
+            {text:"MAX", pair:"Mencari nilai terbesar dalam kumpulan data"},
+            {text:"MIN", pair:"Mencari nilai terkecil dalam kumpulan data"},
+            {text:"COUNT", pair:"Menghitung jumlah sel yang berisi angka"},
+            {text:"COUNTA", pair:"Menghitung jumlah sel yang tidak kosong"},
+            {text:"COUNTIF", pair:"Menghitung sel yang memenuhi kriteria tunggal"},
+            {text:"SUMIF", pair:"Menjumlahkan sel yang memenuhi kriteria tunggal"},
+            {text:"IF", pair:"Melakukan pengujian logis dan mengembalikan nilai sesuai hasil TRUE/FALSE"},
+            {text:"VLOOKUP", pair:"Mencari nilai dalam kolom pertama dan mengembalikan nilai dari baris yang sama"},
+            {text:"TODAY", pair:"Mengembalikan tanggal hari ini yang diperbarui secara otomatis"},
+            {text:"NOW", pair:"Mengembalikan tanggal dan waktu saat ini"},
+            {text:"ROUND", pair:"Membulatkan angka ke jumlah digit tertentu"},
+            {text:"TRUNC", pair:"Memotong bagian pecahan dari angka"},
+            {text:"LEFT", pair:"Mengambil karakter dari sisi kiri string teks"},
+            {text:"RIGHT", pair:"Mengambil karakter dari sisi kanan string teks"},
+            {text:"MID", pair:"Mengambil sejumlah karakter dari posisi yang ditentukan"},
+            {text:"LOWER", pair:"Mengubah semua huruf dalam string teks menjadi huruf kecil"},
+            {text:"UPPER", pair:"Mengubah semua huruf dalam string teks menjadi huruf besar"},
+            {text:"LEN", pair:"Menghitung jumlah karakter dalam string teks"}
+        ];
+
+        // Duplikasi dan gabungkan data untuk membuat pasangan kartu
+        let gameCards = [];
+        cardsData.forEach(item => {
+            gameCards.push({ value: item.text, pair: item.pair });
+            gameCards.push({ value: item.pair, pair: item.text });
+        });
+
+        let flipped = [];
+        let matchedCount = 0;
+        const grid = document.getElementById('grid');
+        const feedback = document.getElementById('feedback');
+        const resetButton = document.getElementById('reset-button');
+        const winMessage = document.getElementById('win-message');
+        const totalPairs = cardsData.length; // 20 Pasangan
+
+        function initializeGame() {
+            // Bersihkan papan dan reset status
+            grid.innerHTML = '';
+            flipped = [];
+            matchedCount = 0;
+            feedback.textContent = `Mulai permainan! Total ${totalPairs} pasangan.`;
+            winMessage.classList.add('hidden');
+            
+            // Kocok kartu
+            gameCards.sort(() => Math.random() - 0.5);
+
+            // Buat elemen kartu
+            gameCards.forEach((c, i) => {
+                const div = document.createElement('div');
+                div.className = 'card';
+                div.dataset.value = c.value;
+                div.dataset.pair = c.pair;
+                
+                // Tambahkan elemen div untuk konten yang tersembunyi
+                const contentDiv = document.createElement('div');
+                contentDiv.textContent = c.value;
+                contentDiv.className = 'card-content opacity-0 transition-opacity duration-300 w-full h-full flex items-center justify-center p-1';
+                
+                // Tambahkan simbol tanda tanya untuk tampilan awal
+                const coverDiv = document.createElement('div');
+                coverDiv.textContent = '?';
+                coverDiv.className = 'card-cover absolute inset-0 flex items-center justify-center text-xl sm:text-2xl bg-blue-700 rounded-lg transition-opacity duration-300';
+
+
+                div.appendChild(contentDiv);
+                div.appendChild(coverDiv);
+
+
+                div.onclick = () => flip(div, c.value, c.pair);
+                grid.appendChild(div);
+            });
+        }
+
+        function flip(card, value, pairValue) {
+            // Guard: Hanya izinkan flip jika kartu belum dicocokkan atau belum terbalik
+            if (card.classList.contains('card-matched') || flipped.includes(card) || flipped.length === 2) {
+                return;
+            }
+
+            // Tampilkan nilai kartu
+            card.querySelector('.card-cover').style.opacity = '0';
+            card.querySelector('.card-content').style.opacity = '1';
+            card.classList.add('card-flipped', 'bg-white', 'text-gray-800');
+            card.classList.remove('bg-blue-700', 'text-white');
+            
+            flipped.push(card);
+
+            if (flipped.length === 2) {
+                // Setelah 1 detik, cek pasangan
+                setTimeout(check, 1000);
+            }
+        }
+
+        function check() {
+            const [c1, c2] = flipped;
+            
+            // Check matching condition: the value of c1 must match the pair of c2 (and vice versa)
+            const isMatch = (c1.dataset.value === c2.dataset.pair && c2.dataset.value === c1.dataset.pair);
+
+            if (isMatch) {
+                // Pasangan cocok
+                c1.classList.remove('card-flipped', 'bg-white', 'text-gray-800');
+                c2.classList.remove('card-flipped', 'bg-white', 'text-gray-800');
+                
+                c1.classList.add('card-matched', 'bg-green-400');
+                c2.classList.add('card-matched', 'bg-green-400');
+                
+                c1.querySelector('.card-cover').style.display = 'none'; // Sembunyikan cover secara permanen
+                c2.querySelector('.card-cover').style.display = 'none';
+                
+                feedback.textContent = `Cocok! (${matchedCount + 1}/${totalPairs})`;
+                matchedCount++;
+
+                // Cek Kemenangan
+                if (matchedCount === totalPairs) {
+                    feedback.textContent = "";
+                    winMessage.classList.remove('hidden');
+                }
+            } else {
+                // Pasangan tidak cocok
+                c1.classList.remove('card-flipped', 'bg-white', 'text-gray-800');
+                c2.classList.remove('card-flipped', 'bg-white', 'text-gray-800');
+
+                c1.classList.add('bg-blue-700', 'text-white');
+                c2.classList.add('bg-blue-700', 'text-white');
+                
+                // Sembunyikan kembali nilai kartu
+                c1.querySelector('.card-cover').style.opacity = '1';
+                c1.querySelector('.card-content').style.opacity = '0';
+                c2.querySelector('.card-cover').style.opacity = '1';
+                c2.querySelector('.card-content').style.opacity = '0';
+                
+                feedback.textContent = "Tidak cocok. Coba lagi!";
+            }
+            
+            flipped = [];
+        }
+
+        // Event listener untuk tombol reset
+        resetButton.addEventListener('click', initializeGame);
+
+        // Inisialisasi game saat halaman dimuat
+        window.onload = initializeGame;
+
+    </script>
+</body>
+</html>

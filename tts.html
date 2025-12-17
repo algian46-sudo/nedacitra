@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembuat Teka-Teki Silang - SMP 8</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+    <style>
+        /* --- TEMA GLOBAL DINAMIS --- */
+        :root {
+            /* Palet Biru Langit (Modern Gradient) */
+            --sky-blue-light: #60a5fa; /* Biru Langit Cerah */
+            --sky-blue-dark: #3b82f6;  /* Biru Utama */
+            --primary-bg: #f0f9ff;     /* Latar Belakang Sangat Cerah */
+            --card-bg: #ffffff;
+            --text-dark: #1e3a8a;      /* Teks Biru Gelap */
+            --text-muted: #6b7280;     /* Teks Abu-abu */
+            --accent-main: #f59e0b;    /* Kuning Cerah (Aksen Cetak) */
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: "Poppins", "Segoe UI", Roboto, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-dark);
+            padding: 20px;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* --- HEADER & LOGO SMP 8 --- */
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .logo-title-group {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .logo-smp8 {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            box-shadow: 0 0 0 3px var(--sky-blue-light);
+        }
+
+        .title-group {
+            line-height: 1.2;
+        }
+
+        /* Judul Utama di Layar */
+        #mainTitleDisplay {
+            text-align: left;
+            margin: 0;
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--sky-blue-dark), var(--sky-blue-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .sub-title {
+            text-align: left;
+            margin-top: 5px;
+            margin-bottom: 0;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        /* --- Tombol Kembali ke Beranda (Proporsional) --- */
+        .home-button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid var(--sky-blue-light);
+            background: linear-gradient(45deg, var(--sky-blue-light), var(--sky-blue-dark));
+            color: var(--card-bg);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
+        }
+
+        .home-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .home-button svg {
+            margin-right: 8px;
+            fill: none;
+            stroke: var(--card-bg);
+        }
+
+        /* --- CONTAINER DAN PANEL --- */
+        .container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: stretch;
+            flex-wrap: wrap;
+        }
+
+        .panel {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-md);
+            width: 350px;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s;
+        }
+        
+        .panel:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            box-sizing: border-box;
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+            color: #1f2937;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--sky-blue-light);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+            background: var(--card-bg);
+        }
+
+        textarea {
+            min-height: 150px;
+            white-space: pre;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        /* --- TOMBOL AKSI --- */
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #generateBtn {
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        #generateBtn:hover {
+            background: linear-gradient(90deg, #2563eb, #1e40af);
+            transform: translateY(-1px);
+        }
+
+        #printBtn {
+            background: var(--accent-main);
+            color: #fff;
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+
+        #printBtn:hover {
+            background: #d97706;
+            transform: translateY(-1px);
+        }
+
+        .section-divider {
+            border-top: 2px dashed #e5e7eb;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .section-divider::after {
+            content: "PENGATURAN CETAK";
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            padding: 0 10px;
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        /* --- AREA PREVIEW / RESULT --- */
+        .result-area {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 15px;
+            min-width: 350px;
+            max-width: 800px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            flex-grow: 1;
+        }
+
+        table.preview-grid {
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            border: 2px solid var(--sky-blue-dark);
+            border-radius: 5px;
+        }
+
+        table.preview-grid td {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            text-align: center;
+            position: relative;
+            font-weight: 700;
+            font-size: 16px;
+            color: #000;
+            transition: background-color 0.3s;
+        }
+
+        td.cell-filled {
+            background: #fff;
+            border: 1px solid #334155;
+        }
+
+        td.cell-empty {
+            background: #e0f2fe; /* Warna Blok Kosong Lebih Menarik */
+            border: none;
+        }
+
+        .num {
+            position: absolute;
+            top: 1px;
+            left: 2px;
+            font-size: 9px;
+            color: var(--sky-blue-dark);
+            z-index: 5;
+            font-family: sans-serif;
+            line-height: 1;
+            font-weight: 900;
+        }
+
+        .clues-box {
+            width: 100%;
+            color: var(--text-dark);
+            margin-top: 20px;
+            border-top: 3px solid var(--sky-blue-light);
+            padding-top: 15px;
+        }
+
+        .clues-box h3 {
+            color: var(--sky-blue-dark);
+            font-size: 18px;
+            margin-bottom: 5px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-main);
+            text-underline-offset: 4px;
+            font-weight: 700;
+        }
+
+        /* CSS LIST: Hilangkan nomor urut default (1,2,3) agar tidak ganda */
+        .clues-box ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+            columns: 1; /* Default untuk mobile/kecil */
+        }
+
+        .clues-box li {
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+        
+        /* Layout Petunjuk untuk layar lebar */
+        @media (min-width: 768px) {
+            .clues-box ul {
+                columns: 2; /* Bagi menjadi 2 kolom di layar lebar */
+            }
+            .clues-box li {
+                break-inside: avoid;
+            }
+        }
+        
+        /* Layout Responsif Panel */
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .panel, .result-area {
+                width: 100%;
+                max-width: 600px;
+            }
+        }
+
+
+        .app-footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            width: 100%;
+            padding-top: 10px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* --- PRINT CSS (DARI SKRIP ASLI) --- */
+        /* Pastikan CSS Cetak di fungsi printPage() dipertahankan */
+    </style>
+</head>
+<body>
+    <div class="header-section">
+        <div class="logo-title-group">
+            <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo SMP 8" class="logo-smp8" loading="lazy">
+            <div class="title-group">
+                <h1 id="mainTitleDisplay">TEKA-TEKI SILANG</h1>
+                <div class="sub-title">Generator Soal SMP 8 | Created by <strong>Algian Manggara, S.Agr</strong></div>
+            </div>
+        </div>
+        
+        <a href="index.html" class="home-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            Kembali ke Beranda
+        </a>
+    </div>
+    
+    <div class="container">
+        <div class="panel">
+            <label for="puzzleTitle">Judul Teka-Teki:</label>
+            <input id="puzzleTitle" type="text" value="TEKA-TEKI SILANG" placeholder="Contoh: Ulangan Harian IPA">
+
+            <label for="size">Ukuran Grid (Min 10, Max 25):</label>
+            <input id="size" type="number" value="15" min="10" max="25">
+            
+            <label for="words">Daftar Kata (Format: KATA:Petunjuk)</label>
+            <textarea id="words" spellcheck="false"></textarea>
+            
+            <button id="generateBtn">🔄 1. BUAT SOAL (GENERATE)</button>
+            
+            <div class="section-divider"></div>
+            
+            <label for="authorName">Nama Pembuat (Tertulis di Kertas):</label>
+            <input id="authorName" type="text" value="Algian Manggara, S.Agr" placeholder="Nama Guru / Pembuat">
+            
+            <label for="paperSize">Ukuran Kertas:</label>
+            <select id="paperSize">
+                <option value="A4">A4 (210 x 297 mm)</option>
+                <option value="Legal">F4 / Legal (215 x 330 mm)</option>
+            </select>
+
+            <label for="printMode">Mode Jawaban:</label>
+            <select id="printMode">
+                <option value="empty">Soal Kosong (Siswa)</option>
+                <option value="filled">Kunci Jawaban (Guru)</option>
+            </select>
+
+            <button id="printBtn">🖨️ 2. CETAK / PRINT</button>
+        </div>
+
+        <div class="result-area">
+            <div id="puzzle"></div>
+            <div class="clues-box" id="clues"></div>
+        </div>
+    </div>
+
+    <div class="app-footer">© 2025 Algian Manggara, S.Agr. Didesain Ulang untuk **SMP 8**.</div>
+
+<script>
+    // --- DATA CONTOH ---
+    const defaultData = `MERDEKA:Bebas dari penjajahan
+INDONESIA:Negara kepulauan terbesar
+JAKARTA:Ibukota negara kita
+BENDERA:Lambang negara merah putih
+GARUDA:Burung lambang negara
+PANCASILA:Dasar negara
+PRESIDEN:Kepala negara
+RAKYAT:Penduduk suatu negara
+ADIL:Tidak memihak
+MAKMUR:Sejahtera serba kecukupan`;
+
+    let GRID = [];
+    let PLACEMENTS = [];
+    let SIZE = 15;
+    let NUM_MAP = {};
+
+    // --- LOGIC UTAMA ---
+    function createGrid(n) { return Array.from({ length: n }, () => Array(n).fill(null)); }
+    
+    function getWords() {
+        const val = document.getElementById("words").value.trim();
+        if(!val) return [];
+        return val.split('\n').map(line => {
+            const [w, ...c] = line.split(':');
+            return { word: (w||'').trim().toUpperCase().replace(/[^A-Z]/g,''), clue: c.join(':').trim() };
+        }).filter(x => x.word.length > 1).sort((a, b) => b.word.length - a.word.length);
+    }
+
+    function canPlace(grid, word, r, c, dir) {
+        const len = word.length;
+        if (dir === 'across') {
+            if (c + len > SIZE) return false;
+            if (c > 0 && grid[r][c-1] !== null) return false; 
+            if (c + len < SIZE && grid[r][c+len] !== null) return false;
+            for (let i=0; i<len; i++) {
+                const cell = grid[r][c+i];
+                if (cell !== null && cell !== word[i]) return false;
+                if (cell === null && ((r>0 && grid[r-1][c+i]!==null) || (r<SIZE-1 && grid[r+1][c+i]!==null))) return false;
+            }
+        } else {
+            if (r + len > SIZE) return false;
+            if (r > 0 && grid[r-1][c] !== null) return false;
+            if (r + len < SIZE && grid[r+len][c] !== null) return false;
+            for (let i=0; i<len; i++) {
+                const cell = grid[r+i][c];
+                if (cell !== null && cell !== word[i]) return false;
+                if (cell === null && ((c>0 && grid[r+i][c-1]!==null) || (c<SIZE-1 && grid[r+i][c+1]!==null))) return false;
+            }
+        }
+        return true;
+    }
+
+    function place(grid, word, clue, r, c, dir) {
+        for (let i=0; i<word.length; i++) {
+            if (dir === 'across') grid[r][c+i] = word[i]; else grid[r+i][c] = word[i];
+        }
+        PLACEMENTS.push({ word, clue, r, c, dir });
+    }
+
+    function generate() {
+        // Update Judul di Layar Preview
+        const title = document.getElementById("puzzleTitle").value || "TEKA-TEKI SILANG";
+        document.getElementById("mainTitleDisplay").innerText = title;
+
+        SIZE = Math.max(10, parseInt(document.getElementById("size").value) || 15);
+        const items = getWords();
+        GRID = createGrid(SIZE);
+        PLACEMENTS = [];
+
+        if(items.length === 0) return alert("Mohon isi daftar kata!");
+
+        const f = items[0];
+        // Tempatkan kata pertama di tengah grid
+        place(GRID, f.word, f.clue, Math.floor(SIZE/2), Math.floor((SIZE-f.word.length)/2), 'across');
+
+        for (let i=1; i<items.length; i++) {
+            const cur = items[i];
+            let done = false;
+            // Logic Silang
+            for (const p of PLACEMENTS) {
+                if(done) break;
+                for (let j=0; j<p.word.length; j++) {
+                    const l = p.word[j];
+                    const pr = p.dir==='across'?p.r:p.r+j; const pc = p.dir==='across'?p.c+j:p.c;
+                    for (let k=0; k<cur.word.length; k++) {
+                        if (cur.word[k] === l) {
+                            const nd = p.dir==='across'?'down':'across';
+                            const nr = nd==='down'?pr-k:pr; const nc = nd==='across'?pc-k:pc;
+                            if (nr>=0 && nc>=0 && canPlace(GRID, cur.word, nr, nc, nd)) {
+                                place(GRID, cur.word, cur.clue, nr, nc, nd); done=true; break;
+                            }
+                        }
+                    }
+                    if(done) break;
+                }
+            }
+            // Fallback Logic
+            if (!done) {
+                for(let r=0; r<SIZE && !done; r++) {
+                    for(let c=0; c<SIZE && !done; c++) {
+                        if(canPlace(GRID, cur.word, r, c, 'across')) {
+                            place(GRID, cur.word, cur.clue, r, c, 'across'); done=true;
+                        }
+                    }
+                }
+            }
+        }
+        renderScreen();
+    }
+
+    function renderScreen() {
+        PLACEMENTS.sort((a,b) => (a.r - b.r) || (a.c - b.c));
+        NUM_MAP = {};
+        let ctr = 1;
+        PLACEMENTS.forEach(p => {
+            const key = `${p.r},${p.c}`;
+            if(!NUM_MAP[key]) NUM_MAP[key] = ctr++;
+            p.num = NUM_MAP[key];
+        });
+
+        let html = '<table class="preview-grid">';
+        for(let r=0; r<SIZE; r++) {
+            html += '<tr>';
+            for(let c=0; c<SIZE; c++) {
+                const cell = GRID[r][c];
+                const n = NUM_MAP[`${r},${c}`];
+                const cls = cell === null ? 'cell-empty' : 'cell-filled';
+                html += `<td class="${cls}">${n ? `<div class="num">${n}</div>` : ''}${cell || ''}</td>`;
+            }
+            html += '</tr>';
+        }
+        html += '</table>';
+        document.getElementById("puzzle").innerHTML = html;
+
+        const sorted = [...PLACEMENTS].sort((a,b) => a.num - b.num);
+        
+        let ac = '<h3>MENDATAR</h3><ul>';
+        let dn = '<h3>MENURUN</h3><ul>';
+        
+        sorted.forEach(p => {
+            // Format: 1. Petunjuk
+            const li = `<li><strong>${p.num}.</strong> ${p.clue}</li>`;
+            if(p.dir==='across') ac += li; else dn += li;
+        });
+        
+        ac += '</ul>';
+        dn += '</ul>';
+
+        document.getElementById("clues").innerHTML = `<div style="display:flex; gap:30px; font-size:14px; flex-wrap: wrap;">
+            <div style="flex:1; min-width: 250px;">${ac}</div><div style="flex:1; min-width: 250px;">${dn}</div>
+        </div>`;
+    }
+
+    // --- FUNGSI CETAK (DIPERTAHANKAN) ---
+    function printPage() {
+        const mode = document.getElementById("printMode").value;
+        const author = document.getElementById("authorName").value || "Guru / Pembuat Soal";
+        const title = document.getElementById("puzzleTitle").value || "TEKA-TEKI SILANG"; // Ambil judul custom
+        const paperSize = document.getElementById("paperSize").value;
+        
+        let cssSize = 'A4';
+        if(paperSize === 'Legal') cssSize = '215mm 330mm'; 
+
+        const w = window.open('', '', 'width=900,height=800');
+        
+        let gridHtml = '<table class="print-grid">';
+        for(let r=0; r<SIZE; r++) {
+            gridHtml += '<tr>';
+            for(let c=0; c<SIZE; c++) {
+                const cell = GRID[r][c]; 
+                const n = NUM_MAP[`${r},${c}`];
+                const typeClass = cell === null ? 'b' : 'w';
+                let content = '';
+                if (n) content += `<div class="num">${n}</div>`;
+                if (mode === 'filled' && cell) content += `<div class="letter">${cell}</div>`;
+                gridHtml += `<td class="${typeClass}">${content}</td>`;
+            }
+            gridHtml += '</tr>';
+        }
+        gridHtml += '</table>';
+
+        const cluesHtml = document.getElementById("clues").innerHTML;
+
+        w.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>${title} | ${mode === 'filled' ? 'Kunci Jawaban' : 'Soal'}</title>
+                <style>
+                    @page { size: ${cssSize}; margin: 15mm; }
+                    
+                    body { font-family: "Segoe UI", Arial, sans-serif; color: #000; padding: 0; margin: 0; }
+                    h1 { text-align: center; margin: 0 0 5px 0; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; }
+                    .meta { text-align: center; font-size: 14px; color: #444; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+                    .logo-print { width: 40px; height: 40px; position: absolute; top: 15mm; left: 15mm; }
+
+                    table.print-grid { border-collapse: collapse; margin: 0 auto 20px auto; }
+                    table.print-grid td { width: 28px; height: 28px; padding: 0; position: relative; text-align: center; vertical-align: middle; }
+                    table.print-grid td.w { border: 1px solid #000; }
+                    table.print-grid td.b { border: none; background: #eee; } /* Blok Kosong di Cetak lebih jelas */
+                    
+                    .num { position: absolute; top: 1px; left: 1px; font-size: 8px; font-weight: bold; }
+                    .letter { font-weight: bold; font-size: 16px; }
+
+                    .clues-container { display: flex; gap: 30px; justify-content: center; }
+                    .clues-container h3 { font-size: 14px; border-bottom: 1px solid #000; display: inline-block; margin-bottom: 5px; }
+                    
+                    /* LIST STYLE CETAK */
+                    .clues-container ul { list-style-type: none; padding-left: 0; margin-top:0; columns: 2; }
+                    .clues-container li { font-size: 11px; margin-bottom: 2px; break-inside: avoid; }
+                    
+                    .signature { margin-top: 40px; float: right; text-align: center; width: 200px; page-break-inside: avoid; }
+                    .signature p { margin-top: 60px; border-top: 1px solid #000; font-weight: bold; }
+
+                    /* Tombol untuk Print */
+                    .btn-print {
+                        display: block; margin: 20px auto; padding: 12px 30px; 
+                        font-weight: bold; cursor: pointer; background: #22c55e; color: white;
+                        border: none; border-radius: 5px; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    }
+                    @media print { .no-print, .btn-print { display: none !important; } }
+                </style>
+            </head>
+            <body>
+                <img src="https://i.imgur.com/v8tT9oD.png" alt="Logo SMP 8" class="logo-print">
+                <h1>${title}</h1>
+                <div class="meta">
+                    Dibuat oleh: <strong>${author}</strong> ${mode === 'filled' ? ' (KUNCI JAWABAN)' : ''}
+                </div>
+                
+                ${gridHtml}
+                
+                <div class="clues-container">
+                    ${cluesHtml}
+                </div>
+
+                <div class="signature">
+                    <div style="font-size:12px; margin-bottom:50px;">Mengetahui / Pembuat,</div>
+                    <p>${author}</p>
+                </div>
+
+                <button class="btn-print" onclick="window.print()">🖨️ KLIK UNTUK MENCETAK</button>
+            </body>
+            </html>
+        `);
+        w.document.close();
+    }
+
+    window.onload = () => {
+        document.getElementById("words").value = defaultData;
+        document.getElementById("generateBtn").onclick = generate;
+        document.getElementById("printBtn").onclick = printPage;
+        generate();
+    };
+</script>
+</body>
+</html>
