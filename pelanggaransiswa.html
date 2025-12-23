@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penilaian Pelanggaran Siswa - SMPN 8 Cikarang Utara</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f9; /* Soft light background */
+        }
+        .container {
+            max-width: 1400px;
+        }
+        /* Custom scrollbar style for better visibility */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Modern shadow */
+        }
+        .table-wrapper::-webkit-scrollbar {
+            height: 10px;
+        }
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: #94a3b8; /* slate-400 */
+            border-radius: 10px;
+        }
+        .table-wrapper::-webkit-scrollbar-track {
+            background: #e2e8f0; /* slate-200 */
+        }
+        /* Style for active and inactive tabs */
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 0.75rem 0.75rem 0 0;
+            transition: all 0.3s ease;
+            margin-right: 0.25rem;
+        }
+        .tab-active {
+            color: #b91c1c; /* red-700 */
+            background-color: #ffffff;
+            border-top: 3px solid #ef4444; /* red-500 */
+            border-left: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+        }
+        .tab-inactive {
+            color: #6b7280; /* gray-500 */
+            background-color: #e2e8f0; /* gray-200 */
+            border-bottom: 3px solid transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- Header Dinamis dengan Logo dan Judul Penilaian -->
+        <header class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-8 flex flex-col md:flex-row items-start md:items-center justify-between">
+            
+            <!-- Logo dan Judul -->
+            <div class="flex items-center mb-4 md:mb-0">
+                <img src="https://i.imgur.com/mRmw86t.jpeg" 
+                    onerror="this.onerror=null; this.src='https://placehold.co/80x80/DC2626/FFFFFF?text=Poin';" 
+                    alt="Logo Sekolah" 
+                    class="w-16 h-16 object-cover rounded-full shadow-md mr-4 ring-2 ring-red-500">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-red-800 tracking-tight">
+                        Papan Penilaian Pelanggaran Siswa
+                    </h1>
+                    <p class="text-sm text-gray-500">
+                        SMP Negeri 8 Cikarang Utara
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tombol Kembali ke Beranda -->
+            <a href="Halamanguru.html" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-full shadow-lg text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out transform hover:scale-[1.02]">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                Kembali ke Halaman guru
+            </a>
+        </header>
+        
+        <!-- Tab Navigation -->
+        <div class="flex border-b border-gray-300 mb-6">
+            <button id="tab-catatan" class="tab-button tab-active">Catatan Pelanggaran (Harian)</button>
+            <button id="tab-rekap" class="tab-button tab-inactive">Total Poin Pelanggaran</button>
+        </div>
+        
+        <!-- Tab 1: Catatan Pelanggaran Harian Content -->
+        <div id="catatan-pelanggaran-content">
+            <!-- Control Panel and Filters (Catatan) -->
+            <div class="bg-white p-5 rounded-xl shadow-lg mb-6 flex flex-col md:flex-row gap-4 items-stretch md:items-center">
+                
+                <!-- Filter Kelas (Catatan) -->
+                <div class="w-full md:w-auto">
+                    <label for="kelas-filter" class="block text-xs font-medium text-gray-600 mb-1">Filter Kelas:</label>
+                    <select id="kelas-filter" class="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 appearance-none cursor-pointer focus:ring-2 focus:ring-red-500 transition">
+                        <option value="">Semua Kelas</option>
+                    </select>
+                </div>
+                
+                <!-- Pencarian Nama (Catatan) -->
+                <div class="w-full md:flex-grow">
+                    <label for="search-input" class="block text-xs font-medium text-gray-600 mb-1">Cari Nama Siswa:</label>
+                    <input type="text" id="search-input" placeholder="Ketik nama siswa..." 
+                            class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 transition">
+                </div>
+            </div>
+
+            <!-- Loading & Error Messages -->
+            <div id="loading-message" class="text-center p-6 bg-yellow-100 text-yellow-800 rounded-xl shadow-lg hidden">
+                <div class="flex items-center justify-center space-x-2">
+                    <svg class="animate-spin h-5 w-5 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Memuat data pelanggaran dari Google Sheets...</span>
+                </div>
+            </div>
+            <div id="error-message" class="text-left p-6 bg-red-100 text-red-800 rounded-xl shadow-lg hidden">
+                <h3 class="font-bold text-lg mb-2">⚠️ Gagal Memuat Data (Error CSV)</h3>
+                <p>Terjadi kesalahan saat mengambil atau memparsing data. Pastikan **URL CSV Google Sheet** sudah benar dan dipublikasikan.</p>
+                <p class="mt-2">**Solusi:**</p>
+                <ol class="list-decimal list-inside ml-4 text-sm">
+                    <li>Buka Google Sheet Penilaian Pelanggaran Anda.</li>
+                    <li>Pilih **File > Bagikan > Publikasikan ke web** (File > Share > Publish to the web).</li>
+                    <li>Di tab "Link", pilih **CSV** (bukan Web Page).</li>
+                    <li>Salin URL yang diberikan dan **GANTI** nilai `GOOGLE_SHEET_CSV_URL` di dalam kode.</li>
+                </ol>
+                <p class="mt-2 font-medium">Data tidak dapat ditampilkan sebelum URL diperbaiki.</p>
+            </div>
+            <div id="no-data-message" class="text-center p-6 bg-gray-100 text-gray-600 rounded-xl shadow-lg hidden">
+                Tidak ada catatan pelanggaran yang sesuai dengan filter.
+            </div>
+
+            <!-- Data Table Container (Catatan) -->
+            <div class="table-wrapper">
+                <table id="data-table" class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <!-- Headers will be generated here -->
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-100">
+                        <!-- Data rows will be generated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab 2: Total Poin Pelanggaran Content -->
+        <div id="rekap-poin-content" class="hidden">
+            <!-- Control Panel and Filters (Rekap) -->
+            <div class="bg-white p-5 rounded-xl shadow-lg mb-6 flex flex-col md:flex-row gap-4 items-stretch md:items-center">
+                
+                <!-- Filter Kelas (Rekap) -->
+                <div class="w-full md:w-auto">
+                    <label for="rekap-kelas-filter" class="block text-xs font-medium text-gray-600 mb-1">Filter Kelas (Rekap):</label>
+                    <select id="rekap-kelas-filter" class="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 appearance-none cursor-pointer focus:ring-2 focus:ring-red-500 transition">
+                        <option value="">Semua Kelas</option>
+                    </select>
+                </div>
+                
+                <!-- Pencarian Nama (Rekap) -->
+                <div class="w-full md:flex-grow">
+                    <label for="rekap-search-input" class="block text-xs font-medium text-gray-600 mb-1">Cari Nama Siswa (Rekap):</label>
+                    <input type="text" id="rekap-search-input" placeholder="Ketik nama siswa..." 
+                            class="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-red-500 transition">
+                </div>
+            </div>
+
+            <div id="rekap-no-data-message" class="text-center p-6 bg-gray-100 text-gray-600 rounded-xl shadow-lg hidden">
+                Tidak ada data total poin yang sesuai dengan filter.
+            </div>
+
+            <!-- Data Table Container (Rekap) -->
+            <div class="table-wrapper">
+                <table id="rekap-table" class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <!-- Headers will be generated here -->
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-100">
+                        <!-- Data rows will be generated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        // --- KONFIGURASI PENTING ---
+        // GANTI URL INI DENGAN LINK EKSPOR CSV PUBLIK GOOGLE SHEET ANDA!
+        const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkVQuVViOkBxd3VvqQ3AMhw7p29gSWaNWZes16cs_PCUGSO8KXp2ldUCLuAINUICUCPs5Htwzg0b9Z/pub?gid=2063896847&single=true&output=csv";
+        
+        // Indeks Kolom CSV (0-based) berdasarkan permintaan: A1, B1, C1, D1, E1, dan G1 (Kelas)
+        const DATE_COL_INDEX = 0; // Kolom A: Tanggal
+        const NAME_COL_INDEX = 1; // Kolom B: Nama Siswa
+        const TYPE_COL_INDEX = 2; // Kolom C: Jenis Penilaian/Pelanggaran
+        const INDICATOR_COL_INDEX = 3; // Kolom D: Indikator/Detail Pelanggaran
+        const SCORE_COL_INDEX = 4; // Kolom E: Skor/Poin Pelanggaran
+        const CLASS_COL_INDEX = 6; // KOLOM G: Kelas Siswa (INDEX BARU)
+        
+        // Data dimulai dari baris kedua CSV (indeks 1, karena baris 0 adalah header)
+        const DATA_START_ROW_INDEX = 1;
+
+        // --- AKHIR KONFIGURASI ---
+
+        let allViolationRecords = [];
+        let recapStudentData = []; 
+
+        // UI Elements - Catatan Tab
+        const loadingMessage = document.getElementById('loading-message');
+        const errorMessage = document.getElementById('error-message');
+        const noDataMessage = document.getElementById('no-data-message');
+        const searchInput = document.getElementById('search-input');
+        const kelasFilter = document.getElementById('kelas-filter');
+        const dataTable = document.getElementById('data-table');
+        const tableBody = dataTable.querySelector('tbody');
+        const tableHead = dataTable.querySelector('thead');
+        
+        // UI Elements - Rekap Tab
+        const rekapTable = document.getElementById('rekap-table');
+        const rekapTableHead = rekapTable.querySelector('thead');
+        const rekapTableBody = rekapTable.querySelector('tbody');
+        const rekapSearchInput = document.getElementById('rekap-search-input');
+        const rekapKelasFilter = document.getElementById('rekap-kelas-filter');
+        const rekapNoDataMessage = document.getElementById('rekap-no-data-message');
+
+        // Tab Navigation Elements
+        const tabCatatan = document.getElementById('tab-catatan');
+        const tabRekap = document.getElementById('tab-rekap');
+        const contentCatatan = document.getElementById('catatan-pelanggaran-content');
+        const contentRekap = document.getElementById('rekap-poin-content');
+
+        // Helper untuk memecah baris CSV
+        function splitCSVRow(line) {
+            // Membagi berdasarkan koma, mengabaikan koma di dalam tanda kutip (untuk robustness)
+            return line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.trim().replace(/"/g, ''));
+        }
+
+        // Parse CSV khusus untuk layout Penilaian Pelanggaran (Transactional)
+        function parseViolationCSV(csv) {
+            const lines = csv.split('\n').filter(line => line.trim() !== '');
+            // Membutuhkan minimal 7 kolom (Index 0 hingga 6)
+            if (lines.length <= DATA_START_ROW_INDEX) return []; 
+
+            const rawDataRows = lines.slice(DATA_START_ROW_INDEX);
+            const violationRecords = [];
+            const uniqueClasses = new Set();
+
+            rawDataRows.forEach((line) => {
+                const values = splitCSVRow(line);
+                
+                // Pastikan ada cukup kolom data hingga G (index 6)
+                if (values.length < 7) return; 
+
+                const date = values[DATE_COL_INDEX] || '';
+                const name = values[NAME_COL_INDEX] || '';
+                const type = values[TYPE_COL_INDEX] || '';
+                const indicator = values[INDICATOR_COL_INDEX] || '';
+                const score = parseInt(values[SCORE_COL_INDEX], 10) || 0;
+                
+                // Mengambil data Kelas ASLI dari index 6 (Kolom G)
+                const studentClass = values[CLASS_COL_INDEX] ? values[CLASS_COL_INDEX].trim().toUpperCase() : '';
+
+                // Hanya masukkan record jika nama, tanggal, dan kelas ada
+                if (name && date && studentClass) {
+                    violationRecords.push({
+                        date: date,
+                        name: name,
+                        class: studentClass, // Menggunakan data Kelas asli
+                        type: type,
+                        indicator: indicator,
+                        score: score,
+                    });
+                    uniqueClasses.add(studentClass);
+                }
+            });
+
+            // Isi filter kelas untuk kedua tab
+            kelasFilter.innerHTML = '<option value="">Semua Kelas</option>';
+            rekapKelasFilter.innerHTML = '<option value="">Semua Kelas</option>';
+            
+            Array.from(uniqueClasses).sort().forEach(kelas => {
+                kelasFilter.innerHTML += `<option value="${kelas}">${kelas}</option>`;
+                rekapKelasFilter.innerHTML += `<option value="${kelas}">${kelas}</option>`;
+            });
+
+            return violationRecords;
+        }
+
+
+        // Fetch data dari URL tunggal
+        async function fetchData() {
+            loadingMessage.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+            noDataMessage.classList.add('hidden');
+            allViolationRecords = [];
+            recapStudentData = []; // Reset rekap data
+
+            try {
+                const response = await fetch(GOOGLE_SHEET_CSV_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const csvText = await response.text();
+                allViolationRecords = parseViolationCSV(csvText);
+                
+                // Setelah data dimuat, rekap data langsung dihitung
+                recapStudentData = calculateRecapData(allViolationRecords);
+                
+                // Hanya render Catatan jika tab Catatan aktif
+                if (tabCatatan.classList.contains('tab-active')) {
+                    applyFilters();
+                }
+
+            } catch (error) {
+                console.error("Error fetching or parsing data:", error);
+                // Tampilkan pesan error kepada pengguna
+                errorMessage.classList.remove('hidden');
+                
+            } finally {
+                loadingMessage.classList.add('hidden');
+            }
+        }
+        
+        // --- LOGIKA REKAPITULASI (Total Poin) ---
+
+        function calculateRecapData(records) {
+            const studentMap = {}; // Menggunakan objek untuk mengumpulkan poin per siswa
+
+            records.forEach(record => {
+                const key = `${record.name}-${record.class}`; // Unique key per student/class
+                if (!studentMap[key]) {
+                    studentMap[key] = {
+                        name: record.name,
+                        class: record.class,
+                        totalScore: 0,
+                        violationCount: 0
+                    };
+                }
+                studentMap[key].totalScore += record.score;
+                studentMap[key].violationCount++;
+            });
+
+            // Konversi map kembali ke array
+            return Object.values(studentMap).sort((a, b) => b.totalScore - a.totalScore); // Sort descending by total score
+        }
+        
+        function applyRecapFilters() {
+            const searchTerm = rekapSearchInput.value.toLowerCase();
+            const selectedKelas = rekapKelasFilter.value;
+
+            const filteredData = recapStudentData.filter(student => {
+                const nameMatch = student.name.toLowerCase().includes(searchTerm);
+                const classMatch = selectedKelas ? student.class === selectedKelas : true;
+                return nameMatch && classMatch;
+            });
+
+            renderRecapTable(filteredData);
+        }
+
+        function renderRecapTable(data) {
+            rekapTableHead.innerHTML = '';
+            rekapTableBody.innerHTML = '';
+            rekapNoDataMessage.classList.add('hidden');
+
+            if (data.length === 0 && allViolationRecords.length > 0) {
+                rekapNoDataMessage.classList.remove('hidden');
+                return;
+            } else if (data.length === 0 && allViolationRecords.length === 0 && !errorMessage.classList.contains('hidden')) {
+                return;
+            }
+
+            // 1. Render Header
+            rekapTableHead.innerHTML = `
+                <tr class="bg-red-600 text-white sticky top-0 z-10 rounded-t-xl">
+                    <th class="px-4 py-3 text-left text-sm font-semibold rounded-tl-xl">Nama Siswa</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Kelas</th>
+                    <th class="px-4 py-3 text-center text-sm font-semibold bg-gray-700">Jumlah Pelanggaran</th>
+                    <th class="px-4 py-3 text-center text-sm font-semibold bg-red-700 rounded-tr-xl">Total Poin Pelanggaran</th>
+                </tr>
+            `;
+
+            // 2. Render Body
+            data.forEach((record, index) => {
+                const isEven = index % 2 === 0;
+                // Highlight row if score is high (e.g., > 100 points)
+                const scoreBgClass = record.totalScore >= 100 ? 'bg-red-100 hover:bg-red-200' : 
+                                     record.totalScore >= 50 ? 'bg-orange-50 hover:bg-orange-100' :
+                                     isEven ? 'bg-gray-50' : 'bg-white';
+
+                let rowHtml = `<tr class="${scoreBgClass} transition duration-150">`;
+
+                rowHtml += `<td class="px-4 py-3 whitespace-nowrap text-sm font-semibold text-gray-900">${record.name}</td>`;
+                rowHtml += `<td class="px-4 py-3 whitespace-nowrap text-xs font-medium text-gray-600">${record.class}</td>`;
+                
+                // Jumlah Pelanggaran
+                rowHtml += `<td class="px-4 py-3 text-center text-sm font-bold text-gray-700">${record.violationCount}x</td>`;
+                
+                // Total Poin Pelanggaran (The lower the better, so high score is red)
+                const scoreTextClass = record.totalScore >= 100 ? 'text-red-800 text-lg' : 'text-red-600';
+                rowHtml += `<td class="px-4 py-3 text-center text-sm font-extrabold ${scoreTextClass}">${record.totalScore}</td>`;
+
+                rowHtml += '</tr>';
+                rekapTableBody.innerHTML += rowHtml;
+            });
+        }
+
+        // --- LOGIKA CATATAN PELANGGARAN (Filter dan Render) ---
+
+        function applyFilters() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedKelas = kelasFilter.value;
+
+            const filteredData = allViolationRecords.filter(record => {
+                const nameMatch = record.name.toLowerCase().includes(searchTerm);
+                const classMatch = selectedKelas ? record.class === selectedKelas : true;
+                return nameMatch && classMatch;
+            });
+
+            renderTable(filteredData);
+        }
+
+        function renderTable(data) {
+            tableHead.innerHTML = '';
+            tableBody.innerHTML = '';
+            noDataMessage.classList.add('hidden');
+
+            if (data.length === 0 && allViolationRecords.length > 0) {
+                noDataMessage.classList.remove('hidden');
+                return;
+            } else if (data.length === 0 && allViolationRecords.length === 0 && !errorMessage.classList.contains('hidden')) {
+                return;
+            }
+
+            // 1. Render Header (Catatan Pelanggaran)
+            tableHead.innerHTML = `
+                <tr class="bg-red-600 text-white sticky top-0 z-10">
+                    <th class="px-4 py-3 text-left text-sm font-semibold whitespace-nowrap rounded-tl-xl">Tanggal</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold whitespace-nowrap">Nama Siswa</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold whitespace-nowrap">Kelas</th> <!-- Dihapus (Mock) -->
+                    <th class="px-4 py-3 text-left text-sm font-semibold whitespace-nowrap">Jenis Penilaian</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Indikator Pelanggaran</th>
+                    <th class="px-4 py-3 text-center text-sm font-semibold whitespace-nowrap rounded-tr-xl bg-red-700">Skor Poin</th>
+                </tr>
+            `;
+
+            // 2. Render Body
+            data.forEach((record, index) => {
+                const isEven = index % 2 === 0;
+                let rowHtml = `<tr class="${isEven ? 'bg-gray-50' : 'bg-white'} hover:bg-red-50 transition duration-150">`;
+
+                // Tanggal
+                rowHtml += `<td class="px-4 py-3 whitespace-nowrap text-xs font-medium text-gray-500">${record.date}</td>`;
+                // Nama Siswa
+                rowHtml += `<td class="px-4 py-3 whitespace-nowrap text-sm font-semibold text-gray-900">${record.name}</td>`;
+                // Kelas (Sekarang nyata)
+                rowHtml += `<td class="px-4 py-3 whitespace-nowrap text-xs font-medium text-gray-700">${record.class}</td>`;
+                // Jenis Penilaian
+                rowHtml += `<td class="px-4 py-3 text-xs font-medium text-gray-700">${record.type}</td>`;
+                // Indikator Pelanggaran
+                rowHtml += `<td class="px-4 py-3 text-xs text-gray-600 max-w-sm">${record.indicator}</td>`;
+                // Skor Poin
+                rowHtml += `<td class="px-4 py-3 text-center text-sm font-extrabold text-red-700">${record.score}</td>`;
+
+                rowHtml += '</tr>';
+                tableBody.innerHTML += rowHtml;
+            });
+        }
+        
+        // --- Tab Management ---
+        function showTab(tabName) {
+            if (tabName === 'catatan') {
+                tabCatatan.classList.add('tab-active');
+                tabCatatan.classList.remove('tab-inactive');
+                tabRekap.classList.add('tab-inactive');
+                tabRekap.classList.remove('tab-active');
+                contentCatatan.classList.remove('hidden');
+                contentRekap.classList.add('hidden');
+                
+                applyFilters();
+            } else if (tabName === 'rekap') {
+                tabRekap.classList.add('tab-active');
+                tabRekap.classList.remove('tab-inactive');
+                tabCatatan.classList.add('tab-inactive');
+                tabCatatan.classList.remove('tab-active');
+                contentRekap.classList.remove('hidden');
+                contentCatatan.classList.add('hidden');
+                
+                applyRecapFilters();
+            }
+        }
+
+        // --- Event Listeners ---
+        tabCatatan.addEventListener('click', () => showTab('catatan'));
+        tabRekap.addEventListener('click', () => showTab('rekap'));
+        
+        // Catatan Filters
+        searchInput.addEventListener('keyup', applyFilters);
+        kelasFilter.addEventListener('change', applyFilters);
+
+        // Rekap Filters
+        rekapSearchInput.addEventListener('keyup', applyRecapFilters);
+        rekapKelasFilter.addEventListener('change', applyRecapFilters);
+
+        // --- Initialize ---
+        window.onload = () => {
+             // Pastikan tab catatan aktif saat load dan ambil data
+             showTab('catatan'); 
+             fetchData();
+        }
+    </script>
+</body>
+
+</html>

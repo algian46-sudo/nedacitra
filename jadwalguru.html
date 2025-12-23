@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Jadwal Guru Dinamis - SMPN 8 Cikarang Utara</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-app: linear-gradient(135deg, #e0f2f1 0%, #b9e9fc 100%);
+            --primary-blue: #0288d1;
+            --header-gradient: linear-gradient(to right, #0288d1, #26c6da);
+            --day-label-gradient: linear-gradient(to bottom, #4fc3f7, #0288d1);
+            --border-color: #b3e5fc;
+            --table-header-bg: #e1f5fe;
+            --shadow-md: 0 8px 24px rgba(149, 157, 165, 0.2);
+            --radius-md: 12px;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-app);
+            color: #37474f;
+            font-size: 13px;
+        }
+
+        /* Gaya Tombol Kembali */
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto 15px auto;
+            display: flex;
+        }
+
+        .btn-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            color: var(--primary-blue);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-back:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .main-card {
+            background: #fff;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            border-bottom: 3px solid;
+            border-image: var(--header-gradient) 1;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .logo-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-right: 25px;
+        }
+
+        .header-text h1 { margin: 0; font-size: 18px; color: var(--primary-blue); }
+        .header-text h2 { margin: 5px 0; font-size: 22px; font-weight: 800; background: var(--header-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Control Panel / Info */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            background: #f8fdff;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+
+        .info-row { display: flex; align-items: center; margin-bottom: 10px; }
+        .info-label { width: 120px; font-weight: 600; color: var(--primary-blue); }
+        
+        select, .readonly-box {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: white;
+            font-family: 'Poppins';
+            font-size: 13px;
+            flex-grow: 1;
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        select:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(2,136,209,0.1); }
+
+        /* Summary Chips */
+        .daily-summary {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .summary-item {
+            background: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        .summary-item .day-name { font-size: 11px; color: var(--primary-blue); font-weight: 600; display: block; }
+        .summary-item .jam-val { font-size: 14px; font-weight: 700; }
+
+        /* Schedule Grid */
+        .main-schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 20px;
+        }
+
+        .day-card {
+            display: flex;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            background: white;
+            border: 1px solid var(--border-color);
+        }
+
+        .day-label {
+            background: var(--day-label-gradient);
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            text-align: center;
+            padding: 10px;
+            font-weight: 700;
+            color: white;
+            min-width: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 2px;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { background: var(--table-header-bg); padding: 8px; color: var(--primary-blue); font-size: 11px; text-transform: uppercase; border-bottom: 2px solid var(--border-color); }
+        td { padding: 6px; text-align: center; border-bottom: 1px solid #f0f0f0; height: 22px; }
+        .col-jam { width: 30px; font-weight: 600; color: #999; }
+        .col-mapel { text-align: left; padding-left: 10px; font-weight: 500; }
+        .filled-row { background-color: #f1faff; }
+
+        @media (max-width: 600px) {
+            .main-schedule-grid { grid-template-columns: 1fr; }
+            .daily-summary { grid-template-columns: repeat(3, 1fr); }
+            .nav-container { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav-container">
+    <a href="Halamanguru.html" class="btn-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Kembali ke Halaman Guru
+    </a>
+</div>
+
+<div class="main-card">
+    <header>
+        <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo SMPN 8" class="logo-img">
+        <div class="header-text">
+            <h1>JADWAL PELAJARAN PEGANGAN GURU</h1>
+            <h2>SMP NEGERI 8 CIKARANG UTARA</h2>
+            <p>Semester 1 (Ganjil) Tahun Ajaran 2025/2026</p>
+        </div>
+    </header>
+
+    <div class="info-grid">
+        <div>
+            <div class="info-row">
+                <span class="info-label">Nama Guru</span>
+                <select id="guruSelect" onchange="loadSchedule()">
+                    </select>
+            </div>
+            <div class="info-row">
+                <span class="info-label">J J M</span>
+                <div id="jjmBox" class="readonly-box" style="flex-grow:0; width:80px; margin-right:15px;">-</div>
+                <span class="info-label" style="width:auto; margin-right:10px;">Hari Kerja:</span>
+                <div class="readonly-box" style="flex-grow:0; width:60px;">6 Hari</div>
+            </div>
+        </div>
+        <div>
+            <div class="info-row">
+                <span class="info-label">Tahun Ajaran</span>
+                <div class="readonly-box">2025/2026</div>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Semester</span>
+                <div class="readonly-box">1 (Ganjil)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="daily-summary" id="summaryContainer">
+        </div>
+
+    <div class="main-schedule-grid" id="scheduleGrid">
+        </div>
+</div>
+
+<script>
+    // 1. DATA DATABASE JADWAL 15 GURU
+    const databaseJadwal = {
+        "Algian Manggara, S.Agr": {
+            jjm: 24,
+            harian: { senin: 4, selasa: 4, rabu: 4, kamis: 6, jumat: 2, sabtu: 4 },
+            jadwal: {
+                senin: [
+                    { jam: 3, mapel: "IPA", waktu: "13.45-14.15", kelas: "VIII.1" },
+                    { jam: 4, mapel: "IPA", waktu: "14.15-14.45", kelas: "VIII.1" },
+                    { jam: 5, mapel: "IPA", waktu: "14.45-15.15", kelas: "IX.1" },
+                    { jam: 7, mapel: "IPA", waktu: "15.45-16.15", kelas: "IX.1" }
+                ],
+                selasa: [
+                    { jam: 3, mapel: "Seni Budaya", waktu: "13.45-14.15", kelas: "VII.2" },
+                    { jam: 4, mapel: "Seni Budaya", waktu: "14.15-14.45", kelas: "VII.2" },
+                    { jam: 5, mapel: "Seni Budaya", waktu: "14.45-15.15", kelas: "VII.1" },
+                    { jam: 6, mapel: "Seni Budaya", waktu: "15.15-15.45", kelas: "VII.1" }
+                ],
+                rabu: [
+                    { jam: 3, mapel: "Seni Budaya", waktu: "13.45-14.15", kelas: "VII.2" },
+                    { jam: 4, mapel: "Seni Budaya", waktu: "14.15-14.45", kelas: "VII.2" },
+                    { jam: 5, mapel: "Seni Budaya", waktu: "14.45-15.15", kelas: "VII.1" },
+                    { jam: 6, mapel: "Seni Budaya", waktu: "15.15-15.45", kelas: "VII.1" }
+                ],
+                kamis: [
+                    { jam: 3, mapel: "Seni Budaya", waktu: "13.45-14.15", kelas: "VII.2" },
+                    { jam: 4, mapel: "Seni Budaya", waktu: "14.15-14.45", kelas: "VII.2" },
+                    { jam: 5, mapel: "Seni Budaya", waktu: "14.45-15.15", kelas: "VII.1" },
+                    { jam: 6, mapel: "Seni Budaya", waktu: "15.15-15.45", kelas: "VII.1" }
+                ],
+                jumat: [
+                    { jam: 3, mapel: "Seni Budaya", waktu: "13.45-14.15", kelas: "VII.2" },
+                    { jam: 4, mapel: "Seni Budaya", waktu: "14.15-14.45", kelas: "VII.2" },
+                    { jam: 5, mapel: "Seni Budaya", waktu: "14.45-15.15", kelas: "VII.1" },
+                    { jam: 6, mapel: "Seni Budaya", waktu: "15.15-15.45", kelas: "VII.1" }
+                ],
+                sabtu: [
+                    { jam: 3, mapel: "Seni Budaya", waktu: "13.45-14.15", kelas: "VII.2" },
+                    { jam: 4, mapel: "Seni Budaya", waktu: "14.15-14.45", kelas: "VII.2" },
+                    { jam: 5, mapel: "Seni Budaya", waktu: "14.45-15.15", kelas: "VII.1" },
+                    { jam: 6, mapel: "Seni Budaya", waktu: "15.15-15.45", kelas: "VII.1" }
+                ],
+            }
+        },
+        "Budi Santoso, S.Pd": {
+            jjm: 20,
+            harian: { senin: 6, selasa: 2, rabu: 4, kamis: 4, jumat: 4, sabtu: 0 },
+            jadwal: {
+                senin: [{ jam: 1, mapel: "Matematika", waktu: "07.30-08.10", kelas: "IX.4" }],
+                selasa: [{ jam: 2, mapel: "Matematika", waktu: "08.10-08.50", kelas: "IX.4" }],
+            }
+        },
+        "Siti Aminah, M.Pd": { jjm: 22, harian: { senin: 4, selasa: 4, rabu: 4, kamis: 4, jumat: 2, sabtu: 4 }, jadwal: { senin: [] } },
+        "Dedi Hermawan, S.T": { jjm: 24, harian: { senin: 4, selasa: 4, rabu: 4, kamis: 4, jumat: 4, sabtu: 4 }, jadwal: { senin: [] } },
+        "Ratna Sari, S.Pd": { jjm: 18, harian: { senin: 2, selasa: 6, rabu: 4, kamis: 2, jumat: 2, sabtu: 2 }, jadwal: { senin: [] } },
+        "Andi Wijaya, S.Kom": { jjm: 24, harian: { senin: 4, selasa: 4, rabu: 4, kamis: 4, jumat: 4, sabtu: 4 }, jadwal: { senin: [] } },
+        "Rina Melati, S.Si": { jjm: 20, harian: { senin: 0, selasa: 8, rabu: 4, kamis: 4, jumat: 4, sabtu: 0 }, jadwal: { senin: [] } },
+        "Eko Prasetyo, M.Si": { jjm: 24, harian: { senin: 4, selasa: 4, rabu: 4, kamis: 4, jumat: 4, sabtu: 4 }, jadwal: { senin: [] } },
+        "Maya Kartika, S.Pd": { jjm: 22, harian: { senin: 4, selasa: 4, rabu: 4, kamis: 4, jumat: 2, sabtu: 4 }, jadwal: { senin: [] } },
+        "Hendra Gunawan, S.Pd": { jjm: 24, harian: { senin: 6, selasa: 6, rabu: 6, kamis: 6, jumat: 0, sabtu: 0 }, jadwal: { senin: [] } },
+        "Dewi Lestari, S.S": { jjm: 16, harian: { senin: 2, selasa: 2, rabu: 4, kamis: 4, jumat: 2, sabtu: 2 }, jadwal: { senin: [] } },
+        "Fajar Nugraha, S.Pd": { jjm: 24, harian: { senin: 4, selasa: 4, rabu: 4, kamis: 4, jumat: 4, sabtu: 4 }, jadwal: { senin: [] } },
+        "Lani Cahyani, M.Pd": { jjm: 20, harian: { senin: 4, selasa: 0, rabu: 4, kamis: 4, jumat: 4, sabtu: 4 }, jadwal: { senin: [] } },
+        "Taufik Hidayat, S.Pd": { jjm: 24, harian: { senin: 4, selasa: 4, rabu: 4, kamis: 4, jumat: 4, sabtu: 4 }, jadwal: { senin: [] } },
+        "Yeni Anggraini, S.Pd": { jjm: 18, harian: { senin: 2, selasa: 2, rabu: 2, kamis: 4, jumat: 4, sabtu: 4 }, jadwal: { senin: [] } }
+    };
+
+    const hariList = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'];
+
+    // 2. FUNSI RENDER AWAL
+    function init() {
+        const select = document.getElementById('guruSelect');
+        Object.keys(databaseJadwal).forEach(nama => {
+            const opt = document.createElement('option');
+            opt.value = nama;
+            opt.innerHTML = nama;
+            select.appendChild(opt);
+        });
+        loadSchedule(); // Muat jadwal pertama kali
+    }
+
+    // 3. LOGIKA UPDATE JADWAL
+    function loadSchedule() {
+        const namaGuru = document.getElementById('guruSelect').value;
+        const data = databaseJadwal[namaGuru];
+
+        // Update JJM
+        document.getElementById('jjmBox').innerHTML = data.jjm + " Jam";
+
+        // Update Ringkasan Harian
+        const summaryCont = document.getElementById('summaryContainer');
+        summaryCont.innerHTML = '';
+        hariList.forEach(hari => {
+            summaryCont.innerHTML += `
+                <div class="summary-item">
+                    <span class="day-name">${hari.toUpperCase()}</span>
+                    <span class="jam-val">${data.harian[hari]} Jam</span>
+                </div>
+            `;
+        });
+
+        // Update Tabel Jadwal
+        const grid = document.getElementById('scheduleGrid');
+        grid.innerHTML = '';
+
+        hariList.forEach(hari => {
+            let rowsHtml = '';
+            const jadwalHariIni = data.jadwal[hari] || [];
+
+            for (let i = 1; i <= 12; i++) {
+                const isi = jadwalHariIni.find(j => j.jam === i);
+                if (isi) {
+                    rowsHtml += `
+                        <tr class="filled-row">
+                            <td class="col-jam">${i}</td>
+                            <td class="col-mapel">${isi.mapel}</td>
+                            <td>${isi.waktu}</td>
+                            <td style="font-weight:700; color:var(--primary-blue)">${isi.kelas}</td>
+                        </tr>`;
+                } else {
+                    rowsHtml += `<tr><td class="col-jam">${i}</td><td>-</td><td>-</td><td>-</td></tr>`;
+                }
+            }
+
+            grid.innerHTML += `
+                <div class="day-card">
+                    <div class="day-label">${hari.toUpperCase()}</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Jam</th>
+                                <th>Mata Pelajaran</th>
+                                <th>Waktu</th>
+                                <th>Kelas</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rowsHtml}</tbody>
+                    </table>
+                </div>
+            `;
+        });
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>

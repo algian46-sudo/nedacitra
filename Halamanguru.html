@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Digital Guru | SMP NEGERI 8 CIKARANG UTARA</title>
+    
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* --- 1. Variable dan Font Klasik Modern --- */
+        :root {
+            --primary: #004aad;     /* Biru Tua */
+            --accent: #00bcd4;      /* Cyan */
+            --secondary: #ff9800;   /* Oranye */
+            --bg-light: #f0f7f8;    
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Lora', serif;
+        }
+        body {
+            font-family: var(--font-body);
+            color: #333;
+            background-color: var(--bg-light);
+            line-height: 1.7;
+        }
+        h1, h2, h3, h4 {
+            font-family: var(--font-heading);
+            color: var(--primary);
+        }
+
+        /* --- NAVIGASI --- */
+        .top-bar { background-color: var(--primary); color: white; font-size: 0.85rem; }
+        .navbar { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .nav-link { font-weight: 600; color: #333 !important; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { color: var(--primary) !important; border-bottom: 2px solid var(--accent); }
+
+        /* --- HERO SECTION --- */
+        .hero-guru {
+            padding: 120px 5%;
+            background: linear-gradient(rgba(0, 74, 173, 0.85), rgba(0, 74, 173, 0.85)), url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=2070') no-repeat center center;
+            background-attachment: fixed;
+            background-size: cover;
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+        .hero-guru h1 { color: white; font-size: clamp(2rem, 5vw, 4rem); text-shadow: 2px 2px 8px rgba(0,0,0,0.5); }
+
+        /* --- CARDS STYLE --- */
+        .facility-card-wrapper {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+        .facility-card-wrapper.visible { opacity: 1; transform: translateY(0); }
+
+        .facility-card {
+            display: block; /* Menjadikan anchor sebagai block */
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background-color: white;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            text-align: center;
+            border-bottom: 6px solid var(--primary);
+            text-decoration: none; /* Hilangkan garis bawah link */
+            color: inherit; /* Ikuti warna teks induk */
+        }
+        .facility-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-bottom: 6px solid var(--accent);
+            color: inherit;
+        }
+        
+        .card-icon {
+            background-color: var(--primary);
+            color: white;
+            padding: 40px 20px;
+            font-size: 3rem;
+            transition: 0.4s;
+        }
+        .facility-card:hover .card-icon { background-color: var(--accent); }
+
+        .card-body { padding: 25px; }
+        .card-category {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .section-divider { margin: 60px 0 40px; text-align: center; }
+        .section-divider h2 { position: relative; display: inline-block; padding-bottom: 10px; }
+        .section-divider h2::after {
+            content: ''; width: 80%; height: 4px; background: var(--accent);
+            position: absolute; left: 10%; bottom: 0; border-radius: 2px;
+        }
+
+        footer { background: #fff; padding: 30px 0; border-top: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar py-2 d-none d-md-block">
+        <div class="container text-end">
+            <small><i class="fas fa-user-tie me-2"></i> Area Khusus Pendidik & Staf SMPN 8 Cikarang Utara</small>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg sticky-top bg-white">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo" height="40" class="me-2">
+                <span class="fw-bold" style="color: #004aad; font-family: var(--font-heading);">PORTAL GURU</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="Halamanguru.html">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://www.appsheet.com/start/4122ea5a-842e-4a97-b4e6-8d11cbed78ee">E-Learning</a></li>
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">PRESENSI</a>
+                    <ul class="dropdown-menu shadow border-0" style="border-radius: 15px;">
+                            <li><a class="dropdown-item" href="rekapabsen.html">REKAP ABSENSI SISWA</a></li>
+                            <li><a class="dropdown-item" href="rekapabsenguru.html">REKAP ABSENSI GURU</a></li>
+                     </ul>
+                    <li class="nav-item"><a class="nav-link" href="index.html">Keluar</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-guru">
+        <div class="container">
+            <h1>Selamat Datang, Bapak/Ibu Guru</h1>
+            <p class="lead">Kelola pembelajaran, penilaian, dan administrasi dalam satu pintu digital.</p>
+        </div>
+    </header>
+
+    <main class="container pb-5">
+        
+        <div class="section-divider">
+            <h2><i class="fas fa-info-circle me-2"></i> Dashboard Informasi</h2>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col facility-card-wrapper">
+                <a href="jadwalguru.html" class="facility-card">
+                    <div class="card-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <div class="card-body">
+                        <span class="card-category">Agenda</span>
+                        <h5>Jadwal Mengajar</h5>
+                        <p class="text-muted small">Lihat jadwal KBM harian dan mingguan secara real-time.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col facility-card-wrapper">
+                <a href="pengumuman_internal.html" class="facility-card">
+                    <div class="card-icon"><i class="fas fa-bullhorn"></i></div>
+                    <div class="card-body">
+                        <span class="card-category">Pengumuman</span>
+                        <h5>Info Internal</h5>
+                        <p class="text-muted small">Agenda rapat, surat keputusan, dan berita kedinasan sekolah.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col facility-card-wrapper">
+                <a href="kaldik.html" class="facility-card">
+                    <div class="card-icon"><i class="fas fa-clock"></i></div>
+                    <div class="card-body">
+                        <span class="card-category">Waktu</span>
+                        <h5>Kalender Akademik</h5>
+                        <p class="text-muted small">Pantau jadwal ujian, hari libur, dan kegiatan tengah semester.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="section-divider">
+            <h2><i class="fas fa-tasks me-2"></i> Penilaian & Kehadiran</h2>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col facility-card-wrapper">
+                <a href="kalkulatorpenilaian.html" class="facility-card">
+                    <div class="card-icon" style="background-color: var(--secondary);"><i class="fas fa-calculator"></i></div>
+                    <div class="card-body">
+                        <span class="card-category">Aplikasi</span>
+                        <h5>Kalkulator Penilaian</h5>
+                        <p class="text-muted small">Olah nilai harian, UTS, dan UAS secara otomatis dan fleksibel.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col facility-card-wrapper">
+                <a href="rekapabsen.html" class="facility-card">
+                    <div class="card-icon" style="background-color: var(--secondary);"><i class="fas fa-user-check"></i></div>
+                    <div class="card-body">
+                        <span class="card-category">Presensi</span>
+                        <h5>Rekap Kehadiran Siswa</h5>
+                        <p class="text-muted small">Rekap kehadiran siswa setiap hari jam efektif berlangsung.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col facility-card-wrapper">
+                <a href="rekapabsenguru.html" class="facility-card">
+                    <div class="card-icon" style="background-color: var(--secondary);"><i class="fas fa-clipboard-list"></i></div>
+                    <div class="card-body">
+                        <span class="card-category">Presensi Guru</span>
+                        <h5>Rekap Kehadiran Guru</h5>
+                        <p class="text-muted small">Rekap kehadiran guru yang terintegrasi dengan absen digital SMPN 8 CIKARANG UTARA.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="section-divider">
+            <h2><i class="fas fa-folder-open me-2"></i> Administrasi & Literasi</h2>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col facility-card-wrapper">
+                <a href="bank_materi.html" class="facility-card">
+                    <div class="card-icon" style="background-color: var(--accent);"><i class="fas fa-book"></i></div>
+                    <div class="card-body">
+                        <span class="card-category">Sumber Belajar</span>
+                        <h5>Bank Materi (RPP)</h5>
+                        <p class="text-muted small">Akses dan upload modul ajar, silabus, serta materi presentasi.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col facility-card-wrapper">
+                <a href="pelanggaransiswa.html" class="facility-card">
+                    <div class="card-icon" style="background-color: var(--accent);"><i class="fas fa-edit"></i></div>
+                    <div class="card-body">
+                        <span class="card-category">Pantauan</span>
+                        <h5>Catatan Pelanggaran Siswa</h5>
+                        <p class="text-muted small">Catatan kejadian khusus siswa tertentu.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col facility-card-wrapper">
+                <a href="forum_guru.html" class="facility-card">
+                    <div class="card-icon" style="background-color: var(--accent);"><i class="fas fa-comments"></i></div>
+                    <div class="card-body">
+                        <span class="card-category">Interaksi</span>
+                        <h5>Forum Diskusi Guru</h5>
+                        <p class="text-muted small">Ruang kolaborasi dan kotak saran antar rekan sejawat.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="text-center text-muted">
+        <div class="container">
+            <p>&copy; 2025 SMP NEGERI 8 CIKARANG UTARA | Sistem Informasi Guru</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                root: null,
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    } else {
+                        entry.target.classList.remove('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.facility-card-wrapper').forEach((el, index) => {
+                el.style.transitionDelay = `${index * 0.1}s`;
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

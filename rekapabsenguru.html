@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekap Kehadiran Guru - SMPN 8 Cikarang Utara</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f4f7f9; }
+        .container { max-width: 1400px; }
+        .table-wrapper { overflow-x: auto; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); background: white; }
+        .sticky-col-name { min-width: 220px; position: sticky; left: 0; z-index: 20; border-right: 2px solid #e2e8f0; }
+        /* Warna abu-abu untuk header nama guru */
+        .header-name { background-color: #e5e7eb !important; color: #000000 !important; }
+        .tab-button { padding: 0.75rem 1.5rem; cursor: pointer; font-weight: 600; border-radius: 0.75rem 0.75rem 0 0; transition: all 0.3s ease; }
+        .tab-active { color: #1e40af; background-color: #ffffff; border-top: 3px solid #3b82f6; }
+        .tab-inactive { color: #6b7280; background-color: #e2e8f0; }
+        .status-cell { transition: all 0.2s; border: 1px solid #edf2f7; }
+    </style>
+</head>
+<body>
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-8 flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center mb-4 md:mb-0">
+                <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo" class="w-16 h-16 object-cover rounded-full shadow-md mr-4">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-blue-800 tracking-tight">Rekap Kehadiran Guru</h1>
+                    <p class="text-sm text-gray-500 font-semibold">SMP Negeri 8 Cikarang Utara</p>
+                </div>
+            </div>
+            <a href="Halamanguru.html" class="inline-flex items-center px-6 py-2 text-sm font-bold rounded-full shadow-lg text-white bg-emerald-600 hover:bg-emerald-700 transition transform hover:scale-105">
+                Kembali ke Halaman Guru
+            </a>
+        </header>
+        
+        <div class="flex border-b border-gray-300 mb-6">
+            <button id="tab-harian" class="tab-button tab-active">Absensi Harian</button>
+            <button id="tab-rekap" class="tab-button tab-inactive">Total Rekapitulasi</button>
+        </div>
+        
+        <div id="loading-message" class="text-center p-10 bg-white rounded-xl shadow-md">
+            <div class="animate-spin inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mb-4"></div>
+            <p class="text-gray-600 font-medium">Sinkronisasi Data...</p>
+        </div>
+
+        <div id="main-content" class="hidden">
+            <div class="bg-white p-5 rounded-xl shadow-md mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
+                <input type="text" id="search-input" placeholder="Cari nama guru..." class="w-full md:w-1/2 p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
+                <div class="bg-blue-50 px-4 py-2 rounded-lg border border-blue-100 font-bold text-blue-700">
+                    Hari Terinput: <span id="days-count">0</span>
+                </div>
+            </div>
+
+            <div id="harian-section" class="table-wrapper">
+                <table id="data-table" class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-blue-700 text-white text-xs uppercase tracking-wider">
+                        </thead>
+                    <tbody class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
+
+            <div id="rekap-section" class="table-wrapper hidden">
+                <table id="rekap-table" class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-indigo-800 text-white uppercase tracking-wider text-sm"></thead>
+                    <tbody class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 flex flex-wrap gap-4 text-[10px] md:text-xs font-bold uppercase text-gray-600">
+                <div class="flex items-center"><span class="w-4 h-4 bg-green-500 mr-2 rounded"></span> Masuk & Pulang</div>
+                <div class="flex items-center"><span class="w-4 h-4 bg-yellow-400 mr-2 rounded"></span> Hanya Masuk</div>
+                <div class="flex items-center"><span class="w-4 h-4 bg-red-600 mr-2 rounded"></span> Alfa (Kosong)</div>
+                <div class="flex items-center"><span class="w-4 h-4 bg-white border border-gray-300 mr-2 rounded"></span> Izin/Sakit</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlPH9fkE1lvnr5COnhKd1l6cAVin3bFo0tsfgDKJG3wwWv6FWyF7UN7_PwEo5ScN2dvkIXqw6xVyQu/pub?gid=140749937&single=true&output=csv";
+        
+        const DATE_ROW = 2;     
+        const START_ROW = 4;    
+        const START_COL = 1;    
+
+        let masterData = [];
+        let dateHeaders = [];
+
+        function parseCSV(text) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const nextChar = text[i + 1];
+                if (char === '"' && inQuotes && nextChar === '"') {
+                    currentField += '"'; i++;
+                } else if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    currentRow.push(currentField.trim());
+                    currentField = '';
+                } else if ((char === '\r' || char === '\n') && !inQuotes) {
+                    if (currentRow.length > 0 || currentField !== '') {
+                        currentRow.push(currentField.trim());
+                        rows.push(currentRow);
+                        currentRow = [];
+                        currentField = '';
+                    }
+                } else {
+                    currentField += char;
+                }
+            }
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField.trim());
+                rows.push(currentRow);
+            }
+            return rows;
+        }
+
+        async function init() {
+            try {
+                const response = await fetch(CSV_URL);
+                const dataText = await response.text();
+                const lines = parseCSV(dataText);
+                const headerRow = lines[DATE_ROW];
+                dateHeaders = [];
+                for(let i = START_COL; i < headerRow.length; i++) {
+                    if(headerRow[i] && headerRow[i] !== "") dateHeaders.push(headerRow[i]);
+                    else break;
+                }
+                document.getElementById('days-count').innerText = dateHeaders.length;
+
+                masterData = lines.slice(START_ROW)
+                    .filter(r => r[0] && r[0] !== "" && r[0].toLowerCase() !== "nama guru")
+                    .map(r => ({
+                        name: r[0],
+                        attendance: r.slice(START_COL, START_COL + dateHeaders.length)
+                    }));
+
+                renderHarian(masterData);
+                renderRekap(masterData);
+                document.getElementById('loading-message').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function getStatusInfo(val) {
+            const str = (val || "").toUpperCase();
+            if (str.includes("MASUK") && str.includes("PULANG")) return { code: 'M,P', cellClass: 'bg-green-500 text-black' };
+            if (str.includes("MASUK")) return { code: 'M', cellClass: 'bg-yellow-400 text-black' };
+            if (str.includes("IZIN") || str.includes("SAKIT")) return { code: 'I', cellClass: 'bg-white text-yellow-600' };
+            return { code: 'A', cellClass: 'bg-red-600 text-white' };
+        }
+
+        function renderHarian(data) {
+            const thead = document.querySelector("#data-table thead");
+            const tbody = document.querySelector("#data-table tbody");
+            
+            // Header: Nama Guru (Abu-abu) | Tanggal (Biru)
+            thead.innerHTML = `
+                <tr>
+                    <th class="sticky-col-name header-name px-4 py-4 text-left font-bold shadow-sm">NAMA GURU</th>
+                    ${dateHeaders.map(d => `<th class="px-2 py-4 text-center min-w-[80px] font-bold">${d}</th>`).join('')}
+                </tr>`;
+            
+            tbody.innerHTML = data.map((g, i) => `
+                <tr class="${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50">
+                    <td class="sticky-col-name px-4 py-3 font-bold text-gray-800 bg-inherit shadow-sm border-b">${g.name}</td>
+                    ${dateHeaders.map((_, idx) => {
+                        const info = getStatusInfo(g.attendance[idx]);
+                        return `<td class="status-cell px-1 py-3 text-center font-extrabold text-[10px] md:text-xs ${info.cellClass}">${info.code}</td>`;
+                    }).join('')}
+                </tr>`).join('');
+        }
+
+        function renderRekap(data) {
+            const tbody = document.querySelector("#rekap-table tbody");
+            const thead = document.querySelector("#rekap-table thead");
+            thead.innerHTML = `<tr><th class="px-6 py-5 text-left header-name">NAMA GURU</th><th class="text-center">Masuk</th><th class="text-center">Izin</th><th class="text-center">Alfa</th><th class="text-center bg-indigo-900 text-white">Total</th></tr>`;
+            
+            tbody.innerHTML = data.map(g => {
+                let m = 0, i = 0, a = 0;
+                dateHeaders.forEach((_, idx) => {
+                    const info = getStatusInfo(g.attendance[idx]);
+                    if (info.code === 'M' || info.code === 'M,P') m++;
+                    else if (info.code === 'I') i++;
+                    else a++;
+                });
+                return `<tr class="border-b hover:bg-indigo-50 transition">
+                    <td class="px-6 py-4 font-bold text-gray-800">${g.name}</td>
+                    <td class="text-center text-green-600 font-extrabold text-xl">${m}</td>
+                    <td class="text-center text-yellow-600 font-extrabold text-xl">${i}</td>
+                    <td class="text-center text-red-600 font-extrabold text-xl">${a}</td>
+                    <td class="text-center text-gray-400 font-bold bg-gray-50">${dateHeaders.length}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        document.getElementById('tab-harian').onclick = (e) => toggleTab(e.target, 'harian');
+        document.getElementById('tab-rekap').onclick = (e) => toggleTab(e.target, 'rekap');
+
+        function toggleTab(btn, mode) {
+            document.querySelectorAll('.tab-button').forEach(b => { b.classList.remove('tab-active'); b.classList.add('tab-inactive'); });
+            btn.classList.add('tab-active'); btn.classList.remove('tab-inactive');
+            document.getElementById('harian-section').classList.toggle('hidden', mode !== 'harian');
+            document.getElementById('rekap-section').classList.toggle('hidden', mode !== 'rekap');
+        }
+
+        document.getElementById('search-input').onkeyup = (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = masterData.filter(g => g.name.toLowerCase().includes(term));
+            renderHarian(filtered);
+            renderRekap(filtered);
+        };
+
+        init();
+    </script>
+</body>
+</html>

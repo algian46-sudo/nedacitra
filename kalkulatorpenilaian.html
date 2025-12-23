@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kalkulator Penilaian - SMPN 8 Cikarang Utara</title>
+  <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #0ea5e9;        /* Sky Blue 500 */
+      --brand-dark: #0369a1;   /* Sky Blue 700 */
+      --brand-light: #e0f2fe;  /* Sky Blue 100 */
+      --accent: #38bdf8;       /* Sky Blue 400 */
+      --bg: #f8fafc;           /* Light slate bg */
+      --text: #0f172a;         /* Slate 900 */
+      --muted: #64748b;        /* Slate 500 */
+      --card: #ffffff;
+      --danger: #ef4444;
+      --success: #10b981;
+      --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0; padding: 0; background: var(--bg); color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.5;
+    }
+
+    /* Navigation Bar */
+    .top-nav {
+      background: white;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: center;
+    }
+    .nav-container {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      align-items: center;
+    }
+    .btn-back {
+      text-decoration: none;
+      color: var(--brand-dark);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      background: var(--brand-light);
+    }
+    .btn-back:hover {
+      background: var(--brand);
+      color: white;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff;
+      padding: 40px 20px;
+      text-align: left;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 20px; max-width: 1120px; margin: 0 auto;
+    }
+    .brand img {
+      width: 80px; height: 80px; object-fit: contain; 
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+      background: white; padding: 5px; border-radius: 12px;
+    }
+    .brand h1 { margin: 0; font-size: 1.8rem; letter-spacing: -0.025em; }
+    .brand p { margin: 4px 0 0; color: var(--brand-light); font-weight: 500; }
+
+    /* Layout */
+    main { max-width: 1200px; margin: -30px auto 50px; padding: 0 20px; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+    @media (min-width: 1024px) {
+      .grid { grid-template-columns: 1.4fr 0.6fr; }
+    }
+
+    /* Card */
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); overflow: hidden;
+    }
+    .card h2 {
+      margin: 0; padding: 20px; border-bottom: 1px solid var(--border); 
+      font-size: 1.1rem; color: var(--brand-dark); display: flex; align-items: center; gap: 10px;
+    }
+    .card .content { padding: 20px; }
+
+    /* Tables & Forms */
+    .table-container {
+      overflow-x: auto;
+      margin-top: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 800px; } /* Mencegah kolom terhimpit */
+    th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: #f1f5f9; font-weight: 700; color: var(--muted); font-size: 0.85rem; text-transform: uppercase; }
+    
+    input[type="text"], input[type="number"], select {
+      width: 100%; padding: 10px; border: 1.5px solid var(--border); 
+      border-radius: 8px; font-size: 0.95rem; transition: border-color 0.2s;
+    }
+    input:focus { outline: none; border-color: var(--brand); }
+
+    /* Buttons */
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .btn {
+      padding: 10px 18px; border-radius: 10px; cursor: pointer; font-weight: 600;
+      font-size: 0.9rem; transition: all 0.2s; border: 1px solid var(--border);
+      display: inline-flex; align-items: center; gap: 6px; background: white;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .btn-primary { background: var(--brand); color: white; border-color: var(--brand); }
+    .btn-primary:hover { background: var(--brand-dark); }
+    .btn-success { background: var(--success); color: white; border-color: var(--success); }
+    .btn-danger { background: white; color: var(--danger); border-color: var(--danger); }
+    .btn-danger:hover { background: var(--danger); color: white; }
+
+    /* Results Area */
+    .result {
+      background: linear-gradient(to bottom right, #f0f9ff, #e0f2fe);
+      border: 1px solid var(--accent); border-radius: 12px; padding: 20px;
+    }
+    .final-score-container { text-align: center; padding: 20px 0; }
+    .big { font-size: 3.5rem; font-weight: 800; color: var(--brand-dark); line-height: 1; }
+    .badge { padding: 6px 12px; border-radius: 20px; font-weight: 700; background: white; color: var(--brand-dark); border: 1px solid var(--accent); }
+
+    /* Print */
+    @media print {
+      .top-nav, header, .toolbar, .btn, .note { display: none !important; }
+      main { margin-top: 20px; }
+      .card { box-shadow: none; border: 1px solid #000; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-container">
+    <a href="halamanguru.html" class="btn-back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Kembali ke Halaman Guru
+    </a>
+  </div>
+</nav>
+
+<header>
+  <div class="brand">
+    <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo SMPN 8" />
+    <div>
+      <h1>Kalkulator Penilaian Fleksibel</h1>
+      <p>SMP Negeri 8 Cikarang Utara • Professional Assessment Tools</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="grid">
+    <section class="card">
+      <h2>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+        Pengaturan Penilaian
+      </h2>
+      <div class="content">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px;">
+          <div>
+            <label style="font-size: 0.85rem; font-weight: 700; color: var(--muted);">MODE SKALA</label>
+            <select id="scaleMode">
+              <option value="percent">Persentase (0–100)</option>
+              <option value="points">Poin (Skor Maksimum)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.85rem; font-weight: 700; color: var(--muted);">KKM</label>
+            <input type="number" id="kkm" value="70" />
+          </div>
+          <div>
+            <label style="font-size: 0.85rem; font-weight: 700; color: var(--muted);">KELAS</label>
+            <input type="text" id="className" placeholder="Contoh: IX-1" />
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <button class="btn btn-primary" id="addRow">+ Kriteria</button>
+          <button class="btn" id="samplePlan">Contoh Rencana</button>
+          <button class="btn" id="saveConfig">Simpan JSON</button>
+          <label class="btn">
+            Impor JSON
+            <input id="importFile" type="file" accept="application/json" style="display:none;" />
+          </label>
+          <button class="btn btn-danger" id="resetAll">Reset Semua</button>
+        </div>
+
+        <div class="table-container">
+          <table id="criteriaTable">
+            <thead>
+              <tr>
+                <th style="width: 250px;">Nama Kriteria</th>
+                <th style="width: 100px;">Bobot (%)</th>
+                <th style="width: 100px;">Skor Maks</th>
+                <th style="width: 100px;">Skor Siswa</th>
+                <th>Catatan</th>
+                <th style="width: 150px; text-align: center;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="criteriaBody"></tbody>
+          </table>
+        </div>
+        
+        <div style="margin-top: 15px; display: flex; align-items: center; justify-content: space-between;">
+            <span class="badge" style="background: var(--brand-light)">Total Bobot: <span id="weightTotal">0</span>%</span>
+            <span id="weightWarn" style="font-size: 0.85rem; font-weight: 600;"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        Hasil Akhir
+      </h2>
+      <div class="content">
+        <label style="font-size: 0.85rem; font-weight: 700; color: var(--muted);">SKEMA PREDIKAT</label>
+        <select id="gradeScheme" style="margin-bottom: 20px;">
+          <option value="default">Standar (A:90, B:80, C:70)</option>
+          <option value="kkmBased">Berbasis KKM</option>
+          <option value="custom">Kustom Sendiri</option>
+        </select>
+
+        <div id="customSchemeBox" style="display:none; background: #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <div><label>A min</label><input type="number" id="Amin" value="90"></div>
+            <div><label>B min</label><input type="number" id="Bmin" value="80"></div>
+            <div><label>C min</label><input type="number" id="Cmin" value="70"></div>
+          </div>
+        </div>
+
+        <div class="result">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <span id="classOut" style="font-weight: 700; color: var(--muted);">-</span>
+            <span class="badge">KKM: <span id="kkmOut">70</span></span>
+          </div>
+          
+          <div class="final-score-container">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--muted); text-transform: uppercase;">Nilai Akhir</div>
+            <div class="big" id="finalScore">0.00</div>
+            <div id="finalGrade" style="font-weight: 700; margin-top: 10px; font-size: 1.2rem;">-</div>
+          </div>
+
+          <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px;">
+            <details>
+              <summary style="cursor: pointer; font-weight: 700; font-size: 0.9rem; color: var(--brand-dark);">Lihat Detail Kontribusi</summary>
+              <div id="breakdown" style="font-family: monospace; font-size: 0.85rem; margin-top: 10px; line-height: 1.6;"></div>
+            </details>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px;">
+          <button class="btn btn-success" id="calculate" style="justify-content: center; font-size: 1.1rem; padding: 15px;">HITUNG NILAI</button>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <button class="btn" id="printPage" style="justify-content: center;">Cetak PDF</button>
+            <button class="btn" id="exportCSV" style="justify-content: center;">Ekspor CSV</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+  // Script Logika (Tetap Sama Seperti Versi Anda)
+  const qs = (s, r = document) => r.querySelector(s);
+  const qsa = (s, r = document) => [...r.querySelectorAll(s)];
+  const fmt = n => Number(n).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+
+  const scaleMode = qs('#scaleMode');
+  const kkmInput = qs('#kkm');
+  const classNameInput = qs('#className');
+  const weightTotalEl = qs('#weightTotal');
+  const weightWarnEl = qs('#weightWarn');
+  const criteriaBody = qs('#criteriaBody');
+  const addRowBtn = qs('#addRow');
+  const samplePlanBtn = qs('#samplePlan');
+  const resetAllBtn = qs('#resetAll');
+  const saveConfigBtn = qs('#saveConfig');
+  const importFileInput = qs('#importFile');
+  const calculateBtn = qs('#calculate');
+  const printBtn = qs('#printPage');
+  const exportCSVBtn = qs('#exportCSV');
+  const gradeScheme = qs('#gradeScheme');
+  const customBox = qs('#customSchemeBox');
+  const Amin = qs('#Amin'), Bmin = qs('#Bmin'), Cmin = qs('#Cmin');
+
+  const classOut = qs('#classOut');
+  const kkmOut = qs('#kkmOut');
+  const finalScoreEl = qs('#finalScore');
+  const finalGradeEl = qs('#finalGrade');
+  const breakdownEl = qs('#breakdown');
+
+  let rows = [];
+
+  function makeRow(item = {}) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" class="name" placeholder="Nama Kriteria" value="${item.name ?? ''}"></td>
+      <td><input type="number" class="weight" value="${item.weight ?? 0}"></td>
+      <td><input type="number" class="max" value="${item.max ?? (scaleMode.value === 'percent' ? 100 : 100)}"></td>
+      <td><input type="number" class="score" value="${item.score ?? 0}"></td>
+      <td><input type="text" class="note" placeholder="..." value="${item.note ?? ''}"></td>
+      <td class="row-actions" style="display:flex; gap:5px; justify-content:center;">
+        <button class="btn btn-danger" data-act="del" title="Hapus">×</button>
+        <button class="btn" data-act="max" style="padding:5px 8px; font-size:0.7rem;">MAX</button>
+      </td>
+    `;
+
+    const r = {
+      el: tr,
+      name: tr.querySelector('.name'),
+      weight: tr.querySelector('.weight'),
+      max: tr.querySelector('.max'),
+      score: tr.querySelector('.score'),
+      note: tr.querySelector('.note')
+    };
+    rows.push(r);
+    criteriaBody.appendChild(tr);
+
+    tr.addEventListener('click', (e) => {
+      const act = e.target?.dataset?.act;
+      if (act === 'max') r.score.value = r.max.value;
+      if (act === 'del') {
+        rows = rows.filter(x => x !== r);
+        tr.remove();
+        updateWeightTotal();
+      }
+      updateWeightTotal();
+    });
+
+    qsa('input', tr).forEach(inp => inp.addEventListener('input', () => {
+      if (scaleMode.value === 'percent') {
+        r.max.value = 100;
+        if (Number(r.score.value) > 100) r.score.value = 100;
+      }
+      updateWeightTotal();
+    }));
+
+    updateWeightTotal();
+  }
+
+  function updateWeightTotal() {
+    const total = rows.reduce((s, r) => s + Number(r.weight.value || 0), 0);
+    weightTotalEl.textContent = fmt(total);
+    const ok = Math.abs(total - 100) < 0.01;
+    weightWarnEl.textContent = ok ? '✓ Bobot Sesuai' : '⚠ Harus 100%';
+    weightWarnEl.style.color = ok ? 'var(--success)' : 'var(--danger)';
+  }
+
+  function calculate() {
+    const totalWeight = rows.reduce((s, r) => s + Number(r.weight.value || 0), 0);
+    const weightOk = Math.abs(totalWeight - 100) < 0.01;
+    let finalPercent = 0;
+    const lines = [];
+
+    rows.forEach(r => {
+      const w = Number(r.weight.value || 0);
+      const max = Number(r.max.value || 100);
+      let score = Number(r.score.value || 0);
+
+      if (scaleMode.value === 'points') {
+        score = max > 0 ? (score / max) * 100 : 0;
+      } else {
+        score = Math.max(0, Math.min(100, score));
+      }
+
+      const contribution = (w / 100) * score;
+      finalPercent += contribution;
+      lines.push(`${r.name.value || 'Kriteria'}: ${fmt(score)}% x ${w}% = ${fmt(contribution)}`);
+    });
+
+    classOut.textContent = classNameInput.value || 'SELURUH KELAS';
+    kkmOut.textContent = fmt(kkmInput.value);
+    finalScoreEl.textContent = fmt(finalPercent);
+
+    let grade = '-';
+    const kkm = Number(kkmInput.value || 0);
+    if (gradeScheme.value === 'default') {
+      grade = finalPercent >= 90 ? 'A' : finalPercent >= 80 ? 'B' : finalPercent >= 70 ? 'C' : 'D';
+    } else if (gradeScheme.value === 'kkmBased') {
+        if (finalPercent >= 90) grade = 'A';
+        else if (finalPercent >= 80) grade = 'B';
+        else if (finalPercent >= kkm) grade = 'C';
+        else grade = 'D';
+    } else {
+        const a = Number(Amin.value), b = Number(Bmin.value), c = Number(Cmin.value);
+        grade = finalPercent >= a ? 'A' : finalPercent >= b ? 'B' : finalPercent >= c ? 'C' : 'D';
+    }
+
+    finalGradeEl.textContent = `Predikat: ${grade} (${finalPercent >= kkm ? 'TUNTAS' : 'BELUM TUNTAS'})`;
+    finalGradeEl.style.color = finalPercent >= kkm ? 'var(--success)' : 'var(--danger)';
+    breakdownEl.innerText = lines.join('\n');
+
+    if (!weightOk) alert('Perhatian: Total bobot Anda ' + totalWeight + '%. Hasil mungkin tidak akurat.');
+  }
+
+  // Event Listeners
+  addRowBtn.addEventListener('click', () => makeRow());
+  samplePlanBtn.addEventListener('click', () => {
+    rows.slice().forEach(r => r.el.remove());
+    rows = [];
+    [{name:'Formatif', weight:40, max:100, score:80}, {name:'Sumatif Tengah', weight:30, max:100, score:75}, {name:'Sumatif Akhir', weight:30, max:100, score:70}].forEach(item => makeRow(item));
+  });
+  resetAllBtn.addEventListener('click', () => location.reload());
+  calculateBtn.addEventListener('click', calculate);
+  printBtn.addEventListener('click', () => window.print());
+  gradeScheme.addEventListener('change', () => {
+    customBox.style.display = gradeScheme.value === 'custom' ? 'block' : 'none';
+  });
+
+  // Init default rows
+  makeRow({name:'Tugas & Portofolio', weight:30, max:100});
+  makeRow({name:'Ulangan Harian', weight:30, max:100});
+  makeRow({name:'Ujian Akhir', weight:40, max:100});
+</script>
+
+</body>
+</html>

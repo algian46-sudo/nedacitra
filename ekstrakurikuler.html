@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekstrakurikuler | SMP Negeri 8 Cikarang Utara</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+    <!-- Memuat Tailwind CSS dari CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Menggunakan font Inter secara default */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff; /* Warna dasar biru muda */
+        }
+        
+        /* Definisi Gradasi Biru Langit (Sky Blue Gradient) */
+        .sky-gradient-bg {
+            background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%); /* Cyan ke Blue */
+        }
+
+        /* Animasi Sederhana untuk Kartu (Fade-in dan Fly-up) */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Kelas untuk menerapkan animasi */
+        .extracurricular-card {
+            opacity: 0; /* Mulai tersembunyi */
+            animation: fadeIn 0.6s ease-out forwards;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Hover effect yang elegan */
+        .extracurricular-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Dekorasi tambahan untuk efek visual dinamis */
+        .header-decoration {
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #f97316, #facc15, #f87171); /* Gradasi Aksen (Oranye-Merah) */
+        }
+
+        /* Gaya Khusus untuk Gambar (Lingkaran dan Ukuran) */
+        .extracurricular-icon {
+            width: 48px; /* Ukuran gambar 12, atau 3rem */
+            height: 48px;
+            object-fit: cover; /* Memastikan gambar terpotong rapi di tengah */
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Header dengan Gradasi dan Animasi Judul -->
+    <header class="sky-gradient-bg shadow-xl p-6 md:p-10 mb-8 rounded-b-3xl relative">
+        <!-- Tombol Kembali ke Beranda -->
+        <a href="index.html#kurikulum" class="absolute top-4 left-4 sm:top-6 sm:left-6
+            bg-white text-blue-600 hover:bg-blue-50/90 py-2 px-4 rounded-full
+            shadow-md transition duration-300 ease-in-out font-semibold text-sm
+            flex items-center space-x-2">
+            <!-- Icon panah kiri (inline SVG) -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+                <path d="m15 18-6-6 6-6"/>
+            </svg>
+            <span>Beranda</span>
+        </a>
+        
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight animate-pulse"
+                style="animation-duration: 3s; animation-iteration-count: infinite;">
+                Kegiatan Ekstrakurikuler
+            </h1>
+            <p class="text-xl sm:text-2xl mt-2 font-light text-blue-100">
+                Wadah Pengembangan Minat dan Bakat
+            </p>
+        </div>
+        <div class="header-decoration mt-4"></div>
+    </header>
+
+    <!-- Konten Utama: Daftar Ekstrakurikuler -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Menggunakan layout grid yang responsif -->
+        <div id="extracurricular-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Kartu Ekstrakurikuler akan dimasukkan di sini oleh JavaScript -->
+        </div>
+    </main>
+
+    <!-- Footer Sederhana -->
+    <footer class="mt-12 p-4 text-center text-gray-600 border-t border-blue-200">
+        <p class="text-sm">&copy; 2025 SMP Negeri 8 Cikarang Utara. Kurikulum Ekstrakurikuler.</p>
+    </footer>
+
+    <script>
+        // Data Kegiatan Ekstrakurikuler, sekarang menggunakan 'imageUrl'
+        const extracurriculars = [
+            {
+                title: "Futsal",
+                description: "Melatih keterampilan bermain sepak bola dalam format lapangan kecil. Selain meningkatkan kebugaran jasmani, futsal juga menumbuhkan sportivitas, kerja sama, dan disiplin.",
+                // Ganti dengan URL foto Futsal Anda
+                imageUrl: "https://i.imgur.com/vl4hO5N.png", 
+                color: "red"
+            },
+            {
+                title: "Seni Tari",
+                description: "Mengembangkan ekspresi, kreativitas, dan apresiasi budaya. Siswa belajar gerakan dasar tari tradisional maupun modern, menumbuhkan rasa percaya diri sekaligus melestarikan seni budaya bangsa.",
+                // Ganti dengan URL foto Seni Tari Anda
+                imageUrl: "https://i.imgur.com/rCI0dLn.png",
+                color: "purple"
+            },
+            {
+                title: "Paskibra (Pasukan Pengibar Bendera)",
+                description: "Membentuk kedisiplinan, tanggung jawab, dan jiwa kepemimpinan. Siswa dilatih baris-berbaris, tata upacara bendera, serta etika keprajuritan dan menumbuhkan rasa cinta tanah air.",
+                // Ganti dengan URL foto Paskibra Anda
+                imageUrl: "https://i.imgur.com/yYfCTZA.png",
+                color: "blue"
+            },
+            {
+                title: "Pramuka",
+                description: "Menekankan pendidikan karakter melalui kegiatan alam terbuka, keterampilan hidup, dan kerja sama tim. Membentuk pribadi mandiri, tangguh, dan peduli lingkungan melalui nilai-nilai kejujuran dan gotong royong.",
+                // Ganti dengan URL foto Pramuka Anda
+                imageUrl: "https://i.imgur.com/RUgHAjb.png",
+                color: "green"
+            },
+            {
+                title: "PMR (Palang Merah Remaja)",
+                description: "Berfokus pada keterampilan pertolongan pertama, kesehatan remaja, dan kepedulian sosial. Menumbuhkan rasa empati, solidaritas, dan kesiapsiagaan menghadapi keadaan darurat.",
+                // Ganti dengan URL foto PMR Anda
+                imageUrl: "https://i.imgur.com/Gj5z2L4.png",
+                color: "pink"
+            }
+        ];
+
+        // Fungsi untuk mengonversi nama warna menjadi kelas Tailwind yang sesuai
+        function getColorClasses(colorName) {
+            switch (colorName) {
+                case 'red': return { bg: 'bg-red-500/10', text: 'text-red-600', ring: 'ring-red-300' };
+                case 'purple': return { bg: 'bg-purple-500/10', text: 'text-purple-600', ring: 'ring-purple-300' };
+                case 'blue': return { bg: 'bg-blue-500/10', text: 'text-blue-600', ring: 'ring-blue-300' };
+                case 'green': return { bg: 'bg-green-500/10', text: 'text-green-600', ring: 'ring-green-300' };
+                case 'pink': return { bg: 'bg-pink-500/10', text: 'text-pink-600', ring: 'ring-pink-300' };
+                default: return { bg: 'bg-gray-100', text: 'text-gray-800', ring: 'ring-gray-300' };
+            }
+        }
+
+        // Fungsi untuk membuat dan menampilkan kartu kegiatan
+        function renderExtracurriculars() {
+            const listContainer = document.getElementById('extracurricular-list');
+            
+            extracurriculars.forEach((extra, index) => {
+                const colorClasses = getColorClasses(extra.color);
+                
+                // Membuat elemen kartu
+                const card = document.createElement('div');
+                card.className = 'extracurricular-card';
+                
+                // Menambahkan delay animasi berdasarkan indeks untuk efek berurutan
+                card.style.animationDelay = `${index * 0.1}s`;
+
+                // Struktur konten kartu - PENTING: Menggunakan tag <img>
+                card.innerHTML = `
+                    <div class="bg-white p-6 h-full rounded-xl shadow-lg border border-gray-100 flex flex-col space-y-4">
+                        <div class="flex items-center space-x-4 border-b pb-3 border-gray-100">
+                            <!-- ELEMEN GAMBAR BARU -->
+                            <div class="p-1 ${colorClasses.bg} ${colorClasses.text} rounded-full ring-2 ${colorClasses.ring} shadow-lg">
+                                <img src="${extra.imageUrl}" alt="Ilustrasi ${extra.title}" 
+                                     class="extracurricular-icon rounded-full"
+                                     onerror="this.onerror=null; this.src='https://placehold.co/100x100/cccccc/000000?text=Logo';" />
+                            </div>
+                            <!-- AKHIR ELEMEN GAMBAR BARU -->
+                            <h2 class="text-xl font-bold text-gray-800">${index + 1}. ${extra.title}</h2>
+                        </div>
+                        <p class="text-gray-700 leading-relaxed text-sm">
+                            ${extra.description}
+                        </p>
+                    </div>
+                `;
+
+                listContainer.appendChild(card);
+            });
+        }
+
+        // Jalankan fungsi setelah DOM selesai dimuat
+        window.onload = renderExtracurriculars;
+    </script>
+</body>
+</html>

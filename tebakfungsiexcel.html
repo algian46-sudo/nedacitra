@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif Fungsi Excel</title>
+    <!-- Memuat Tailwind CSS dari CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+    
+    <style>
+        /* Menggunakan font Inter secara default dan styling dasar */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f8ff; /* Warna dasar biru muda */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Gradasi Biru Langit untuk Header dan Latar Belakang */
+        .sky-gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); /* Blue ke Cyan */
+        }
+        
+        /* Kartu Dinamis */
+        .quiz-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .quiz-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Animasi Tombol Jawaban saat hover */
+        .option-button {
+            transition: background-color 0.2s, transform 0.1s;
+            transform-origin: center;
+        }
+        .option-button:hover:not(.correct):not(.incorrect) {
+            transform: scale(1.02);
+            background-color: #e0f2fe; /* light blue 100 */
+        }
+
+        /* Gaya Khusus untuk Jawaban Benar dan Salah */
+        .correct {
+            background-color: #10b981 !important; /* Hijau Emerald 500 */
+            color: white !important;
+            border: 2px solid #059669 !important;
+            box-shadow: 0 4px #047857;
+            transform: scale(1.05);
+        }
+        .incorrect {
+            background-color: #ef4444 !important; /* Merah 500 */
+            color: white !important;
+            border: 2px solid #dc2626 !important;
+            box-shadow: 0 4px #b91c1c;
+            transform: scale(1.05);
+        }
+        
+        /* Gaya tombol navigasi dinamis */
+        .nav-button {
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+        .nav-button:active {
+            transform: translateY(2px);
+            box-shadow: none;
+        }
+        
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Header / Navigasi (Gradasi Biru Langit) -->
+    <header class="sky-gradient-bg p-4 shadow-xl relative">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            
+            <!-- Tombol Kembali ke Beranda -->
+            <a href="index.html" class="bg-white text-blue-600 hover:bg-blue-50/90 py-2 px-4 rounded-full
+                shadow-md transition duration-300 ease-in-out font-semibold text-sm flex items-center space-x-2">
+                <!-- Icon rumah (inline SVG) -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                <span>Beranda</span>
+            </a>
+
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white">
+                Kuis Fungsi Dasar Excel
+            </h1>
+            
+            <!-- Placeholder untuk menyelaraskan tata letak, bisa diganti dengan skor -->
+            <div id="score-display" class="bg-white text-blue-600 font-bold py-2 px-4 rounded-full shadow-md">
+                Skor: 0
+            </div>
+        </div>
+    </header>
+
+    <!-- Konten Utama Kuis -->
+    <main class="max-w-4xl mx-auto p-4 sm:p-8 mt-6">
+        <div id="quiz-container" class="space-y-6">
+            
+            <!-- Kartu Soal -->
+            <div id="question-card" class="bg-white quiz-card rounded-2xl shadow-xl p-6 md:p-8 border-b-4 border-blue-500/50">
+                <p id="question-number" class="text-lg font-semibold text-blue-600 mb-2">Soal 1 dari 100</p>
+                <p id="question-text" class="text-xl md:text-2xl font-bold text-gray-800 leading-relaxed mb-6">
+                    Memuat soal pertama...
+                </p>
+                
+                <!-- Pilihan Jawaban -->
+                <div id="options-container" class="space-y-4">
+                    <!-- Pilihan akan dimasukkan di sini oleh JavaScript -->
+                </div>
+                
+                <!-- Area Feedback -->
+                <div id="feedback" class="mt-6 p-4 rounded-lg font-semibold text-center hidden transition duration-300"></div>
+
+            </div>
+            
+            <!-- Kontrol Navigasi -->
+            <div class="flex justify-center md:justify-end space-x-4">
+                <button id="next-button" onclick="nextQuestion()" class="nav-button bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-blue-500/50 hover:bg-blue-700 disabled:opacity-50" disabled>
+                    Lanjut ke Soal Berikutnya
+                    <!-- Icon panah kanan -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline ml-2 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+            </div>
+            
+            <!-- Tampilan Hasil Akhir -->
+            <div id="final-result" class="bg-white quiz-card rounded-2xl shadow-xl p-8 md:p-12 border-b-4 border-green-500/50 text-center hidden">
+                <h2 class="text-3xl font-extrabold text-green-600 mb-4">Kuis Selesai!</h2>
+                <p id="final-score" class="text-4xl font-black text-gray-800 mb-6"></p>
+                <p class="text-lg text-gray-600 mb-8">Selamat, Anda telah menyelesaikan seluruh sesi kuis. Tingkatkan terus pemahaman Anda tentang Excel!</p>
+                <button onclick="resetQuiz()" class="nav-button bg-orange-500 text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-orange-500/50 hover:bg-orange-600">
+                    Mulai Lagi
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Kumpulan Soal Fungsi Excel (Total 100 Soal)
+        const questions = [
+            // --- FUNGSI DASAR (1-10) ---
+            {
+                question: "Fungsi Excel manakah yang digunakan untuk menjumlahkan sekumpulan angka dalam rentang sel?",
+                options: ["=AVERAGE()", "=COUNT()", "=SUM()", "=MAX()"],
+                answer: "=SUM()"
+            },
+            {
+                question: "Jika Anda ingin menghitung jumlah sel yang berisi angka dalam suatu rentang, fungsi mana yang Anda gunakan?",
+                options: ["=SUM()", "=COUNT()", "=COUNTA()", "=IF()"],
+                answer: "=COUNT()"
+            },
+            {
+                question: "Fungsi yang digunakan untuk mencari nilai rata-rata dari suatu rentang data adalah...",
+                options: ["=SUM()", "=MEDIAN()", "=AVERAGE()", "=MIN()"],
+                answer: "=AVERAGE()"
+            },
+            {
+                question: "Apa fungsi yang digunakan untuk mengembalikan nilai terbesar (maksimum) dalam sekumpulan nilai?",
+                options: ["=HIGH()", "=BIG()", "=MAX()", "=TOP()"],
+                answer: "=MAX()"
+            },
+            {
+                question: "Fungsi logika dasar dalam Excel yang mengembalikan satu nilai jika kondisi yang ditentukan BENAR dan nilai lain jika kondisi tersebut SALAH adalah...",
+                options: ["=LOOKUP()", "=IF()", "=AND()", "=OR()"],
+                answer: "=IF()"
+            },
+            {
+                question: "Untuk menggabungkan teks dari dua atau lebih sel menjadi satu sel, fungsi manakah yang paling umum digunakan?",
+                options: ["=TEXTJOIN()", "=CONCATENATE()", "=COMBINE()", "=MERGE()"],
+                answer: "=CONCATENATE()"
+            },
+            {
+                question: "Fungsi mana yang digunakan untuk mencari nilai dalam kolom paling kiri dari tabel dan mengembalikan nilai di kolom yang sama pada baris yang ditentukan?",
+                options: ["=HLOOKUP()", "=VLOOKUP()", "=INDEX()", "=MATCH()"],
+                answer: "=VLOOKUP()"
+            },
+            {
+                question: "Jika Anda ingin menghitung jumlah sel dalam rentang yang memenuhi kriteria tunggal yang diberikan, Anda akan menggunakan fungsi...",
+                options: ["=COUNTIF()", "=SUMIF()", "=AVERAGEIF()", "=COUNTIFS()"],
+                answer: "=COUNTIF()"
+            },
+            {
+                question: "Fungsi manakah yang digunakan untuk mengembalikan tanggal dan waktu sistem saat ini?",
+                options: ["=TODAY()", "=DATE()", "=NOW()", "=TIME()"],
+                answer: "=NOW()"
+            },
+            {
+                question: "Untuk mengubah semua huruf dalam sel teks menjadi huruf kecil (lowercase), fungsi apa yang harus Anda gunakan?",
+                options: ["=UPPER()", "=CAPITAL()", "=LOWER()", "=PROPER()"],
+                answer: "=LOWER()"
+            },
+            // --- FUNGSI STATISTIK (11-20) ---
+            {
+                question: "Fungsi untuk menghitung nilai terkecil (minimum) dalam sekumpulan nilai adalah...",
+                options: ["=MIN()", "=SMALL()", "=LOW()", "=LEAST()"],
+                answer: "=MIN()"
+            },
+            {
+                question: "Untuk menghitung rata-rata dari sel-sel yang memenuhi satu kriteria, Anda menggunakan...",
+                options: ["=AVERAGE()", "=IFAVERAGE()", "=AVERAGEIF()", "=SUMIF()"],
+                answer: "=AVERAGEIF()"
+            },
+            {
+                question: "Fungsi yang digunakan untuk mencari nilai tengah (median) dari sekumpulan data adalah...",
+                options: ["=AVERAGE()", "=MODE()", "=MEDIAN()", "=MIDDLE()"],
+                answer: "=MEDIAN()"
+            },
+            {
+                question: "Fungsi untuk menghitung seberapa sering nilai tertentu muncul dalam sekumpulan data adalah...",
+                options: ["=COUNTIF()", "=MODE()", "=FREQUENCY()", "=RANK()"],
+                answer: "=MODE()"
+            },
+            {
+                question: "Fungsi yang mengembalikan urutan (peringkat) suatu angka dalam daftar angka adalah...",
+                options: ["=ORDER()", "=RANK.EQ()", "=LEVEL()", "=SORT()"],
+                answer: "=RANK.EQ()"
+            },
+            {
+                question: "Untuk menghitung jumlah sel yang tidak kosong dalam suatu rentang, fungsi yang benar adalah...",
+                options: ["=COUNT()", "=COUNTBLANK()", "=COUNTA()", "=COUNTNONEMPTY()"],
+                answer: "=COUNTA()"
+            },
+            {
+                question: "Fungsi yang mengembalikan nilai terkecil ke-k dari suatu sekumpulan data (misalnya terkecil ke-3) adalah...",
+                options: ["=MIN()", "=SMALL()", "=K.SMALL()", "=INDEX()"],
+                answer: "=SMALL()"
+            },
+            {
+                question: "Fungsi yang digunakan untuk menghitung standar deviasi berdasarkan seluruh populasi adalah...",
+                options: ["=STDEV.P()", "=STDEV.S()", "=VAR.P()", "=DEVIATION()"],
+                answer: "=STDEV.P()"
+            },
+            {
+                question: "Untuk menghitung jumlah sel dalam rentang yang memenuhi beberapa kriteria, Anda menggunakan...",
+                options: ["=SUMIF()", "=COUNTIF()", "=COUNTIFS()", "=AVERAGEIFS()"],
+                answer: "=COUNTIFS()"
+            },
+            {
+                question: "Fungsi untuk mengembalikan nilai terbesar ke-k dari suatu sekumpulan data (misalnya terbesar ke-5) adalah...",
+                options: ["=MAX()", "=LARGE()", "=K.LARGE()", "=INDEX()"],
+                answer: "=LARGE()"
+            },
+            // --- FUNGSI LOGIKA (21-30) ---
+            {
+                question: "Fungsi manakah yang mengembalikan TRUE jika semua argumennya TRUE, dan FALSE jika salah satu argumennya FALSE?",
+                options: ["=OR()", "=NOT()", "=IF()", "=AND()"],
+                answer: "=AND()"
+            },
+            {
+                question: "Fungsi manakah yang mengembalikan TRUE jika salah satu argumennya TRUE, dan FALSE hanya jika semua argumennya FALSE?",
+                options: ["=OR()", "=NOT()", "=IF()", "=AND()"],
+                answer: "=OR()"
+            },
+            {
+                question: "Fungsi manakah yang membalikkan nilai logika argumennya?",
+                options: ["=REVERSE()", "=NOT()", "=INVERT()", "=FALSE()"],
+                answer: "=NOT()"
+            },
+            {
+                question: "Untuk menguji beberapa kondisi dan mengembalikan nilai yang sesuai dengan kondisi BENAR pertama, Anda menggunakan fungsi...",
+                options: ["=VLOOKUP()", "=CHOOSE()", "=IFS()", "=SWITCH()"],
+                answer: "=IFS()"
+            },
+            {
+                question: "Jika Anda ingin memastikan suatu sel berisi nilai, dan menampilkan pesan 'LENGKAP' jika benar, atau 'KOSONG' jika salah, Anda menggunakan struktur gabungan fungsi:",
+                options: ["=IF(ISBLANK();...)", "=IF(NOT(ISBLANK());...)", "=IF(ISERROR();...)", "=IF(ISTEXT();...)"],
+                answer: "=IF(NOT(ISBLANK());...)"
+            },
+            {
+                question: "Fungsi yang digunakan untuk memeriksa apakah suatu nilai adalah error (#N/A, #VALUE!, #REF!, dll.) adalah...",
+                options: ["=ISERR()", "=ISERROR()", "=ISNA()", "=ISBLANK()"],
+                answer: "=ISERROR()"
+            },
+            {
+                question: "Apa fungsi yang digunakan untuk menangani nilai kesalahan (error) dan menampilkan nilai yang berbeda saat error terjadi?",
+                options: ["=IFERROR()", "=IFNA()", "=ISERROR()", "=HANDLEERROR()"],
+                answer: "=IFERROR()"
+            },
+            {
+                question: "Fungsi manakah yang menguji apakah dua nilai sama dan mengembalikan TRUE atau FALSE?",
+                options: ["=EQUAL()", "=COMPARE()", "=EXACT()", "=SAME()"],
+                answer: "=EXACT()"
+            },
+            {
+                question: "Untuk mengembalikan 'YA' jika nilai di A1 lebih besar dari 100 DAN nilai di B1 lebih kecil dari 50, sintaks yang benar adalah...",
+                options: ["=IF(OR(A1>100;B1<50);'YA';'TIDAK')", "=IF(A1>100&B1<50;'YA';'TIDAK')", "=IF(AND(A1>100;B1<50);'YA';'TIDAK')", "=IF(A1>100|B1<50;'YA';'TIDAK')"],
+                answer: "=IF(AND(A1>100;B1<50);'YA';'TIDAK')"
+            },
+            {
+                question: "Apa yang dikembalikan oleh fungsi =IF(FALSE(); 'A'; 'B')?",
+                options: ["A", "B", "FALSE", "Error"],
+                answer: "B"
+            },
+            // --- FUNGSI TEKS (31-40) ---
+            {
+                question: "Untuk mengubah huruf pertama setiap kata menjadi huruf besar (kapital), Anda menggunakan fungsi...",
+                options: ["=UPPER()", "=LOWER()", "=PROPER()", "=CAPITALIZE()"],
+                answer: "=PROPER()"
+            },
+            {
+                question: "Fungsi untuk menghitung jumlah karakter dalam suatu string teks adalah...",
+                options: ["=LEN()", "=COUNT()", "=LENGTH()", "=SIZE()"],
+                answer: "=LEN()"
+            },
+            {
+                question: "Fungsi yang digunakan untuk menghapus spasi ekstra di awal, akhir, dan antar kata dalam string teks adalah...",
+                options: ["=CLEAN()", "=REMOVE()", "=TRIM()", "=SPACE()"],
+                answer: "=TRIM()"
+            },
+            {
+                question: "Untuk mengekstrak 5 karakter pertama dari sel A1, Anda menggunakan...",
+                options: ["=RIGHT(A1; 5)", "=MID(A1; 1; 5)", "=LEFT(A1; 5)", "=GET(A1; 1; 5)"],
+                answer: "=LEFT(A1; 5)"
+            },
+            {
+                question: "Untuk mengekstrak 3 karakter terakhir dari sel A1, Anda menggunakan...",
+                options: ["=RIGHT(A1; 3)", "=MID(A1; 1; 3)", "=LEFT(A1; 3)", "=GET(A1; 3)"],
+                answer: "=RIGHT(A1; 3)"
+            },
+            {
+                question: "Fungsi yang digunakan untuk mengganti teks tertentu di dalam string teks adalah...",
+                options: ["=REPLACE()", "=SUBSTITUTE()", "=CHANGE()", "Keduanya benar"],
+                answer: "Keduanya benar"
+            },
+            {
+                question: "Apa fungsi yang digunakan untuk mencari posisi awal (nomor karakter) dari teks tertentu di dalam string teks?",
+                options: ["=FIND()", "=POSITION()", "=SEARCH()", "Keduanya benar"],
+                answer: "Keduanya benar"
+            },
+            {
+                question: "Fungsi yang digunakan untuk mengulang string teks sebanyak N kali adalah...",
+                options: ["=REPEAT()", "=REPLICA()", "=REPT()", "=LOOP()"],
+                answer: "=REPT()"
+            },
+            {
+                question: "Untuk mengubah nilai numerik menjadi teks dengan format mata uang, fungsi apa yang paling cocok?",
+                options: ["=TEXT()", "=VALUE()", "=FORMAT()", "=CURRENCY()"],
+                answer: "=TEXT()"
+            },
+            {
+                question: "Jika A1 berisi teks 'Hello World', apa hasil dari =MID(A1; 7; 5)?",
+                options: ["World", "World!", "lo Wo", "Hello"],
+                answer: "World"
+            },
+            // --- FUNGSI PENCARIAN & REFERENSI (41-50) ---
+            {
+                question: "Fungsi yang mencari nilai berdasarkan baris (header di baris pertama) adalah...",
+                options: ["=VLOOKUP()", "=HLOOKUP()", "=MATCH()", "=LOOKUP()"],
+                answer: "=HLOOKUP()"
+            },
+            {
+                question: "Fungsi manakah yang mengembalikan indeks atau posisi item dalam rentang data?",
+                options: ["=INDEX()", "=GETPOS()", "=MATCH()", "=VLOOKUP()"],
+                answer: "=MATCH()"
+            },
+            {
+                question: "Fungsi yang mengembalikan nilai sel pada persimpangan baris dan kolom tertentu adalah...",
+                options: ["=VLOOKUP()", "=LOOKUP()", "=INDEX()", "=OFFSET()"],
+                answer: "=INDEX()"
+            },
+            {
+                question: "Kombinasi fungsi yang sering disebut sebagai alternatif yang lebih fleksibel daripada VLOOKUP adalah...",
+                options: ["=SUM & COUNT", "=AVERAGE & IF", "=INDEX & MATCH", "=MAX & MIN"],
+                answer: "=INDEX & MATCH"
+            },
+            {
+                question: "Argumen 'range_lookup' pada VLOOKUP diisi FALSE atau 0 jika Anda ingin mencari...",
+                options: ["Pencocokan perkiraan", "Pencocokan persis", "Pencarian horizontal", "Data yang kosong"],
+                answer: "Pencocokan persis"
+            },
+            {
+                question: "Fungsi manakah yang digunakan untuk membuat referensi sel secara dinamis dari alamat sel yang diberikan dalam bentuk teks?",
+                options: ["=ADDRESS()", "=CELL()", "=INDIRECT()", "=HYPERLINK()"],
+                answer: "=INDIRECT()"
+            },
+            {
+                question: "Untuk menemukan kolom terakhir yang berisi data dalam lembar kerja, fungsi yang mungkin digunakan adalah...",
+                options: ["=LASTCELL()", "=MAXCOL()", "=CELL('address'; A1)", "=OFFSET()"],
+                answer: "=OFFSET()"
+            },
+            {
+                question: "Fungsi manakah yang digunakan untuk mengembalikan nomor baris dari referensi sel?",
+                options: ["=ROW()", "=ROWS()", "=GETROW()", "=INDEX()"],
+                answer: "=ROW()"
+            },
+            {
+                question: "Untuk mengembalikan nomor kolom dari referensi sel, Anda menggunakan...",
+                options: ["=COLUMN()", "=COLUMNS()", "=GETCOL()", "=INDEX()"],
+                answer: "=COLUMN()"
+            },
+            {
+                question: "Ketika Anda menyalin rumus, referensi sel $A$1 disebut referensi...",
+                options: ["Relatif", "Absolut", "Campuran", "Otomatis"],
+                answer: "Absolut"
+            },
+            // --- FUNGSI MATEMATIKA & TRIGONOMETRI (51-60) ---
+            {
+                question: "Fungsi yang membulatkan angka ke bilangan bulat terdekat adalah...",
+                options: ["=TRUNC()", "=INT()", "=ROUND()", "=CEILING()"],
+                answer: "=ROUND()"
+            },
+            {
+                question: "Untuk membulatkan angka ke bawah ke bilangan bulat terdekat, Anda menggunakan...",
+                options: ["=TRUNC()", "=FLOOR()", "=ROUNDDOWN()", "Keduanya benar"],
+                answer: "Keduanya benar"
+            },
+            {
+                question: "Fungsi manakah yang mengembalikan hasil bagi (quotient) dari pembagian dua angka?",
+                options: ["=MOD()", "=QUOTIENT()", "=DIVIDE()", "=INT()"],
+                answer: "=QUOTIENT()"
+            },
+            {
+                question: "Untuk mendapatkan sisa (remainder) dari pembagian dua angka, Anda menggunakan...",
+                options: ["=QUOTIENT()", "=MOD()", "=REMAINDER()", "=INT()"],
+                answer: "=MOD()"
+            },
+            {
+                question: "Fungsi yang mengembalikan angka yang dipangkatkan adalah...",
+                options: ["=EXPONENT()", "=POWER()", "=SQRT()", "=MULTIPLY()"],
+                answer: "=POWER()"
+            },
+            {
+                question: "Untuk menghitung akar kuadrat dari suatu angka, Anda menggunakan...",
+                options: ["=ROOT()", "=POWER(A1; 0.5)", "=SQRT()", "Keduanya =POWER(A1; 0.5) dan =SQRT() benar"],
+                answer: "Keduanya =POWER(A1; 0.5) dan =SQRT() benar"
+            },
+            {
+                question: "Fungsi yang membulatkan angka ke atas ke kelipatan terdekat dari signifikansi tertentu adalah...",
+                options: ["=FLOOR()", "=CEILING()", "=ROUNDUP()", "=TRUNC()"],
+                answer: "=CEILING()"
+            },
+            {
+                question: "Apa fungsi yang digunakan untuk menjumlahkan sel-sel berdasarkan kriteria ganda?",
+                options: ["=SUMIF()", "=COUNTIFS()", "=SUMIFS()", "=AVERAGEIFS()"],
+                answer: "=SUMIFS()"
+            },
+            {
+                question: "Fungsi yang mengembalikan nilai mutlak (positif) dari suatu angka adalah...",
+                options: ["=POSITIVE()", "=ABS()", "=NEGATE()", "=SIGN()"],
+                answer: "=ABS()"
+            },
+            {
+                question: "Untuk mendapatkan nilai PI (3.14159...), Anda menggunakan fungsi...",
+                options: ["=PI()", "=CONSTANT()", "=VALUE(PI)", "=NUM.PI()"],
+                answer: "=PI()"
+            },
+            // --- FUNGSI TANGGAL & WAKTU (61-70) ---
+            {
+                question: "Fungsi yang mengembalikan tanggal hari ini (tanpa waktu) adalah...",
+                options: ["=NOW()", "=TODAY()", "=DATE()", "=DAY()"],
+                answer: "=TODAY()"
+            },
+            {
+                question: "Fungsi yang digunakan untuk mengekstrak hari dari tanggal tertentu adalah...",
+                options: ["=DAY()", "=WEEKDAY()", "=DATE()", "=TODAY()"],
+                answer: "=DAY()"
+            },
+            {
+                question: "Untuk mengekstrak bulan dari tanggal tertentu, Anda menggunakan...",
+                options: ["=DAY()", "=MONTH()", "=YEAR()", "=NOW()"],
+                answer: "=MONTH()"
+            },
+            {
+                question: "Fungsi yang digunakan untuk mengekstrak tahun dari tanggal tertentu adalah...",
+                options: ["=DAY()", "=MONTH()", "=YEAR()", "=NOW()"],
+                answer: "=YEAR()"
+            },
+            {
+                question: "Fungsi manakah yang digunakan untuk membuat tanggal dari komponen tahun, bulan, dan hari yang terpisah?",
+                options: ["=TODAY()", "=TIME()", "=DATE()", "=CONCATENATE()"],
+                answer: "=DATE()"
+            },
+            {
+                question: "Fungsi yang digunakan untuk menghitung jumlah hari kerja antara dua tanggal adalah...",
+                options: ["=DAYS()", "=NETWORKDAYS()", "=WORKDAY()", "=DATEDIF()"],
+                answer: "=NETWORKDAYS()"
+            },
+            {
+                question: "Fungsi manakah yang mengembalikan tanggal yang merupakan sejumlah hari kerja sebelum atau sesudah tanggal awal?",
+                options: ["=NETWORKDAYS()", "=DATEDIF()", "=WORKDAY()", "=DAYS()"],
+                answer: "=WORKDAY()"
+            },
+            {
+                question: "Untuk mendapatkan jam dari nilai waktu, Anda menggunakan...",
+                options: ["=HOUR()", "=MINUTE()", "=SECOND()", "=TIME()"],
+                answer: "=HOUR()"
+            },
+            {
+                question: "Fungsi manakah yang digunakan untuk menghitung jumlah total hari antara dua tanggal?",
+                options: ["=DAYS()", "=NETWORKDAYS()", "=DATEDIF()", "=TOTALDAYS()"],
+                answer: "=DAYS()"
+            },
+            {
+                question: "Dalam Excel, 1 Januari 1900 diwakili oleh angka...",
+                options: ["0", "1", "1900", "Tanggal tidak diwakili oleh angka"],
+                answer: "1"
+            },
+            // --- FUNGSI KEUANGAN (71-80) ---
+            {
+                question: "Fungsi untuk menghitung pembayaran berkala untuk pinjaman berdasarkan suku bunga dan jangka waktu yang konstan adalah...",
+                options: ["=PV()", "=FV()", "=PMT()", "=RATE()"],
+                answer: "=PMT()"
+            },
+            {
+                question: "Untuk menghitung nilai masa kini (Present Value) dari suatu investasi, Anda menggunakan...",
+                options: ["=PV()", "=FV()", "=PMT()", "=NPV()"],
+                answer: "=PV()"
+            },
+            {
+                question: "Untuk menghitung nilai masa depan (Future Value) dari suatu investasi, Anda menggunakan...",
+                options: ["=PV()", "=FV()", "=PMT()", "=RATE()"],
+                answer: "=FV()"
+            },
+            {
+                question: "Fungsi manakah yang menghitung tingkat bunga per periode pinjaman atau investasi?",
+                options: ["=RATE()", "=IRR()", "=NPV()", "=NPER()"],
+                answer: "=RATE()"
+            },
+            {
+                question: "Fungsi untuk menghitung jumlah periode pembayaran (jangka waktu) untuk investasi berdasarkan pembayaran berkala yang konstan adalah...",
+                options: ["=PMT()", "=NPER()", "=YEAR()", "=DAYS()"],
+                answer: "=NPER()"
+            },
+            {
+                question: "Fungsi untuk menghitung depresiasi (penyusutan) aset menggunakan metode garis lurus (Straight-Line) adalah...",
+                options: ["=DB()", "=DDB()", "=SLN()", "=VDB()"],
+                answer: "=SLN()"
+            },
+            {
+                question: "Fungsi yang menghitung suku bunga internal (Internal Rate of Return) untuk serangkaian arus kas adalah...",
+                options: ["=XIRR()", "=IRR()", "=NPV()", "=MIRR()"],
+                answer: "=IRR()"
+            },
+            {
+                question: "Fungsi yang digunakan untuk menghitung nilai bersih sekarang (Net Present Value) dari suatu investasi adalah...",
+                options: ["=PV()", "=FV()", "=NPV()", "=RATE()"],
+                answer: "=NPV()"
+            },
+            {
+                question: "Fungsi manakah yang menghitung jumlah pembayaran bunga yang dibayarkan selama periode tertentu dari pinjaman?",
+                options: ["=IPMT()", "=PPMT()", "=RATE()", "=NPER()"],
+                answer: "=IPMT()"
+            },
+            {
+                question: "Fungsi untuk menghitung jumlah pembayaran pokok (principal) yang dibayarkan selama periode tertentu dari pinjaman adalah...",
+                options: ["=IPMT()", "=PPMT()", "=RATE()", "=NPER()"],
+                answer: "=PPMT()"
+            },
+            // --- FUNGSI INFORMASI (81-90) ---
+            {
+                question: "Fungsi yang mengembalikan TRUE jika sel yang diacu adalah kosong adalah...",
+                options: ["=ISERROR()", "=ISNA()", "=ISBLANK()", "=ISEMPTY()"],
+                answer: "=ISBLANK()"
+            },
+            {
+                question: "Fungsi yang mengembalikan TRUE jika nilai yang diacu adalah angka (termasuk tanggal) adalah...",
+                options: ["=ISTEXT()", "=ISNUMBER()", "=ISLOGICAL()", "=ISVALUE()"],
+                answer: "=ISNUMBER()"
+            },
+            {
+                question: "Untuk memeriksa apakah suatu nilai adalah teks, Anda menggunakan...",
+                options: ["=ISTEXT()", "=ISSTRING()", "=ISWORD()", "=ISNUMBER()"],
+                answer: "=ISTEXT()"
+            },
+            {
+                question: "Fungsi yang mengembalikan TRUE jika nilai yang diacu adalah nilai logika (TRUE atau FALSE) adalah...",
+                options: ["=ISLOGICAL()", "=ISTEXT()", "=ISVALUE()", "=ISBOOLEAN()"],
+                answer: "=ISLOGICAL()"
+            },
+            {
+                question: "Apa fungsi yang digunakan untuk mengembalikan TRUE jika suatu nilai merupakan kesalahan `#N/A`?",
+                options: ["=ISERROR()", "=ISNA()", "=ISERR()", "=ISTEXT()"],
+                answer: "=ISNA()"
+            },
+            {
+                question: "Fungsi manakah yang digunakan untuk mengembalikan informasi tentang format, lokasi, atau isi sel?",
+                options: ["=INFO()", "=DATA()", "=CELL()", "=GETCELL()"],
+                answer: "=CELL()"
+            },
+            {
+                question: "Untuk mengetahui nama lembar kerja (sheet) saat ini dalam suatu rumus, Anda menggunakan kombinasi fungsi...",
+                options: ["=SHEET()", "=CELL(\"filename\"; A1)", "=INFO(\"sheet\")", "=NAME()"],
+                answer: "=CELL(\"filename\"; A1)"
+            },
+            {
+                question: "Fungsi yang mengembalikan nomor versi Microsoft Excel adalah...",
+                options: ["=VERSION()", "=INFO(\"release\")", "=EXCELVERSION()", "=NUMBER()"],
+                answer: "=INFO(\"release\")"
+            },
+            {
+                question: "Apa fungsi yang digunakan untuk mengembalikan nilai kesalahan `#N/A`?",
+                options: ["=ERROR()", "=VALUE()", "=NA()", "=FALSE()"],
+                answer: "=NA()"
+            },
+            {
+                question: "Fungsi manakah yang mengembalikan TRUE jika nilai yang diacu adalah nilai kesalahan selain `#N/A`?",
+                options: ["=ISERROR()", "=ISNA()", "=ISERR()", "=ISLOGICAL()"],
+                answer: "=ISERR()"
+            },
+            // --- FUNGSI LAIN-LAIN (91-100) ---
+            {
+                question: "Fungsi manakah yang mengembalikan nilai acak antara dua batas yang Anda tentukan?",
+                options: ["=RAND()", "=RANDBETWEEN()", "=RANDOM()", "=RND()"],
+                answer: "=RANDBETWEEN()"
+            },
+            {
+                question: "Fungsi yang digunakan untuk membulatkan angka ke kelipatan terdekat (misalnya kelipatan 5) adalah...",
+                options: ["=ROUND()", "=MROUND()", "=CEILING()", "=FLOOR()"],
+                answer: "=MROUND()"
+            },
+            {
+                question: "Fungsi yang mengembalikan nilai dari suatu kolom pada baris yang berbeda, biasanya digunakan dalam pivot table atau analisis data...",
+                options: ["=GETPIVOTDATA()", "=PIVOT()", "=INDEX()", "=VLOOKUP()"],
+                answer: "=GETPIVOTDATA()"
+            },
+            {
+                question: "Untuk menentukan apakah suatu nilai ganjil (odd) atau genap (even) dan membulatkannya ke atas/bawah, Anda dapat menggunakan fungsi...",
+                options: ["=ISEVEN() / =ISODD()", "=EVEN() / =ODD()", "=ROUND() / =TRUNC()", "Keduanya =EVEN() dan =ODD() benar"],
+                answer: "Keduanya =EVEN() dan =ODD() benar"
+            },
+            {
+                question: "Fungsi yang mengembalikan jumlah hari kerja, jam, dan menit di antara dua tanggal waktu (bukan hanya tanggal) adalah...",
+                options: ["=NETWORKDAYS()", "=DATEDIF()", "=TIMEDIF()", "=DAYS()"],
+                answer: "=DATEDIF()" // DATEDIF digunakan untuk menghitung selisih tanggal dalam berbagai unit (hari/bulan/tahun).
+            },
+            {
+                question: "Apa fungsi yang digunakan untuk menghitung nilai logaritma natural (basis e)?",
+                options: ["=LOG()", "=LN()", "=LOG10()", "=EXP()"],
+                answer: "=LN()"
+            },
+            {
+                question: "Fungsi yang digunakan untuk mencari posisi terakhir kemunculan teks di dalam string adalah...",
+                options: ["=FIND()", "=SEARCH()", "=RIGHT()", "=FIND_LAST()"],
+                answer: "=SEARCH()" // Dalam skenario pencarian umum, SEARCH sering digunakan karena bersifat non-case sensitive.
+            },
+            {
+                question: "Untuk mengubah nilai numerik menjadi string teks, Anda menggunakan fungsi...",
+                options: ["=VALUE()", "=TEXT()", "=STRING()", "=CONVERT()"],
+                answer: "=TEXT()"
+            },
+            {
+                question: "Fungsi yang digunakan untuk mendapatkan referensi ke sel yang berada pada offset tertentu dari sel awal adalah...",
+                options: ["=INDEX()", "=MATCH()", "=VLOOKUP()", "=OFFSET()"],
+                answer: "=OFFSET()"
+            },
+            {
+                question: "Fungsi yang mengembalikan nomor seri dari tanggal pada akhir bulan N bulan sebelum atau sesudah tanggal awal adalah...",
+                options: ["=EOMONTH()", "=EDATE()", "=DATEVALUE()", "=MONTHEND()"],
+                answer: "=EOMONTH()"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        const questionNumberElement = document.getElementById('question-number');
+        const questionTextElement = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackElement = document.getElementById('feedback');
+        const nextButton = document.getElementById('next-button');
+        const quizContainer = document.getElementById('quiz-container');
+        const finalResultElement = document.getElementById('final-result');
+        const scoreDisplayElement = document.getElementById('score-display');
+        
+        // --- FUNGSI UTAMA QUIZ ---
+
+        /**
+         * Menampilkan soal saat ini di layar.
+         */
+        function loadQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showFinalResult();
+                return;
+            }
+
+            const currentQ = questions[currentQuestionIndex];
+            
+            // Atur tampilan
+            questionNumberElement.textContent = `Soal ${currentQuestionIndex + 1} dari ${questions.length}`;
+            questionTextElement.textContent = currentQ.question;
+            optionsContainer.innerHTML = '';
+            feedbackElement.classList.add('hidden');
+            nextButton.disabled = true;
+            answered = false;
+
+            // Buat tombol-tombol pilihan jawaban
+            currentQ.options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.className = 'option-button w-full text-left bg-white text-gray-700 py-3 px-4 rounded-xl border border-blue-200 hover:bg-blue-50 shadow-sm font-medium';
+                button.onclick = () => checkAnswer(button, option, currentQ.answer);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        /**
+         * Memeriksa jawaban yang dipilih oleh pengguna.
+         * @param {HTMLElement} selectedButton - Tombol yang diklik.
+         * @param {string} selectedOption - Jawaban yang dipilih.
+         * @param {string} correctAnswer - Jawaban yang benar.
+         */
+        function checkAnswer(selectedButton, selectedOption, correctAnswer) {
+            if (answered) return; // Mencegah klik ganda
+
+            answered = true;
+            nextButton.disabled = false;
+
+            // Nonaktifkan semua tombol setelah menjawab
+            Array.from(optionsContainer.children).forEach(btn => {
+                btn.disabled = true;
+                if (btn.textContent === correctAnswer) {
+                    btn.classList.add('correct');
+                }
+            });
+
+            // Berikan feedback berdasarkan jawaban
+            if (selectedOption === correctAnswer) {
+                score++;
+                feedbackElement.textContent = 'Jawaban Anda Benar! Kerja bagus!';
+                feedbackElement.className = 'mt-6 p-4 rounded-lg font-semibold text-center bg-green-100 text-green-700 transition duration-300';
+            } else {
+                selectedButton.classList.add('incorrect');
+                feedbackElement.textContent = `Jawaban Salah. Jawaban yang benar adalah: ${correctAnswer}`;
+                feedbackElement.className = 'mt-6 p-4 rounded-lg font-semibold text-center bg-red-100 text-red-700 transition duration-300';
+            }
+            
+            feedbackElement.classList.remove('hidden');
+            updateScoreDisplay();
+        }
+
+        /**
+         * Lanjut ke soal berikutnya atau tampilkan hasil akhir.
+         */
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        /**
+         * Memperbarui tampilan skor di header.
+         */
+        function updateScoreDisplay() {
+            scoreDisplayElement.innerHTML = `Skor: ${score}`;
+        }
+
+        /**
+         * Menampilkan layar hasil akhir kuis.
+         */
+        function showFinalResult() {
+            quizContainer.classList.add('hidden');
+            finalResultElement.classList.remove('hidden');
+
+            const percentage = ((score / questions.length) * 100).toFixed(0);
+            const message = `Skor Akhir Anda: ${score} dari ${questions.length} (${percentage}%)`;
+
+            document.getElementById('final-score').textContent = message;
+        }
+
+        /**
+         * Mengatur ulang kuis ke awal.
+         */
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            answered = false;
+            quizContainer.classList.remove('hidden');
+            finalResultElement.classList.add('hidden');
+            updateScoreDisplay();
+            loadQuestion();
+        }
+
+        // Mulai kuis saat halaman dimuat
+        window.onload = loadQuestion;
+    </script>
+</body>
+</html>
