@@ -12,12 +12,11 @@
         .container { max-width: 1400px; }
         .table-wrapper { overflow-x: auto; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); background: white; }
         .sticky-col-name { min-width: 220px; position: sticky; left: 0; z-index: 20; border-right: 2px solid #e2e8f0; }
-        /* Warna abu-abu untuk header nama guru */
         .header-name { background-color: #e5e7eb !important; color: #000000 !important; }
         .tab-button { padding: 0.75rem 1.5rem; cursor: pointer; font-weight: 600; border-radius: 0.75rem 0.75rem 0 0; transition: all 0.3s ease; }
         .tab-active { color: #1e40af; background-color: #ffffff; border-top: 3px solid #3b82f6; }
         .tab-inactive { color: #6b7280; background-color: #e2e8f0; }
-        .status-cell { transition: all 0.2s; border: 1px solid #edf2f7; }
+        .status-cell { transition: all 0.2s; border: 1px solid #edf2f7; min-width: 100px; }
     </style>
 </head>
 <body>
@@ -56,8 +55,7 @@
 
             <div id="harian-section" class="table-wrapper">
                 <table id="data-table" class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-blue-700 text-white text-xs uppercase tracking-wider">
-                        </thead>
+                    <thead class="bg-blue-700 text-white text-xs uppercase tracking-wider"></thead>
                     <tbody class="divide-y divide-gray-100"></tbody>
                 </table>
             </div>
@@ -95,8 +93,7 @@
             let inQuotes = false;
             for (let i = 0; i < text.length; i++) {
                 const char = text[i];
-                const nextChar = text[i + 1];
-                if (char === '"' && inQuotes && nextChar === '"') {
+                if (char === '"' && inQuotes && text[i + 1] === '"') {
                     currentField += '"'; i++;
                 } else if (char === '"') {
                     inQuotes = !inQuotes;
@@ -121,12 +118,36 @@
             return rows;
         }
 
+        function getStatusInfo(val) {
+            const str = (val || "").toUpperCase();
+            
+            // Regex diperbarui untuk menangkap format MASUK 14:14,PULANG 14:15
+            // \s* menangani spasi jika ada, \d{2}:\d{2} menangkap format jam
+            const jamMasuk = str.match(/MASUK\s*(\d{1,2}:\d{2})/);
+            const jamPulang = str.match(/PULANG\s*(\d{1,2}:\d{2})/);
+            
+            const tIn = jamMasuk ? jamMasuk[1] : "--:--";
+            const tOut = jamPulang ? jamPulang[1] : "--:--";
+
+            if (str.includes("MASUK") && str.includes("PULANG")) {
+                return { code: 'M,P', tIn, tOut, cellClass: 'bg-green-500 text-white' };
+            }
+            if (str.includes("MASUK")) {
+                return { code: 'M', tIn, tOut, cellClass: 'bg-yellow-400 text-black' };
+            }
+            if (str.includes("IZIN") || str.includes("SAKIT")) {
+                return { code: 'I', tIn: 'IZIN', tOut: 'IZIN', cellClass: 'bg-white text-yellow-600 border' };
+            }
+            return { code: 'A', tIn: '--:--', tOut: '--:--', cellClass: 'bg-red-600 text-white' };
+        }
+
         async function init() {
             try {
                 const response = await fetch(CSV_URL);
                 const dataText = await response.text();
                 const lines = parseCSV(dataText);
                 const headerRow = lines[DATE_ROW];
+                
                 dateHeaders = [];
                 for(let i = START_COL; i < headerRow.length; i++) {
                     if(headerRow[i] && headerRow[i] !== "") dateHeaders.push(headerRow[i]);
@@ -150,23 +171,14 @@
             }
         }
 
-        function getStatusInfo(val) {
-            const str = (val || "").toUpperCase();
-            if (str.includes("MASUK") && str.includes("PULANG")) return { code: 'M,P', cellClass: 'bg-green-500 text-black' };
-            if (str.includes("MASUK")) return { code: 'M', cellClass: 'bg-yellow-400 text-black' };
-            if (str.includes("IZIN") || str.includes("SAKIT")) return { code: 'I', cellClass: 'bg-white text-yellow-600' };
-            return { code: 'A', cellClass: 'bg-red-600 text-white' };
-        }
-
         function renderHarian(data) {
             const thead = document.querySelector("#data-table thead");
             const tbody = document.querySelector("#data-table tbody");
             
-            // Header: Nama Guru (Abu-abu) | Tanggal (Biru)
             thead.innerHTML = `
                 <tr>
                     <th class="sticky-col-name header-name px-4 py-4 text-left font-bold shadow-sm">NAMA GURU</th>
-                    ${dateHeaders.map(d => `<th class="px-2 py-4 text-center min-w-[80px] font-bold">${d}</th>`).join('')}
+                    ${dateHeaders.map(d => `<th class="px-2 py-4 text-center font-bold">${d}</th>`).join('')}
                 </tr>`;
             
             tbody.innerHTML = data.map((g, i) => `
@@ -174,7 +186,16 @@
                     <td class="sticky-col-name px-4 py-3 font-bold text-gray-800 bg-inherit shadow-sm border-b">${g.name}</td>
                     ${dateHeaders.map((_, idx) => {
                         const info = getStatusInfo(g.attendance[idx]);
-                        return `<td class="status-cell px-1 py-3 text-center font-extrabold text-[10px] md:text-xs ${info.cellClass}">${info.code}</td>`;
+                        return `
+                        <td class="status-cell p-2 text-center ${info.cellClass}">
+                            <div class="flex flex-col items-center justify-center leading-tight">
+                                <span class="text-[8px] opacity-80 font-bold">MASUK</span>
+                                <span class="text-[11px] font-black">${info.tIn}</span>
+                                <div class="w-full border-t border-black/10 my-1"></div>
+                                <span class="text-[8px] opacity-80 font-bold">PULANG</span>
+                                <span class="text-[11px] font-black">${info.tOut}</span>
+                            </div>
+                        </td>`;
                     }).join('')}
                 </tr>`).join('');
         }
@@ -202,15 +223,19 @@
             }).join('');
         }
 
-        document.getElementById('tab-harian').onclick = (e) => toggleTab(e.target, 'harian');
-        document.getElementById('tab-rekap').onclick = (e) => toggleTab(e.target, 'rekap');
-
         function toggleTab(btn, mode) {
-            document.querySelectorAll('.tab-button').forEach(b => { b.classList.remove('tab-active'); b.classList.add('tab-inactive'); });
-            btn.classList.add('tab-active'); btn.classList.remove('tab-inactive');
+            document.querySelectorAll('.tab-button').forEach(b => { 
+                b.classList.remove('tab-active'); 
+                b.classList.add('tab-inactive'); 
+            });
+            btn.classList.add('tab-active'); 
+            btn.classList.remove('tab-inactive');
             document.getElementById('harian-section').classList.toggle('hidden', mode !== 'harian');
             document.getElementById('rekap-section').classList.toggle('hidden', mode !== 'rekap');
         }
+
+        document.getElementById('tab-harian').onclick = (e) => toggleTab(e.target, 'harian');
+        document.getElementById('tab-rekap').onclick = (e) => toggleTab(e.target, 'rekap');
 
         document.getElementById('search-input').onkeyup = (e) => {
             const term = e.target.value.toLowerCase();
