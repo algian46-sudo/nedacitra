@@ -27,7 +27,6 @@
             font-size: 13px;
         }
 
-        /* Gaya Tombol Kembali */
         .nav-container {
             max-width: 1100px;
             margin: 0 auto 15px auto;
@@ -65,7 +64,6 @@
             box-shadow: var(--shadow-md);
         }
 
-        /* Header */
         header {
             display: flex;
             align-items: center;
@@ -85,7 +83,6 @@
         .header-text h1 { margin: 0; font-size: 18px; color: var(--primary-blue); }
         .header-text h2 { margin: 5px 0; font-size: 22px; font-weight: 800; background: var(--header-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* Control Panel / Info */
         .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -112,9 +109,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        select:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(2,136,209,0.1); }
-
-        /* Summary Chips */
         .daily-summary {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -134,7 +128,6 @@
         .summary-item .day-name { font-size: 11px; color: var(--primary-blue); font-weight: 600; display: block; }
         .summary-item .jam-val { font-size: 14px; font-weight: 700; }
 
-        /* Schedule Grid */
         .main-schedule-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
@@ -202,14 +195,13 @@
         <div>
             <div class="info-row">
                 <span class="info-label">Nama Guru</span>
-                <select id="guruSelect" onchange="loadSchedule()">
-                    </select>
+                <select id="guruSelect" onchange="loadSchedule()"></select>
             </div>
             <div class="info-row">
                 <span class="info-label">J J M</span>
-                <div id="jjmBox" class="readonly-box" style="flex-grow:0; width:80px; margin-right:15px;">-</div>
+                <div id="jjmBox" class="readonly-box" style="flex-grow:0; width:80px; margin-right:15px;">0 Jam</div>
                 <span class="info-label" style="width:auto; margin-right:10px;">Hari Kerja:</span>
-                <div class="readonly-box" style="flex-grow:0; width:60px;">6 Hari</div>
+                <div id="hariKerjaBox" class="readonly-box" style="flex-grow:0; width:60px;">0 Hari</div>
             </div>
         </div>
         <div>
@@ -224,84 +216,447 @@
         </div>
     </div>
 
-    <div class="daily-summary" id="summaryContainer">
-        </div>
-
-    <div class="main-schedule-grid" id="scheduleGrid">
-        </div>
+    <div class="daily-summary" id="summaryContainer"></div>
+    <div class="main-schedule-grid" id="scheduleGrid"></div>
 </div>
 
 <script>
-    // 1. DATA DATABASE JADWAL 15 GURU
+    // DATA UTAMA: Masukkan data jadwal di sini. JJM & Ringkasan akan dihitung otomatis.
     const databaseJadwal = {
         "Algian Manggara, S.Agr": {
-            jjm: 24,
-            harian: { senin: 4, selasa: 4, rabu: 4, kamis: 6, jumat: 2, sabtu: 4 },
             jadwal: {
                 senin: [
-                    { jam: 3, mapel: "IPA", waktu: "13.45-14.15", kelas: "VIII.1" },
-                    { jam: 4, mapel: "IPA", waktu: "14.15-14.45", kelas: "VIII.1" },
-                    { jam: 5, mapel: "IPA", waktu: "14.45-15.15", kelas: "IX.1" },
-                    { jam: 7, mapel: "IPA", waktu: "15.45-16.15", kelas: "IX.1" }
+                    { jam: 7, mapel: "Seni, Budaya dan Prakarya", waktu: "15.45-16.15", kelas: "IX.2" },
+                    { jam: 8, mapel: "Seni, Budaya dan Prakarya", waktu: "15.45-16.45", kelas: "IX.2" },
+                
                 ],
                 selasa: [
-                    { jam: 3, mapel: "Seni Budaya", waktu: "13.45-14.15", kelas: "VII.2" },
-                    { jam: 4, mapel: "Seni Budaya", waktu: "14.15-14.45", kelas: "VII.2" },
-                    { jam: 5, mapel: "Seni Budaya", waktu: "14.45-15.15", kelas: "VII.1" },
-                    { jam: 6, mapel: "Seni Budaya", waktu: "15.15-15.45", kelas: "VII.1" }
+                    { jam: 3, mapel: "IPA", waktu: "13.45-14.15", kelas: "IX.2" },
+                    { jam: 4, mapel: "IPA", waktu: "14.15-14.45", kelas: "IX.2" },
+                    { jam: 5, mapel: "IPA", waktu: "14.45-15.15", kelas: "IX.2" },
+                
                 ],
                 rabu: [
-                    { jam: 3, mapel: "Seni Budaya", waktu: "13.45-14.15", kelas: "VII.2" },
-                    { jam: 4, mapel: "Seni Budaya", waktu: "14.15-14.45", kelas: "VII.2" },
-                    { jam: 5, mapel: "Seni Budaya", waktu: "14.45-15.15", kelas: "VII.1" },
-                    { jam: 6, mapel: "Seni Budaya", waktu: "15.15-15.45", kelas: "VII.1" }
+                    { jam: 1, mapel: "Seni, Budaya dan Prakarya", waktu: "12.45-13.15", kelas: "IX.1" },
+                    { jam: 2, mapel: "Seni, Budaya dan Prakarya", waktu: "13.15-13.45", kelas: "IX.1" },
+                    { jam: 6, mapel: "Seni, Budaya dan Prakarya", waktu: "15.30-16.00", kelas: "VIII.2" },
+                    { jam: 7, mapel: "Seni, Budaya dan Prakarya", waktu: "16.00-16.30", kelas: "VIII.2" },
                 ],
                 kamis: [
-                    { jam: 3, mapel: "Seni Budaya", waktu: "13.45-14.15", kelas: "VII.2" },
-                    { jam: 4, mapel: "Seni Budaya", waktu: "14.15-14.45", kelas: "VII.2" },
-                    { jam: 5, mapel: "Seni Budaya", waktu: "14.45-15.15", kelas: "VII.1" },
-                    { jam: 6, mapel: "Seni Budaya", waktu: "15.15-15.45", kelas: "VII.1" }
+                    { jam: 1, mapel: "IPA", waktu: "12.45-13.15", kelas: "IX.1" },
+                    { jam: 2, mapel: "IPA", waktu: "13.15-13.45", kelas: "IX.1" },
+                    { jam: 6, mapel: "Seni, Budaya dan Prakarya", waktu: "15.30-16.00", kelas: "VIII.1" },
+                    { jam: 7, mapel: "Seni, Budaya dan Prakarya", waktu: "16.00-16.30", kelas: "VIII.1" }
                 ],
                 jumat: [
-                    { jam: 3, mapel: "Seni Budaya", waktu: "13.45-14.15", kelas: "VII.2" },
-                    { jam: 4, mapel: "Seni Budaya", waktu: "14.15-14.45", kelas: "VII.2" },
-                    { jam: 5, mapel: "Seni Budaya", waktu: "14.45-15.15", kelas: "VII.1" },
-                    { jam: 6, mapel: "Seni Budaya", waktu: "15.15-15.45", kelas: "VII.1" }
+                    
                 ],
                 sabtu: [
-                    { jam: 3, mapel: "Seni Budaya", waktu: "13.45-14.15", kelas: "VII.2" },
-                    { jam: 4, mapel: "Seni Budaya", waktu: "14.15-14.45", kelas: "VII.2" },
-                    { jam: 5, mapel: "Seni Budaya", waktu: "14.45-15.15", kelas: "VII.1" },
-                    { jam: 6, mapel: "Seni Budaya", waktu: "15.15-15.45", kelas: "VII.1" }
-                ],
+                    { jam: 1, mapel: "IPA", waktu: "12.45-13.15", kelas: "IX.1" },
+                    { jam: 2, mapel: "IPA", waktu: "13.15-13.45", kelas: "IX.1" },
+                    { jam: 4, mapel: "IPA", waktu: "14.15-14.45", kelas: "IX.2" },
+                  
+                ]
             }
         },
-        "Toyib, S.Pd": {
-            jjm: 20,
-            harian: { senin: 6, selasa: 2, rabu: 4, kamis: 4, jumat: 4, sabtu: 0 },
+        "Purwaningsih, S.Pd": 
+        {
             jadwal: {
-                senin: [{ jam: 1, mapel: "Matematika", waktu: "07.30-08.10", kelas: "IX.4" }],
-                selasa: [{ jam: 2, mapel: "Matematika", waktu: "08.10-08.50", kelas: "IX.4" }],
+                senin: [
+                    { jam: 7, mapel: "MTK", waktu: "15.45-16.15", kelas: "VIII.2" },
+                    { jam: 8, mapel: "MTK", waktu: "15.45-16.45", kelas: "VIII.2" },
+                
+                ],
+                selasa: [
+                    { jam: 3, mapel: "MTK", waktu: "13.45-14.15", kelas: "VIII.2" },
+                    { jam: 4, mapel: "MTK", waktu: "14.15-14.45", kelas: "VIII.2" },
+                    { jam: 7, mapel: "MTK", waktu: "15.45-16.15", kelas: "IX.1" },
+                    { jam: 8, mapel: "MTK", waktu: "16.15-16.45", kelas: "IX.1" },
+                ],
+                rabu: [
+                    { jam: 4, mapel: "MTK", waktu: "14.15-14.45", kelas: "IX.2" },
+                    { jam: 5, mapel: "MTK", waktu: "14.45-15.15", kelas: "IX.2" },
+   
+                ],
+                kamis: [
+                    { jam: 4, mapel: "MTK", waktu: "14.15-14.45", kelas: "IX.2" },
+                    { jam: 5, mapel: "MTK", waktu: "14.45-15.15", kelas: "IX.2" },
+
+                ],
+                jumat: [
+                    { jam: 2, mapel: "MTK", waktu: "13.30-14.00", kelas: "IX.1" },
+                    { jam: 3, mapel: "MTK", waktu: "14.00-14.30", kelas: "IX.1" },
+                ],
+                sabtu: [
+                
+                  
+                ]
             }
         },
-        "Purwaningsih, S.Pd": { jjm: 22, harian: { senin: 4, selasa: 4, rabu: 4, kamis: 4, jumat: 2, sabtu: 4 }, jadwal: { senin: [] } },
-        "Sri Yulianti, S.Pd": { jjm: 24, harian: { senin: 4, selasa: 4, rabu: 4, kamis: 4, jumat: 4, sabtu: 4 }, jadwal: { senin: [] } },
-        "Sevilla Dela Amirudin, S.Pd": { jjm: 18, harian: { senin: 2, selasa: 6, rabu: 4, kamis: 2, jumat: 2, sabtu: 2 }, jadwal: { senin: [] } },
-        "Uswatul Hasanah, S.Pd ": { jjm: 24, harian: { senin: 4, selasa: 4, rabu: 4, kamis: 4, jumat: 4, sabtu: 4 }, jadwal: { senin: [] } },
-        "Euis Sa'adah, S.Ag": { jjm: 20, harian: { senin: 0, selasa: 8, rabu: 4, kamis: 4, jumat: 4, sabtu: 0 }, jadwal: { senin: [] } },
-        "Dapih Mahrizal, S.Pd": { jjm: 24, harian: { senin: 4, selasa: 4, rabu: 4, kamis: 4, jumat: 4, sabtu: 4 }, jadwal: { senin: [] } },
-        "Anita Sari, S.M": { jjm: 22, harian: { senin: 4, selasa: 4, rabu: 4, kamis: 4, jumat: 2, sabtu: 4 }, jadwal: { senin: [] } },
-        "Reshamayori Alvianita, S.Sos": { jjm: 24, harian: { senin: 6, selasa: 6, rabu: 6, kamis: 6, jumat: 0, sabtu: 0 }, jadwal: { senin: [] } },
-        "Nurul Intan Septiana Margarita, S.Pd": { jjm: 16, harian: { senin: 2, selasa: 2, rabu: 4, kamis: 4, jumat: 2, sabtu: 2 }, jadwal: { senin: [] } },
-        "Nur Amalia, S.E": { jjm: 24, harian: { senin: 4, selasa: 4, rabu: 4, kamis: 4, jumat: 4, sabtu: 4 }, jadwal: { senin: [] } },
-        "Siva Nurlatifah, S.Pd": { jjm: 20, harian: { senin: 4, selasa: 0, rabu: 4, kamis: 4, jumat: 4, sabtu: 4 }, jadwal: { senin: [] } },
-        "Ira Yulyanti, S.Kom": { jjm: 24, harian: { senin: 4, selasa: 4, rabu: 4, kamis: 4, jumat: 4, sabtu: 4 }, jadwal: { senin: [] } },
-        "Endang Budi Rahayu": { jjm: 18, harian: { senin: 2, selasa: 2, rabu: 2, kamis: 4, jumat: 4, sabtu: 4 }, jadwal: { senin: [] } }
+        "Euis Sa'adah, S.Pd": 
+        {
+            jadwal: {
+                senin: [
+                    { jam: 3, mapel: "Pendidikan Pancasila", waktu: "13.45-14.15", kelas: "VII.1" },
+                    { jam: 4, mapel: "Pendidikan Pancasila", waktu: "14.15-14.45", kelas: "VII.1" },
+                    { jam: 7, mapel: "Pendidikan Pancasila", waktu: "15.45-16.15", kelas: "VII.2" },
+                    { jam: 8, mapel: "Pendidikan Pancasila", waktu: "15.45-16.45", kelas: "VII.2" },
+                ],
+                selasa: [
+                    { jam: 3, mapel: "Pendidikan Pancasila", waktu: "13.45-14.15", kelas: "VIII.1" },
+                    { jam: 4, mapel: "Pendidikan Pancasila", waktu: "14.15-14.45", kelas: "VIII.1" },
+                    { jam: 7, mapel: "Pendidikan Pancasila", waktu: "15.45-16.15", kelas: "VIII.2" },
+                    { jam: 8, mapel: "Pendidikan Pancasila", waktu: "16.15-16.45", kelas: "VIII.2" },
+                ],
+                rabu: [
+                    { jam: 3, mapel: "Pendidikan Pancasila", waktu: "13.45-14.15", kelas: "IX.1" },
+                    { jam: 4, mapel: "Pendidikan Pancasila", waktu: "14.15-14.45", kelas: "IX.1" },
+                    { jam: 6, mapel: "Pendidikan Pancasila", waktu: "15.30-16.00", kelas: "IX.2" },
+                    { jam: 7, mapel: "Pendidikan Pancasila", waktu: "16.00-16.30", kelas: "IX.2" },
+                ],
+                kamis: [
+                    
+                ],
+                jumat: [
+                    
+                ],
+                sabtu: [
+                    
+                  
+                ]
+            }
+        },
+        "Uswatul Hasanah, S.Pd":
+        {
+            jadwal: {
+                senin: [
+                    { jam: 3, mapel: "Bahasa Inggris", waktu: "13.45-14.15", kelas: "VIII.1" },
+                    { jam: 4, mapel: "Bahasa Inggris", waktu: "14.15-14.45", kelas: "VIII.1" },
+                    { jam: 5, mapel: "Bahasa Inggris", waktu: "14.45-15.15", kelas: "VIII.1" },
+                ],
+                selasa: [
+                
+                ],
+                rabu: [
+                    { jam: 1, mapel: "Bahasa Inggris", waktu: "12.45-13.15", kelas: "IX.2" },
+                    { jam: 2, mapel: "Bahasa Inggris", waktu: "13.15-13.45", kelas: "IX.2" },
+                    { jam: 3, mapel: "Bahasa Inggris", waktu: "13.45-14.15", kelas: "IX.2" },
+                ],
+                kamis: [
+                    { jam: 5, mapel: "Bahasa Inggris", waktu: "14.45-15.15", kelas: "IX.1" },
+                    { jam: 6, mapel: "Bahasa Inggris", waktu: "15.30-16.00", kelas: "IX.1" },
+                    { jam: 7, mapel: "Bahasa Inggris", waktu: "16.00-16.30", kelas: "IX.1" },
+                ],
+                jumat: [
+                    
+                ],
+                sabtu: [
+                                     
+                ]
+            }
+        },
+        "Reshamayori Alvianita, S.Sos":
+        {
+            jadwal: {
+                senin: [
+                    { jam: 3, mapel: "IPS", waktu: "13.45-14.15", kelas: "IX.1" },
+                    { jam: 4, mapel: "IPS", waktu: "15.45-16.45", kelas: "IX.1" },
+                    { jam: 5, mapel: "IPS", waktu: "15.45-16.45", kelas: "IX.1" },
+                ],
+                selasa: [
+                
+                ],
+                rabu: [
+
+                ],
+                kamis: [
+
+                ],
+                jumat: [
+                    { jam: 1, mapel: "IPS", waktu: "13.00-13.30", kelas: "IX.2" },
+                    { jam: 2, mapel: "IPS", waktu: "13.30-14.00", kelas: "IX.2" },
+                    { jam: 3, mapel: "IPS", waktu: "14.40-14.30", kelas: "IX.2" },
+                ],
+                sabtu: [
+                    { jam: 1, mapel: "IPS", waktu: "12.45-13.15", kelas: "VIII.2" },
+                    { jam: 2, mapel: "IPS", waktu: "13.15-13.45", kelas: "VIII.2" },
+                    { jam: 3, mapel: "IPS", waktu: "13.45-14.15", kelas: "VIII.2" },
+                  
+                ]
+            }
+        },
+        "Sri Yulianti, S.Pd":
+        {
+            jadwal: {
+                senin: [
+                    { jam: 3, mapel: "Bahasa Indonesia", waktu: "13.45-14.15", kelas: "IX.2" },
+                    { jam: 4, mapel: "Bahasa Indonesia", waktu: "14.15-14.45", kelas: "IX.2" },
+                    { jam: 5, mapel: "Bahasa Indonesia", waktu: "14.45-15.15", kelas: "IX.2" },
+                    { jam: 7, mapel: "Bahasa Indonesia", waktu: "15.45-16.15", kelas: "VIII.1" },
+                    { jam: 8, mapel: "Bahasa Indonesia", waktu: "16.15-16.45", kelas: "VIII.1" },
+                ],
+                selasa: [
+                    { jam: 5, mapel: "Bahasa Indonesia", waktu: "14.45-15.15", kelas: "VIII.1" },
+                    { jam: 7, mapel: "Bahasa Indonesia", waktu: "15.45-16.15", kelas: "IX.2" },
+                    { jam: 8, mapel: "Bahasa Indonesia", waktu: "16.15-16.45", kelas: "IX.2" },
+                
+                ],
+                rabu: [
+                    { jam: 1, mapel: "Bahasa Indonesia", waktu: "12.45-13.15", kelas: "VIII.1" },
+                    { jam: 2, mapel: "Bahasa Indonesia", waktu: "13.15-13.45", kelas: "VIII.1" },
+                    { jam: 5, mapel: "Bahasa Indonesia", waktu: "14.45-15.15", kelas: "IX.1" },
+                    { jam: 6, mapel: "Bahasa Indonesia", waktu: "15.30-16.00", kelas: "IX.1" },
+                    { jam: 7, mapel: "Bahasa Indonesia", waktu: "16.00-16.30", kelas: "IX.1" },
+                ],
+                kamis: [
+                    { jam: 1, mapel: "Informatika", waktu: "12.45-13.15", kelas: "VIII.1" },
+                    { jam: 2, mapel: "Informatika", waktu: "13.15-13.45", kelas: "VIII.1" },
+                    { jam: 3, mapel: "Informatika", waktu: "13.45-14.15", kelas: "VIII.2" },
+                    { jam: 4, mapel: "Informatika", waktu: "14.15-14.45", kelas: "VIII.2" }
+                ],
+                jumat: [
+                    
+                ],
+                sabtu: [
+                    { jam: 3, mapel: "Bahasa Indonesia", waktu: "13.45-14.15", kelas: "IX.1" },
+                    { jam: 4, mapel: "Bahasa Indonesia", waktu: "14.15-14.45", kelas: "IX.1" },
+                   
+                  
+                ]
+            }
+        },
+        "Nurul Intan Septiana M, S.Pd":
+        {
+            jadwal: {
+                senin: [
+                    { jam: 5, mapel: "Bahasa Inggris", waktu: "14.45-15.15", kelas: "VII.1" },
+                                    
+                ],
+                selasa: [
+                    { jam: 3, mapel: "Bahasa Inggris", waktu: "13.45-14.15", kelas: "VII.2" },
+                    { jam: 4, mapel: "Bahasa Inggris", waktu: "14.15-14.45", kelas: "VII.2" },
+                    { jam: 5, mapel: "Bahasa Inggris", waktu: "14.45-15.15", kelas: "VII.2" },
+                    { jam: 7, mapel: "Ilmu Pengetahuan Alam", waktu: "15.45-16.15", kelas: "VII.1" },
+                    { jam: 8, mapel: "Ilmu Pengetahuan Alam", waktu: "16.15-16.45", kelas: "VII.1" },
+                
+                ],
+                rabu: [
+                    { jam: 1, mapel: "Ilmu Pengetahuan Alam", waktu: "12.45-13.15", kelas: "VII.2" },
+                    { jam: 2, mapel: "Ilmu Pengetahuan Alam", waktu: "13.15-13.45", kelas: "VII.2" },
+                    { jam: 3, mapel: "Bahasa Inggris", waktu: "13.45-14.15", kelas: "VII.1" },
+                    { jam: 4, mapel: "Bahasa Inggris", waktu: "14.15-14.45", kelas: "VII.1" },
+                ],
+                kamis: [
+                    { jam: 2, mapel: "Ilmu Pengetahuan Alam", waktu: "13.15-13.45", kelas: "VII.2" },
+                    { jam: 3, mapel: "Ilmu Pengetahuan Alam", waktu: "13.45-14.15", kelas: "VII.2" },
+                    { jam: 4, mapel: "Ilmu Pengetahuan Alam", waktu: "14.15-14.45", kelas: "VII.1" },
+                    { jam: 5, mapel: "Ilmu Pengetahuan Alam", waktu: "14.45-15.15", kelas: "VII.1" },
+                ],
+                jumat: [
+                    { jam: 1, mapel: "Bahasa Inggris", waktu: "13.00-13.30", kelas: "VIII.2" },
+                    { jam: 2, mapel: "Bahasa Inggris", waktu: "13.30-14.00", kelas: "VIII.2" },
+                    { jam: 3, mapel: "Bahasa Inggris", waktu: "14.00-14.30", kelas: "VIII.2" },
+                    
+                ],
+                sabtu: [
+                   
+                    
+                  
+                ]
+            }
+        },
+        "Nur Amalia, S.E":
+        {
+            jadwal: {
+                senin: [
+                    { jam: 3, mapel: "Bahasa Indonesia", waktu: "13.45-14.15", kelas: "VIII.2" },
+                    { jam: 4, mapel: "Bahasa Indonesia", waktu: "14.15-14.45", kelas: "VIII.2" },
+                    { jam: 5, mapel: "Bahasa Indonesia", waktu: "14.45-15.15", kelas: "VIII.2" },
+                    { jam: 7, mapel: "Informatika", waktu: "15.45-16.15", kelas: "IX.1" },
+                    { jam: 8, mapel: "Informatika", waktu: "16.15-16.45", kelas: "IX.1" },
+                
+                ],
+                selasa: [
+                    { jam: 3, mapel: "Bahasa Indonesia", waktu: "13.45-14.15", kelas: "VII.1" },
+                    { jam: 4, mapel: "Bahasa Indonesia", waktu: "14.15-14.45", kelas: "VII.1" },
+                    { jam: 5, mapel: "Bahasa Indonesia", waktu: "14.45-15.15", kelas: "VII.1" },
+                    { jam: 7, mapel: "Bahasa Indonesia", waktu: "15.45-16.15", kelas: "VII.2" },
+                    { jam: 8, mapel: "Bahasa Indonesia", waktu: "16.15-16.45", kelas: "VII.2" },
+                
+                ],
+                rabu: [
+                    { jam: 4, mapel: "Bahasa Indonesia", waktu: "14.15-14.45", kelas: "VIII.2" },
+                    { jam: 5, mapel: "Bahasa Indonesia", waktu: "14.45-15.15", kelas: "VIII.2" },
+                    { jam: 6, mapel: "Bahasa Indonesia", waktu: "15.30-16.00", kelas: "VII.1" },
+                    { jam: 7, mapel: "Bahasa Indonesia", waktu: "16.00-16.30", kelas: "VII.1" },
+                ],
+                kamis: [
+                    
+                ],
+                jumat: [
+                    { jam: 1, mapel: "Bahasa Indonesia", waktu: "13.00-13.30", kelas: "VII.2" },
+                    { jam: 2, mapel: "Bahasa Indonesia", waktu: "13.30-14.00", kelas: "VII.2" },
+                    { jam: 3, mapel: "Bahasa Indonesia", waktu: "14.00-14.30", kelas: "VII.2" },
+                ],
+                sabtu: [
+                    { jam: 1, mapel: "Informatika", waktu: "12.45-13.15", kelas: "IX.2" },
+                    { jam: 2, mapel: "Informatika", waktu: "13.15-13.45", kelas: "IX.2" },
+                
+                  
+                ]
+            }
+        },
+        "Toyib, S.Pd":
+        {
+            jadwal: {
+                senin: [
+                    { jam: 3, mapel: "Pendidikan Agama Islam", waktu: "13.45-14.15", kelas: "VII.2" },
+                    { jam: 4, mapel: "Pendidikan Agama Islam", waktu: "14.15-14.45", kelas: "VII.2" },
+                    { jam: 5, mapel: "Baca Tulis Qur'an", waktu: "14.45-15.15", kelas: "VII.2" },
+                
+                ],
+                selasa: [
+                    { jam: 3, mapel: "Pendidikan Agama Islam", waktu: "13.45-14.15", kelas: "IX.1" },
+                    { jam: 4, mapel: "Pendidikan Agama Islam", waktu: "14.15-14.45", kelas: "IX.1" },
+                    { jam: 5, mapel: "Baca Tulis Qur'an", waktu: "14.45-15.15", kelas: "IX.1" },
+                
+                ],
+                rabu: [
+                    { jam: 1, mapel: "Pendidikan Agama Islam", waktu: "12.45-13.15", kelas: "VIII.2" },
+                    { jam: 2, mapel: "Pendidikan Agama Islam", waktu: "13.15-13.45", kelas: "VIII.2" },
+                    { jam: 3, mapel: "Baca Tulis Qur'an", waktu: "13.45-14.15", kelas: "VIII.2" },
+                    { jam: 5, mapel: "Baca Tulis Qur'an", waktu: "14.45-15.15", kelas: "VII.1" },
+                    { jam: 7, mapel: "Baca Tulis Qur'an", waktu: "16.00-16.30", kelas: "VIII.1" },
+                ],
+                kamis: [
+                    { jam: 1, mapel: "Pendidikan Agama Islam", waktu: "12.45-13.15", kelas: "IX.2" },
+                    { jam: 2, mapel: "Pendidikan Agama Islam", waktu: "13.15-13.45", kelas: "IX.2" },
+                    { jam: 3, mapel: "Baca Tulis Qur'an", waktu: "13.45-14.15", kelas: "IX.2" },
+                    { jam: 4, mapel: "Bahasa Sunda", waktu: "14.15-14.45", kelas: "VII.2" },
+                    { jam: 5, mapel: "Bahasa Sunda", waktu: "14.45-15.15", kelas: "VIII.1" },
+                    { jam: 6, mapel: "Pendidikan Agama Islam", waktu: "15.30-16.00", kelas: "VII.1" },
+                    { jam: 7, mapel: "Baca Tulis Qur'an", waktu: "16.00-16.30", kelas: "VII.1" },
+                ],
+                jumat: [
+                    { jam: 1, mapel: "Bahasa Sunda", waktu: "13.00-13.30", kelas: "IX.1" },
+                    { jam: 3, mapel: "Bahasa Sunda", waktu: "14.00-14.30", kelas: "VII.1" },
+                ],
+                sabtu: [
+                    { jam: 1, mapel: "Pendidikan Agama Islam", waktu: "12.45-13.15", kelas: "VIII.1" },
+                    { jam: 2, mapel: "Pendidikan Agama Islam", waktu: "13.15-13.45", kelas: "VIII.1" },
+                    { jam: 3, mapel: "Bahasa Sunda", waktu: "13.45-14.15", kelas: "IX.2" },
+                    { jam: 4, mapel: "Bahasa Sunda", waktu: "14.15-14.45", kelas: "VIII.2" },
+                  
+                ]
+            }
+        },
+        "Sevilla Dela Amirudin, S.Pd":
+        {
+            jadwal: {
+                senin: [
+                    { jam: 7, mapel: "Matematika", waktu: "15.45-16.15", kelas: "VII.1" },
+                    { jam: 8, mapel: "Matematika", waktu: "16.15-16.45", kelas: "VII.1" },
+                
+                ],
+                selasa: [
+                    { jam: 5, mapel: "IPA", waktu: "14.45-15.15", kelas: "VIII.2" },
+                    { jam: 7, mapel: "IPA", waktu: "15.45-16.15", kelas: "VIII.1" },
+                    { jam: 8, mapel: "IPA", waktu: "16.15-16.45", kelas: "VIII.1" },
+                
+                ],
+                rabu: [
+                    { jam: 3, mapel: "Matematika", waktu: "13.45-14.15", kelas: "VIII.1" },
+                    { jam: 4, mapel: "Matematika", waktu: "14.15-14.45", kelas: "VIII.1" },
+                    { jam: 5, mapel: "Matematika", waktu: "14.45-15.15", kelas: "VII.2" },
+                    { jam: 6, mapel: "Matematika", waktu: "15.30-16.00", kelas: "VII.2" },
+                    { jam: 7, mapel: "Matematika", waktu: "16.00-16.30", kelas: "VII.2" },
+                ],
+                kamis: [
+                    { jam: 1, mapel: "Matematika", waktu: "12.45-13.15", kelas: "VII.2" },
+                    { jam: 3, mapel: "Matematika", waktu: "13.45-14.15", kelas: "VIII.1" },
+                    { jam: 4, mapel: "Matematika", waktu: "14.15-14.45", kelas: "VIII.1" },
+                    { jam: 5, mapel: "IPA", waktu: "14.45-15.15", kelas: "VIII.2" },
+                    { jam: 6, mapel: "IPA", waktu: "15.30-16.00", kelas: "VIII.2" },
+                    { jam: 7, mapel: "IPA", waktu: "16.00-16.30", kelas: "VIII.2" },
+                ],
+                jumat: [
+                    { jam: 1, mapel: "Matematika", waktu: "13.00-13.30", kelas: "VII.1" },
+                    { jam: 2, mapel: "Matematika", waktu: "13.30-14.00", kelas: "VII.1" },
+                ],
+                sabtu: [
+                    { jam: 3, mapel: "IPA", waktu: "13.45-14.15", kelas: "VIII.1" },
+                    { jam: 4, mapel: "IPA", waktu: "14.15-14.45", kelas: "VIII.1" },
+                   
+                  
+                ]
+            }
+        },
+        "Dapih Mahrizal":
+        {
+            jadwal: {
+                senin: [
+                
+                ],
+                selasa: [
+
+                ],
+                rabu: [
+                    { jam: 1, mapel: "PJOK", waktu: "12.45-13.15", kelas: "VII.1" },
+                    { jam: 2, mapel: "PJOK", waktu: "13.15-13.45", kelas: "VII.1" },
+                    { jam: 3, mapel: "PJOK", waktu: "13.45-14.15", kelas: "VII.2" },
+                    { jam: 4, mapel: "PJOK", waktu: "14.15-14.45", kelas: "VII.2" },
+                    { jam: 5, mapel: "PJOK", waktu: "14.45-15.15", kelas: "VIII.1" },
+                    { jam: 6, mapel: "PJOK", waktu: "15.30-16.00", kelas: "VIII.1" },
+                    
+                ],
+                kamis: [
+                    { jam: 1, mapel: "PJOK", waktu: "12.45-13.15", kelas: "VIII.2" },
+                    { jam: 2, mapel: "PJOK", waktu: "13.15-13.45", kelas: "VIII.2" },
+                    { jam: 3, mapel: "PJOK", waktu: "13.45-14.15", kelas: "IX.1" },
+                    { jam: 4, mapel: "PJOK", waktu: "14.15-14.45", kelas: "IX.1" },
+                    { jam: 6, mapel: "PJOK", waktu: "15.30-16.00", kelas: "IX.2" },
+                    { jam: 7, mapel: "PJOK", waktu: "16.00-16.30", kelas: "IX.2" },
+                ],
+                jumat: [
+                    
+                ],
+                sabtu: [
+
+                  
+                ]
+            }
+        },
+        "Siva Nurlatifah, S.Pd":
+        {
+            jadwal: {
+                senin: [
+                
+                ],
+                selasa: [
+
+                ],
+                rabu: [
+
+                    
+                ],
+                kamis: [
+
+                ],
+                jumat: [
+                    
+                ],
+                sabtu: [
+                    { jam: 1, mapel: "Informatika", waktu: "12.45-13.15", kelas: "VII.1" },
+                    { jam: 2, mapel: "Informatika", waktu: "13.15-13.45", kelas: "VII.1" },
+                    { jam: 3, mapel: "Informatika", waktu: "13.45-14.15", kelas: "VII.2" },
+                    { jam: 4, mapel: "Informatika", waktu: "14.15-14.45", kelas: "VII.2" },
+                ]
+            }
+        },
     };
 
     const hariList = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'];
 
-    // 2. FUNSI RENDER AWAL
     function init() {
         const select = document.getElementById('guruSelect');
         Object.keys(databaseJadwal).forEach(nama => {
@@ -310,30 +665,42 @@
             opt.innerHTML = nama;
             select.appendChild(opt);
         });
-        loadSchedule(); // Muat jadwal pertama kali
+        loadSchedule();
     }
 
-    // 3. LOGIKA UPDATE JADWAL
     function loadSchedule() {
         const namaGuru = document.getElementById('guruSelect').value;
         const data = databaseJadwal[namaGuru];
 
-        // Update JJM
-        document.getElementById('jjmBox').innerHTML = data.jjm + " Jam";
+        // LOGIKA PERHITUNGAN OTOMATIS
+        let totalJJM = 0;
+        let ringkasanHarian = {};
+        let hariAktif = 0;
 
-        // Update Ringkasan Harian
+        hariList.forEach(hari => {
+            const listJadwal = data.jadwal[hari] || [];
+            const jumlahJam = listJadwal.length;
+            ringkasanHarian[hari] = jumlahJam;
+            totalJJM += jumlahJam;
+            if (jumlahJam > 0) hariAktif++;
+        });
+
+        // Update Tampilan Info Atas
+        document.getElementById('jjmBox').innerHTML = totalJJM + " Jam";
+        document.getElementById('hariKerjaBox').innerHTML = hariAktif + " Hari";
+
+        // Update Summary Chips
         const summaryCont = document.getElementById('summaryContainer');
         summaryCont.innerHTML = '';
         hariList.forEach(hari => {
             summaryCont.innerHTML += `
                 <div class="summary-item">
                     <span class="day-name">${hari.toUpperCase()}</span>
-                    <span class="jam-val">${data.harian[hari]} Jam</span>
-                </div>
-            `;
+                    <span class="jam-val">${ringkasanHarian[hari]} Jam</span>
+                </div>`;
         });
 
-        // Update Tabel Jadwal
+        // Update Grid Jadwal
         const grid = document.getElementById('scheduleGrid');
         grid.innerHTML = '';
 
@@ -361,17 +728,11 @@
                     <div class="day-label">${hari.toUpperCase()}</div>
                     <table>
                         <thead>
-                            <tr>
-                                <th>Jam</th>
-                                <th>Mata Pelajaran</th>
-                                <th>Waktu</th>
-                                <th>Kelas</th>
-                            </tr>
+                            <tr><th>Jam</th><th>Mata Pelajaran</th><th>Waktu</th><th>Kelas</th></tr>
                         </thead>
                         <tbody>${rowsHtml}</tbody>
                     </table>
-                </div>
-            `;
+                </div>`;
         });
     }
 
@@ -379,5 +740,4 @@
 </script>
 
 </body>
-
 </html>
