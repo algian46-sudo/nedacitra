@@ -35,6 +35,7 @@
         .btn-check { background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); transition: all 0.3s; }
         .btn-check.active { background-color: #10b981 !important; color: white; border-color: #059669; }
         .btn-locked { background-color: #94a3b8 !important; cursor: not-allowed !important; opacity: 0.7; }
+        #upload-loading { display: none; }
     </style>
 </head>
 <body>
@@ -63,21 +64,16 @@
             <div class="max-w-3xl mx-auto bg-white/10 p-6 rounded-2xl border border-white/20">
                 <h3 class="text-xl font-bold mb-4 flex items-center"><i class="fas fa-info-circle mr-3"></i> PETUNJUK BELAJAR:</h3>
                 <ul class="space-y-3 text-sm md:text-base leading-relaxed">
-                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">1</span> Tonton seluruh video pembelajaran yang tersedia.</li>
-                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">2</span> Klik tombol <b>"Selesai Menonton Materi 1, 2, dan 3"</b> jika sudah selesai menonton video.</li>
-                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">3</span> Akses untuk membuka soal kuis akan terbuka secara otomatis.</li>
-                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">4</span> Kerjakan seluruh soal yang ada hingga selesai.</li>
-                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">5</span> Jika pada bagian rekap penilaian dianggap <b>"REMEDIAL"</b>, silakan kerjakan ulang hingga tuntas.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">1</span> Tonton seluruh video pembelajaran sampai tuntas, dan tulis materi penting yang ada pada video</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">2</span> Setiap selesai melihat media pembelajaran klik "Selesai Menonton Materi 1, 2, dan 3" untuk membuka akses pada kuis</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">3</span> Foto catatan rapi kamu di buku tulis, untuk keperluan bukti pembelajaran</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">4</span> Setelah semua video pembejaran selesai dilihat, maka form VERIFIKASI BELAJAR akan terbuka.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">5</span> Isi identitas dan foto catatan lengkap yang sudah terisi rapi pada buku catatan.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">6</span> Klik kirim bukti dan Mulai kuis, lalu kerjakan seluruh soal hingga selesai.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">7</span> Jika sudah selesai mengerjakan, REFRESH halaman untuk melihat hasil pada tab bagian paling bawah.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">8</span> Jika masih remedial, kerjakan ulang hingga dinyatakan LULUS.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">9</span> Khadiran dinyatakan selesai jika seluruh pembelajaran, foto catatan dan kuis telah terisi "selebihnyha dinyatakan ALFA".</li>
                 </ul>
-                <hr class="my-6 border-white/20">
-                <div class="bg-yellow-400/20 p-4 rounded-xl border border-yellow-400/40">
-                    <p class="text-sm font-bold leading-relaxed">
-                        <i class="fas fa-exclamation-triangle mr-2"></i> CATATAN:
-                        <span class="font-normal block mt-1 opacity-90 italic">
-                            Setiap jawaban yang terinput akan langsung tampil pada bagian rekap nilai. Siswa yang tidak mengerjakan soal pada hari ini dianggap tidak masuk dan dinyatakan <b>"ALFA"</b>.
-                        </span>
-                    </p>
-                </div>
             </div>
         </div>
     </section>
@@ -111,11 +107,12 @@
 
     <section id="kuis" class="container mx-auto px-4 mb-16">
         <div class="bg-white rounded-3xl shadow-2xl overflow-hidden text-gray-800 border-4 border-white/20">
+            
             <div id="data-input-section" class="p-8 md:p-12">
                 <div class="text-center mb-8">
-                    <h2 class="text-2xl font-bold text-dark-blue">Identitas Siswa</h2>
+                    <h2 class="text-2xl font-bold text-dark-blue">Verifikasi Belajar</h2>
                     <div id="lock-status" class="mt-2 inline-block px-4 py-1 rounded-full bg-red-100 text-red-600 text-xs font-bold uppercase">
-                        <i class="fas fa-lock mr-2"></i> Akses Terkunci
+                        <i class="fas fa-lock mr-2"></i> Video Belum Lengkap
                     </div>
                 </div>
                 <div class="max-w-md mx-auto space-y-4">
@@ -195,7 +192,22 @@
                         <option>9.1</option>
                         <option>9.2</option>
                     </select>
-                    <button id="btn-start" onclick="startQuiz()" disabled class="btn-locked w-full bg-dark-blue text-white p-4 rounded-xl font-bold text-lg shadow-lg transition">Mulai Kerjakan Soal <i class="fas fa-edit ml-2"></i></button>
+                    
+                    <div id="photo-frame" class="border-2 border-dashed border-gray-300 p-4 rounded-xl bg-gray-50 text-center">
+                        <p class="text-xs font-bold text-gray-500 mb-2 uppercase">Foto Catatan Kamu</p>
+                        <input type="file" id="photo-input" accept="image/*" capture="environment" class="hidden">
+                        <label id="photo-label" for="photo-input" class="cursor-pointer bg-primary-blue text-white px-4 py-2 rounded-lg text-sm font-bold inline-block hover:bg-dark-blue transition">
+                            <i class="fas fa-camera mr-2"></i> Ambil Foto Catatan
+                        </label>
+                        <p id="file-name" class="text-[10px] mt-2 text-gray-400 italic font-bold">Wajib melampirkan foto catatan</p>
+                    </div>
+
+                    <button id="btn-start" onclick="submitNoteAndStart()" disabled class="btn-locked w-full bg-dark-blue text-white p-4 rounded-xl font-bold text-lg shadow-lg transition">Kirim Bukti & Mulai Kuis <i class="fas fa-paper-plane ml-2"></i></button>
+                    
+                    <div id="upload-loading" class="text-center py-4">
+                        <i class="fas fa-circle-notch fa-spin text-3xl text-primary-blue mb-2"></i>
+                        <p class="text-sm font-bold text-primary-blue">Sedang mengunggah foto ke Google Drive...</p>
+                    </div>
                 </div>
             </div>
 
@@ -220,32 +232,33 @@
             </div>
 
             <div id="result-section" class="hidden p-12 text-center">
-                <i class="fas fa-paper-plane text-7xl text-primary-blue mb-4"></i>
-                <h2 class="text-3xl font-black text-dark-blue mb-2">Jawaban Terkirim!</h2>
+                <i class="fas fa-check-circle text-7xl text-green-500 mb-4"></i>
+                <h2 class="text-3xl font-black text-dark-blue mb-2">Selesai!</h2>
                 <div class="bg-blue-50 p-6 rounded-3xl inline-block mb-8">
-                    <p class="text-sm font-bold text-gray-500">NILAI ANDA</p>
+                    <p class="text-sm font-bold text-gray-500">SKOR AKHIR</p>
                     <p id="final-grade" class="text-6xl font-black text-primary-blue">0</p>
                 </div>
                 <br>
-                <button onclick="location.reload()" class="bg-gray-200 text-gray-700 px-8 py-3 rounded-full font-bold">Ulangi Halaman</button>
+                <button onclick="location.reload()" class="bg-gray-200 text-gray-700 px-8 py-3 rounded-full font-bold">Kembali ke Atas</button>
             </div>
         </div>
     </section>
 
     <section id="rekap" class="container mx-auto px-4 mb-20">
         <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-white/20 shadow-2xl">
-            <h2 class="text-2xl font-bold italic mb-6 flex items-center">
-                <i class="fas fa-table mr-3"></i> Rekap Penilaian Siswa
+            <h2 class="text-2xl font-bold italic mb-6 flex items-center text-white">
+                <i class="fas fa-clipboard-list mr-3"></i> REKAP DATABASE BELAJAR
             </h2>
             <div class="overflow-x-auto bg-white rounded-2xl shadow-inner">
                 <table class="w-full text-left text-gray-800">
                     <thead class="bg-gray-100 border-b-2">
                         <tr>
-                            <th class="p-4 font-bold">Nama Siswa</th>
+                            <th class="p-4 font-bold">Siswa</th>
                             <th class="p-4 text-center font-bold">Kelas</th>
+                            <th class="p-4 text-center font-bold">Bukti Catatan</th>
                             <th class="p-4 text-center font-bold">Nilai</th>
                             <th class="p-4 text-center font-bold">Status</th>
-                            <th class="p-4 text-center font-bold">Hapus</th>
+                            <th class="p-4 text-center font-bold">Waktu</th>
                         </tr>
                     </thead>
                     <tbody id="score-table-body"></tbody>
@@ -259,16 +272,34 @@
     </footer>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyvi9ZsgF5NtC7iXNLhhgDVtOWvsUgfQpJapagVUby2hKnZ99yufvb98eZpjxhLXhQ/exec';
+        // URL Web App Google Apps Script
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwitaisW6yq-VkkcNvBtDkF1K3F2U2oW9hiJ0ICDNeG69PrmlrBaVK-wDHLIssFYpOM/exec';
+        
         let doneVideo = { v1: false, v2: false, v3: false };
         let currentIdx = 0, userScore = 0, studentData = {};
-        let allScores = JSON.parse(localStorage.getItem('quizScores_SMPN8_Final')) || [];
+        let base64Image = "";
+
+        // Preview & Handle Foto
+        document.getElementById('photo-input').onchange = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('file-name').innerText = "✅ Foto terpilih: " + file.name;
+                document.getElementById('photo-label').innerHTML = '<i class="fas fa-sync mr-2"></i> Ganti Foto';
+                document.getElementById('photo-label').classList.replace('bg-primary-blue', 'bg-orange-500');
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    base64Image = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        };
 
         function markDone(key) {
             doneVideo[key] = true;
             const btn = document.getElementById(key + '-btn');
             btn.classList.add('active');
-            btn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Sudah Tuntas';
+            btn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Selesai';
             checkAccess();
         }
 
@@ -281,6 +312,45 @@
                 const s = document.getElementById('lock-status');
                 s.innerHTML = '<i class="fas fa-lock-open mr-2"></i> Akses Terbuka';
                 s.className = "mt-2 inline-block px-4 py-1 rounded-full bg-green-100 text-green-600 text-xs font-bold uppercase";
+            }
+        }
+
+        async function submitNoteAndStart() {
+            const n = document.getElementById('student-name').value;
+            const c = document.getElementById('student-class').value;
+            
+            if (!n || !c) return alert("Silakan pilih Nama dan Kelas!");
+            if (!base64Image) return alert("Harap lampirkan foto catatan terlebih dahulu!");
+
+            studentData = { name: n, cls: c };
+            
+            document.getElementById('btn-start').classList.add('hidden');
+            document.getElementById('upload-loading').style.display = 'block';
+
+            const payload = {
+                type: "PRE_QUIZ_NOTE",
+                name: n,
+                cls: c,
+                imageFile: base64Image
+            };
+
+            try {
+                await fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify(payload)
+                });
+                
+                document.getElementById('display-name').innerText = "Nama: " + n;
+                document.getElementById('display-class').innerText = "Kelas: " + c;
+                document.getElementById('data-input-section').classList.add('hidden');
+                document.getElementById('quiz-section').classList.remove('hidden');
+                loadQuestion();
+                setTimeout(fetchDatabase, 3000); 
+            } catch (err) {
+                alert("Gagal mengunggah. Coba lagi!");
+                document.getElementById('btn-start').classList.remove('hidden');
+                document.getElementById('upload-loading').style.display = 'none';
             }
         }
 
@@ -322,39 +392,30 @@
             { q: "Perkaratan besi dipercepat oleh adanya...", a: "Oksigen dan Air", options: ["Oksigen dan Air", "Minyak", "Suhu dingin", "Pasir"] }
         ];
 
-        function renderTable() {
+        function renderTable(dataArray) {
             const tableBody = document.getElementById('score-table-body');
-            tableBody.innerHTML = allScores.length === 0 ? '<tr><td colspan="5" class="p-10 text-center text-gray-400 italic">Belum ada data.</td></tr>' : '';
-            allScores.forEach((data, index) => {
+            tableBody.innerHTML = "";
+            
+            if (!dataArray || dataArray.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" class="p-10 text-center text-gray-400 italic">Belum ada data.</td></tr>';
+                return;
+            }
+
+            dataArray.reverse().forEach((data) => {
                 tableBody.innerHTML += `
                     <tr class="border-b hover:bg-gray-50 transition text-sm">
                         <td class="p-4 font-bold text-dark-blue">${data.name}</td>
                         <td class="p-4 text-center">${data.cls}</td>
+                        <td class="p-4 text-center">
+                            ${data.photo && data.photo.startsWith('http') ? 
+                            `<a href="${data.photo}" target="_blank" class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-[10px] font-bold hover:bg-blue-200"><i class="fas fa-image mr-1"></i> Buka Foto</a>` : 
+                            '<span class="text-gray-300">-</span>'}
+                        </td>
                         <td class="p-4 text-center text-primary-blue font-black text-xl">${data.grade}</td>
-                        <td class="p-4 text-center ${data.grade >= 75 ? 'text-green-600' : 'text-red-600'} font-bold">${data.grade >= 75 ? 'TUNTAS' : 'REMEDIAL'}</td>
-                        <td class="p-4 text-center"><button onclick="deleteRow(${index})" class="text-red-400 hover:text-red-600"><i class="fas fa-trash"></i></button></td>
+                        <td class="p-4 text-center ${data.grade >= 75 ? 'text-green-600' : 'text-red-600'} font-bold">${data.grade >= 75 ? 'TUNTAS' : (data.grade == 0 ? 'PROSES' : 'REMEDIAL')}</td>
+                        <td class="p-4 text-center text-[10px] text-gray-500 font-medium">${data.time}</td>
                     </tr>`;
             });
-        }
-
-        function deleteRow(index) {
-            if (prompt("Kode Admin:") === "algian46") {
-                allScores.splice(index, 1);
-                localStorage.setItem('quizScores_SMPN8_Final', JSON.stringify(allScores));
-                renderTable();
-            }
-        }
-
-        function startQuiz() {
-            const n = document.getElementById('student-name').value;
-            const c = document.getElementById('student-class').value;
-            if (!n || !c) return alert("Lengkapi Identitas!");
-            studentData = { name: n, cls: c };
-            document.getElementById('display-name').innerText = "Nama: " + n;
-            document.getElementById('display-class').innerText = "Kelas: " + c;
-            document.getElementById('data-input-section').classList.add('hidden');
-            document.getElementById('quiz-section').classList.remove('hidden');
-            loadQuestion();
         }
 
         function loadQuestion() {
@@ -385,50 +446,27 @@
             else finishQuiz();
         }
 
-        function finishQuiz() {
+        async function finishQuiz() {
             const grade = Math.round((userScore / 35) * 100);
-            const entry = { name: studentData.name, cls: studentData.cls, grade: grade };
-            allScores.unshift(entry);
-            localStorage.setItem('quizScores_SMPN8_Final', JSON.stringify(allScores));
-            fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(entry) });
+            const entry = { type: "UPDATE_GRADE", name: studentData.name, cls: studentData.cls, grade: grade };
+            
             document.getElementById('quiz-section').classList.add('hidden');
             document.getElementById('result-section').classList.remove('hidden');
             document.getElementById('final-grade').innerText = grade;
-            renderTable();
-            // Tarik data ulang setelah submit agar sinkron
+
+            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(entry) });
             setTimeout(fetchDatabase, 2000);
         }
 
-        // ================= FITUR TAMBAHAN: Tarik Data dari GS =================
         async function fetchDatabase() {
             try {
                 const response = await fetch(scriptURL);
-                const dataFromSheet = await response.json();
-                if (dataFromSheet && dataFromSheet.length > 0) {
-                    const tableBody = document.getElementById('score-table-body');
-                    // Tambahkan data dari Google Sheets di bawah data lokal
-                    dataFromSheet.reverse().forEach(data => {
-                        // Cek apakah data sudah ada di tabel lokal agar tidak double (opsional)
-                        const isDuplicate = allScores.some(local => local.name === data.name && local.grade === data.grade);
-                        if (!isDuplicate) {
-                            tableBody.innerHTML += `
-                                <tr class="border-b hover:bg-gray-50 transition text-sm bg-blue-50/50">
-                                    <td class="p-4 font-bold text-dark-blue">${data.name} <i class="fas fa-cloud text-[10px] text-blue-400"></i></td>
-                                    <td class="p-4 text-center">${data.cls}</td>
-                                    <td class="p-4 text-center text-primary-blue font-black text-xl">${data.grade}</td>
-                                    <td class="p-4 text-center ${data.grade >= 75 ? 'text-green-600' : 'text-red-600'} font-bold">${data.grade >= 75 ? 'TUNTAS' : 'REMEDIAL'}</td>
-                                    <td class="p-4 text-center"><span class="text-gray-300"><i class="fas fa-lock text-xs"></i></span></td>
-                                </tr>`;
-                        }
-                    });
-                }
-            } catch (e) { console.log("Database offline."); }
+                const data = await response.json();
+                renderTable(data);
+            } catch (e) { console.log("Fetch error"); }
         }
 
-        window.onload = () => {
-            renderTable();
-            fetchDatabase();
-        };
+        window.onload = fetchDatabase;
     </script>
 </body>
 </html>
