@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Learning - SMP NEGERI 8 CIKARANG UTARA</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#1E88E5',
+                        'secondary-blue': '#90CAF9',
+                        'dark-blue': '#0D47A1',
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { background: linear-gradient(135deg, #1E88E5 0%, #90CAF9 100%); min-height: 100vh; color: white; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 0.75rem; background: #000; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        html { scroll-behavior: smooth; }
+        .correct { background-color: #C6F6D5 !important; color: #22543D !important; border-color: #38A169 !important; }
+        .incorrect { background-color: #FED7D7 !important; color: #822727 !important; border-color: #E53E3E !important; }
+        .quiz-option { cursor: pointer; transition: all 0.2s; border: 2px solid #e2e8f0; }
+        .quiz-option:hover:not(.disabled) { background-color: #f0f7ff; border-color: #1E88E5; }
+        .btn-check { background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); transition: all 0.3s; }
+        .btn-check.active { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .btn-locked { background-color: #94a3b8 !important; cursor: not-allowed !important; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+    <header class="bg-white/10 backdrop-blur-lg shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo Sekolah" class="h-12 w-12 rounded-full ring-2 ring-white/50 object-cover mr-4">
+                <h1 class="text-xl md:text-2xl font-extrabold tracking-tight">E-Learning Center <span class="block text-sm font-light opacity-80">SMPN 8 CIKARANG UTARA</span></h1>
+            </div>
+            <nav class="hidden md:flex space-x-6 font-bold text-sm">
+                <a href="#video-section" class="hover:text-dark-blue transition">Video</a>
+                <a href="#kuis" class="hover:text-dark-blue transition">Kuis</a>
+                <a href="#rekap" class="hover:text-dark-blue transition">Database</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="container mx-auto px-4 mt-12 mb-12">
+        <div class="bg-white/20 backdrop-blur-md p-8 md:p-12 rounded-3xl border border-white/30 shadow-2xl">
+            <div class="text-center mb-8">
+                <i class="fas fa-graduation-cap text-6xl mb-6 text-white opacity-90"></i>
+                <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Selamat Datang, Generasi Juara!</h2>
+            </div>
+            
+            <div class="max-w-3xl mx-auto bg-white/10 p-6 rounded-2xl border border-white/20">
+                <h3 class="text-xl font-bold mb-4 flex items-center"><i class="fas fa-info-circle mr-3"></i> PETUNJUK BELAJAR:</h3>
+                <ul class="space-y-3 text-sm md:text-base leading-relaxed">
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">1</span> Tonton seluruh video pembelajaran yang tersedia.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">2</span> Klik tombol <b>"Selesai Menonton Materi 1, 2, dan 3"</b> jika sudah selesai menonton video.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">3</span> Akses untuk membuka soal kuis akan terbuka secara otomatis.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">4</span> Kerjakan seluruh soal yang ada hingga selesai.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">5</span> Jika pada bagian rekap penilaian dianggap <b>"REMEDIAL"</b>, silakan kerjakan ulang hingga tuntas.</li>
+                </ul>
+                <hr class="my-6 border-white/20">
+                <div class="bg-yellow-400/20 p-4 rounded-xl border border-yellow-400/40">
+                    <p class="text-sm font-bold leading-relaxed">
+                        <i class="fas fa-exclamation-triangle mr-2"></i> CATATAN:
+                        <span class="font-normal block mt-1 opacity-90 italic">
+                            Setiap jawaban yang terinput akan langsung tampil pada bagian rekap nilai. Siswa yang tidak mengerjakan soal pada hari ini dianggap tidak masuk dan dinyatakan <b>"ALFA"</b>.
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="video-section" class="container mx-auto px-4 mb-16">
+        <div class="flex items-center mb-8">
+            <div class="h-1 w-12 bg-white rounded-full mr-4"></div>
+            <h2 class="text-2xl font-bold uppercase tracking-widest text-white">Video Pembelajaran</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white/10 p-4 rounded-2xl border border-white/20 shadow-xl flex flex-col">
+                <div class="video-container mb-4"><iframe src="https://www.youtube.com/embed/QmcHFeqVpZo" allowfullscreen></iframe></div>
+                <button id="v1-btn" onclick="markDone('v1')" class="btn-check p-3 rounded-xl font-bold text-sm text-white">
+                    <i class="fas fa-play mr-2"></i> Selesai Menonton Materi 1
+                </button>
+            </div>
+            <div class="bg-white/10 p-4 rounded-2xl border border-white/20 shadow-xl flex flex-col">
+                <div class="video-container mb-4"><iframe src="https://www.youtube.com/embed/QebWfH4_Ehc" allowfullscreen></iframe></div>
+                <button id="v2-btn" onclick="markDone('v2')" class="btn-check p-3 rounded-xl font-bold text-sm text-white">
+                    <i class="fas fa-play mr-2"></i> Selesai Menonton Materi 2
+                </button>
+            </div>
+            <div class="bg-white/10 p-4 rounded-2xl border border-white/20 shadow-xl flex flex-col">
+                <div class="video-container mb-4"><iframe src="https://www.youtube.com/embed/fPNN91aFbj0" allowfullscreen></iframe></div>
+                <button id="v3-btn" onclick="markDone('v3')" class="btn-check p-3 rounded-xl font-bold text-sm text-white">
+                    <i class="fas fa-play mr-2"></i> Selesai Menonton Materi 3
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="kuis" class="container mx-auto px-4 mb-16">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden text-gray-800 border-4 border-white/20">
+            <div id="data-input-section" class="p-8 md:p-12">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-dark-blue">Identitas Siswa</h2>
+                    <div id="lock-status" class="mt-2 inline-block px-4 py-1 rounded-full bg-red-100 text-red-600 text-xs font-bold uppercase">
+                        <i class="fas fa-lock mr-2"></i> Akses Terkunci
+                    </div>
+                </div>
+                <div class="max-w-md mx-auto space-y-4">
+                    <select id="student-name" class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-primary-blue">
+                        <option value="">-- Pilih Nama --</option>
+                        <option>AAD ADRIYAN</option><option>AHMAD MUZAKKI</option><option>AHMAD RIZKI</option><option>AISYAH NUR</option>
+                        <option>AL WARAQ</option><option>BAYU BAASITH</option><option>BIBAH FITRI</option><option>CHUBAH N</option>
+                        <option>DAHRUL S</option><option>DEDE AJI S</option><option>DENIS RIZKI</option><option>DHECITA A</option>
+                        <option>DWI AGUNG</option><option>FANESA IN</option><option>KESYA MAR</option><option>M RAYAN F</option>
+                        <option>M. RIZQI F</option><option>MEGA CINTA</option><option>MIKA APRI</option><option>MUHAMAD R</option>
+                        <option>MUTIARA I</option><option>NATASYA P</option><option>NAZWA FA</option><option>NOVAN NA</option>
+                        <option>NURCAHYA</option><option>NYAI FATIM</option><option>REHAN AD</option><option>RISKI RAMA</option>
+                        <option>RIZKY GITA</option><option>SATRIA EKA</option><option>SUCI RAHMA</option><option>VIRANTI DI</option>
+                        <option>ABU BAKAR</option><option>AEN DARA</option><option>AISYAH FEB</option><option>ANANDA J</option>
+                        <option>ANDARA D</option><option>ANGGA RIF</option><option>ASEP GUNA</option><option>DANU GUN</option>
+                        <option>DEVA PERM</option><option>DIVA FATMA</option><option>FITRIYANI</option><option>KHAIRUL N</option>
+                        <option>M. RIZKY</option><option>MAKBUL F</option><option>MELISA SA</option><option>NABILA PU</option>
+                        <option>NINA AULI</option><option>NOVIANTI</option><option>PUTRA PRA</option><option>PUTRI ANU</option>
+                        <option>RAFA MAU</option><option>REYSYAH K</option><option>RIZKY ADIT</option><option>SHIHALUDI</option>
+                        <option>SOCA KHOI</option><option>SUTINAH</option><option>TIKA AULIY</option><option>ZIKRI ALKA</option>
+                    </select>
+                    <select id="student-class" class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-primary-blue">
+                        <option value="">-- Pilih Kelas --</option>
+                        <option>9.1</option>
+                        <option>9.2</option>
+                    </select>
+                    <button id="btn-start" onclick="startQuiz()" disabled class="btn-locked w-full bg-dark-blue text-white p-4 rounded-xl font-bold text-lg shadow-lg transition">Mulai Kerjakan Soal <i class="fas fa-edit ml-2"></i></button>
+                </div>
+            </div>
+
+            <div id="quiz-section" class="hidden">
+                <div class="bg-dark-blue p-6 text-white flex justify-between items-center">
+                    <div>
+                        <h3 id="display-name" class="font-bold">Nama: -</h3>
+                        <p id="display-class" class="text-xs text-secondary-blue">Kelas: -</p>
+                    </div>
+                    <div class="text-right"><span id="progress-text" class="text-lg font-black italic">Soal 1/35</span></div>
+                </div>
+                <div class="p-8">
+                    <div id="question-box" class="mb-6">
+                        <h3 id="question-text" class="text-xl font-bold text-dark-blue mb-4">...</h3>
+                        <div id="options-container" class="grid grid-cols-1 gap-3"></div>
+                    </div>
+                    <div id="feedback-box" class="hidden p-4 rounded-xl mb-6 border-2 text-center bg-gray-50">
+                        <p id="rationale-text" class="text-sm font-medium mb-4"></p>
+                        <button onclick="nextQuestion()" class="bg-dark-blue text-white px-10 py-2 rounded-full font-bold hover:scale-105 transition">Berikutnya <i class="fas fa-arrow-right ml-2"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="result-section" class="hidden p-12 text-center">
+                <i class="fas fa-paper-plane text-7xl text-primary-blue mb-4"></i>
+                <h2 class="text-3xl font-black text-dark-blue mb-2">Jawaban Terkirim!</h2>
+                <div class="bg-blue-50 p-6 rounded-3xl inline-block mb-8">
+                    <p class="text-sm font-bold text-gray-500">NILAI ANDA</p>
+                    <p id="final-grade" class="text-6xl font-black text-primary-blue">0</p>
+                </div>
+                <br>
+                <button onclick="location.reload()" class="bg-gray-200 text-gray-700 px-8 py-3 rounded-full font-bold">Ulangi Halaman</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="rekap" class="container mx-auto px-4 mb-20">
+        <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-white/20 shadow-2xl">
+            <h2 class="text-2xl font-bold italic mb-6 flex items-center">
+                <i class="fas fa-table mr-3"></i> Rekap Penilaian Siswa
+            </h2>
+            <div class="overflow-x-auto bg-white rounded-2xl shadow-inner">
+                <table class="w-full text-left text-gray-800">
+                    <thead class="bg-gray-100 border-b-2">
+                        <tr>
+                            <th class="p-4 font-bold">Nama Siswa</th>
+                            <th class="p-4 text-center font-bold">Kelas</th>
+                            <th class="p-4 text-center font-bold">Nilai</th>
+                            <th class="p-4 text-center font-bold">Status</th>
+                            <th class="p-4 text-center font-bold">Hapus</th>
+                        </tr>
+                    </thead>
+                    <tbody id="score-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center py-8 bg-black/20 text-xs mt-auto opacity-70">
+        <p>&copy; 2026 SMP NEGERI 8 CIKARANG UTARA | Algian Manggara, S.Agr</p>
+    </footer>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwTdFt6AwNdjzTnwvrZdnnasmcQac2TV3baMo0ARyT_jJt6nX3LOlzfjkoNTlvjNiQ/exec';
+        let doneVideo = { v1: false, v2: false, v3: false };
+        let currentIdx = 0, userScore = 0, studentData = {};
+        let allScores = JSON.parse(localStorage.getItem('quizScores_SMPN8_Final')) || [];
+
+        function markDone(key) {
+            doneVideo[key] = true;
+            const btn = document.getElementById(key + '-btn');
+            btn.classList.add('active');
+            btn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Sudah Tuntas';
+            checkAccess();
+        }
+
+        function checkAccess() {
+            if (doneVideo.v1 && doneVideo.v2 && doneVideo.v3) {
+                const b = document.getElementById('btn-start');
+                b.disabled = false;
+                b.classList.remove('btn-locked');
+                b.classList.add('bg-green-600', 'hover:bg-green-700');
+                const s = document.getElementById('lock-status');
+                s.innerHTML = '<i class="fas fa-lock-open mr-2"></i> Akses Terbuka';
+                s.className = "mt-2 inline-block px-4 py-1 rounded-full bg-green-100 text-green-600 text-xs font-bold uppercase";
+            }
+        }
+
+        const questions = [
+            { q: "Zat awal sebelum terjadi reaksi disebut...", a: "Pereaksi", options: ["Produk", "Pereaksi", "Katalis", "Endapan"] },
+            { q: "Reaksi penguraian satu zat kompleks menjadi lebih sederhana disebut...", a: "Dekomposisi", options: ["Sintesis", "Pembakaran", "Dekomposisi", "Oksidasi"] },
+            { q: "Skala pH untuk zat yang bersifat asam adalah...", a: "Di bawah 7", options: ["Di atas 7", "Tepat 7", "Di bawah 7", "14"] },
+            { q: "Indikator lakmus merah akan berubah menjadi biru jika terkena...", a: "Basa", options: ["Asam", "Basa", "Garam", "Air murni"] },
+            { q: "Reaksi yang melepaskan kalor ke lingkungan disebut...", a: "Eksoterm", options: ["Endoterm", "Eksoterm", "Isoterm", "Dekomposisi"] },
+            { q: "Faktor yang mempercepat reaksi dengan cara menurunkan energi aktivasi adalah...", a: "Katalis", options: ["Suhu", "Luas Permukaan", "Konsentrasi", "Katalis"] },
+            { q: "Fotosintesis termasuk reaksi...", a: "Endoterm", options: ["Eksoterm", "Endoterm", "Pembakaran", "Perkaratan"] },
+            { q: "Garam dalam bentuk serbuk lebih cepat larut karena...", a: "Luas permukaan besar", options: ["Suhu tinggi", "Massa berat", "Luas permukaan besar", "Warna putih"] },
+            { q: "Gas yang dihasilkan dari reaksi asam karbonat dalam soda adalah...", a: "CO2", options: ["O2", "H2", "CO2", "N2"] },
+            { q: "Energi minimum untuk memulai reaksi disebut...", a: "Energi Aktivasi", options: ["Energi Kinetik", "Energi Potensial", "Energi Aktivasi", "Energi Kalor"] },
+            { q: "Simbol (aq) dalam persamaan kimia berarti...", a: "Larutan dalam air", options: ["Padatan", "Gas", "Cairan murni", "Larutan dalam air"] },
+            { q: "Asam yang terdapat pada buah jeruk adalah...", a: "Asam Sitrat", options: ["Asam Klorida", "Asam Sitrat", "Asam Sulfat", "Asam Laktat"] },
+            { q: "Zat basa yang digunakan sebagai pembersih kaca adalah...", a: "Amonia", options: ["Soda api", "Amonia", "Asam cuka", "Garam dapur"] },
+            { q: "Asam kuat dalam lambung manusia adalah...", a: "HCl", options: ["H2SO4", "HNO3", "HCl", "CH3COOH"] },
+            { q: "Reaksi antara asam dan basa menghasilkan...", a: "Garam dan Air", options: ["Gas", "Logam", "Garam dan Air", "Endapan saja"] },
+            { q: "Contoh perubahan kimia dalam kehidupan sehari-hari adalah...", a: "Besi berkarat", options: ["Es mencair", "Besi berkarat", "Kaca pecah", "Gula larut"] },
+            { q: "Indikator alami kol ungu akan berubah merah jika terkena...", a: "Asam", options: ["Basa", "Asam", "Air", "Alkohol"] },
+            { q: "Suhu tinggi mempercepat reaksi karena...", a: "Gerak partikel cepat", options: ["Partikel diam", "Gerak partikel cepat", "Zat membeku", "Massa hilang"] },
+            { q: "Senyawa NaOH dikenal sebagai...", a: "Soda api", options: ["Cuka", "Air aki", "Soda api", "Kapur sirih"] },
+            { q: "pH netral memiliki nilai...", a: "7", options: ["0", "14", "7", "5"] },
+            { q: "Reaksi pembakaran selalu melibatkan gas...", a: "Oksigen", options: ["Nitrogen", "Oksigen", "Hidrogen", "Helium"] },
+            { q: "Air aki (accu) mengandung...", a: "Asam Sulfat", options: ["Asam Sitrat", "Asam Laktat", "Asam Sulfat", "Amonia"] },
+            { q: "Zat yang ditambahkan untuk memperlambat reaksi disebut...", a: "Inhibitor", options: ["Katalis", "Inhibitor", "Reaktan", "Indikator"] },
+            { q: "Rasa licin pada sabun adalah ciri dari...", a: "Basa", options: ["Asam", "Basa", "Netral", "Logam"] },
+            { q: "Cool pack (kompres dingin) bekerja secara...", a: "Endoterm", options: ["Eksoterm", "Endoterm", "Pembakaran", "Sintesis"] },
+            { q: "Kapur sirih (kalsium hidroksida) bersifat...", a: "Basa", options: ["Asam", "Basa", "Netral", "Garam"] },
+            { q: "Metana dibakar menghasilkan CO2 dan H2O. Ini reaksi...", a: "Eksoterm", options: ["Endoterm", "Eksoterm", "Dekomposisi", "Sintesis"] },
+            { q: "Asam dalam semut yang menyebabkan gatal adalah...", a: "Asam Format", options: ["Asam Sitrat", "Asam Format", "Asam Klorida", "Asam Laktat"] },
+            { q: "Larutan yang menghantarkan listrik dengan sangat baik adalah...", a: "Asam/Basa kuat", options: ["Air gula", "Alkohol", "Asam/Basa kuat", "Minyak"] },
+            { q: "Enzim di tubuh kita berperan sebagai...", a: "Biokatalis", options: ["Racun", "Biokatalis", "Logam", "Gas"] },
+            { q: "Reaksi dua zat bergabung menjadi satu disebut...", a: "Sintesis", options: ["Sintesis", "Dekomposisi", "Penguapan", "Netralisasi"] },
+            { q: "Semakin tinggi konsentrasi reaktan, reaksi semakin...", a: "Cepat", options: ["Lambat", "Cepat", "Berhenti", "Tetap"] },
+            { q: "PH 12 termasuk dalam kategori...", a: "Basa kuat", options: ["Asam lemah", "Asam kuat", "Basa kuat", "Netral"] },
+            { q: "Asam dalam cuka dapur adalah...", a: "Asam Asetat", options: ["Asam Sulfat", "Asam Asetat", "Asam Klorida", "Asam Nitrat"] },
+            { q: "Perkaratan besi dipercepat oleh adanya...", a: "Oksigen dan Air", options: ["Oksigen dan Air", "Minyak", "Suhu dingin", "Pasir"] }
+        ];
+
+        function renderTable() {
+            const tableBody = document.getElementById('score-table-body');
+            tableBody.innerHTML = allScores.length === 0 ? '<tr><td colspan="5" class="p-10 text-center text-gray-400 italic">Belum ada data.</td></tr>' : '';
+            allScores.forEach((data, index) => {
+                tableBody.innerHTML += `
+                    <tr class="border-b hover:bg-gray-50 transition text-sm">
+                        <td class="p-4 font-bold text-dark-blue">${data.name}</td>
+                        <td class="p-4 text-center">${data.cls}</td>
+                        <td class="p-4 text-center text-primary-blue font-black text-xl">${data.grade}</td>
+                        <td class="p-4 text-center ${data.grade >= 75 ? 'text-green-600' : 'text-red-600'} font-bold">${data.grade >= 75 ? 'TUNTAS' : 'REMEDIAL'}</td>
+                        <td class="p-4 text-center"><button onclick="deleteRow(${index})" class="text-red-400 hover:text-red-600"><i class="fas fa-trash"></i></button></td>
+                    </tr>`;
+            });
+        }
+
+        function deleteRow(index) {
+            if (prompt("Kode Admin:") === "algian46") {
+                allScores.splice(index, 1);
+                localStorage.setItem('quizScores_SMPN8_Final', JSON.stringify(allScores));
+                renderTable();
+            }
+        }
+
+        function startQuiz() {
+            const n = document.getElementById('student-name').value;
+            const c = document.getElementById('student-class').value;
+            if (!n || !c) return alert("Lengkapi Identitas!");
+            studentData = { name: n, cls: c };
+            document.getElementById('display-name').innerText = "Nama: " + n;
+            document.getElementById('display-class').innerText = "Kelas: " + c;
+            document.getElementById('data-input-section').classList.add('hidden');
+            document.getElementById('quiz-section').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentIdx];
+            document.getElementById('progress-text').innerText = `Soal ${currentIdx + 1}/35`;
+            document.getElementById('question-text').innerText = q.q;
+            document.getElementById('feedback-box').classList.add('hidden');
+            const container = document.getElementById('options-container');
+            container.innerHTML = "";
+            q.options.forEach(opt => {
+                const b = document.createElement('button');
+                b.className = "quiz-option w-full text-left p-4 rounded-xl border-2 font-bold bg-white";
+                b.innerText = opt;
+                b.onclick = () => {
+                    document.querySelectorAll('.quiz-option').forEach(btn => btn.classList.add('disabled', 'pointer-events-none', 'opacity-50'));
+                    if (opt === q.a) { b.classList.add('correct'); userScore++; }
+                    else b.classList.add('incorrect');
+                    document.getElementById('feedback-box').classList.remove('hidden');
+                    document.getElementById('rationale-text').innerText = opt === q.a ? "Benar!" : "Salah. Jawaban: " + q.a;
+                };
+                container.appendChild(b);
+            });
+        }
+
+        function nextQuestion() {
+            currentIdx++;
+            if (currentIdx < questions.length) loadQuestion();
+            else finishQuiz();
+        }
+
+        function finishQuiz() {
+            const grade = Math.round((userScore / 35) * 100);
+            const entry = { name: studentData.name, cls: studentData.cls, grade: grade };
+            allScores.unshift(entry);
+            localStorage.setItem('quizScores_SMPN8_Final', JSON.stringify(allScores));
+            fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(entry) });
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('result-section').classList.remove('hidden');
+            document.getElementById('final-grade').innerText = grade;
+            renderTable();
+        }
+
+        window.onload = renderTable;
+    </script>
+</body>
+</html>
