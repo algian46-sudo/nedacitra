@@ -3,294 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visi dan Misi Sekolah - Modern</title>
+    <title>Visi dan Misi Sekolah - Modern & Profesional</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
     
     <style>
-        /* --- 1. Definisi Warna Baru (Sky Blue Gradient) --- */
         :root {
-            --sky-blue-1: #0077B6; /* Biru Langit Tua */
-            --sky-blue-2: #00B4D8; /* Biru Langit Cerah */
-            --sky-blue-3: #90E0EF; /* Biru Muda Paling Cerah */
-            --accent-green: #38A3A5; /* Hijau Stabilo/Aksen Visi */
-            --accent-orange: #F9844A; /* Orange Aksen Tujuan */
-            --bg-gradient-soft: linear-gradient(180deg, #F0F8FF 0%, #E0F7FA 100%); /* Latar Belakang Sangat Lembut */
-            --glass-bg: rgba(255, 255, 255, 0.85); /* Background Glassmorphism */
+            --primary-blue: #0077B6;
+            --secondary-blue: #00B4D8;
+            --accent-green: #38A3A5;
+            --accent-orange: #F9844A;
+            --soft-bg: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.9);
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg-gradient-soft);
-            color: #333;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(-45deg, #f0f9ff, #e0f2fe, #f0fdf4, #fff7ed);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #1e293b;
             overflow-x: hidden;
         }
 
-        /* --- 2. Top Bar & Navbar Styling --- */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- Navbar & Topbar --- */
         .top-bar {
-            background: var(--sky-blue-1);
-            color: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: var(--primary-blue);
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
         }
 
         .navbar {
-            background: var(--glass-bg) !important;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border-bottom: 1px solid rgba(0, 179, 216, 0.1); /* Garis halus di bawah navbar */
+            background: var(--glass) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
         }
+
         .nav-link {
-            font-weight: 600;
-            color: #333;
-        }
-        .nav-link:hover, .nav-link.active {
-            color: var(--sky-blue-2) !important;
-            border-bottom: 2px solid var(--sky-blue-2);
-            padding-bottom: 5px; /* Sesuaikan padding agar garis bawah muncul */
-        }
-        .btn-login {
-            background: linear-gradient(45deg, var(--sky-blue-1), var(--sky-blue-2));
-            border: none;
-            font-weight: 600;
-            box-shadow: 0 4px 10px rgba(0, 119, 182, 0.3);
-            transition: transform 0.2s;
-        }
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 119, 182, 0.4);
-        }
-
-        /* --- 3. Hero and Title Styling --- */
-        h1, h2 {
-            color: var(--sky-blue-1);
-            font-weight: 700;
-        }
-        .display-5 {
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
-        }
-        .section-separator {
-            height: 4px;
-            width: 100px;
-            background: linear-gradient(90deg, var(--sky-blue-2), var(--sky-blue-1));
-            margin: 20px auto;
-            border-radius: 2px;
-        }
-        .hero-logo {
-            filter: drop-shadow(0 15px 25px rgba(0, 179, 216, 0.3));
-        }
-
-        /* --- 4. Modern Card Styling (Glassmorphism & Border Dinamis) --- */
-        .modern-card {
-            background: var(--glass-bg);
-            border-radius: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.3); /* Border glass */
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08); /* Shadow yang lebih dalam */
-            transition: all 0.4s ease;
             position: relative;
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-        
-        .modern-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            font-weight: 600;
+            color: #475569 !important;
+            margin: 0 5px;
         }
 
-        /* Decorative Border-Top */
-        .modern-card::before {
+        .nav-link::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 8px; /* Diubah dari sisi ke atas */
-            background: var(--sky-blue-2); /* Default */
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background: var(--secondary-blue);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 80%;
+        }
+
+        /* --- Hero Section --- */
+        .hero-logo {
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 10px solid white !important;
+        }
+
+        .hero-logo:hover {
+            transform: rotate(5deg) scale(1.05);
+        }
+
+        .section-separator {
+            height: 5px;
+            width: 80px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue));
+            margin: 20px auto;
+            border-radius: 50px;
+        }
+
+        /* --- Modern Card System --- */
+        .modern-card {
+            background: var(--glass);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
             z-index: 1;
         }
 
-        /* Varian Warna Card */
-        .modern-card.visi-card::before { background: linear-gradient(90deg, var(--accent-green), #6CCDAF); }
-        .modern-card.misi-card::before { background: linear-gradient(90deg, var(--sky-blue-1), var(--sky-blue-2)); }
-        .modern-card.tujuan-card::before { background: linear-gradient(90deg, var(--accent-orange), #FFB77D); }
+        .modern-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.08);
+        }
 
-        /* Icon Section Title */
+        .modern-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 10px;
+            border-radius: 30px 30px 0 0;
+        }
+
+        .visi-card::before { background: var(--accent-green); }
+        .misi-card::before { background: var(--primary-blue); }
+        .tujuan-card::before { background: var(--accent-orange); }
+
         .section-title i {
-            background: rgba(0, 119, 182, 0.1);
-            color: var(--sky-blue-1);
-            padding: 12px; /* Dibuat sedikit lebih besar */
-            border-radius: 15px; /* Bentuk Kotak Membulat */
-            width: 55px;
-            height: 55px;
-            box-shadow: 0 5px 10px rgba(0, 119, 182, 0.1);
-        }
-        .visi-card .section-title i { color: var(--accent-green); background: rgba(56, 163, 165, 0.1); }
-        .misi-card .section-title i { color: var(--sky-blue-1); background: rgba(0, 119, 182, 0.1); }
-        .tujuan-card .section-title i { color: var(--accent-orange); background: rgba(249, 132, 74, 0.1); }
-        
-        /* Visi Highlight */
-        .visi-highlight {
-            background: linear-gradient(135deg, var(--sky-blue-3), #E0F7FA);
-            color: #333;
-            border-radius: 15px;
-            border-left: 6px solid var(--accent-green);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            border-radius: 12px;
+            margin-right: 15px;
+            font-size: 1.2rem;
         }
 
-        /* Custom List Styling (Dibuat lebih dinamis) */
-        .custom-list ol {
-            list-style: none;
-            padding-left: 0;
-        }
-        .custom-list li {
+        /* --- Content Styling --- */
+        .visi-highlight {
+            background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+            border-left: 8px solid var(--accent-green);
+            border-radius: 20px;
             position: relative;
-            padding-left: 4rem;
-            margin-bottom: 1.2rem;
-            line-height: 1.6;
-            transition: background-color 0.3s;
-            padding-top: 5px;
-            padding-bottom: 5px;
-            border-radius: 8px;
         }
-        .custom-list li:hover {
-            background-color: rgba(0, 179, 216, 0.05);
+
+        .custom-list ol { counter-reset: item; padding-left: 0; }
+        .custom-list li {
+            list-style-type: none;
+            margin-bottom: 1.5rem;
+            padding-left: 4.5rem;
+            position: relative;
+            font-size: 1.05rem;
+            color: #334155;
         }
 
         .custom-list li::before {
-            counter-increment: my-counter;
-            content: counter(my-counter);
+            content: counter(item);
+            counter-increment: item;
             position: absolute;
-            left: 0;
-            top: 0;
-            width: 3rem;
-            height: 3rem;
-            /* Latar Belakang Lingkaran Nomor Gradasi */
-            background: linear-gradient(135deg, var(--sky-blue-1), var(--sky-blue-2));
+            left: 0; top: 0;
+            width: 3.2rem; height: 3.2rem;
+            background: white;
+            color: #1e293b;
+            font-weight: 800;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+
+        .misi-card li::before { border-bottom: 4px solid var(--primary-blue); }
+        .tujuan-card li::before { border-bottom: 4px solid var(--accent-orange); }
+
+        .custom-list li:hover::before {
+            transform: scale(1.1) rotate(-5deg);
+            background: var(--primary-blue);
             color: white;
-            font-weight: 700;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 3rem;
-            box-shadow: 0 4px 10px rgba(0, 119, 182, 0.4);
-        }
-        
-        /* Penyesuaian Warna Nomor List berdasarkan Card */
-        .misi-card .custom-list li::before { 
-            background: linear-gradient(135deg, var(--sky-blue-1), var(--sky-blue-2));
-            box-shadow: 0 4px 10px rgba(0, 119, 182, 0.4);
-        }
-        .tujuan-card .custom-list li::before { 
-            background: linear-gradient(135deg, var(--accent-orange), #FFB77D); 
-            box-shadow: 0 4px 10px rgba(249, 132, 74, 0.4);
         }
 
-
-        /* --- 5. Animasi Fade In (Tetap dipertahankan) --- */
+        /* --- Animations --- */
         .fade-in-up {
-            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
         }
-        
-        .delay-1 { animation-delay: 0.2s; }
-        .delay-2 { animation-delay: 0.4s; }
-        .delay-3 { animation-delay: 0.6s; }
-        .delay-4 { animation-delay: 0.8s; }
 
         @keyframes fadeInUp {
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+
+        @media (max-width: 768px) {
+            .navbar-brand span { font-size: 0.9rem !important; }
+            .modern-card { padding: 1.5rem !important; }
+            .custom-list li { padding-left: 3.8rem; font-size: 0.95rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="top-bar py-2 d-none d-md-block">
-        <div class="container text-end font-monospace">
-            <small><i class="fas fa-phone me-2"></i>(0857) 7429 3159 &nbsp;|&nbsp; <i class="fas fa-envelope me-2"></i>smpn8citra@gmail.com</small>
+    <div class="top-bar py-2 d-none d-md-block text-white">
+        <div class="container d-flex justify-content-between">
+            <div><i class="fas fa-school me-2"></i> Website Resmi SMPN 8 Cikarang Utara</div>
+            <div>
+                <small><i class="fas fa-phone me-2"></i>(0857) 7429 3159 &nbsp;|&nbsp; <i class="fas fa-envelope me-2"></i>smpn8citra@gmail.com</small>
+            </div>
         </div>
     </div>
 
-    <nav class="navbar navbar-expand-lg sticky-top">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo Sekolah" height="45" class="me-2 rounded-circle shadow-sm">
-                <span class="fw-bold" style="color: var(--sky-blue-1); font-size: 1.15rem;">
-                    SMP NEGERI 8 CIKARANG UTARA
-                </span>
-            </a>
-            
-            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-lg-center">
-                    <li class="nav-item"><a class="nav-link active" href="index.html">Beranda</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Profil</a>
-                        <ul class="dropdown-menu shadow border-0" style="border-radius: 15px;">
-                            <li><a class="dropdown-item" href="SejarahSekolah.html">Sejarah</a></li>
-                            <li><a class="dropdown-item" href="tujuan.html">Visi, Misi & Tujuan</a></li>
-                            <li><a class="dropdown-item" href="StrukturOrganigram.html">Struktur Organisasi</a></li>
-                            <li><a class="dropdown-item" href="Profil Guru.html">Profil Guru & Staff</a></li>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="index.html#berita-terbaru">Berita</a></li>
-                    <li class="nav-item"><a class="nav-link" href="index.html#Pojok_Karya">Pojok Literasi</a></li>
-                </ul>
-                <li class="nav-item"><a class="nav-link" href="galerifasilitas.html">Fasilitas</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Aktivitas</a>
-                        <ul class="dropdown-menu shadow border-0" style="border-radius: 15px;">
-                            <li><a class="dropdown-item" href="soalexcel.html">Soal Excel</a></li>
-                            <li><a class="dropdown-item" href="memorycardexcel.html">MemCard EXCEL</a></li>
-                            <li><a class="dropdown-item" href="tebakfungsiexcel.html">Tebak Fungsi Excel</a></li>
-                            <li><a class="dropdown-item" href="draganddrop.html">Drag And Drop EXCEL</a></li>
-                            <li><a class="dropdown-item" href="tts.html">Pembuatan TTS</a></li>
-                        </ul>
-                    <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">PRESENSI SISWA</a>
-                    <ul class="dropdown-menu shadow border-0" style="border-radius: 15px;">
-                            <li><a class="dropdown-item" href="rekapabsen.html">REKAP ABSENSI SISWA</a></li>
-                    </li>
-                     </ul>
-                    
-                        <!--<a href="#" class="btn btn-login text-white rounded-pill px-4">
-                            Login Siswa <i class="fas fa-sign-in-alt ms-2"></i>-->
-                        </a>
-                    </li>
-                </ul>
+    <nav class="navbar navbar-expand-lg sticky-top shadow-sm py-2" style="background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); border-bottom: 1px solid #f0f0f0;">
+    <div class="container" style="max-width: 1100px;"> <a class="navbar-brand d-flex align-items-center me-4" href="index.html">
+            <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo" height="42" class="me-2 rounded-circle border shadow-sm">
+            <div class="lh-1">
+                <div class="fw-bold text-primary" style="font-size: 1rem; letter-spacing: -0.5px;">SMP NEGERI 8</div>
+                <small class="text-secondary fw-semibold" style="font-size: 0.75rem; letter-spacing: 0.5px;">CIKARANG UTARA</small>
             </div>
+        </a>
+
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon" style="width: 1.2em; height: 1.2em;"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link px-2 fw-semibold text-dark active" href="index.html">Beranda</a>
+                </li>
+
+                <li class="nav-item dropdown px-1">
+                    <a class="nav-link fw-semibold text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown">Profil</a>
+                    <ul class="dropdown-menu border-0 shadow-lg p-2 mt-2" style="border-radius: 10px; font-size: 0.9rem;">
+                        <li><a class="dropdown-item rounded-2" href="SejarahSekolah.html">Sejarah</a></li>
+                        <li><a class="dropdown-item rounded-2" href="tujuan.html">Visi & Misi</a></li>
+                        <li><a class="dropdown-item rounded-2" href="StrukturOrganigram.html">Struktur</a></li>
+                        <li><a class="dropdown-item rounded-2" href="Profil Guru.html">Guru & Staff</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item"><a class="nav-link px-2 fw-semibold text-dark" href="index.html#berita-terbaru">Berita</a></li>
+                <li class="nav-item"><a class="nav-link px-2 fw-semibold text-dark" href="index.html#Pojok_Karya">Literasi</a></li>
+                <li class="nav-item"><a class="nav-link px-2 fw-semibold text-dark" href="galerifasilitas.html">Fasilitas</a></li>
+
+                <li class="nav-item dropdown px-1">
+                    <a class="nav-link fw-semibold text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown">Aktivitas</a>
+                    <ul class="dropdown-menu border-0 shadow-lg p-2 mt-2" style="border-radius: 10px; font-size: 0.9rem; min-width: 180px;">
+                        <li><a class="dropdown-item rounded-2" href="soalexcel.html text-truncate">Soal Excel</a></li>
+                        <li><a class="dropdown-item rounded-2" href="memorycardexcel.html">MemCard</a></li>
+                        <li><a class="dropdown-item rounded-2" href="tebakfungsiexcel.html">Tebak Fungsi</a></li>
+                        <li><a class="dropdown-item rounded-2" href="draganddrop.html text-truncate">Drag & Drop</a></li>
+                        <li><a class="dropdown-item rounded-2" href="tts.html">TTS</a></li>
+                        <li><a class="dropdown-item rounded-2" href="acaknama.html">Randomizer</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown px-1">
+                    <a class="nav-link fw-semibold text-dark dropdown-toggle text-uppercase" href="#" data-bs-toggle="dropdown" style="font-size: 0.85rem;">Presensi</a>
+                    <ul class="dropdown-menu border-0 shadow-lg p-2 mt-2" style="border-radius: 10px;">
+                        <li><a class="dropdown-item rounded-2" href="rekapabsen.html">Rekap Siswa</a></li>
+                    </ul>
+                </li>
+
+                
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <div class="container my-5 pt-3">
         
         <div class="text-center mb-5 fade-in-up">
-            <div class="mb-4">
+            <div class="mb-4 position-relative d-inline-block">
                 <img src="https://i.imgur.com/mRmw86t.jpeg" 
                     alt="Logo Sekolah" 
                     class="img-fluid hero-logo rounded-circle shadow-lg"
-                    style="height: 180px; width: 180px; border: 8px solid white;">
+                    style="height: 160px; width: 160px;">
             </div>
-            <h1 class="display-5 mb-2" style="color: var(--sky-blue-1);">VISI, MISI DAN TUJUAN</h1>
-            <h2 class="fs-4 text-muted fw-normal">SMP NEGERI 8 CIKARANG UTARA</h2>
+            <h1 class="display-4 fw-800 mb-2" style="color: var(--primary-blue); letter-spacing: -1px;">Visi, Misi & Tujuan</h1>
+            <h2 class="fs-5 text-secondary fw-600">SMP NEGERI 8 CIKARANG UTARA</h2>
             <div class="section-separator"></div>
         </div>
 
         <div class="row justify-content-center mb-5 fade-in-up delay-1">
             <div class="col-lg-10">
-                <div class="modern-card visi-card p-5">
-                    <h2 class="fw-bold mb-4 section-title" style="color: var(--accent-green);">
-                        <i class="fas fa-eye"></i> VISI
+                <div class="modern-card visi-card p-4 p-md-5">
+                    <h2 class="fw-bold mb-4 section-title d-flex align-items-center" style="color: var(--accent-green);">
+                        <i class="fas fa-lightbulb shadow-sm text-white" style="background: var(--accent-green);"></i> VISI
                     </h2>
                     <div class="visi-highlight p-4">
-                        <p class="lead fst-italic mb-0 fw-bold text-dark">
+                        <p class="lead fst-italic mb-0 fw-bold text-dark text-center" style="line-height: 1.6;">
                             "Terwujudnya Peserta didik yang berakhlak mulia, kreatif, mandiri, dan berwawasan lingkungan"
                         </p>
                     </div>
-                    <p class="mt-4 text-muted small">
-                        Visi SMP Negeri 8 Cikarang Utara mencerminkan komitmen untuk bersama sama berpartisipasi aktif seluruh warga sekolah mendukung tercapainya pembelajaran yang berkualitas melalui pendidikan yang ramah lingkungan, mengangkat pendidikan berkarakter serta memupuk jiwa kompetitif dalam berprestasi baik akademik maupun non akademik.
+                    <p class="mt-4 text-muted" style="text-align: justify; line-height: 1.8;">
+                        Visi SMP Negeri 8 Cikarang Utara mencerminkan komitmen untuk bersama-sama berpartisipasi aktif seluruh warga sekolah mendukung tercapainya pembelajaran yang berkualitas melalui pendidikan yang ramah lingkungan, mengangkat pendidikan berkarakter serta memupuk jiwa kompetitif dalam berprestasi baik akademik maupun non akademik.
                     </p>
                 </div>
             </div>
@@ -298,51 +297,51 @@
 
         <div class="row justify-content-center mb-5 fade-in-up delay-2">
             <div class="col-lg-10">
-                <div class="modern-card misi-card p-5">
-                    <h2 class="fw-bold mb-4 section-title" style="color: var(--sky-blue-1);">
-                        <i class="fas fa-bullseye"></i> MISI
+                <div class="modern-card misi-card p-4 p-md-5">
+                    <h2 class="fw-bold mb-4 section-title d-flex align-items-center" style="color: var(--primary-blue);">
+                        <i class="fas fa-rocket shadow-sm text-white" style="background: var(--primary-blue);"></i> MISI
                     </h2>
-                    <p class="text-muted mb-4 small">
-                        Misi SMP Negeri 8 Cikarang Utara dirancang sebagai langkah strategis untuk mewujudkan visi melalui implementasi Pembelajaran Mendalam yang berkelanjutan berdasarkan uraian sebagai berikut :
+                    <p class="text-secondary mb-4 ps-1 border-start border-4 border-info">
+                        Langkah strategis untuk mewujudkan visi melalui implementasi Pembelajaran Mendalam (PM) yang berkelanjutan:
                     </p>
                     
                     <div class="custom-list">
                         <ol>
-                            <li>Menyelenggarakan pembelajaran berkesadaran yang mengembangkan kemampuan sesuai tahap perkembangan kognitif mereka. peserta didik untuk memahami proses belajarnya melalui refleksi sederhana, pertanyaan terbuka, dan kegiatan pembelajaran yang mendorong kesadaran diri</li>
-                            <li>Mewujudkan pembelajaran bermakna dengan mengaitkan setiap pengalaman proses pembelajaran dengan kehidupan nyata peserta didik dan lingkungan terdekat, menguatkan kemitraan aktif dengan orang tua dan masyarakat untuk mewujudkan kontinuitas pembelajaran yang autentik.</li>
-                            <li>Memastikan pembelajaran bermakna dan memotivasi melalui penciptaan suasana proses pembelajaran yang positif, aman, dan kondusif dan inspiratif, dimana kegembiraan bertransformasi menjadi kondisi emosional yang mendukung optimal learning dan perkembangan holistik peserta didik.</li>
-                            <li>Mengembangkan delapan dimensi profil lulusan secara terintegrasi melalui berbagai pengalaman proses pembelajaran yang memungkinkan peserta didik mengalami dan mengaplikasikan berbagai kompetensi secara bersamaan dalam konteks yang bermakna.</li>
-                            <li>Menguatkan ekosistem pembelajaran yang mendukung implementasi PM melalui pengembangan kapasitas pendidik, optimalisasi lingkungan pembelajaran, penguatan kemitraan dengan stakeholder, dan pemanfaatan teknologi yang tepat untuk peserta didik SMP.</li>
-                            <li>Melestarikan nilai-nilai budaya lokal dalam pembelajaran sebagai upaya menguatkan identitas dan kebanggaan terhadap warisan Nusantara sambil mengembangkan kesadaran global dan apresiasi terhadap keberagaman.</li>
-                            <li>Mengembangkan budaya literasi dan numerasi bagi warga sekolah</li>
-                            <li>Mengembangkan bakat dan minat peserta didik baik akademik maupun non akademik</li>
+                            <li>Menyelenggarakan pembelajaran berkesadaran yang mengembangkan kemampuan sesuai tahap perkembangan kognitif mereka.</li>
+                            <li>Mewujudkan pembelajaran bermakna dengan mengaitkan setiap pengalaman proses pembelajaran dengan kehidupan nyata.</li>
+                            <li>Memastikan suasana proses pembelajaran yang positif, aman, kondusif dan inspiratif.</li>
+                            <li>Mengembangkan delapan dimensi profil lulusan secara terintegrasi melalui berbagai pengalaman belajar.</li>
+                            <li>Menguatkan ekosistem pembelajaran melalui pengembangan kapasitas pendidik dan optimalisasi lingkungan.</li>
+                            <li>Melestarikan nilai-nilai budaya lokal (Nusantara) sambil mengembangkan kesadaran global.</li>
+                            <li>Mengembangkan budaya literasi dan numerasi bagi seluruh warga sekolah.</li>
+                            <li>Mengembangkan bakat dan minat peserta didik baik akademik maupun non akademik.</li>
                             <li>Mewujudkan sarana prasarana pendidikan yang memadai dari segi kuantitas dan kualitas.</li>
-                            <li>Melaksanakan pengelolaan sekolah berdasarkan konsep Manajemen Berbasis Sekolah (MBS)</li>
-                            <li>Melaksanakan Perencanaan Berbasis data.</li>
+                            <li>Melaksanakan pengelolaan sekolah berdasarkan konsep Manajemen Berbasis Sekolah (MBS).</li>
+                            <li>Melaksanakan Perencanaan Berbasis data secara berkala.</li>
                         </ol>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row justify-content-center fade-in-up delay-3">
+        <div class="row justify-content-center mb-5 fade-in-up delay-3">
             <div class="col-lg-10">
-                <div class="modern-card tujuan-card p-5">
-                    <h2 class="fw-bold mb-4 section-title" style="color: var(--accent-orange);">
-                        <i class="fas fa-star"></i> TUJUAN
+                <div class="modern-card tujuan-card p-4 p-md-5">
+                    <h2 class="fw-bold mb-4 section-title d-flex align-items-center" style="color: var(--accent-orange);">
+                        <i class="fas fa-bullseye shadow-sm text-white" style="background: var(--accent-orange);"></i> TUJUAN
                     </h2>
-                    <p class="text-muted mb-4 small">
-                        SMP Negeri 8 Cikarang Utara menetapkan tujuan yang konkret dan terukur untuk mewujudkan visi yang telah ditetapkan:
+                    <p class="text-secondary mb-4 ps-1 border-start border-4 border-warning">
+                        Tujuan konkret dan terukur untuk mencerminkan keberhasilan visi sekolah:
                     </p>
                     
                     <div class="custom-list">
                         <ol>
-                            <li>Mengembangkan kesehatan fisik dan mental peserta didik melalui pembiasaan pola hidup sehat, kegiatan pembelajaran motorik yang beragam, dan penciptaan lingkungan pembelajaran yang aman dan nyaman.</li>
-                            <li>Mengoptimalkan kecerdasan peserta didik sesuai tahap perkembangannya melalui stimulasi yang tepat pada seluruh aspek kognitif, bahasa, dan keterampilan berfikir dasar</li>
-                            <li>Mengembangkan kreativitas dan inovasi dengan menyediakan kesempatan luas bagi peserta didik untuk berekspresi, bereksperimen, dan menghasilkan karya karya original melalui berbagai media dan kegiatan pembelajaran seni.</li>
-                            <li>Membentuk karakter dan akhlak mulia melalui keteladanan, pembiasaan nilai-nilai luhur, dan pengintegrasian nilai-nilai spiritual dalam kehidupan sehari-hari.</li>
-                            <li>Mempersiapkan kesiapan akademik dan sosial yang mencakup kemampuan akademik dasar, sosial-emosional, dan kemandirian yang diperlukan untuk melanjutkan pendidikan ke jenjang berikutnya.</li>
-                            <li>Menguatkan kemitraan yang kuat dengan orang tua dan masyarakat untuk mewujudkan kontinuitas pendidikan antara rumah dan sekolah.</li>
+                            <li>Mengembangkan kesehatan fisik dan mental melalui pembiasaan pola hidup sehat dan lingkungan yang nyaman.</li>
+                            <li>Mengoptimalkan kecerdasan peserta didik melalui stimulasi kognitif, bahasa, dan keterampilan berfikir dasar.</li>
+                            <li>Mengembangkan kreativitas dan inovasi dengan menyediakan wadah ekspresi dan karya original.</li>
+                            <li>Membentuk karakter dan akhlak mulia melalui keteladanan serta pengintegrasian nilai spiritual.</li>
+                            <li>Mempersiapkan kesiapan akademik dan sosial untuk melanjutkan pendidikan ke jenjang berikutnya.</li>
+                            <li>Menguatkan kemitraan dengan orang tua dan masyarakat untuk kontinuitas pendidikan.</li>
                         </ol>
                     </div>
                 </div>
@@ -350,6 +349,10 @@
         </div>
 
     </div>
+
+    <footer class="text-center py-4 mt-5 border-top bg-white">
+        <p class="text-muted small mb-0">&copy; 2026 SMP Negeri 8 Cikarang Utara. All Rights Reserved.</p>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
