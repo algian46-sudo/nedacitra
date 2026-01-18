@@ -36,324 +36,221 @@
         .btn-check.active { background-color: #10b981 !important; color: white; border-color: #059669; }
         .btn-locked { background-color: #94a3b8 !important; cursor: not-allowed !important; opacity: 0.7; }
         #upload-loading { display: none; }
-        /* Overlay Styles */
-        .time-overlay { position: fixed; inset: 0; z-index: 9999; background: linear-gradient(135deg, #0D47A1 0%, #1E88E5 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
     </style>
 </head>
 <body>
 
-    <div id="countdown-page" class="time-overlay hidden">
-        <img src="https://i.imgur.com/mRmw86t.jpeg" class="h-24 w-24 rounded-full mb-6 border-4 border-white">
-        <h2 class="text-3xl font-bold mb-2">Bagi siswa yang belum menyelesaikan Pembelajaran, Batch 2 akan dibuka lagi pukul 17.00 WIB hingga 21.00 WIB</h2>
-        <p class="mb-8 opacity-80">E-Learning akan terbuka secara otomatis dalam:</p>
-        <div id="timer" class="text-5xl font-black tracking-tighter bg-white/20 p-6 rounded-3xl backdrop-blur-md">00:00:00</div>
-        <p class="mt-8 text-sm italic">Jadwal: 17 Januari 2026 - 17.00 WIB</p>
-    </div>
-
-    <div id="finished-page" class="time-overlay hidden">
-        <i class="fas fa-clock text-7xl mb-6"></i>
-        <h2 class="text-4xl font-black mb-4">WAKTU SELESAI!</h2>
-        <p class="text-xl max-w-md mx-auto opacity-90">Waktu pembelajaran untuk tanggal 17 Januari 2026 telah berakhir pada pukul 21.00 WIB.</p>
-        <div class="mt-8 p-4 bg-white/10 rounded-xl border border-white/20">
-            <p>Terima Kasih untuk siswa yang telah mengerjakan sesuai Jadwal.</p>
+    <header class="bg-white/10 backdrop-blur-lg shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo Sekolah" class="h-12 w-12 rounded-full ring-2 ring-white/50 object-cover mr-4">
+                <h1 class="text-xl md:text-2xl font-extrabold tracking-tight">E-Learning Center <span class="block text-sm font-light opacity-80">SMPN 8 CIKARANG UTARA</span></h1>
+            </div>
+            <nav class="hidden md:flex space-x-6 font-bold text-sm">
+                <a href="#video-section" class="hover:text-dark-blue transition">Video</a>
+                <a href="#kuis" class="hover:text-dark-blue transition">Kuis</a>
+                <a href="#rekap" class="hover:text-dark-blue transition">Database</a>
+            </nav>
         </div>
-    </div>
+    </header>
 
-    <div id="main-content">
-        <header class="bg-white/10 backdrop-blur-lg shadow-lg sticky top-0 z-50">
-            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-                <div class="flex items-center">
-                    <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo Sekolah" class="h-12 w-12 rounded-full ring-2 ring-white/50 object-cover mr-4">
-                    <h1 class="text-xl md:text-2xl font-extrabold tracking-tight">E-Learning Center <span class="block text-sm font-light opacity-80">SMPN 8 CIKARANG UTARA</span></h1>
-                </div>
-                <nav class="hidden md:flex space-x-6 font-bold text-sm">
-                    <a href="#video-section" class="hover:text-dark-blue transition">Video</a>
-                    <a href="#kuis" class="hover:text-dark-blue transition">Kuis</a>
-                    <a href="#rekap" class="hover:text-dark-blue transition">Database</a>
-                </nav>
+    <section class="container mx-auto px-4 mt-12 mb-12">
+        <div class="bg-white/20 backdrop-blur-md p-8 md:p-12 rounded-3xl border border-white/30 shadow-2xl">
+            <div class="text-center mb-8">
+                <i class="fas fa-graduation-cap text-6xl mb-6 text-white opacity-90"></i>
+                <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Selamat Datang, Generasi Juara!, Pembelajaran telah selesai silahkan lihat rekap nilai masing-masing di bawah !!</h2>
             </div>
-        </header>
+            
+            
+        </div>
+    
 
-        <section class="container mx-auto px-4 mt-12 mb-12">
-            <div class="bg-white/20 backdrop-blur-md p-8 md:p-12 rounded-3xl border border-white/30 shadow-2xl">
+    <section id="kuis" class="container mx-auto px-4 mb-16">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden text-gray-800 border-4 border-white/20">
+            
+            <div id="data-input-section" class="p-8 md:p-12">
                 <div class="text-center mb-8">
-                    <i class="fas fa-graduation-cap text-6xl mb-6 text-white opacity-90"></i>
-                    <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Selamat Datang, Generasi Juara!</h2>
-                </div>
-                
-                <div class="max-w-3xl mx-auto bg-white/10 p-6 rounded-2xl border border-white/20">
-                    <h3 class="text-xl font-bold mb-4 flex items-center"><i class="fas fa-info-circle mr-3"></i> PETUNJUK BELAJAR:</h3>
-                    <ul class="space-y-3 text-sm md:text-base leading-relaxed">
-                        <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">1</span> Tonton seluruh video pembelajaran sampai tuntas, dan tulis materi penting yang ada pada video</li>
-                        <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">2</span> Setiap selesai melihat media pembelajaran klik "Selesai Menonton Materi 1, 2, dan 3" untuk membuka akses pada kuis</li>
-                        <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">3</span> Foto catatan rapi kamu di buku tulis, untuk keperluan bukti pembelajaran</li>
-                        <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">4</span> Setelah semua video pembejaran selesai dilihat, maka form VERIFIKASI BELAJAR akan terbuka.</li>
-                        <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">5</span> Isi identitas dan foto catatan lengkap yang sudah terisi rapi pada buku catatan.</li>
-                        <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">6</span> Klik kirim bukti dan Mulai kuis, lalu kerjakan seluruh soal hingga selesai.</li>
-                        <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">7</span> Jika sudah selesai mengerjakan, REFRESH halaman untuk melihat hasil pada tab bagian paling bawah.</li>
-                        <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">8</span> Jika masih remedial, kerjakan ulang hingga dinyatakan LULUS.</li>
-                        <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">9</span> Khadiran dinyatakan selesai jika seluruh pembelajaran, foto catatan dan kuis telah terisi "selebihnyha dinyatakan ALFA".</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section id="video-section" class="container mx-auto px-4 mb-16">
-            <div class="flex items-center mb-8">
-                <div class="h-1 w-12 bg-white rounded-full mr-4"></div>
-                <h2 class="text-2xl font-bold uppercase tracking-widest text-white">Video Pembelajaran</h2>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white/10 p-4 rounded-2xl border border-white/20 shadow-xl flex flex-col">
-                    <div class="video-container mb-4"><iframe src="https://www.youtube.com/embed/QmcHFeqVpZo" allowfullscreen></iframe></div>
-                    <button id="v1-btn" onclick="markDone('v1')" class="btn-check p-3 rounded-xl font-bold text-sm text-white">
-                        <i class="fas fa-play mr-2"></i> Selesai Menonton Materi 1
-                    </button>
-                </div>
-                <div class="bg-white/10 p-4 rounded-2xl border border-white/20 shadow-xl flex flex-col">
-                    <div class="video-container mb-4"><iframe src="https://www.youtube.com/embed/QebWfH4_Ehc" allowfullscreen></iframe></div>
-                    <button id="v2-btn" onclick="markDone('v2')" class="btn-check p-3 rounded-xl font-bold text-sm text-white">
-                        <i class="fas fa-play mr-2"></i> Selesai Menonton Materi 2
-                    </button>
-                </div>
-                <div class="bg-white/10 p-4 rounded-2xl border border-white/20 shadow-xl flex flex-col">
-                    <div class="video-container mb-4"><iframe src="https://www.youtube.com/embed/fPNN91aFbj0" allowfullscreen></iframe></div>
-                    <button id="v3-btn" onclick="markDone('v3')" class="btn-check p-3 rounded-xl font-bold text-sm text-white">
-                        <i class="fas fa-play mr-2"></i> Selesai Menonton Materi 3
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <section id="kuis" class="container mx-auto px-4 mb-16">
-            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden text-gray-800 border-4 border-white/20">
-                
-                <div id="data-input-section" class="p-8 md:p-12">
-                    <div class="text-center mb-8">
-                        <h2 class="text-2xl font-bold text-dark-blue">Verifikasi Belajar</h2>
-                        <div id="lock-status" class="mt-2 inline-block px-4 py-1 rounded-full bg-red-100 text-red-600 text-xs font-bold uppercase">
-                            <i class="fas fa-lock mr-2"></i> Video Belum Lengkap
-                        </div>
-                    </div>
-                    <div class="max-w-md mx-auto space-y-4">
-                        <select id="student-name" class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-primary-blue">
-                            <option value="">-- Pilih Nama --</option>
-                            <option>AAD ADRIYAN</option>
-                            <option>AHMAD MARJUKI</option>
-                            <option>AHMAD RIZKI MAULANA</option>
-                            <option>AISYAH NUR FADILAH</option>
-                            <option>AL WARAQ 'AB</option>
-                            <option>BAYU BAASITH</option>
-                            <option>BIBAH FITRIYYANI</option>
-                            <option>CHUBAH NATASYAH</option>
-                            <option>DAHRUL SAPUTRA</option>
-                            <option>DEDE AJI SANTOSO</option>
-                            <option>DENIS RIZKY IRAWAN</option>
-                            <option>DHECITA AMELIA</option>
-                            <option>DWI AGUNG PRASETYO</option>
-                            <option>FANESA INDRIA NINGSIH</option>
-                            <option>KESYA MARSELINA PUTRI</option>
-                            <option>M RAYAN FAHRIZAL</option>
-                            <option>M. RIZQI FAUZAN</option>
-                            <option>MEGA CINTYA PUTRI</option>
-                            <option>MIKA APRILIA ANGGRAENI</option>
-                            <option>MUHAMAD ARDIANSYAH</option>
-                            <option>MUHAMAD FAHRI NUR CAHYO</option>
-                            <option>MUHAMAD IBAS ARRASYID</option>
-                            <option>MUHAMMAD RIFQII ZAIDAAN</option>
-                            <option>MUTIARA NURMALA</option>
-                            <option>NATASYA PUTRI WULANDARI</option>
-                            <option>NAZWA FARICHATUL ADHA</option>
-                            <option>NOVAN NAZRIL ILHAM</option>
-                            <option>NURCAHYA KINTAN AZ ZAHRA</option>
-                            <option>NYAI FATIMAH</option>
-                            <option>REHAN ADI NUGROHO</option>
-                            <option>RISKI RAMADHAN</option>
-                            <option>RIZKY GITA DAVIT SAPUTRA</option>
-                            <option>SATRIA EKA NUGRAHA</option>
-                            <option>SUCI RAHMADANI</option>
-                            <option>VIRANTI DEWI</option>
-                            <option>ABU BAKAR RIZKY NASUTION</option>
-                            <option>AEN DARA AYUNINGTIAS</option>
-                            <option>AISYAH FEBRIANI</option>
-                            <option>ANANDA JULIAN</option>
-                            <option>ANDARA DEFISA APRILLIANI</option>
-                            <option>ANGGA RIPDO PANGESTU</option>
-                            <option>ASEP GUNAWAN</option>
-                            <option>DANU GUNAWAN</option>
-                            <option>DEVA PERMATA SARI</option>
-                            <option>DIVA FATMAWATI</option>
-                            <option>FITRIYANI</option>
-                            <option>KHAIRUL NIZAM</option>
-                            <option>M. RIZKY</option>
-                            <option>MAKBUL FAHRI</option>
-                            <option>MELISA SAPITRI</option>
-                            <option>MUHAMAD DANU</option>
-                            <option>MUHAMAD ELFASYA</option>
-                            <option>MUHAMAD WAHIT</option>
-                            <option>MUHAMMAD AZZAM AZUDHIN</option>
-                            <option>MUHAMMAD FADILAH IMAWAN</option>
-                            <option>NABILA PUTRI</option>
-                            <option>NINA AULIA ZAHRA</option>
-                            <option>NOVIANTI EPENDI</option>
-                            <option>PUTRA PRASETYO</option>
-                            <option>PUTRI ANUGRAH</option>
-                            <option>RAFA MAUDAKA</option>
-                            <option>REYSYAH KRISNA PUTRI</option>
-                            <option>RIZKY ADITIA PRATAMA</option>
-                            <option>SHIHALUDIN</option>
-                            <option>SOCA KHOIRI SAFANA</option>
-                            <option>SUTINAH</option>
-                            <option>TIKA AULIYA</option>
-                            <option>ZIKRI ALKAFI</option>
-                        </select>
-                        <select id="student-class" class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-primary-blue">
-                            <option value="">-- Pilih Kelas --</option>
-                            <option>9.1</option>
-                            <option>9.2</option>
-                        </select>
-                        
-                        <div id="photo-frame" class="border-2 border-dashed border-gray-300 p-4 rounded-xl bg-gray-50 text-center">
-                            <p class="text-xs font-bold text-gray-500 mb-2 uppercase">Foto Catatan Kamu</p>
-                            <input type="file" id="photo-input" accept="image/*" capture="environment" class="hidden">
-                            <label id="photo-label" for="photo-input" class="cursor-pointer bg-primary-blue text-white px-4 py-2 rounded-lg text-sm font-bold inline-block hover:bg-dark-blue transition">
-                                <i class="fas fa-camera mr-2"></i> Ambil Foto Catatan
-                            </label>
-                            <p id="file-name" class="text-[10px] mt-2 text-gray-400 italic font-bold">Wajib melampirkan foto catatan</p>
-                        </div>
-
-                        <button id="btn-start" onclick="submitNoteAndStart()" disabled class="btn-locked w-full bg-dark-blue text-white p-4 rounded-xl font-bold text-lg shadow-lg transition">Kirim Bukti & Mulai Kuis <i class="fas fa-paper-plane ml-2"></i></button>
-                        
-                        <div id="upload-loading" class="text-center py-4">
-                            <i class="fas fa-circle-notch fa-spin text-3xl text-primary-blue mb-2"></i>
-                            <p class="text-sm font-bold text-primary-blue">Sedang mengunggah foto ke Google Drive...</p>
-                        </div>
+                    <h2 class="text-2xl font-bold text-dark-blue">Verifikasi Belajar</h2>
+                    <div id="lock-status" class="mt-2 inline-block px-4 py-1 rounded-full bg-red-100 text-red-600 text-xs font-bold uppercase">
+                        <i class="fas fa-lock mr-2"></i> Video Belum Lengkap
                     </div>
                 </div>
+                <div class="max-w-md mx-auto space-y-4">
+                    <select id="student-name" class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-primary-blue">
+                        <option value="">-- Pilih Nama --</option>
+                        <option>AAD ADRIYAN</option>
+                        <option>AHMAD MARJUKI</option>
+                        <option>AHMAD RIZKI MAULANA</option>
+                        <option>AISYAH NUR FADILAH</option>
+                        <option>AL WARAQ 'AB</option>
+                        <option>BAYU BAASITH</option>
+                        <option>BIBAH FITRIYYANI</option>
+                        <option>CHUBAH NATASYAH</option>
+                        <option>DAHRUL SAPUTRA</option>
+                        <option>DEDE AJI SANTOSO</option>
+                        <option>DENIS RIZKY IRAWAN</option>
+                        <option>DHECITA AMELIA</option>
+                        <option>DWI AGUNG PRASETYO</option>
+                        <option>FANESA INDRIA NINGSIH</option>
+                        <option>KESYA MARSELINA PUTRI</option>
+                        <option>M RAYAN FAHRIZAL</option>
+                        <option>M. RIZQI FAUZAN</option>
+                        <option>MEGA CINTYA PUTRI</option>
+                        <option>MIKA APRILIA ANGGRAENI</option>
+                        <option>MUHAMAD ARDIANSYAH</option>
+                        <option>MUHAMAD FAHRI NUR CAHYO</option>
+                        <option>MUHAMAD IBAS ARRASYID</option>
+                        <option>MUHAMMAD RIFQII ZAIDAAN</option>
+                        <option>MUTIARA NURMALA</option>
+                        <option>NATASYA PUTRI WULANDARI</option>
+                        <option>NAZWA FARICHATUL ADHA</option>
+                        <option>NOVAN NAZRIL ILHAM</option>
+                        <option>NURCAHYA KINTAN AZ ZAHRA</option>
+                        <option>NYAI FATIMAH</option>
+                        <option>REHAN ADI NUGROHO</option>
+                        <option>RISKI RAMADHAN</option>
+                        <option>RIZKY GITA DAVIT SAPUTRA</option>
+                        <option>SATRIA EKA NUGRAHA</option>
+                        <option>SUCI RAHMADANI</option>
+                        <option>VIRANTI DEWI</option>
+                        <option>ABU BAKAR RIZKY NASUTION</option>
+                        <option>AEN DARA AYUNINGTIAS</option>
+                        <option>AISYAH FEBRIANI</option>
+                        <option>ANANDA JULIAN</option>
+                        <option>ANDARA DEFISA APRILLIANI</option>
+                        <option>ANGGA RIPDO PANGESTU</option>
+                        <option>ASEP GUNAWAN</option>
+                        <option>DANU GUNAWAN</option>
+                        <option>DEVA PERMATA SARI</option>
+                        <option>DIVA FATMAWATI</option>
+                        <option>FITRIYANI</option>
+                        <option>KHAIRUL NIZAM</option>
+                        <option>M. RIZKY</option>
+                        <option>MAKBUL FAHRI</option>
+                        <option>MELISA SAPITRI</option>
+                        <option>MUHAMAD DANU</option>
+                        <option>MUHAMAD ELFASYA</option>
+                        <option>MUHAMAD WAHIT</option>
+                        <option>MUHAMMAD AZZAM AZUDHIN</option>
+                        <option>MUHAMMAD FADILAH IMAWAN</option>
+                        <option>NABILA PUTRI</option>
+                        <option>NINA AULIA ZAHRA</option>
+                        <option>NOVIANTI EPENDI</option>
+                        <option>PUTRA PRASETYO</option>
+                        <option>PUTRI ANUGRAH</option>
+                        <option>RAFA MAUDAKA</option>
+                        <option>REYSYAH KRISNA PUTRI</option>
+                        <option>RIZKY ADITIA PRATAMA</option>
+                        <option>SHIHALUDIN</option>
+                        <option>SOCA KHOIRI SAFANA</option>
+                        <option>SUTINAH</option>
+                        <option>TIKA AULIYA</option>
+                        <option>ZIKRI ALKAFI</option>
+                    </select>
+                    <select id="student-class" class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-primary-blue">
+                        <option value="">-- Pilih Kelas --</option>
+                        <option>9.1</option>
+                        <option>9.2</option>
+                    </select>
+                    
+                    <div id="photo-frame" class="border-2 border-dashed border-gray-300 p-4 rounded-xl bg-gray-50 text-center">
+                        <p class="text-xs font-bold text-gray-500 mb-2 uppercase">Foto Catatan Kamu</p>
+                        <input type="file" id="photo-input" accept="image/*" capture="environment" class="hidden">
+                        <label id="photo-label" for="photo-input" class="cursor-pointer bg-primary-blue text-white px-4 py-2 rounded-lg text-sm font-bold inline-block hover:bg-dark-blue transition">
+                            <i class="fas fa-camera mr-2"></i> Ambil Foto Catatan
+                        </label>
+                        <p id="file-name" class="text-[10px] mt-2 text-gray-400 italic font-bold">Wajib melampirkan foto catatan</p>
+                    </div>
 
-                <div id="quiz-section" class="hidden">
-                    <div class="bg-dark-blue p-6 text-white flex justify-between items-center">
-                        <div>
-                            <h3 id="display-name" class="font-bold">Nama: -</h3>
-                            <p id="display-class" class="text-xs text-secondary-blue">Kelas: -</p>
-                        </div>
-                        <div class="text-right"><span id="progress-text" class="text-lg font-black italic">Soal 1/35</span></div>
+                    <button id="btn-start" onclick="submitNoteAndStart()" disabled class="btn-locked w-full bg-dark-blue text-white p-4 rounded-xl font-bold text-lg shadow-lg transition">Kirim Bukti & Mulai Kuis <i class="fas fa-paper-plane ml-2"></i></button>
+                    
+                    <div id="upload-loading" class="text-center py-4">
+                        <i class="fas fa-circle-notch fa-spin text-3xl text-primary-blue mb-2"></i>
+                        <p class="text-sm font-bold text-primary-blue">Sedang mengunggah foto ke Google Drive...</p>
                     </div>
-                    <div class="p-8">
-                        <div id="question-box" class="mb-6">
-                            <h3 id="question-text" class="text-xl font-bold text-dark-blue mb-4">...</h3>
-                            <div id="options-container" class="grid grid-cols-1 gap-3"></div>
-                        </div>
-                        <div id="feedback-box" class="hidden p-4 rounded-xl mb-6 border-2 text-center bg-gray-50">
-                            <p id="rationale-text" class="text-sm font-medium mb-4"></p>
-                            <button onclick="nextQuestion()" class="bg-dark-blue text-white px-10 py-2 rounded-full font-bold hover:scale-105 transition">Berikutnya <i class="fas fa-arrow-right ml-2"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="result-section" class="hidden p-12 text-center">
-                    <i class="fas fa-check-circle text-7xl text-green-500 mb-4"></i>
-                    <h2 class="text-3xl font-black text-dark-blue mb-2">Selesai!</h2>
-                    <div class="bg-blue-50 p-6 rounded-3xl inline-block mb-8">
-                        <p class="text-sm font-bold text-gray-500">SKOR AKHIR</p>
-                        <p id="final-grade" class="text-6xl font-black text-primary-blue">0</p>
-                    </div>
-                    <br>
-                    <button onclick="location.reload()" class="bg-gray-200 text-gray-700 px-8 py-3 rounded-full font-bold">Kembali ke Atas</button>
                 </div>
             </div>
-        </section>
 
-        <section id="rekap" class="container mx-auto px-4 mb-20">
-            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-white/20 shadow-2xl">
-                <h2 class="text-2xl font-bold italic mb-6 flex items-center text-white">
-                    <i class="fas fa-clipboard-list mr-3"></i> REKAP DATABASE BELAJAR
-                </h2>
-                <div class="overflow-x-auto bg-white rounded-2xl shadow-inner">
-                    <table class="w-full text-left text-gray-800">
-                        <thead class="bg-gray-100 border-b-2">
-                            <tr>
-                                <th class="p-4 font-bold">Siswa</th>
-                                <th class="p-4 text-center font-bold">Kelas</th>
-                                <th class="p-4 text-center font-bold">Bukti Catatan</th>
-                                <th class="p-4 text-center font-bold">Nilai</th>
-                                <th class="p-4 text-center font-bold">Status</th>
-                                <th class="p-4 text-center font-bold">Waktu</th>
-                            </tr>
-                        </thead>
-                        <tbody id="score-table-body"></tbody>
-                    </table>
+            <div id="quiz-section" class="hidden">
+                <div class="bg-dark-blue p-6 text-white flex justify-between items-center">
+                    <div>
+                        <h3 id="display-name" class="font-bold">Nama: -</h3>
+                        <p id="display-class" class="text-xs text-secondary-blue">Kelas: -</p>
+                    </div>
+                    <div class="text-right"><span id="progress-text" class="text-lg font-black italic">Soal 1/35</span></div>
+                </div>
+                <div class="p-8">
+                    <div id="question-box" class="mb-6">
+                        <h3 id="question-text" class="text-xl font-bold text-dark-blue mb-4">...</h3>
+                        <div id="options-container" class="grid grid-cols-1 gap-3"></div>
+                    </div>
+                    <div id="feedback-box" class="hidden p-4 rounded-xl mb-6 border-2 text-center bg-gray-50">
+                        <p id="rationale-text" class="text-sm font-medium mb-4"></p>
+                        <button onclick="nextQuestion()" class="bg-dark-blue text-white px-10 py-2 rounded-full font-bold hover:scale-105 transition">Berikutnya <i class="fas fa-arrow-right ml-2"></i></button>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        <footer class="text-center py-8 bg-black/20 text-xs mt-auto opacity-70">
-            <p>&copy; 2026 SMP NEGERI 8 CIKARANG UTARA | Algian Manggara, S.Agr</p>
-        </footer>
-    </div>
+            <div id="result-section" class="hidden p-12 text-center">
+                <i class="fas fa-check-circle text-7xl text-green-500 mb-4"></i>
+                <h2 class="text-3xl font-black text-dark-blue mb-2">Selesai!</h2>
+                <div class="bg-blue-50 p-6 rounded-3xl inline-block mb-8">
+                    <p class="text-sm font-bold text-gray-500">SKOR AKHIR</p>
+                    <p id="final-grade" class="text-6xl font-black text-primary-blue">0</p>
+                </div>
+                <br>
+                <button onclick="location.reload()" class="bg-gray-200 text-gray-700 px-8 py-3 rounded-full font-bold">Kembali ke Atas</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="rekap" class="container mx-auto px-4 mb-20">
+        <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-white/20 shadow-2xl">
+            <h2 class="text-2xl font-bold italic mb-6 flex items-center text-white">
+                <i class="fas fa-clipboard-list mr-3"></i> REKAP DATABASE BELAJAR
+            </h2>
+            <div class="overflow-x-auto bg-white rounded-2xl shadow-inner">
+                <table class="w-full text-left text-gray-800">
+                    <thead class="bg-gray-100 border-b-2">
+                        <tr>
+                            <th class="p-4 font-bold">Siswa</th>
+                            <th class="p-4 text-center font-bold">Kelas</th>
+                            <th class="p-4 text-center font-bold">Bukti Catatan</th>
+                            <th class="p-4 text-center font-bold">Nilai</th>
+                            <th class="p-4 text-center font-bold">Status</th>
+                            <th class="p-4 text-center font-bold">Waktu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="score-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center py-8 bg-black/20 text-xs mt-auto opacity-70">
+        <p>&copy; 2026 SMP NEGERI 8 CIKARANG UTARA | Algian Manggara, S.Agr</p>
+    </footer>
 
     <script>
-        // --- LOGIKA WAKTU KHUSUS 17 JANUARI 2026 ---
-        function updateTimeLogic() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth(); // 0-11
-            const date = now.getDate();
-            const hour = now.getHours();
-
-            // Hanya aktif di tanggal 17 Januari 2026
-            if (year === 2026 && month === 0 && date === 17) {
-                const startTime = new Date(2026, 0, 17, 17, 0, 0); // 17:00
-                const endTime = new Date(2026, 0, 17, 21, 0, 0);   // 21:00
-
-                // 1. Sebelum pukul 17.00: Tampilkan Countdown
-                if (now < startTime) {
-                    document.getElementById('main-content').classList.add('hidden');
-                    document.getElementById('countdown-page').classList.remove('hidden');
-                    
-                    const diff = startTime - now;
-                    const h = Math.floor(diff / 3600000);
-                    const m = Math.floor((diff % 3600000) / 60000);
-                    const s = Math.floor((diff % 60000) / 1000);
-                    document.getElementById('timer').innerText = 
-                        `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-                } 
-                // 2. Sesudah pukul 21.00: Tampilkan Selesai
-                else if (now >= endTime) {
-                    document.getElementById('main-content').classList.add('hidden');
-                    document.getElementById('countdown-page').classList.add('hidden');
-                    document.getElementById('finished-page').classList.remove('hidden');
-                }
-                // 3. Waktu Pembelajaran (17.00 - 21.00)
-                else {
-                    document.getElementById('main-content').classList.remove('hidden');
-                    document.getElementById('countdown-page').classList.add('hidden');
-                    document.getElementById('finished-page').classList.add('hidden');
-                }
-            } else {
-                // Jika bukan tanggal 17 Jan 2026, biarkan konten terbuka (opsional)
-                document.getElementById('main-content').classList.remove('hidden');
-            }
-        }
-
-        // Jalankan pengecekan setiap detik
-        setInterval(updateTimeLogic, 1000);
-
-        // --- SCRIPT ASLI ANDA (DENGAN PENYESUAIAN) ---
+        // URL Web App Google Apps Script
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwitaisW6yq-VkkcNvBtDkF1K3F2U2oW9hiJ0ICDNeG69PrmlrBaVK-wDHLIssFYpOM/exec';
         
         let doneVideo = { v1: false, v2: false, v3: false };
         let currentIdx = 0, userScore = 0, studentData = {};
         let base64Image = "";
 
+        // Preview & Handle Foto
         document.getElementById('photo-input').onchange = function(e) {
             const file = e.target.files[0];
             if (file) {
                 document.getElementById('file-name').innerText = "✅ Foto terpilih: " + file.name;
                 document.getElementById('photo-label').innerHTML = '<i class="fas fa-sync mr-2"></i> Ganti Foto';
                 document.getElementById('photo-label').classList.replace('bg-primary-blue', 'bg-orange-500');
+                
                 const reader = new FileReader();
-                reader.onload = function(event) { base64Image = event.target.result; };
+                reader.onload = function(event) {
+                    base64Image = event.target.result;
+                };
                 reader.readAsDataURL(file);
             }
         };
@@ -381,14 +278,29 @@
         async function submitNoteAndStart() {
             const n = document.getElementById('student-name').value;
             const c = document.getElementById('student-class').value;
+            
             if (!n || !c) return alert("Silakan pilih Nama dan Kelas!");
             if (!base64Image) return alert("Harap lampirkan foto catatan terlebih dahulu!");
+
             studentData = { name: n, cls: c };
+            
             document.getElementById('btn-start').classList.add('hidden');
             document.getElementById('upload-loading').style.display = 'block';
-            const payload = { type: "PRE_QUIZ_NOTE", name: n, cls: c, imageFile: base64Image };
+
+            const payload = {
+                type: "PRE_QUIZ_NOTE",
+                name: n,
+                cls: c,
+                imageFile: base64Image
+            };
+
             try {
-                await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+                await fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify(payload)
+                });
+                
                 document.getElementById('display-name').innerText = "Nama: " + n;
                 document.getElementById('display-class').innerText = "Kelas: " + c;
                 document.getElementById('data-input-section').classList.add('hidden');
@@ -443,10 +355,12 @@
         function renderTable(dataArray) {
             const tableBody = document.getElementById('score-table-body');
             tableBody.innerHTML = "";
+            
             if (!dataArray || dataArray.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="6" class="p-10 text-center text-gray-400 italic">Belum ada data.</td></tr>';
                 return;
             }
+
             dataArray.reverse().forEach((data) => {
                 tableBody.innerHTML += `
                     <tr class="border-b hover:bg-gray-50 transition text-sm">
@@ -495,9 +409,11 @@
         async function finishQuiz() {
             const grade = Math.round((userScore / 35) * 100);
             const entry = { type: "UPDATE_GRADE", name: studentData.name, cls: studentData.cls, grade: grade };
+            
             document.getElementById('quiz-section').classList.add('hidden');
             document.getElementById('result-section').classList.remove('hidden');
             document.getElementById('final-grade').innerText = grade;
+
             await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(entry) });
             setTimeout(fetchDatabase, 2000);
         }
@@ -510,10 +426,7 @@
             } catch (e) { console.log("Fetch error"); }
         }
 
-        window.onload = () => {
-            fetchDatabase();
-            updateTimeLogic();
-        };
+        window.onload = fetchDatabase;
     </script>
 </body>
 </html>
