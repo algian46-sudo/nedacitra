@@ -266,6 +266,38 @@
             .carousel-caption h1 { font-size: 2rem; }
             .carousel-item { height: 400px; }
         }
+        /* Optimasi Khusus Mobile */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: white;
+        margin: 0 -1rem; /* Full width ke pinggir layar */
+        padding: 1rem;
+        max-height: 80vh; /* Agar bisa di-scroll jika menu panjang */
+        overflow-y: auto;
+        border-top: 1px solid #eee;
+    }
+    
+    .navbar-nav {
+        align-items: flex-start !important; /* Menu rata kiri di HP */
+    }
+
+    .nav-item {
+        width: 100%;
+        padding: 5px 0;
+    }
+
+    .dropdown-menu {
+        background-color: #f8f9fa !important; /* Warna beda untuk dropdown */
+        border: none !important;
+        margin-left: 1rem !important; /* Indentasi menu dropdown */
+        box-shadow: none !important;
+    }
+
+    .btn-primary {
+        width: 100%; /* Tombol login jadi lebar penuh di HP */
+        margin-top: 10px;
+    }
+}
     </style>
 </head>
 <body>
@@ -278,27 +310,30 @@
     </div>
     
 <nav class="navbar navbar-expand-lg sticky-top shadow-sm py-2" style="background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); border-bottom: 1px solid #f0f0f0;">
-    <div class="container" style="max-width: 1100px;"> <a class="navbar-brand d-flex align-items-center me-4" href="index.html">
-            <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo" height="42" class="me-2 rounded-circle border shadow-sm">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center me-auto" href="index.html">
+            <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo" height="40" class="me-2 rounded-circle border shadow-sm">
             <div class="lh-1">
-                <div class="fw-bold text-primary" style="font-size: 1rem; letter-spacing: -0.5px;">SMP NEGERI 8</div>
-                <small class="text-secondary fw-semibold" style="font-size: 0.75rem; letter-spacing: 0.5px;">CIKARANG UTARA</small>
+                <div class="fw-bold text-primary" style="font-size: 0.95rem; letter-spacing: -0.5px;">SMP NEGERI 8</div>
+                <small class="text-secondary fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.5px;">CIKARANG UTARA</small>
             </div>
         </a>
 
         <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon" style="width: 1.2em; height: 1.2em;"></span>
+            <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item">
-                    <a class="nav-link px-2 fw-semibold text-dark active" href="index.html">Beranda</a>
+                    <a class="nav-link px-3 fw-semibold text-dark active" href="index.html">Beranda</a>
                 </li>
 
-                <li class="nav-item dropdown px-1">
-                    <a class="nav-link fw-semibold text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown">Profil</a>
-                    <ul class="dropdown-menu border-0 shadow-lg p-2 mt-2" style="border-radius: 10px; font-size: 0.9rem;">
+                <li class="nav-item dropdown">
+                    <a class="nav-link px-3 fw-semibold text-dark dropdown-toggle" href="#" id="profilDrop" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Profil
+                    </a>
+                    <ul class="dropdown-menu border-0 shadow-lg p-2" aria-labelledby="profilDrop">
                         <li><a class="dropdown-item rounded-2" href="SejarahSekolah.html">Sejarah</a></li>
                         <li><a class="dropdown-item rounded-2" href="tujuan.html">Visi & Misi</a></li>
                         <li><a class="dropdown-item rounded-2" href="StrukturOrganigram.html">Struktur</a></li>
@@ -306,13 +341,15 @@
                     </ul>
                 </li>
 
-                <li class="nav-item"><a class="nav-link px-2 fw-semibold text-dark" href="#berita-terbaru">Berita</a></li>
-                <li class="nav-item"><a class="nav-link px-2 fw-semibold text-dark" href="#Pojok_Karya">Literasi</a></li>
-                <li class="nav-item"><a class="nav-link px-2 fw-semibold text-dark" href="galerifasilitas.html">Fasilitas</a></li>
+                <li class="nav-item"><a class="nav-link px-3 fw-semibold text-dark" href="#berita-terbaru">Berita</a></li>
+                <li class="nav-item"><a class="nav-link px-3 fw-semibold text-dark" href="#Pojok_Karya">Literasi</a></li>
+                <li class="nav-item"><a class="nav-link px-3 fw-semibold text-dark" href="galerifasilitas.html">Fasilitas</a></li>
 
-                <li class="nav-item dropdown px-1">
-                    <a class="nav-link fw-semibold text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown">Aktivitas</a>
-                    <ul class="dropdown-menu border-0 shadow-lg p-2 mt-2" style="border-radius: 10px; font-size: 0.9rem; min-width: 180px;">
+                <li class="nav-item dropdown">
+                    <a class="nav-link px-3 fw-semibold text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        Aktivitas
+                    </a>
+                    <ul class="dropdown-menu border-0 shadow-lg p-2">
                         <li><a class="dropdown-item rounded-2" href="soalexcel.html">Soal Excel</a></li>
                         <li><a class="dropdown-item rounded-2" href="memorycardexcel.html">MemCard</a></li>
                         <li><a class="dropdown-item rounded-2" href="tebakfungsiexcel.html">Tebak Fungsi</a></li>
@@ -322,16 +359,18 @@
                     </ul>
                 </li>
 
-                <li class="nav-item dropdown px-1">
-                    <a class="nav-link fw-semibold text-dark dropdown-toggle text-uppercase" href="#" data-bs-toggle="dropdown" style="font-size: 0.85rem;">Presensi</a>
-                    <ul class="dropdown-menu border-0 shadow-lg p-2 mt-2" style="border-radius: 10px;">
+                <li class="nav-item dropdown">
+                    <a class="nav-link px-3 fw-semibold text-dark dropdown-toggle text-uppercase" href="#" data-bs-toggle="dropdown" style="font-size: 0.85rem;">
+                        Presensi
+                    </a>
+                    <ul class="dropdown-menu border-0 shadow-lg p-2">
                         <li><a class="dropdown-item rounded-2" href="rekapabsen.html">Rekap Siswa</a></li>
                     </ul>
                 </li>
 
-                <li class="nav-item ms-lg-2">
-                    <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 py-1 fw-bold" data-bs-toggle="modal" data-bs-target="#loginModal">
-                        <small>LOGIN ADMIN</small>
+                <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                    <button type="button" class="btn btn-primary btn-sm rounded-pill px-4 py-2 fw-bold w-100-mobile" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        LOGIN ADMIN
                     </button>
                 </li>
             </ul>
@@ -374,6 +413,38 @@
         visibility: visible;
         transform: translateY(0);
     }
+    /* Optimasi Khusus Mobile */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: white;
+        margin: 0 -1rem; /* Full width ke pinggir layar */
+        padding: 1rem;
+        max-height: 80vh; /* Agar bisa di-scroll jika menu panjang */
+        overflow-y: auto;
+        border-top: 1px solid #eee;
+    }
+    
+    .navbar-nav {
+        align-items: flex-start !important; /* Menu rata kiri di HP */
+    }
+
+    .nav-item {
+        width: 100%;
+        padding: 5px 0;
+    }
+
+    .dropdown-menu {
+        background-color: #f8f9fa !important; /* Warna beda untuk dropdown */
+        border: none !important;
+        margin-left: 1rem !important; /* Indentasi menu dropdown */
+        box-shadow: none !important;
+    }
+
+    .btn-primary {
+        width: 100%; /* Tombol login jadi lebar penuh di HP */
+        margin-top: 10px;
+    }
+}
 </style>
     <html>
 <head>
@@ -1041,7 +1112,6 @@
 </style>
 </body>
 </html>
-
 
 
 
