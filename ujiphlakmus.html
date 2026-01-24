@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Learning - SMP NEGERI 8 CIKARANG UTARA</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#1E88E5',
+                        'secondary-blue': '#90CAF9',
+                        'dark-blue': '#0D47A1',
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        
+        body { 
+            background: linear-gradient(135deg, #1E88E5 0%, #90CAF9 100%); 
+            min-height: 100vh; 
+            color: white; 
+            font-family: 'Inter', sans-serif; 
+        }
+
+        /* Glassmorphism Effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        /* Lab Elements */
+        .beaker-container {
+            perspective: 1000px;
+        }
+
+        .beaker {
+            position: relative;
+            width: 140px;
+            height: 160px;
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            border-top: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0 0 30px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 10;
+        }
+
+        .liquid {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 0%;
+            transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);
+            border-radius: 0 0 25px 25px;
+        }
+
+        .litmus-paper {
+            width: 28px;
+            height: 100px;
+            cursor: pointer;
+            transition: all 0.7s cubic-bezier(0.5, 0, 0.5, 1);
+            border-radius: 2px;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            writing-mode: vertical-rl;
+            font-size: 8px;
+            font-weight: 800;
+            color: rgba(0,0,0,0.4);
+            text-transform: uppercase;
+        }
+
+        /* Animations */
+        .dip-active { transform: translateY(170px); z-index: 15; }
+        
+        .pulse-soft { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        /* Mobile Scrollbar */
+        .custom-scroll::-webkit-scrollbar { height: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
+    </style>
+</head>
+<body class="flex flex-col">
+
+    <header class="bg-white/10 backdrop-blur-lg shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo" class="h-10 w-10 md:h-12 md:w-12 rounded-full ring-2 ring-white/50 object-cover mr-3">
+                <div>
+                    <h1 class="text-sm md:text-xl font-black leading-none">E-LEARNING CENTER</h1>
+                    <p class="text-[10px] md:text-xs font-light tracking-widest opacity-80 uppercase">SMPN 8 Cikarang Utara</p>
+                </div>
+            </div>
+            <a href="ipaasambasa.html" class="bg-white/20 hover:bg-white text-white hover:text-primary-blue px-4 py-2 rounded-full text-xs font-bold transition duration-300 border border-white/30">
+                <i class="fas fa-microscope mr-1"></i> Pembelajaran
+            </a>
+        </div>
+    </header>
+
+    <main id="lab-area" class="container mx-auto px-4 py-8 flex-grow">
+        <div class="text-center mb-8">
+            <span class="bg-white/20 px-4 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border border-white/20">Chemistry Experiment</span>
+            <h2 class="text-3xl md:text-4xl font-extrabold mt-2 tracking-tight">Virtual Lab pH</h2>
+            <div class="h-1 w-20 bg-white mx-auto mt-2 rounded-full"></div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <div class="lg:col-span-3 order-2 lg:order-1">
+                <div class="glass-card rounded-3xl p-5 h-full">
+                    <h3 class="font-bold text-sm mb-4 flex items-center"><i class="fas fa-list-ul mr-2"></i> PILIH BAHAN UJI</h3>
+                    <div class="flex lg:flex-col overflow-x-auto lg:overflow-x-visible pb-4 lg:pb-0 gap-3 custom-scroll">
+                        <button onclick="fillBeaker('Air Jeruk', 'acid', '#FFEB3B')" class="flex-shrink-0 lg:w-full bg-white/10 hover:bg-white/30 p-3 rounded-2xl text-xs md:text-sm font-bold flex flex-col lg:flex-row items-center lg:justify-between border border-white/10 transition-all duration-300">
+                            <span class="text-xl lg:mr-2">🍋</span> <span>Air Jeruk</span>
+                        </button>
+                        <button onclick="fillBeaker('Air Sabun', 'base', '#E3F2FD')" class="flex-shrink-0 lg:w-full bg-white/10 hover:bg-white/30 p-3 rounded-2xl text-xs md:text-sm font-bold flex flex-col lg:flex-row items-center lg:justify-between border border-white/10 transition-all duration-300">
+                            <span class="text-xl lg:mr-2">🧼</span> <span>Air Sabun</span>
+                        </button>
+                        <button onclick="fillBeaker('Asam Cuka', 'acid', '#FFFFFF')" class="flex-shrink-0 lg:w-full bg-white/10 hover:bg-white/30 p-3 rounded-2xl text-xs md:text-sm font-bold flex flex-col lg:flex-row items-center lg:justify-between border border-white/10 transition-all duration-300">
+                            <span class="text-xl lg:mr-2">🧪</span> <span>Asam Cuka</span>
+                        </button>
+                        <button onclick="fillBeaker('Air Kapur', 'base', '#F8F9FA')" class="flex-shrink-0 lg:w-full bg-white/10 hover:bg-white/30 p-3 rounded-2xl text-xs md:text-sm font-bold flex flex-col lg:flex-row items-center lg:justify-between border border-white/10 transition-all duration-300">
+                            <span class="text-xl lg:mr-2">⚪</span> <span>Air Kapur</span>
+                        </button>
+                        <button onclick="fillBeaker('Air Murni', 'neutral', '#00E5FF')" class="flex-shrink-0 lg:w-full bg-white/10 hover:bg-white/30 p-3 rounded-2xl text-xs md:text-sm font-bold flex flex-col lg:flex-row items-center lg:justify-between border border-white/10 transition-all duration-300">
+                            <span class="text-xl lg:mr-2">💧</span> <span>Air Murni</span>
+                        </button>
+                        <button onclick="fillBeaker('Obat Mag', 'base', '#B9F6CA')" class="flex-shrink-0 lg:w-full bg-white/10 hover:bg-white/30 p-3 rounded-2xl text-xs md:text-sm font-bold flex flex-col lg:flex-row items-center lg:justify-between border border-white/10 transition-all duration-300">
+                            <span class="text-xl lg:mr-2">💊</span> <span>Obat Mag</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-6 order-1 lg:order-2">
+                <div class="glass-card rounded-[40px] p-8 min-h-[450px] flex flex-col items-center justify-between relative overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+                    <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-dark-blue/20 rounded-full blur-3xl"></div>
+
+                    <div class="flex space-x-12 mt-4 relative z-20">
+                        <div class="flex flex-col items-center group">
+                            <div id="red-paper" onclick="handleDip('red')" class="litmus-paper bg-[#FF8A80] border-2 border-red-300 shadow-lg">Merah</div>
+                            <span class="text-[9px] mt-2 opacity-60 font-black uppercase tracking-tighter">Merah</span>
+                        </div>
+                        <div class="flex flex-col items-center group">
+                            <div id="blue-paper" onclick="handleDip('blue')" class="litmus-paper bg-[#82B1FF] border-2 border-blue-300 shadow-lg">Biru</div>
+                            <span class="text-[9px] mt-2 opacity-60 font-black uppercase tracking-tighter">Biru</span>
+                        </div>
+                    </div>
+
+                    <div class="beaker-container mt-12 mb-8 relative">
+                        <div class="beaker shadow-2xl">
+                            <div id="beaker-liquid" class="liquid"></div>
+                        </div>
+                        <div class="absolute top-0 left-0 w-full h-full pointer-events-none border-r-4 border-white/20 rounded-br-3xl"></div>
+                    </div>
+
+                    <div id="active-name" class="bg-white/20 px-6 py-2 rounded-full border border-white/30 backdrop-blur-sm">
+                        <span class="text-xs font-bold tracking-widest uppercase" id="material-text">Siap Menguji</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-3 order-3">
+                <div class="flex flex-col h-full gap-4">
+                    <div class="glass-card rounded-3xl p-6 flex-grow">
+                        <h3 class="text-sm font-bold mb-4 uppercase tracking-wider opacity-80 italic">Data Observasi</h3>
+                        <div id="result-screen" class="space-y-4">
+                            <div class="text-center py-10 opacity-40">
+                                <i class="fas fa-microscope text-4xl mb-2"></i>
+                                <p class="text-xs font-medium">Belum ada aktivitas terdeteksi</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="resetLab()" class="bg-white text-primary-blue hover:bg-dark-blue hover:text-white p-4 rounded-2xl font-black text-xs transition duration-300 shadow-xl uppercase tracking-widest">
+                        <i class="fas fa-sync-alt mr-2"></i> Bersihkan Alat
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="text-center py-6 bg-black/10 text-[10px] opacity-70 uppercase tracking-[3px] font-bold">
+        &copy; 2026 SMPN 8 CIKARANG UTARA | Lab Digital
+    </footer>
+
+    <script>
+        let currentState = {
+            type: null,
+            isFilled: false,
+            redDipped: false,
+            blueDipped: false
+        };
+
+        function fillBeaker(name, type, color) {
+            currentState.type = type;
+            currentState.isFilled = true;
+            currentState.redDipped = false;
+            currentState.blueDipped = false;
+            
+            // Reset state visual
+            resetPapersUI();
+
+            const liquid = document.getElementById('beaker-liquid');
+            liquid.style.height = '70%';
+            liquid.style.backgroundColor = color;
+            liquid.style.boxShadow = `inset 0 10px 20px ${color}99`;
+
+            document.getElementById('material-text').innerText = name;
+            
+            updateResultCard("SIAP", `Gelas berisi <b>${name}</b>. Klik pada kertas lakmus untuk mencelupkan satu per satu.`, "text-white");
+        }
+
+        function handleDip(color) {
+            if (!currentState.isFilled) {
+                alert("Masukkan bahan ke gelas terlebih dahulu!");
+                return;
+            }
+
+            const paper = document.getElementById(color + '-paper');
+            paper.classList.add('dip-active');
+
+            setTimeout(() => {
+                if (color === 'red') currentState.redDipped = true;
+                if (color === 'blue') currentState.blueDipped = true;
+                
+                applyChemicalReaction(color, paper);
+                evaluateResult();
+            }, 700);
+        }
+
+        function applyChemicalReaction(color, element) {
+            if (currentState.type === 'acid' && color === 'blue') {
+                element.style.backgroundColor = '#FF8A80'; // Biru -> Merah
+            } else if (currentState.type === 'base' && color === 'red') {
+                element.style.backgroundColor = '#82B1FF'; // Merah -> Biru
+            }
+        }
+
+        function evaluateResult() {
+            if (currentState.redDipped && currentState.blueDipped) {
+                let status, colorClass, icon, desc;
+
+                if (currentState.type === 'acid') {
+                    status = "LARUTAN ASAM";
+                    colorClass = "text-red-300";
+                    icon = "fa-exclamation-triangle";
+                    desc = "Lakmus biru berubah merah. pH < 7.";
+                } else if (currentState.type === 'base') {
+                    status = "LARUTAN BASA";
+                    colorClass = "text-blue-200";
+                    icon = "fa-check-circle";
+                    desc = "Lakmus merah berubah biru. pH > 7.";
+                } else {
+                    status = "NETRAL";
+                    colorClass = "text-green-300";
+                    icon = "fa-leaf";
+                    desc = "Kedua lakmus tidak berubah warna. pH = 7.";
+                }
+                
+                updateResultCard(status, desc, colorClass, icon);
+            }
+        }
+
+        function updateResultCard(status, msg, colorClass, icon = "fa-info-circle") {
+            const screen = document.getElementById('result-screen');
+            screen.innerHTML = `
+                <div class="animate-fadeIn">
+                    <div class="flex items-center mb-2 ${colorClass}">
+                        <i class="fas ${icon} mr-2"></i>
+                        <span class="font-black text-sm uppercase">${status}</span>
+                    </div>
+                    <div class="bg-white/10 rounded-2xl p-4 border border-white/10 shadow-inner">
+                        <p class="text-xs leading-relaxed font-medium">${msg}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function resetPapersUI() {
+            const red = document.getElementById('red-paper');
+            const blue = document.getElementById('blue-paper');
+            red.classList.remove('dip-active');
+            blue.classList.remove('dip-active');
+            red.style.backgroundColor = '#FF8A80';
+            blue.style.backgroundColor = '#82B1FF';
+        }
+
+        function resetLab() {
+            currentState.isFilled = false;
+            resetPapersUI();
+            document.getElementById('beaker-liquid').style.height = '0%';
+            document.getElementById('material-text').innerText = "Siap Menguji";
+            document.getElementById('result-screen').innerHTML = `
+                <div class="text-center py-10 opacity-40">
+                    <i class="fas fa-microscope text-4xl mb-2"></i>
+                    <p class="text-xs font-medium">Gelas telah dibersihkan</p>
+                </div>`;
+        }
+    </script>
+</body>
+</html>

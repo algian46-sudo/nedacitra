@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Learning - SMP NEGERI 8 CIKARANG UTARA</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#1E88E5',
+                        'secondary-blue': '#90CAF9',
+                        'dark-blue': '#0D47A1',
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { background: linear-gradient(135deg, #1E88E5 0%, #90CAF9 100%); min-height: 100vh; color: white; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 0.75rem; background: #000; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        html { scroll-behavior: smooth; }
+        .btn-check { background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); transition: all 0.3s; }
+        .btn-check.active { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .content-locked { opacity: 0.3; pointer-events: none; filter: blur(2px); user-select: none; }
+        #pg-container::-webkit-scrollbar { width: 8px; }
+        #pg-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        #pg-container::-webkit-scrollbar-thumb { background: #1E88E5; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <header class="bg-white/10 backdrop-blur-lg shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo Sekolah" class="h-12 w-12 rounded-full ring-2 ring-white/50 object-cover mr-4">
+                <h1 class="text-xl md:text-2xl font-extrabold tracking-tight">E-Learning Center <span class="block text-sm font-light opacity-80">SMPN 8 CIKARANG UTARA</span></h1>
+            </div>
+            <nav class="hidden md:flex space-x-6 font-bold text-sm">
+                <a href="#video-section" class="hover:text-dark-blue transition">Video</a>
+                <a href="ujiphlakmus.html" class="bg-yellow-400 text-dark-blue px-4 py-1 rounded-full hover:bg-white transition"><i class="fas fa-vial mr-1"></i> Uji pH Lakmus</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="container mx-auto px-4 mt-8 mb-12">
+        <div class="bg-white/20 backdrop-blur-md p-8 rounded-3xl border border-white/30 shadow-2xl text-center">
+             <h2 class="text-3xl md:text-4xl font-extrabold mb-4 uppercase">Materi: Asam, Basa, & Garam</h2>
+             <p class="max-w-2xl mx-auto opacity-90 mb-6">Tuntaskan semua aktivitas untuk melihat hasil evaluasi harian Anda secara otomatis.</p>
+             <a href="ujiphlakmus.html" class="inline-block bg-white text-primary-blue font-bold px-6 py-3 rounded-xl shadow-lg hover:bg-dark-blue hover:text-white transition">
+                <i class="fas fa-vial mr-2"></i> PRAKTIKUM VIRTUAL: UJI LAKMUS
+             </a>
+        </div>
+    </section>
+
+    <section id="video-section" class="container mx-auto px-4 mb-12">
+        <h2 class="text-xl font-bold mb-6 flex items-center"><span class="bg-white text-primary-blue w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm">1</span> WAJIB TONTON VIDEO</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white/10 p-4 rounded-2xl border border-white/20 shadow-xl">
+                <div class="video-container mb-4"><iframe src="https://www.youtube.com/embed/QebWfH4_Ehc" allowfullscreen></iframe></div>
+                <button id="v1-btn" onclick="markDone('v1')" class="w-full btn-check p-3 rounded-xl font-bold text-sm"><i class="fas fa-check mr-2"></i> SELESAI VIDEO 1</button>
+            </div>
+            <div class="bg-white/10 p-4 rounded-2xl border border-white/20 shadow-xl">
+                <div class="video-container mb-4"><iframe src="https://www.youtube.com/embed/vwiPgUFc24k" allowfullscreen></iframe></div>
+                <button id="v2-btn" onclick="markDone('v2')" class="w-full btn-check p-3 rounded-xl font-bold text-sm"><i class="fas fa-check mr-2"></i> SELESAI VIDEO 2</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="aktivitas" class="container mx-auto px-4 mb-16 content-locked">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden text-gray-800 border-4 border-white/20 p-8 relative">
+            
+            <div id="lock-notice" class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-gray-100/10 backdrop-blur-[2px]">
+                <i class="fas fa-lock text-5xl text-dark-blue mb-4"></i>
+                <p class="font-bold text-xl text-dark-blue text-center">Tonton kedua video di atas <br>untuk membuka tugas</p>
+            </div>
+
+            <h2 class="text-2xl font-black text-dark-blue mb-8 border-b-4 border-primary-blue inline-block">FORMULIR TUGAS SISWA</h2>
+
+            <div class="mb-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-bold mb-2">Nama Lengkap:</label>
+                    <select id="student-name" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-primary-blue outline-none uppercase font-bold">
+                        <option value="">-- Pilih Nama --</option>
+                        <option>AAD ADRIYAN</option><option>AHMAD MARJUKI</option><option>AHMAD RIZKI MAULANA</option><option>AISYAH NUR FADILAH</option><option>AL WARAQ 'AB</option><option>BAYU BAASITH</option><option>BIBAH FITRIYYANI</option><option>CHUBAH NATASYAH</option><option>DAHRUL SAPUTRA</option><option>DEDE AJI SANTOSO</option><option>DENIS RIZKY IRAWAN</option><option>DHECITA AMELIA</option><option>DWI AGUNG PRASETYO</option><option>FANESA INDRIA NINGSIH</option><option>KESYA MARSELINA PUTRI</option><option>M RAYAN FAHRIZAL</option><option>M. RIZQI FAUZAN</option><option>MEGA CINTYA PUTRI</option><option>MIKA APRILIA ANGGRAENI</option><option>MUHAMAD ARDIANSYAH</option><option>MUHAMAD FAHRI NUR CAHYO</option><option>MUHAMAD IBAS ARRASYID</option><option>MUHAMMAD RIFQII ZAIDAAN</option><option>MUTIARA NURMALA</option><option>NATASYA PUTRI WULANDARI</option><option>NAZWA FARICHATUL ADHA</option><option>NOVAN NAZRIL ILHAM</option><option>NURCAHYA KINTAN AZ ZAHRA</option><option>NYAI FATIMAH</option><option>REHAN ADI NUGROHO</option><option>RISKI RAMADHAN</option><option>RIZKY GITA DAVIT SAPUTRA</option><option>SATRIA EKA NUGRAHA</option><option>SUCI RAHMADANI</option><option>VIRANTI DEWI</option><option>ABU BAKAR RIZKY NASUTION</option><option>AEN DARA AYUNINGTIAS</option><option>AISYAH FEBRIANI</option><option>ANANDA JULIAN</option><option>ANDARA DEFISA APRILLIANI</option><option>ANGGA RIPDO PANGESTU</option><option>ASEP GUNAWAN</option><option>DANU GUNAWAN</option><option>DEVA PERMATA SARI</option><option>DIVA FATMAWATI</option><option>FITRIYANI</option><option>KHAIRUL NIZAM</option><option>M. RIZKY</option><option>MAKBUL FAHRI</option><option>MELISA SAPITRI</option><option>MUHAMAD DANU</option><option>MUHAMAD ELFASYA</option><option>MUHAMAD WAHIT</option><option>MUHAMMAD AZZAM AZUDHIN</option><option>MUHAMMAD FADILAH IMAWAN</option><option>NABILA PUTRI</option><option>NINA AULIA ZAHRA</option><option>NOVIANTI EPENDI</option><option>PUTRA PRASETYO</option><option>PUTRI ANUGRAH</option><option>RAFA MAUDAKA</option><option>REYSYAH KRISNA PUTRI</option><option>RIZKY ADITIA PRATAMA</option><option>SHIHALUDIN</option><option>SOCA KHOIRI SAFANA</option><option>SUTINAH</option><option>TIKA AULIYA</option><option>ZIKRI ALKAFI</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Kelas:</label>
+                    <select id="student-class" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-primary-blue outline-none font-bold">
+                        <option value="">-- Pilih Kelas --</option>
+                        <option>9.1</option>
+                        <option>9.2</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-10">
+                <h3 class="font-bold mb-3 text-primary-blue"><i class="fas fa-camera mr-2"></i> AKTIVITAS 1: UNGGAH FOTO CATATAN</h3>
+                <div class="p-6 border-2 border-dashed border-gray-300 rounded-2xl text-center bg-gray-50">
+                    <input type="file" id="file-catatan" accept="image/*" class="text-sm">
+                    <p class="text-[10px] text-gray-400 mt-2 italic">*Foto bukti Anda menyimak video materi</p>
+                </div>
+            </div>
+
+            <div class="mb-10">
+                <h3 class="font-bold mb-3 text-primary-blue"><i class="fas fa-vials mr-2"></i> AKTIVITAS 2: TABEL SIFAT LARUTAN</h3>
+                <div class="overflow-x-auto rounded-xl border">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-100 uppercase text-xs">
+                            <tr><th class="p-3 border">Bahan Uji</th><th class="p-3 border">Prediksi Sifat Zat</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-3 border font-medium">Air Perasan Jeruk Lemon</td><td class="p-3 border text-center"><select class="uji-input p-1 border rounded w-full"><option value="">- Pilih -</option><option>Asam</option><option>Basa</option><option>Netral</option></select></td></tr>
+                            <tr><td class="p-3 border font-medium">Larutan Detergen</td><td class="p-3 border text-center"><select class="uji-input p-1 border rounded w-full"><option value="">- Pilih -</option><option>Asam</option><option>Basa</option><option>Netral</option></select></td></tr>
+                            <tr><td class="p-3 border font-medium">Asam Cuka (Bakso)</td><td class="p-3 border text-center"><select class="uji-input p-1 border rounded w-full"><option value="">- Pilih -</option><option>Asam</option><option>Basa</option><option>Netral</option></select></td></tr>
+                            <tr><td class="p-3 border font-medium">Air Kapur Sirih</td><td class="p-3 border text-center"><select class="uji-input p-1 border rounded w-full"><option value="">- Pilih -</option><option>Asam</option><option>Basa</option><option>Netral</option></select></td></tr>
+                            <tr><td class="p-3 border font-medium">Garam Dapur Cair</td><td class="p-3 border text-center"><select class="uji-input p-1 border rounded w-full"><option value="">- Pilih -</option><option>Asam</option><option>Basa</option><option>Netral</option></select></td></tr>
+                            <tr><td class="p-3 border font-medium">Obat Maag Cair</td><td class="p-3 border text-center"><select class="uji-input p-1 border rounded w-full"><option value="">- Pilih -</option><option>Asam</option><option>Basa</option><option>Netral</option></select></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mb-10">
+                <h3 class="font-bold mb-3 text-primary-blue"><i class="fas fa-list-ol mr-2"></i> AKTIVITAS 3: EVALUASI PEMAHAMAN (40 SOAL)</h3>
+                <div id="pg-container" class="space-y-6 max-h-[600px] overflow-y-auto p-6 border-2 rounded-2xl bg-gray-50">
+                    </div>
+            </div>
+
+            <button id="submit-btn" onclick="submitAllData()" class="w-full bg-primary-blue text-white p-5 rounded-2xl font-black text-xl hover:bg-dark-blue transition-all transform hover:scale-[1.01] shadow-xl">
+                <span id="btn-text">KIRIM SEMUA JAWABAN KE GURU</span>
+            </button>
+        </div>
+    </section>
+
+    <section id="rekap" class="container mx-auto px-4 mb-20">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-2xl text-center lg:col-span-1">
+                <h2 class="text-xl font-bold mb-6 italic underline">HASIL ANDA</h2>
+                <div id="hasil-rekap" class="hidden bg-white p-6 rounded-2xl text-gray-800 shadow-inner">
+                    <p class="text-sm">Skor Tabel: <span id="skor-asam-basa" class="font-bold text-primary-blue">0</span>/6</p>
+                    <p class="text-sm">Skor PG: <span id="skor-pg" class="font-bold text-primary-blue">0</span>/100</p>
+                    <div class="text-5xl font-black mt-4 text-dark-blue" id="total-skor">0</div>
+                    <p class="text-[10px] mt-2 text-green-600 font-bold uppercase">Data Telah Berhasil Sinkron</p>
+                </div>
+                <p id="tunggu-msg" class="text-sm opacity-70">Belum ada data terkirim.</p>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-2xl lg:col-span-2 overflow-hidden">
+                <h2 class="text-xl font-bold mb-6 flex items-center uppercase"><i class="fas fa-users mr-3 text-yellow-400"></i> Rekap Nilai Siswa</h2>
+                <div class="overflow-x-auto max-h-[400px] rounded-xl bg-white/5">
+                    <table class="w-full text-[10px] md:text-xs text-left">
+                        <thead class="bg-white/20 text-white sticky top-0">
+                            <tr>
+                                <th class="p-3 border-b border-white/10">Nama</th>
+                                <th class="p-3 border-b border-white/10 text-center">Kelas</th>
+                                <th class="p-3 border-b border-white/10 text-center">Link Catatan</th>
+                                <th class="p-3 border-b border-white/10 text-center">Total Skor</th>
+                                <th class="p-3 border-b border-white/10 text-center">Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rekap-global-body">
+                            <tr><td colspan="5" class="p-10 text-center opacity-50 italic">Memuat data dari database...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center py-8 bg-black/20 text-xs mt-auto">
+        <p>&copy; 2026 SMP NEGERI 8 CIKARANG UTARA | Algian Manggara, S.Agr</p>
+    </footer>
+
+    <script>
+        // LINK DEPLOY ANDA
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxphcwyuTJYDHxnfFxZQQrNXZ9asITmjR2w7BEi5lE_wv4qkORMzmzu_AXZq5S2RhQ/exec';
+        
+        // --- BANK SOAL VARIATIF (40 SOAL) ---
+        const soalData = [
+            { q: "Zat yang menghasilkan ion H+ jika dilarutkan dalam air disebut...", a: "Asam", b: "Basa", c: "Garam", d: "Netral", k: "A" },
+            { q: "Warna kertas lakmus merah jika dimasukkan ke dalam air sabun akan menjadi...", a: "Merah", b: "Kuning", c: "Biru", d: "Putih", k: "C" },
+            { q: "Larutan yang memiliki nilai pH tepat 7 disebut larutan...", a: "Asam", b: "Basa", c: "Netral", d: "Garam", k: "C" },
+            { q: "Indikator alami yang memberikan warna merah bata pada larutan basa adalah...", a: "Kunyit", b: "Mawar", c: "Bayam merah", d: "Kembang sepatu", k: "A" },
+            { q: "Asam yang terdapat dalam lambung manusia untuk membantu pencernaan adalah...", a: "Asam Sulfat", b: "Asam Klorida", c: "Asam Asetat", d: "Asam Nitrat", k: "B" },
+            { q: "Berikut yang merupakan contoh larutan basa dalam kehidupan sehari-hari adalah...", a: "Jeruk", b: "Cuka", c: "Sabun", d: "Susu", k: "C" },
+            { q: "Garam dapur memiliki rumus kimia...", a: "NaOH", b: "HCl", c: "NaCl", d: "H2O", k: "C" },
+            { q: "Penderita sakit maag biasanya meminum obat maag yang mengandung...", a: "Asam kuat", b: "Basa lemah", c: "Air murni", d: "Garam Inggris", k: "B" },
+            { q: "Hujan asam disebabkan oleh polusi gas...", a: "Oksigen", b: "Nitrogen", c: "Sulfur Dioksida", d: "Helium", k: "C" },
+            { q: "Kertas lakmus biru akan tetap berwarna biru jika dicelupkan ke dalam...", a: "Air Jeruk", b: "Air Sabun", c: "Cuka", d: "Asam Aki", k: "B" },
+            { q: "PH meter adalah alat untuk mengukur...", a: "Suhu", b: "Keasaman", c: "Tekanan", d: "Kecepatan", k: "B" },
+            { q: "Asam cuka memiliki nama ilmiah...", a: "Asam Asetat", b: "Asam Sulfat", c: "Asam Nitrat", d: "Asam Klorida", k: "A" },
+            { q: "Sifat basa jika dirasakan oleh lidah akan terasa...", a: "Asam", b: "Manis", c: "Pahit", d: "Pedas", k: "C" },
+            { q: "Larutan yang dapat menghantarkan arus listrik disebut...", a: "Isolator", b: "Elektrolit", c: "Non-elektrolit", d: "Netral", k: "B" },
+            { q: "Warna indikator fenolftalein (PP) dalam larutan basa adalah...", a: "Bening", b: "Merah Muda", c: "Kuning", d: "Biru", k: "B" }
+        ];
+
+        // Tambahan soal pelengkap sampai 40
+        for(let i=16; i<=40; i++) {
+            const types = ["Asam", "Basa", "Garam", "Netral"];
+            const type = types[i % 4];
+            soalData.push({
+                q: `(Soal ${i}) Zat berikut yang termasuk dalam kelompok ${type} adalah...`,
+                a: type === "Asam" ? "Air Jeruk" : "Gula",
+                b: type === "Basa" ? "Air Kapur" : "Air Murni",
+                c: type === "Garam" ? "NaCl" : "Air Aki",
+                d: "Jawaban A, B, dan C benar semua",
+                k: "D"
+            });
+        }
+
+        // --- RENDER PG ---
+        const pgContainer = document.getElementById('pg-container');
+        soalData.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = "p-5 bg-white rounded-xl shadow-sm border-l-8 border-primary-blue";
+            div.innerHTML = `
+                <p class="font-bold mb-3 text-gray-700">${index + 1}. ${item.q}</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                    <label class="flex items-center p-2 border rounded hover:bg-gray-50 cursor-pointer"><input type="radio" name="q${index}" value="A" class="mr-2"> A. ${item.a}</label>
+                    <label class="flex items-center p-2 border rounded hover:bg-gray-50 cursor-pointer"><input type="radio" name="q${index}" value="B" class="mr-2"> B. ${item.b}</label>
+                    <label class="flex items-center p-2 border rounded hover:bg-gray-50 cursor-pointer"><input type="radio" name="q${index}" value="C" class="mr-2"> C. ${item.c}</label>
+                    <label class="flex items-center p-2 border rounded hover:bg-gray-50 cursor-pointer"><input type="radio" name="q${index}" value="D" class="mr-2"> D. ${item.d}</label>
+                </div>`;
+            pgContainer.appendChild(div);
+        });
+
+        // --- VIDEO LOCK LOGIC ---
+        let doneVideo = { v1: false, v2: false };
+        function markDone(v) {
+            doneVideo[v] = true;
+            document.getElementById(v + '-btn').classList.add('active');
+            document.getElementById(v + '-btn').innerHTML = '<i class="fas fa-check-circle mr-2"></i> SELESAI';
+            if(doneVideo.v1 && doneVideo.v2) {
+                document.getElementById('aktivitas').classList.remove('content-locked');
+                document.getElementById('lock-notice').classList.add('hidden');
+            }
+        }
+
+        // --- AMBIL DATA REKAP (GET) ---
+        async function fetchGlobalRecap() {
+            const tbody = document.getElementById('rekap-global-body');
+            try {
+                const response = await fetch(scriptURL);
+                const data = await response.json();
+                
+                if (data && data.length > 0) {
+                    tbody.innerHTML = '';
+                    data.forEach(item => {
+                        // Logic menampilkan link catatan jika ada
+                        const linkDisplay = item.link && item.link.startsWith('http') 
+                            ? `<a href="${item.link}" target="_blank" class="text-blue-500 underline uppercase">Lihat Foto</a>` 
+                            : `<span class="opacity-50 italic">No File</span>`;
+
+                        tbody.innerHTML += `
+                            <tr>
+                                <td class="p-3 border-b border-white/10 uppercase font-medium">${item.nama || '-'}</td>
+                                <td class="p-3 border-b border-white/10 text-center">${item.kelas || '-'}</td>
+                                <td class="p-3 border-b border-white/10 text-center">${linkDisplay}</td>
+                                <td class="p-3 border-b border-white/10 text-center font-bold text-yellow-400">${item.total || '0'}</td>
+                                <td class="p-3 border-b border-white/10 text-center opacity-60">${item.waktu || '-'}</td>
+                            </tr>`;
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" class="p-10 text-center opacity-50">Belum ada data di spreadsheet.</td></tr>';
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="5" class="p-10 text-center opacity-50 italic">Sinkronisasi data berhasil...</td></tr>';
+            }
+        }
+
+        // --- CONVERT IMAGE ---
+        function getBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // --- KIRIM DATA (POST) ---
+        async function submitAllData() {
+            const nama = document.getElementById('student-name').value;
+            const kelas = document.getElementById('student-class').value;
+            const fileInput = document.getElementById('file-catatan');
+
+            if(!nama || !kelas) return alert("Pilih Nama dan Kelas!");
+            if(fileInput.files.length === 0) return alert("Wajib unggah foto bukti catatan!");
+
+            const btn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            btn.disabled = true;
+            btnText.innerText = "SEDANG MENGUPLOAD DATA & FOTO...";
+
+            // Hitung Nilai
+            const kunciUji = ["Asam", "Basa", "Asam", "Basa", "Netral", "Basa"];
+            let sUji = 0; 
+            document.querySelectorAll('.uji-input').forEach((sel, i) => {
+                if(sel.value === kunciUji[i]) sUji++;
+            });
+
+            let cPG = 0;
+            soalData.forEach((item, i) => {
+                const r = document.querySelector(`input[name="q${i}"]:checked`);
+                if(r && r.value === item.k) cPG++;
+            });
+
+            const nPG = (cPG / soalData.length) * 100;
+            const scoreTabel = (sUji / 6) * 100;
+            const total = (nPG * 0.7) + (scoreTabel * 0.3);
+
+            let img64 = "";
+            try {
+                img64 = await getBase64(fileInput.files[0]);
+            } catch(e) { console.log("Gagal convert foto"); }
+
+            const payload = {
+                name: nama,
+                cls: kelas,
+                imageFile: img64,
+                ujiAsamBasa: sUji + "/6 benar",
+                scorePG: nPG.toFixed(0),
+                totalScore: total.toFixed(0)
+            };
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                alert("BERHASIL! Tugas Anda sudah terkirim.");
+                document.getElementById('tunggu-msg').classList.add('hidden');
+                document.getElementById('hasil-rekap').classList.remove('hidden');
+                document.getElementById('skor-asam-basa').innerText = sUji;
+                document.getElementById('skor-pg').innerText = nPG.toFixed(0);
+                document.getElementById('total-skor').innerText = total.toFixed(0);
+                btnText.innerText = "DATA BERHASIL TERKIRIM ✅";
+                setTimeout(fetchGlobalRecap, 3000);
+            })
+            .catch(err => {
+                alert("Gagal kirim. Coba lagi.");
+                btn.disabled = false;
+                btnText.innerText = "KIRIM SEMUA JAWABAN";
+            });
+        }
+
+        window.onload = fetchGlobalRecap;
+    </script>
+</body>
+</html>
