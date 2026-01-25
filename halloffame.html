@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hall of Fame - Kepala Sekolah</title>
+    
+    <link rel="icon" type="image/jpeg" href="https://i.imgur.com/mRmw86t.jpeg">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1a0505;
+            background-image: url('https://www.transparenttextures.com/patterns/black-paper.png'); 
+            color: #f1d2a0; 
+            font-family: 'Playfair Display', serif;
+            min-height: 100vh;
+            padding: 40px 20px 80px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* Navigasi / Tombol Beranda */
+        .nav-container {
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 40px;
+            z-index: 30;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .btn-beranda {
+            text-decoration: none;
+            color: #d4af37;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            padding: 10px 20px;
+            border: 1px solid #d4af37;
+            background: rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-beranda:hover {
+            background: #d4af37;
+            color: #1a0505;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.9) 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 70px;
+            z-index: 20;
+            animation: fadeInDown 1.5s ease-out;
+        }
+
+        header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            letter-spacing: 8px;
+            color: #d4af37;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+        }
+
+        .divider {
+            height: 3px;
+            width: 250px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            margin: 20px auto;
+        }
+
+        header h2 {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 60px 40px;
+            max-width: 1200px;
+            width: 100%;
+            z-index: 20;
+            justify-items: center;
+        }
+
+        .portrait-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeInUp 1.2s ease-out forwards;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .portrait-item:nth-child(1) { animation-delay: 0.2s; }
+        .portrait-item:nth-child(2) { animation-delay: 0.4s; }
+        .portrait-item:nth-child(3) { animation-delay: 0.6s; }
+        .portrait-item:nth-child(4) { animation-delay: 0.8s; }
+
+        .frame-wood {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            border: 45px solid transparent;
+            border-image-source: url('https://i.imgur.com/pKogVcr.png');
+            border-image-slice: 150; 
+            border-image-repeat: stretch;
+            background-color: #000;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
+            transition: all 0.4s ease;
+            position: relative;
+            padding: 0;
+            display: flex;
+        }
+
+        .frame-wood:hover {
+            transform: scale(1.03);
+            box-shadow: 0 30px 70px rgba(212, 175, 55, 0.2);
+        }
+
+        .photo-wrap {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            box-shadow: inset 0 0 20px rgba(0,0,0,1);
+        }
+
+        .photo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: sepia(0.1) contrast(1.1) brightness(0.9);
+            display: block;
+            transition: filter 0.4s ease;
+        }
+
+        .portrait-item:hover img {
+            filter: sepia(0) contrast(1.05) brightness(1.05);
+        }
+
+        .meta-data {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .meta-data h3 {
+            font-size: 1.25rem;
+            color: #fff;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .meta-data p {
+            font-family: 'Cinzel', serif;
+            color: #d4af37;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        /* MODAL STYLES */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #2b0505;
+            padding: 40px;
+            border: 2px solid #d4af37;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.3);
+            animation: modalZoom 0.4s ease;
+        }
+
+        @keyframes modalZoom {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 35px;
+            color: #d4af37;
+            cursor: pointer;
+            z-index: 110;
+        }
+
+        .modal-body img {
+            width: 180px;
+            height: 240px;
+            object-fit: cover;
+            border: 3px solid #d4af37;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .modal-body h2 { font-family: 'Cinzel', serif; color: #d4af37; margin-bottom: 10px; font-size: 1.8rem; }
+        .modal-body h4 { color: #f1d2a0; font-style: italic; margin-bottom: 20px; font-weight: normal; }
+        .modal-body p { line-height: 1.8; color: #fff; text-align: justify; font-size: 1rem; border-top: 1px solid rgba(212, 175, 55, 0.3); padding-top: 20px; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="vignette"></div>
+
+    <div class="nav-container">
+        <a href="index.html" class="btn-beranda">
+            <span>&#10148;</span> BERANDA
+        </a>
+    </div>
+
+    <header>
+        <h1>HALL OF FAME</h1>
+        <div class="divider"></div>
+        <h2>Pimpinan SMP NEGERI 8 CIKARANG UTARA dari masa ke masa</h2>
+    </header>
+
+    <main class="gallery-grid">
+        
+        <div class="portrait-item" onclick="openModal('Ibu Hasanah Aisah, M.Pd', 'Periode 2024 - Sekarang', 'Beliau adalah pimpinan visioner yang membawa transformasi digital di lingkungan sekolah. Fokus utama beliau adalah pengembangan karakter berbasis budaya lokal dan penguatan teknologi informasi.', 'https://i.imgur.com/9tBYrsx.png')">
+            <div class="frame-wood">
+                <div class="photo-wrap">
+                    <img src="https://i.imgur.com/9tBYrsx.png" alt="Kepala Sekolah">
+                </div>
+            </div>
+            <div class="meta-data">
+                <h3>Ibu Hasanah Aisah, M.Pd</h3>
+                <p>2024 - Sekarang</p>
+            </div>
+        </div>
+
+        <div class="portrait-item" onclick="openModal('Bpk Drs. Teguh Soeharto, M.Pd', '2022 - 2024', '.', 'https://i.imgur.com/WkX76OC.png')">
+            <div class="frame-wood">
+                <div class="photo-wrap">
+                    <img src="https://i.imgur.com/WkX76OC.png" alt="Kepala Sekolah">
+                </div>
+            </div>
+            <div class="meta-data">
+                <h3>Bpk Drs. Teguh Soeharto, M.Pd</h3>
+                <p>2022 - 2024</p>
+            </div>
+        </div>
+       
+    </main>
+
+    <div id="infoModal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="modal-body">
+                <img id="modalImg" src="" alt="Foto">
+                <h2 id="modalName">Nama</h2>
+                <h4 id="modalPeriod">Periode</h4>
+                <p id="modalDesc">Deskripsi...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(name, period, desc, img) {
+            document.getElementById('modalName').innerText = name;
+            document.getElementById('modalPeriod').innerText = period;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('modalImg').src = img;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+
+        window.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') closeModal();
+        });
+    </script>
+
+</body>
+</html>
