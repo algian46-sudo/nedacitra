@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Voting OSIS - SMP Negeri 8 Cikarang Utara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; }
+        .sky-gradient-bg { background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%); }
+        
+        .candidate-card {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s ease-out forwards;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 30px -10px rgba(0, 0, 0, 0.1);
+        }
+
+        .vote-bar { transition: width 1.5s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="min-h-screen pb-20">
+
+    <nav class="sticky top-0 z-40 sky-gradient-bg shadow-lg text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-4">
+                    <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo" class="w-12 h-12 rounded-full border-2 border-white/30">
+                    <div>
+                        <h1 class="text-lg font-bold leading-none tracking-tight">E-VOTING OSIS</h1>
+                        <p class="text-[10px] font-medium text-blue-100 uppercase tracking-widest">Real-time System Online</p>
+                    </div>
+                </div>
+                <button onclick="fetchRekap()" class="bg-white text-blue-600 hover:bg-blue-50 py-2 px-5 rounded-xl shadow-md transition font-bold text-sm flex items-center gap-2 transform active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    HASIL REKAP
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="max-w-7xl mx-auto px-4 mt-12 text-center">
+        <h2 class="text-3xl font-black text-slate-800 tracking-tight">Tentukan Pemimpinmu!</h2>
+        <p class="text-slate-500 mt-2 text-sm">Klik foto atau tombol visi-misi untuk mengenal kandidat lebih dalam.</p>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <div class="candidate-card bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-sm">
+            <div class="relative group cursor-pointer" onclick="showVisiMisi(1)">
+                <img src="https://i.imgur.com/Ap1Brvw.jpeg" class="w-full h-80 object-cover group-hover:scale-105 transition duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="absolute bottom-6 left-6 text-white">
+                    <span class="bg-blue-600 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Kandidat 01</span>
+                    <h3 class="text-2xl font-bold mt-1">Refi & Zahra</h3>
+                </div>
+            </div>
+            <div class="p-6 grid grid-cols-2 gap-3">
+                <button onclick="showVisiMisi(1)" class="py-3 px-4 bg-slate-100 text-slate-600 rounded-2xl font-bold text-xs hover:bg-slate-200 transition">VISI & MISI</button>
+                <button onclick="submitVote(1)" class="py-3 px-4 bg-blue-600 text-white rounded-2xl font-bold text-xs hover:bg-blue-700 shadow-lg shadow-blue-200 transition">PILIH 01</button>
+            </div>
+        </div>
+
+        <div class="candidate-card bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-sm" style="animation-delay: 0.1s">
+            <div class="relative group cursor-pointer" onclick="showVisiMisi(2)">
+                <img src="https://i.imgur.com/ZZssi9b.jpeg" class="w-full h-80 object-cover group-hover:scale-105 transition duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="absolute bottom-6 left-6 text-white">
+                    <span class="bg-blue-600 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Kandidat 02</span>
+                    <h3 class="text-2xl font-bold mt-1">Haffy & Rinjani</h3>
+                </div>
+            </div>
+            <div class="p-6 grid grid-cols-2 gap-3">
+                <button onclick="showVisiMisi(2)" class="py-3 px-4 bg-slate-100 text-slate-600 rounded-2xl font-bold text-xs hover:bg-slate-200 transition">VISI & MISI</button>
+                <button onclick="submitVote(2)" class="py-3 px-4 bg-blue-600 text-white rounded-2xl font-bold text-xs hover:bg-blue-700 shadow-lg shadow-blue-200 transition">PILIH 02</button>
+            </div>
+        </div>
+
+        <div class="candidate-card bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-sm" style="animation-delay: 0.2s">
+            <div class="relative group cursor-pointer" onclick="showVisiMisi(3)">
+                <img src="https://i.imgur.com/q1B6BYk.jpeg" class="w-full h-80 object-cover group-hover:scale-105 transition duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="absolute bottom-6 left-6 text-white">
+                    <span class="bg-blue-600 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Kandidat 03</span>
+                    <h3 class="text-2xl font-bold mt-1">Dyla & Sakhwa</h3>
+                </div>
+            </div>
+            <div class="p-6 grid grid-cols-2 gap-3">
+                <button onclick="showVisiMisi(3)" class="py-3 px-4 bg-slate-100 text-slate-600 rounded-2xl font-bold text-xs hover:bg-slate-200 transition">VISI & MISI</button>
+                <button onclick="submitVote(3)" class="py-3 px-4 bg-blue-600 text-white rounded-2xl font-bold text-xs hover:bg-blue-700 shadow-lg shadow-blue-200 transition">PILIH 03</button>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="visiMisiModal" class="fixed inset-0 bg-slate-900/70 hidden flex items-center justify-center p-4 z-50 backdrop-blur-md">
+        <div class="bg-white rounded-[2.5rem] max-w-lg w-full p-8 relative shadow-2xl">
+            <button onclick="closeModal('visiMisiModal')" class="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-600 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <div id="visiMisiContent"></div>
+        </div>
+    </div>
+
+    <div id="rekapModal" class="fixed inset-0 bg-slate-900/70 hidden flex items-center justify-center p-4 z-50 backdrop-blur-md">
+        <div class="bg-white rounded-[2.5rem] max-w-md w-full p-8 relative shadow-2xl">
+            <button onclick="closeModal('rekapModal')" class="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-600 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <h2 class="text-2xl font-black text-slate-800 mb-6">Live Rekapitulasi</h2>
+            <div id="rekapContent" class="space-y-6"></div>
+            <p class="text-center text-[10px] text-slate-400 mt-8 uppercase tracking-widest font-bold">Data diperbarui otomatis dari sistem</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbwagAqNy1BGig7zwIC2HV4hWX5PAkRA4dbIHHggOqD674PvaFRxPxomlH7Kf6UYmIY/exec";
+
+        const visiMisiData = {
+            1: { nama: "Andi & Budi", visi: "Mewujudkan OSIS yang melek digital.", misi: ["Optimalisasi Media Sosial Sekolah", "Pojok Baca Digital", "E-Sport Tournament"] },
+            2: { nama: "Citra & Dewi", visi: "Menciptakan lingkungan sekolah harmonis.", misi: ["Kotak Aspirasi Siswa", "Festival Seni Budaya", "Program Kakak Asuh"] },
+            3: { nama: "Eko & Fani", visi: "Aktif, Kreatif, dan Berprestasi.", misi: ["Kolaborasi Ekstrakurikuler", "Pelatihan Kepemimpinan", "Bazaar Kreativitas"] }
+        };
+
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        async function submitVote(id) {
+            if(!confirm(`Apakah Anda yakin memilih Paslon 0${id}?`)) return;
+            
+            // UI Feedback
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = "MENGIRIM...";
+
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ paslon: id })
+                });
+                alert("Berhasil! Suara Anda telah masuk ke sistem.");
+                fetchRekap();
+            } catch (err) {
+                alert("Gagal terhubung ke server.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
+        }
+
+        async function fetchRekap() {
+            const content = document.getElementById('rekapContent');
+            document.getElementById('rekapModal').classList.remove('hidden');
+            content.innerHTML = '<div class="flex justify-center py-10"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>';
+
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                const total = Object.values(data).reduce((a, b) => a + b, 0);
+                
+                content.innerHTML = '';
+                [1, 2, 3].forEach(id => {
+                    const votes = data[id] || 0;
+                    const percent = total === 0 ? 0 : Math.round((votes / total) * 100);
+                    content.innerHTML += `
+                        <div>
+                            <div class="flex justify-between text-xs font-bold mb-2">
+                                <span class="text-slate-700 uppercase">Paslon 0${id}</span>
+                                <span class="text-blue-600">${percent}% (${votes} Suara)</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                                <div class="vote-bar bg-blue-600 h-full rounded-full" style="width: ${percent}%"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                content.innerHTML = '<p class="text-red-500 text-center">Gagal memuat data.</p>';
+            }
+        }
+
+        function showVisiMisi(id) {
+            const data = visiMisiData[id];
+            const content = document.getElementById('visiMisiContent');
+            content.innerHTML = `
+                <div class="text-center mb-6">
+                    <span class="text-blue-600 font-bold text-xs uppercase tracking-[0.2em]">Visi & Misi</span>
+                    <h3 class="text-2xl font-black text-slate-800">${data.nama}</h3>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-blue-50 p-5 rounded-2xl border border-blue-100">
+                        <p class="text-[10px] font-bold text-blue-500 uppercase mb-1">Visi Utama</p>
+                        <p class="text-sm text-slate-700 italic font-medium">"${data.visi}"</p>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase ml-1">Misi Strategis</p>
+                        ${data.misi.map(m => `
+                            <div class="flex items-center gap-3 bg-slate-50 p-3 rounded-xl text-xs text-slate-600 font-semibold border border-slate-100">
+                                <div class="w-1.5 h-1.5 bg-blue-400 rounded-full"></div> ${m}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('visiMisiModal').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
