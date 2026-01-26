@@ -29,7 +29,6 @@
 
         .vote-bar { transition: width 1.5s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
@@ -56,53 +55,53 @@
 
     <header class="max-w-7xl mx-auto px-4 mt-12 text-center">
         <h2 class="text-3xl font-black text-slate-800 tracking-tight">Tentukan Pemimpinmu!</h2>
-        <p class="text-slate-500 mt-2 text-sm">Klik foto atau tombol visi-misi untuk mengenal kandidat lebih dalam.</p>
+        <p class="text-slate-500 mt-2 text-sm">Pilihanmu menentukan masa depan organisasi sekolah.</p>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
         
         <div class="candidate-card bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-sm">
             <div class="relative group cursor-pointer" onclick="showVisiMisi(1)">
-                <img src="https://i.imgur.com/Ap1Brvw.jpeg" class="w-full h-80 object-cover group-hover:scale-105 transition duration-500">
+                <img src="https://i.imgur.com/DfsMY0y.png" class="w-full h-80 object-cover group-hover:scale-105 transition duration-500">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 <div class="absolute bottom-6 left-6 text-white">
                     <span class="bg-blue-600 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Kandidat 01</span>
-                    <h3 class="text-2xl font-bold mt-1">Refi & Zahra</h3>
+                    <h3 class="text-2xl font-bold mt-1 text-white">Andi & Budi</h3>
                 </div>
             </div>
             <div class="p-6 grid grid-cols-2 gap-3">
                 <button onclick="showVisiMisi(1)" class="py-3 px-4 bg-slate-100 text-slate-600 rounded-2xl font-bold text-xs hover:bg-slate-200 transition">VISI & MISI</button>
-                <button onclick="submitVote(1)" class="py-3 px-4 bg-blue-600 text-white rounded-2xl font-bold text-xs hover:bg-blue-700 shadow-lg shadow-blue-200 transition">PILIH 01</button>
+                <button onclick="submitVote(1, this)" class="py-3 px-4 bg-blue-600 text-white rounded-2xl font-bold text-xs hover:bg-blue-700 shadow-lg shadow-blue-200 transition">PILIH 01</button>
             </div>
         </div>
 
         <div class="candidate-card bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-sm" style="animation-delay: 0.1s">
             <div class="relative group cursor-pointer" onclick="showVisiMisi(2)">
-                <img src="https://i.imgur.com/ZZssi9b.jpeg" class="w-full h-80 object-cover group-hover:scale-105 transition duration-500">
+                <img src="https://i.imgur.com/kpV87dI.png" class="w-full h-80 object-cover group-hover:scale-105 transition duration-500">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 <div class="absolute bottom-6 left-6 text-white">
                     <span class="bg-blue-600 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Kandidat 02</span>
-                    <h3 class="text-2xl font-bold mt-1">Haffy & Rinjani</h3>
+                    <h3 class="text-2xl font-bold mt-1 text-white">Citra & Dewi</h3>
                 </div>
             </div>
             <div class="p-6 grid grid-cols-2 gap-3">
                 <button onclick="showVisiMisi(2)" class="py-3 px-4 bg-slate-100 text-slate-600 rounded-2xl font-bold text-xs hover:bg-slate-200 transition">VISI & MISI</button>
-                <button onclick="submitVote(2)" class="py-3 px-4 bg-blue-600 text-white rounded-2xl font-bold text-xs hover:bg-blue-700 shadow-lg shadow-blue-200 transition">PILIH 02</button>
+                <button onclick="submitVote(2, this)" class="py-3 px-4 bg-blue-600 text-white rounded-2xl font-bold text-xs hover:bg-blue-700 shadow-lg shadow-blue-200 transition">PILIH 02</button>
             </div>
         </div>
 
         <div class="candidate-card bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-sm" style="animation-delay: 0.2s">
             <div class="relative group cursor-pointer" onclick="showVisiMisi(3)">
-                <img src="https://i.imgur.com/q1B6BYk.jpeg" class="w-full h-80 object-cover group-hover:scale-105 transition duration-500">
+                <img src="https://i.imgur.com/wLKyvhl.png" class="w-full h-80 object-cover group-hover:scale-105 transition duration-500">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 <div class="absolute bottom-6 left-6 text-white">
                     <span class="bg-blue-600 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Kandidat 03</span>
-                    <h3 class="text-2xl font-bold mt-1">Dyla & Sakhwa</h3>
+                    <h3 class="text-2xl font-bold mt-1 text-white">Eko & Fani</h3>
                 </div>
             </div>
             <div class="p-6 grid grid-cols-2 gap-3">
                 <button onclick="showVisiMisi(3)" class="py-3 px-4 bg-slate-100 text-slate-600 rounded-2xl font-bold text-xs hover:bg-slate-200 transition">VISI & MISI</button>
-                <button onclick="submitVote(3)" class="py-3 px-4 bg-blue-600 text-white rounded-2xl font-bold text-xs hover:bg-blue-700 shadow-lg shadow-blue-200 transition">PILIH 03</button>
+                <button onclick="submitVote(3, this)" class="py-3 px-4 bg-blue-600 text-white rounded-2xl font-bold text-xs hover:bg-blue-700 shadow-lg shadow-blue-200 transition">PILIH 03</button>
             </div>
         </div>
 
@@ -139,24 +138,23 @@
 
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-        async function submitVote(id) {
+        async function submitVote(id, btn) {
             if(!confirm(`Apakah Anda yakin memilih Paslon 0${id}?`)) return;
             
-            // UI Feedback
-            const btn = event.target;
             const originalText = btn.innerText;
             btn.disabled = true;
             btn.innerText = "MENGIRIM...";
 
             try {
-                await fetch(API_URL, {
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     body: JSON.stringify({ paslon: id })
                 });
+                
                 alert("Berhasil! Suara Anda telah masuk ke sistem.");
-                fetchRekap();
+                // Catatan: fetchRekap() sudah dihapus dari sini agar popup tidak terbuka otomatis
             } catch (err) {
-                alert("Gagal terhubung ke server.");
+                alert("Gagal terhubung ke server. Silakan coba lagi.");
             } finally {
                 btn.disabled = false;
                 btn.innerText = originalText;
@@ -190,7 +188,7 @@
                     `;
                 });
             } catch (err) {
-                content.innerHTML = '<p class="text-red-500 text-center">Gagal memuat data.</p>';
+                content.innerHTML = '<p class="text-red-500 text-center text-xs">Gagal memuat data. Periksa koneksi atau database.</p>';
             }
         }
 
