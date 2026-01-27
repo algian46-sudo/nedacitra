@@ -339,6 +339,7 @@
                         <li><a class="dropdown-item rounded-2" href="tujuan.html">Visi & Misi</a></li>
                         <li><a class="dropdown-item rounded-2" href="StrukturOrganigram.html">Struktur</a></li>
                         <li><a class="dropdown-item rounded-2" href="Profil Guru.html">Guru & Staff</a></li>
+                        <li><a class="dropdown-item rounded-2" href="direktorialumni.html">Direktori Alumni</a></li>
                     </ul>
                 </li>
 
@@ -357,7 +358,7 @@
                         <li><a class="dropdown-item rounded-2" href="draganddrop.html">Drag & Drop</a></li>
                         <li><a class="dropdown-item rounded-2" href="tts.html">TTS</a></li>
                         <li><a class="dropdown-item rounded-2" href="acaknama.html">Randomizer</a></li>
-                        <li><a class="dropdown-item rounded-2" href="pilketos.html">E-Voting</a></li>
+                        <li><a class="dropdown-item rounded-2" href="pilketos.html">E-Voting OSIS</a></li>
                     </ul>
                 </li>
 
@@ -747,6 +748,31 @@
             text-decoration: none;
             font-weight: bold;
         }
+        /* CSS KHUSUS MODAL GOOGLE FORM AGAR PROFESIONAL */
+        .modal-form-custom .modal-content {
+            border-radius: 20px;
+            border: none;
+            overflow: hidden;
+        }
+        .modal-form-custom .modal-header {
+            background: var(--primary-dark);
+            color: white;
+            border: none;
+        }
+        .iframe-container-modal {
+            position: relative;
+            width: 100%;
+            height: 70vh; /* Tinggi form di dalam popup */
+            overflow: hidden;
+        }
+        .iframe-container-modal iframe {
+            position: absolute;
+            top: -50px; /* Sedikit memotong bagian ungu header Google Form */
+            left: 0;
+            width: 100%;
+            height: calc(100% + 50px);
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -840,23 +866,39 @@
     margin-bottom: 25px;
 }</style>
 
-<section class="section">
-    <section id="Form" class="py-5">
-    <div class="form-container">
-        <h1>Form Kritik, Saran dan Masukan</h1>
-        <p>Selamat datang! Silakan isi pesan terbaik anda untuk SMP Negeri 8 CIkarang Utara.</p>
-        
-        <iframe 
-            src="https://docs.google.com/forms/d/e/1FAIpQLSdpsmB8UTh2fgA5jhSrvPY_jugLh4nMRSIHKzUKoNlAj8-BVw/viewform?embedded=true" 
-            class="responsive-iframe" 
-            height="1000" 
-            frameborder="0" 
-            marginheight="0" 
-            marginwidth="0">
-            Memuat...
-        </iframe>
-    </div>
+<section class="py-5" style="background: rgba(0, 74, 173, 0.05);">
+        <div class="container text-center">
+            <div class="p-5 bg-white rounded-5 shadow-sm border">
+                <h2 class="fw-bold text-primary mb-3">Form Kritik, Saran dan Masukan</h2>
+                <p class="text-muted mb-4">Selamat datang! Silakan isi pesan terbaik anda untuk SMP Negeri 8 Cikarang Utara melalui tombol di bawah ini.</p>
+                <button type="button" class="btn btn-primary btn-lg rounded-pill px-5 py-3 fw-bold" data-bs-toggle="modal" data-bs-target="#formModal">
+                    <i class="fas fa-edit me-2"></i> BUKA FORM KRITIK & SARAN
+                </button>
+            </div>
+        </div>
     </section>
+
+    <div class="modal fade modal-form-custom" id="formModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-paper-plane me-2"></i> Kirim Masukan Anda</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="iframe-container-modal">
+                        <iframe 
+                            src="https://docs.google.com/forms/d/e/1FAIpQLSdpsmB8UTh2fgA5jhSrvPY_jugLh4nMRSIHKzUKoNlAj8-BVw/viewform?embedded=true">
+                            Memuat...
+                        </iframe>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer>
             <div class="container">
@@ -1114,8 +1156,6 @@
 </style>
 </body>
 </html>
-
-
 
 
 
