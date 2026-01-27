@@ -58,12 +58,52 @@
         <div class="bg-white/20 backdrop-blur-md p-8 md:p-12 rounded-3xl border border-white/30 shadow-2xl">
             <div class="text-center mb-8">
                 <i class="fas fa-graduation-cap text-6xl mb-6 text-white opacity-90"></i>
-                <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Selamat Datang, Generasi Juara!, Pembelajaran telah selesai silahkan lihat rekap nilai masing-masing di bawah !!</h2>
+                <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Selamat Datang, Generasi Juara!</h2>
             </div>
             
-            
+            <div class="max-w-3xl mx-auto bg-white/10 p-6 rounded-2xl border border-white/20">
+                <h3 class="text-xl font-bold mb-4 flex items-center"><i class="fas fa-info-circle mr-3"></i> PETUNJUK BELAJAR:</h3>
+                <ul class="space-y-3 text-sm md:text-base leading-relaxed">
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">1</span> Tonton seluruh video pembelajaran sampai tuntas, dan tulis materi penting yang ada pada video</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">2</span> Setiap selesai melihat media pembelajaran klik "Selesai Menonton Materi 1, 2, dan 3" untuk membuka akses pada kuis</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">3</span> Foto catatan rapi kamu di buku tulis, untuk keperluan bukti pembelajaran</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">4</span> Setelah semua video pembejaran selesai dilihat, maka form VERIFIKASI BELAJAR akan terbuka.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">5</span> Isi identitas dan foto catatan lengkap yang sudah terisi rapi pada buku catatan.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">6</span> Klik kirim bukti dan Mulai kuis, lalu kerjakan seluruh soal hingga selesai.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">7</span> Jika sudah selesai mengerjakan, REFRESH halaman untuk melihat hasil pada tab bagian paling bawah.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">8</span> Jika masih remedial, kerjakan ulang hingga dinyatakan LULUS.</li>
+                    <li class="flex items-start"><span class="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 shrink-0">9</span> Khadiran dinyatakan selesai jika seluruh pembelajaran, foto catatan dan kuis telah terisi "selebihnyha dinyatakan ALFA".</li>
+                </ul>
+            </div>
         </div>
-    
+    </section>
+
+    <section id="video-section" class="container mx-auto px-4 mb-16">
+        <div class="flex items-center mb-8">
+            <div class="h-1 w-12 bg-white rounded-full mr-4"></div>
+            <h2 class="text-2xl font-bold uppercase tracking-widest text-white">Video Pembelajaran</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white/10 p-4 rounded-2xl border border-white/20 shadow-xl flex flex-col">
+                <div class="video-container mb-4"><iframe src="https://www.youtube.com/embed/QmcHFeqVpZo" allowfullscreen></iframe></div>
+                <!--<button id="v1-btn" onclick="markDone('v1')" class="btn-check p-3 rounded-xl font-bold text-sm text-white">
+                    <i class="fas fa-play mr-2"></i> Selesai Menonton Materi 1
+                </button>-->
+            </div>
+            <div class="bg-white/10 p-4 rounded-2xl border border-white/20 shadow-xl flex flex-col">
+                <div class="video-container mb-4"><iframe src="https://www.youtube.com/embed/QebWfH4_Ehc" allowfullscreen></iframe></div>
+                <button id="v2-btn" onclick="markDone('v2')" class="btn-check p-3 rounded-xl font-bold text-sm text-white">
+                    <i class="fas fa-play mr-2"></i> Selesai Menonton Materi 2
+                </button>
+            </div>
+            <div class="bg-white/10 p-4 rounded-2xl border border-white/20 shadow-xl flex flex-col">
+                <div class="video-container mb-4"><iframe src="https://www.youtube.com/embed/fPNN91aFbj0" allowfullscreen></iframe></div>
+                <button id="v3-btn" onclick="markDone('v3')" class="btn-check p-3 rounded-xl font-bold text-sm text-white">
+                    <i class="fas fa-play mr-2"></i> Selesai Menonton Materi 3
+                </button>
+            </div>
+        </div>
+    </section>
 
     <section id="kuis" class="container mx-auto px-4 mb-16">
         <div class="bg-white rounded-3xl shadow-2xl overflow-hidden text-gray-800 border-4 border-white/20">
