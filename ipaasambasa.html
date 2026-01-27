@@ -187,36 +187,59 @@
         
         // --- BANK SOAL VARIATIF (40 SOAL) ---
         const soalData = [
-            { q: "Zat yang menghasilkan ion H+ jika dilarutkan dalam air disebut...", a: "Asam", b: "Basa", c: "Garam", d: "Netral", k: "A" },
-            { q: "Warna kertas lakmus merah jika dimasukkan ke dalam air sabun akan menjadi...", a: "Merah", b: "Kuning", c: "Biru", d: "Putih", k: "C" },
-            { q: "Larutan yang memiliki nilai pH tepat 7 disebut larutan...", a: "Asam", b: "Basa", c: "Netral", d: "Garam", k: "C" },
-            { q: "Indikator alami yang memberikan warna merah bata pada larutan basa adalah...", a: "Kunyit", b: "Mawar", c: "Bayam merah", d: "Kembang sepatu", k: "A" },
-            { q: "Asam yang terdapat dalam lambung manusia untuk membantu pencernaan adalah...", a: "Asam Sulfat", b: "Asam Klorida", c: "Asam Asetat", d: "Asam Nitrat", k: "B" },
-            { q: "Berikut yang merupakan contoh larutan basa dalam kehidupan sehari-hari adalah...", a: "Jeruk", b: "Cuka", c: "Sabun", d: "Susu", k: "C" },
-            { q: "Garam dapur memiliki rumus kimia...", a: "NaOH", b: "HCl", c: "NaCl", d: "H2O", k: "C" },
-            { q: "Penderita sakit maag biasanya meminum obat maag yang mengandung...", a: "Asam kuat", b: "Basa lemah", c: "Air murni", d: "Garam Inggris", k: "B" },
-            { q: "Hujan asam disebabkan oleh polusi gas...", a: "Oksigen", b: "Nitrogen", c: "Sulfur Dioksida", d: "Helium", k: "C" },
-            { q: "Kertas lakmus biru akan tetap berwarna biru jika dicelupkan ke dalam...", a: "Air Jeruk", b: "Air Sabun", c: "Cuka", d: "Asam Aki", k: "B" },
-            { q: "PH meter adalah alat untuk mengukur...", a: "Suhu", b: "Keasaman", c: "Tekanan", d: "Kecepatan", k: "B" },
-            { q: "Asam cuka memiliki nama ilmiah...", a: "Asam Asetat", b: "Asam Sulfat", c: "Asam Nitrat", d: "Asam Klorida", k: "A" },
-            { q: "Sifat basa jika dirasakan oleh lidah akan terasa...", a: "Asam", b: "Manis", c: "Pahit", d: "Pedas", k: "C" },
-            { q: "Larutan yang dapat menghantarkan arus listrik disebut...", a: "Isolator", b: "Elektrolit", c: "Non-elektrolit", d: "Netral", k: "B" },
-            { q: "Warna indikator fenolftalein (PP) dalam larutan basa adalah...", a: "Bening", b: "Merah Muda", c: "Kuning", d: "Biru", k: "B" }
+            // Bagian 1: Karakteristik dan Teori Dasar
+{ q: "Zat yang menghasilkan ion H+ jika dilarutkan dalam air disebut...", a: "Asam", b: "Basa", c: "Garam", d: "Netral", k: "A" },
+{ q: "Menurut teori Arrhenius, basa adalah zat yang jika dilarutkan dalam air menghasilkan ion...", a: "H+", b: "OH-", c: "Cl-", d: "Na+", k: "B" },
+{ q: "Sifat basa jika dirasakan oleh lidah akan terasa...", a: "Asam", b: "Manis", c: "Pahit", d: "Pedas", k: "C" },
+{ q: "Zat yang memiliki rasa masam dan bersifat korosif (merusak logam) adalah...", a: "Asam", b: "Basa", c: "Garam", d: "Non-elektrolit", k: "A" },
+{ q: "Zat yang terasa licin jika terkena kulit, seperti sabun, merupakan ciri dari...", a: "Asam", b: "Basa", c: "Garam", d: "Logam", k: "B" },
+
+// Bagian 2: Indikator dan pH
+{ q: "Warna kertas lakmus merah jika dimasukkan ke dalam air sabun akan menjadi...", a: "Merah", b: "Kuning", c: "Biru", d: "Putih", k: "C" },
+{ q: "Kertas lakmus biru akan tetap berwarna biru jika dicelupkan ke dalam...", a: "Air Jeruk", b: "Air Sabun", c: "Cuka", d: "Asam Aki", k: "B" },
+{ q: "Kertas lakmus biru jika dicelupkan ke dalam larutan asam akan berubah menjadi warna...", a: "Hijau", b: "Kuning", c: "Merah", d: "Ungu", k: "C" },
+{ q: "Larutan yang memiliki nilai pH tepat 7 disebut larutan...", a: "Asam", b: "Basa", c: "Netral", d: "Garam", k: "C" },
+{ q: "Rentang nilai pH untuk larutan yang bersifat asam adalah...", a: "0 < pH < 7", b: "pH = 7", c: "7 < pH < 14", d: "pH > 14", k: "A" },
+{ q: "PH meter adalah alat untuk mengukur...", a: "Suhu", b: "Keasaman", c: "Tekanan", d: "Kecepatan", k: "B" },
+{ q: "Zat yang dapat menunjukkan perubahan warna berbeda dalam suasana asam maupun basa disebut...", a: "Katalis", b: "Pelarut", c: "Indikator", d: "Reaktan", k: "C" },
+{ q: "Warna indikator fenolftalein (PP) dalam larutan basa adalah...", a: "Bening", b: "Merah Muda", c: "Kuning", d: "Biru", k: "B" },
+{ q: "Indikator alami yang memberikan warna merah bata pada larutan basa adalah...", a: "Kunyit", b: "Mawar", c: "Bayam merah", d: "Kembang sepatu", k: "A" },
+{ q: "Indikator universal digunakan untuk mengetahui...", a: "Wujud zat", b: "Massa jenis larutan", c: "Nilai pH secara spesifik", d: "Titik didih larutan", k: "C" },
+
+// Bagian 3: Contoh Zat dalam Kehidupan
+{ q: "Asam yang terdapat dalam lambung manusia untuk membantu pencernaan adalah...", a: "Asam Sulfat", b: "Asam Klorida", c: "Asam Asetat", d: "Asam Nitrat", k: "B" },
+{ q: "Berikut yang merupakan contoh larutan basa dalam kehidupan sehari-hari adalah...", a: "Jeruk", b: "Cuka", c: "Sabun", d: "Susu", k: "C" },
+{ q: "Asam cuka memiliki nama ilmiah...", a: "Asam Asetat", b: "Asam Sulfat", c: "Asam Nitrat", d: "Asam Klorida", k: "A" },
+{ q: "Garam dapur memiliki rumus kimia...", a: "NaOH", b: "HCl", c: "NaCl", d: "H2O", k: "C" },
+{ q: "Asam yang digunakan dalam akumulator (aki) mobil adalah...", a: "Asam Asetat", b: "Asam Klorida", c: "Asam Sulfat", d: "Asam Sitrat", k: "C" },
+{ q: "Asam yang banyak terkandung dalam buah jeruk adalah...", a: "Asam Sitrat", b: "Asam Tatrat", c: "Asam Laktat", d: "Asam Format", k: "A" },
+{ q: "Susu yang sudah basi akan terasa asam karena mengandung...", a: "Asam Laktat", b: "Asam Amino", c: "Asam Karbonat", d: "Asam Askorbat", k: "A" },
+{ q: "Asam yang terdapat dalam sengatan semut atau lebah adalah...", a: "Asam Format", b: "Asam Asetat", c: "Asam Klorida", d: "Asam Sulfat", k: "A" },
+{ q: "Bahan berikut yang bersifat basa dan digunakan untuk pembersih lantai adalah...", a: "Amoniak", b: "Asam Cuka", c: "Air Kelapa", d: "Alkohol", k: "A" },
+{ q: "Vitamin C secara kimia dikenal sebagai...", a: "Asam Sitrat", b: "Asam Askorbat", c: "Asam Karbonat", d: "Asam Salisilat", k: "B" },
+
+// Bagian 4: Reaksi Kimia dan Fenomena
+{ q: "Penderita sakit maag biasanya meminum obat maag yang mengandung...", a: "Asam kuat", b: "Basa lemah", c: "Air murni", d: "Garam Inggris", k: "B" },
+{ q: "Senyawa Magnesium Hidroksida [Mg(OH)2] dalam obat maag berfungsi untuk...", a: "Menambah asam", b: "Menetralkan asam lambung", c: "Membunuh bakteri", d: "Memberi rasa manis", k: "B" },
+{ q: "Hujan asam disebabkan oleh polusi gas...", a: "Oksigen", b: "Nitrogen", c: "Sulfur Dioksida", d: "Helium", k: "C" },
+{ q: "Hasil reaksi antara asam dengan basa akan menghasilkan...", a: "Logam dan Air", b: "Gas Oksigen", c: "Garam dan Air", d: "Basa Kuat", k: "C" },
+{ q: "Larutan yang dapat menghantarkan arus listrik disebut...", a: "Isolator", b: "Elektrolit", c: "Non-elektrolit", d: "Netral", k: "B" },
+{ q: "Reaksi antara asam klorida (HCl) dan natrium hidroksida (NaOH) menghasilkan...", a: "NaCl dan H2O", b: "Na2SO4 dan H2", c: "MgCl2 dan H2O", d: "KOH dan Cl2", k: "A" },
+{ q: "Larutan garam dapur (NaCl) jika diuji dengan kertas lakmus akan bersifat...", a: "Asam", b: "Basa", c: "Netral", d: "Beracun", k: "C" },
+{ q: "Gas yang dihasilkan saat asam bereaksi dengan logam tertentu adalah...", a: "Oksigen", b: "Nitrogen", c: "Hidrogen", d: "Karbon Dioksida", k: "C" },
+{ q: "Kapur sirih (Kalsium Hidroksida) dalam air termasuk larutan...", a: "Asam", b: "Basa", c: "Garam", d: "Netral", k: "B" },
+{ q: "Senyawa yang sering digunakan untuk menaikkan pH tanah yang terlalu asam adalah...", a: "Cuka", b: "Kapur (Kalsium Karbonat)", c: "Garam dapur", d: "Air aki", k: "B" },
+
+// Bagian 5: Tambahan dan Pengayaan
+{ q: "Larutan yang pH-nya lebih besar dari 7 disebut larutan...", a: "Asam", b: "Basa", c: "Netral", d: "Murni", k: "B" },
+{ q: "Asam benzoat sering digunakan dalam industri makanan sebagai...", a: "Pewarna", b: "Pemanis", c: "Pengawet", d: "Pengembang", k: "C" },
+{ q: "Air murni pada suhu kamar memiliki pH sebesar...", a: "0", b: "5", c: "7", d: "14", k: "C" },
+{ q: "Minuman bersoda bersifat asam karena mengandung gas...", a: "Oksigen", b: "Hidrogen", c: "Karbon Dioksida", d: "Nitrogen", k: "C" },
+{ q: "Pupuk amonium sulfat jika dilarutkan dalam air akan bersifat...", a: "Asam", b: "Basa", c: "Netral", d: "Sangat panas", k: "A" }
         ];
 
-        // Tambahan soal pelengkap sampai 40
-        for(let i=16; i<=40; i++) {
-            const types = ["Asam", "Basa", "Garam", "Netral"];
-            const type = types[i % 4];
-            soalData.push({
-                q: `(Soal ${i}) Zat berikut yang termasuk dalam kelompok ${type} adalah...`,
-                a: type === "Asam" ? "Air Jeruk" : "Gula",
-                b: type === "Basa" ? "Air Kapur" : "Air Murni",
-                c: type === "Garam" ? "NaCl" : "Air Aki",
-                d: "Jawaban A, B, dan C benar semua",
-                k: "D"
-            });
-        }
+
+        
 
         // --- RENDER PG ---
         const pgContainer = document.getElementById('pg-container');
