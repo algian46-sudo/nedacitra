@@ -308,9 +308,10 @@
         <table class="w-full">
          <thead class="bg-slate-700/50">
           <tr>
+           <th class="px-5 py-3 text-left text-xs font-semibold text-rose-400 uppercase">No</th>
            <th class="px-5 py-3 text-left text-xs font-semibold text-rose-400 uppercase">ID Laporan</th>
-           <th class="px-5 py-3 text-left text-xs font-semibold text-rose-400 uppercase">Kode Barang</th>
-           <th class="px-5 py-3 text-left text-xs font-semibold text-rose-400 uppercase">Tgl Lapor</th>
+           <th class="px-5 py-3 text-left text-xs font-semibold text-rose-400 uppercase">Nama Barang</th>
+           <th class="px-5 py-3 text-left text-xs font-semibold text-rose-400 uppercase">Ruang</th>
            <th class="px-5 py-3 text-left text-xs font-semibold text-rose-400 uppercase">Jenis Kerusakan</th>
            <th class="px-5 py-3 text-left text-xs font-semibold text-rose-400 uppercase">Status</th>
            <th class="px-5 py-3 text-left text-xs font-semibold text-rose-400 uppercase">Aksi</th>
@@ -358,7 +359,7 @@
    </main>
   </div>
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzKf2KzEdhhPHEu27Af6SbiJSeFajUjaSwrlpqGWUWHuELN16HQGztvanQ_w0abMxdq/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyLEkaahuTiSw34Y1ourwSS6Enz_Dz1JMW4PE1CdJtICOHkgFkEau8waH7Um7wKkHtW/exec';
     const DELETE_CODE = 'algian';
     
     const SHEETS = {
@@ -366,7 +367,7 @@
       inventaris: 'Inventaris',
       peminjaman: 'Peminjaman',
       pengembalian: 'Pengembalian',
-      barangrusak: 'Barang Rusak'
+      barangrusak: 'BARANGRUSAK'
     };
 
     const FORM_CONFIGS = {
@@ -389,8 +390,8 @@
           { name: 'deskripsi', label: 'Deskripsi', type: 'text', placeholder: 'Laptop/Komputer', required: true },
           { name: 'jenis_barang', label: 'Jenis Barang', type: 'select', options: ['Belanja Modal', 'Non Inventaris', 'Persediaan','Habis Pakai'], required: true },
           { name: 'satuan', label: 'Satuan', type: 'select', options: ['Unit', 'Buah', 'Pcs','Eksemplar','Botol'], required: true },
-          { name: 'ruang', label: 'Ruang', type: 'text', placeholder: 'Laptop/Komputer', required: true },
-          { name: 'jumlah', label: 'Jumlah', type: 'number', placeholder: '1', required: true },
+          { name: 'ruang', label: 'Ruang', type: 'text', placeholder: 'Kantor/Kelas', required: true },
+          { name: 'jumlah', label: 'Jumlah', type: 'number', placeholder: 'XX', required: true },
           { name: 'tahun', label: 'Tahun', type: 'text', placeholder: '20XX', required: true }
         ]
       },
@@ -422,9 +423,10 @@
       barangrusak: {
         title: 'Lapor Kerusakan',
         fields: [
-          { name: 'id_laporan', label: 'ID Laporan', type: 'text', placeholder: 'RSK001', required: true },
-          { name: 'kode_barang', label: 'Kode Barang', type: 'text', placeholder: 'INV001', required: true },
-          { name: 'tgl_lapor', label: 'Tanggal Lapor', type: 'date', required: true },
+          { name: 'no', label: 'Nomor', type: 'text', placeholder: 'XXXX', required: true },
+          { name: 'id_laporan', label: 'ID Laporan', type: 'text', placeholder: 'RSK0001', required: true },
+          { name: 'barang', label: 'Nama Barang', type: 'select-dynamic', dataSource: 'inventaris', required: true },
+          { name: 'ruang', label: 'Ruang', type: 'text', placeholder: 'Kantor/Kelas', required: true },
           { name: 'jenis_kerusakan', label: 'Jenis Kerusakan', type: 'textarea', placeholder: 'Deskripsi kerusakan', required: true },
           { name: 'status', label: 'Status', type: 'select', options: ['Menunggu', 'Sedang Diperbaiki', 'Selesai', 'Tidak Bisa Diperbaiki'], required: true }
         ]
@@ -582,28 +584,40 @@
 }
 
     async function handleSubmit(e) {
-      e.preventDefault();
-      const btn = document.getElementById('submit-btn');
-      btn.disabled = true;
-      
-      const formData = new FormData(e.target);
-      const rowData = FORM_CONFIGS[currentModal].fields.map(f => formData.get(f.name) || '');
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const spinner = document.getElementById('submit-spinner');
+  btn.disabled = true;
+  spinner.classList.remove('hidden');
 
-      try {
-        await fetch(API_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          body: JSON.stringify({ action: 'addData', sheet: SHEETS[currentModal], data: rowData })
-        });
-        showToast('Data berhasil disimpan!', 'success');
-        closeModal();
-        loadData(currentModal);
-      } catch (e) {
-        showToast('Gagal menyimpan data', 'error');
-      } finally {
-        btn.disabled = false;
-      }
-    }
+  const formData = new FormData(e.target);
+  const rowData = FORM_CONFIGS[currentModal].fields.map(f => formData.get(f.name) || '');
+
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      mode: 'no-cors',           // ← Tetap no-cors (wajib untuk GAS)
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'  // ← Tambahan ini kuncinya!
+      },
+      body: JSON.stringify({
+        action: 'addData',
+        sheet: SHEETS[currentModal], // harus 'BARANGRUSAK'
+        data: rowData
+      })
+    });
+
+    // no-cors = response selalu "opaque", anggap sukses jika tidak throw error
+    showToast('✅ Data berhasil disimpan!', 'success');
+    closeModal();
+    setTimeout(() => loadData(currentModal), 1500); // ← Beri jeda agar GAS selesai nulis
+  } catch (err) {
+    showToast('❌ Gagal menyimpan: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    spinner.classList.add('hidden');
+  }
+}
 
     // DELETE LOGIC (REAL)
     function initiateDelete(sheetKey, rowIndex) {
@@ -672,102 +686,89 @@
       setTimeout(() => toast.remove(), 3000);
     }
 
-    function printBeritaAcara(type, rowIndex) {
-  const data = cachedData[type][rowIndex];
-  if (!data) return;
+    // PRINT LOGIC (LOGIKA TUKAR PIHAK)
+    function printBeritaAcara(tab, idx) {
+      const data = cachedData[tab][idx];
+      const tgl = new Date().toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+      const hari = tgl.split(',')[0];
 
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  const hariIni = new Date().toLocaleDateString('id-ID', options).split(',')[0];
-  const tanggalLengkap = new Date().toLocaleDateString('id-ID', options);
+      if (tab === 'peminjaman') {
+        // Pihak 1: Petugas -> Pihak 2: Peminjam
+        document.getElementById('p-nama1').textContent = 'SRI YULIANTI, S.Pd';
+        document.getElementById('p-jabatan1').textContent = 'Pengelola Urusan Sarana Prasarana';
+        document.getElementById('p-nama2').textContent = data[3]; // Nama Peminjam
+        document.getElementById('p-jabatan2').textContent = 'SMP Negeri 8 Cikarang Utara';
+        
+        document.getElementById('p-nomor').textContent = data[1];
+        document.getElementById('p-barang').textContent = data[2];
+        document.getElementById('p-jumlah').textContent = data[6] || data[7];
+        document.getElementById('p-status').textContent = 'PINJAM (DISERAHKAN)';
+        
+        document.getElementById('ttd-1').textContent = 'SRI YULIANTI, S.Pd';
+        document.getElementById('ttd-2').textContent = data[3];
+      } else {
+        // Pihak 1: Peminjam -> Pihak 2: Petugas (Kembali)
+        document.getElementById('p-nama1').textContent = data[3]; // Nama Peminjam
+        document.getElementById('p-jabatan1').textContent = 'Guru/Staff SMPN 8 Cikarang Utara';
+        document.getElementById('p-nama2').textContent = 'SRI YULIANTI, S.Pd';
+        document.getElementById('p-jabatan2').textContent = 'Pengelola Urusan Sarana Prasarana';
 
-  // Mapping Data (Sesuaikan index kolom sheet Anda)
-  if (type === 'peminjaman') {
-    document.getElementById('p-nomor').textContent = data[1]; // ID Pinjam
-    document.getElementById('p-nama-peminjam').textContent = data[3]; // Nama Peminjam
-    document.getElementById('p-barang').textContent = data[2]; // Nama Barang
-    document.getElementById('p-jumlah').textContent = data[6] || data[7]; // Jumlah
-    document.getElementById('p-status').textContent = 'PEMINJAMAN';
-  } else {
-    document.getElementById('p-nomor').textContent = data[1]; // ID Kembali
-    document.getElementById('p-nama-peminjam').textContent = data[3]; // Nama Peminjam
-    document.getElementById('p-barang').textContent = data[4]; // Nama Barang
-    document.getElementById('p-jumlah').textContent = data[6]; // Jumlah Kembali
-    document.getElementById('p-status').textContent = 'PENGEMBALIAN (SELESAI)';
-  }
+        document.getElementById('p-nomor').textContent = data[1];
+        document.getElementById('p-barang').textContent = data[4];
+        document.getElementById('p-jumlah').textContent = data[6];
+        document.getElementById('p-status').textContent = 'KEMBALI (DITERIMA)';
 
-  document.getElementById('p-hari').textContent = hariIni;
-  document.getElementById('p-tanggal').textContent = tanggalLengkap;
+        document.getElementById('ttd-1').textContent = data[3];
+        document.getElementById('ttd-2').textContent = 'SRI YULIANTI, S.Pd';
+      }
 
-  window.print();
-}
+      document.getElementById('p-hari').textContent = hari;
+      document.getElementById('p-tanggal').textContent = tgl;
+      window.print();
+    }
 </script>
 <div id="print-area" class="hidden">
   <div style="padding: 40px; font-family: 'Times New Roman', Times, serif; color: black; background: white;">
-    <div style="text-align: center; border-bottom: 3px double #000; pb-2; mb-4;">
-      <h2 style="margin: 0; font-size: 18pt;">PEMERINTAH KABUPATEN BEKASI</h2>
-      <h2 style="margin: 0; font-size: 16pt;">DINAS PENDIDIKAN</h2>
-      <h1 style="margin: 0; font-size: 20pt; font-weight: bold;">SMP NEGERI 8 CIKARANG UTARA</h1>
-      <p style="margin: 5px 0; font-size: 10pt;">Alamat: [Isi Alamat Sekolah Anda Disini]</p>
-    </div>
-
-    <h3 style="text-align: center; text-decoration: underline; margin-top: 20px;">BERITA ACARA SERAH TERIMA BARANG</h3>
-    <p style="text-align: center; margin-top: -10px;">Nomor: <span id="p-nomor"></span></p>
-
-    <p style="margin-top: 30px;">Pada hari ini <span id="p-hari"></span>, tanggal <span id="p-tanggal"></span>, yang bertanda tangan di bawah ini:</p>
     
-    <div style="margin-left: 30px;">
-      <table style="width: 100%;">
-        <tr><td style="width: 150px;">Nama</td><td>: <strong>SARPRAS SMPN 8 CIKARANG UTARA</strong></td></tr>
-        <tr><td>Jabatan</td><td>: Pengelola Urusan Sarana Prasarana</td></tr>
-      </table>
-    </div>
-    <p>Selanjutnya disebut sebagai <strong>PIHAK PERTAMA</strong>.</p>
-
-    <div style="margin-left: 30px;">
-      <table style="width: 100%;">
-        <tr><td style="width: 150px;">Nama</td><td>: <strong id="p-nama-peminjam"></strong></td></tr>
-        <tr><td>Unit Kerja</td><td>: SMP Negeri 8 Cikarang Utara</td></tr>
-      </table>
-    </div>
-    <p>Selanjutnya disebut sebagai <strong>PIHAK KEDUA</strong>.</p>
-
-    <p style="text-indent: 30px; text-align: justify;">
-      PIHAK PERTAMA menyerahkan kepada PIHAK KEDUA, dan PIHAK KEDUA menyatakan telah menerima barang dari PIHAK PERTAMA dalam keadaan baik dengan rincian sebagai berikut:
-    </p>
-
-    <table style="width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid black;">
-      <thead>
-        <tr style="background: #f0f0f0;">
-          <th style="border: 1px solid black; padding: 8px;">Nama Barang</th>
-          <th style="border: 1px solid black; padding: 8px;">Jumlah</th>
-          <th style="border: 1px solid black; padding: 8px;">Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td style="border: 1px solid black; padding: 8px; text-align: center;" id="p-barang"></td>
-          <td style="border: 1px solid black; padding: 8px; text-align: center;" id="p-jumlah"></td>
-          <td style="border: 1px solid black; padding: 8px; text-align: center;" id="p-status">Diserahkan/Dikembalikan</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p style="text-indent: 30px;">Demikian Berita Acara ini dibuat untuk dapat dipergunakan sebagaimana mestinya.</p>
-
-    <div style="margin-top: 50px; display: flex; justify-content: space-between;">
-      <div style="text-align: center; width: 200px;">
-        <p>PIHAK KEDUA,</p>
-        <br><br><br>
-        <p>( ____________________ )</p>
+    <div style="display: flex; align-items: center; border-bottom: 4px double #000; padding-bottom: 10px; margin-bottom: 20px;">
+      <img src="https://i.imgur.com/mRmw86t.jpeg" style="width: 90px; height: 90px; object-fit: contain;">
+      
+      <div style="text-align: center; flex-grow: 1; padding-right: 90px;"> <h2 style="margin: 0; font-size: 14pt; line-height: 1.2; text-transform: uppercase;">Pemerintah Kabupaten Bekasi</h2>
+        <h2 style="margin: 0; font-size: 14pt; line-height: 1.2; text-transform: uppercase;">Dinas Pendidikan</h2>
+        <h1 style="margin: 0; font-size: 18pt; font-weight: bold; line-height: 1.2; text-transform: uppercase;">SMP Negeri 8 Cikarang Utara</h1>
+        <p style="margin: 5px 0 0 0; font-size: 9pt; font-style: italic;">
+          Alamat: Jl. Sadewa Kp. Bangkong Reang RT/RW 001/001, Des. Wangunharja, Cikarang Utara, Kab. Bekasi
+        </p>
       </div>
-      <div style="text-align: center; width: 200px;">
-        <p>PIHAK PERTAMA,</p>
-        <br><br><br>
-        <p>( ____________________ )</p>
+    </div>
+      <h3 style="text-align: center; text-decoration: underline;">BERITA ACARA SERAH TERIMA BARANG</h3>
+      <p style="text-align: center; margin-top:-8px;">Nomor: <span id="p-nomor"></span></p>
+      <p>Pada hari ini <span id="p-hari"></span>, tanggal <span id="p-tanggal"></span>, yang bertanda tangan di bawah ini:</p>
+      
+      <table style="width: 100%; margin-left: 20px;">
+        <tr><td style="width: 120px;">Nama</td><td>: <strong id="p-nama1"></strong></td></tr>
+        <tr><td>Jabatan</td><td>: <span id="p-jabatan1"></span></td></tr>
+      </table>
+      <p>Disebut sebagai <strong>PIHAK PERTAMA</strong>.</p>
+      
+      <table style="width: 100%; margin-left: 20px;">
+        <tr><td style="width: 120px;">Nama</td><td>: <strong id="p-nama2"></strong></td></tr>
+        <tr><td>Unit Kerja</td><td>: <span id="p-jabatan2"></span></td></tr>
+      </table>
+      <p>Disebut sebagai <strong>PIHAK KEDUA</strong>.</p>
+
+      <p>PIHAK PERTAMA menyerahkan kepada PIHAK KEDUA, dan PIHAK KEDUA menyatakan telah menerima barang dari PIHAK PERTAMA dalam keadaan baik dengan rincian sebagai berikut:</p>
+      <table style="width: 100%; border-collapse: collapse; border: 1px solid black; text-align: center;">
+        <thead><tr style="background:#eee;"><th style="border:1px solid black;padding:5px;">Barang</th><th style="border:1px solid black;padding:5px;">Jumlah</th><th style="border:1px solid black;padding:5px;">Status</th></tr></thead>
+        <tbody><tr><td style="border:1px solid black;padding:5px;" id="p-barang"></td><td style="border:1px solid black;padding:5px;" id="p-jumlah"></td><td style="border:1px solid black;padding:5px;" id="p-status"></td></tr></tbody>
+      </table>
+
+      <div style="margin-top: 50px; display: flex; justify-content: space-between;">
+        <div style="text-align: center; width: 200px;"><p>PIHAK KEDUA,</p><br><br><br><p>( <span id="ttd-2"></span> )</p></div>
+        <div style="text-align: center; width: 200px;"><p>PIHAK PERTAMA,</p><br><br><br><p>( <span id="ttd-1"></span> )</p></div>
       </div>
     </div>
   </div>
-</div>
 
 <style>
   @media print {
