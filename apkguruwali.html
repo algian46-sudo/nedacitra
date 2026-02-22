@@ -179,7 +179,7 @@
   </div>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxwBsMdTSzax7333BytcQ4s-KTHOgsq30QW9GL4BPVZnlM3uHNG2VSeG1c3KO2ZQms/exec"; 
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxrE83zjEaelSM_8Uza2MPVuVaEBbjJ5sv9RjIqc7S4bAGFmc16_8e1ZBkF2SA9QR8/exec"; 
     let session = { username: "", nama: "" };
     let masterSiswaData = [];
 
@@ -200,10 +200,11 @@
       toggleLoading(true);
       const res = await callGAS("login", { username: u, password: p });
       if(res.status === "success") {
-        session = { username: res.username, nama: res.nama };
-        document.getElementById('display-nama-guru').innerText = `Halo, ${res.nama}!`;
-        await loadDashboard();
-      } else {
+    // Ubah bagian ini agar menyimpan NIP juga
+    session = { username: res.username, nama: res.nama, nip: res.nip }; 
+    document.getElementById('display-nama-guru').innerText = `Halo, ${res.nama}!`;
+    await loadDashboard();
+    } else {
         toggleLoading(false);
         document.getElementById('login-msg').innerText = res.message;
       }
@@ -331,38 +332,114 @@
     }
 
     async function downloadPDF() {
-      toggleLoading(true);
-      const allData = await callGAS("getRawData", { username: session.username });
-      if(!allData || allData.length === 0) { toggleLoading(false); return alert("Data laporan masih kosong."); }
-      
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('l', 'mm', 'a4');
-      
-      doc.setFontSize(16);
-      doc.text("BAGIAN I: JURNAL KEGIATAN KELAS", 14, 15);
-      const jurnalData = allData.filter(d => d.jenisForm === "Jurnal" || String(d.nisn) === "JURNAL_KELAS");
-      doc.autoTable({
-        startY: 30,
-        head: [['Minggu', 'Tanggal', 'Topik/Agenda', 'Catatan', 'Kesimpulan']],
-        body: jurnalData.map(d => [d.mingguKe || '-', d.tanggal, d.kegiatan || '-', d.permasalahan || '-', d.tindakLanjut || '-']),
-        theme: 'grid',
-        headStyles: { fillColor: [147, 51, 234] }
-      });
-
-      doc.addPage();
-      doc.text("BAGIAN II: CATATAN INDIVIDU SISWA BINAAN", 14, 15);
-      const individuData = allData.filter(d => d.jenisForm !== "Jurnal" && String(d.nisn) !== "JURNAL_KELAS");
-      doc.autoTable({
-        startY: 30,
-        head: [['Siswa', 'Kategori', 'Tanggal', 'Masalah', 'Tindakan']],
-        body: individuData.map(d => [d.namaSiswa, d.jenisForm, d.tanggal, d.permasalahan || d.kegiatan || '-', d.tindakLanjut || d.catatan || '-']),
-        theme: 'grid',
-        headStyles: { fillColor: [79, 70, 229] }
-      });
-
-      doc.save(`Laporan_${session.nama}.pdf`);
-      toggleLoading(false);
+    toggleLoading(true);
+    const allData = await callGAS("getRawData", { username: session.username });
+    if (!allData || allData.length === 0) {
+        toggleLoading(false);
+        return alert("Data laporan masih kosong.");
     }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'mm', 'a4'); // Landscape A4
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+
+    // Data Konfigurasi Kategori dan Header Tabel
+    const categories = [
+        { id: "Jurnal", title: "LAPORAN JURNAL KEGIATAN KELAS", headers: [['Minggu', 'Tanggal', 'Topik/Agenda', 'Catatan/Masalah', 'Kesimpulan']] },
+        { id: "Monitoring", title: "LAPORAN MONITORING SISWA", headers: [['Siswa', 'Tanggal', 'Aspek Akad', 'Aspek Non', 'Catatan']] },
+        { id: "Observasi", title: "LAPORAN OBSERVASI SISWA", headers: [['Siswa', 'Tanggal', 'Aspek Diamati', 'Hasil Observasi', 'Kesimpulan']] },
+        { id: "BK", title: "LAPORAN BIMBINGAN KONSELING", headers: [['Siswa', 'Tanggal', 'Permasalahan', 'Tindakan BK', 'Evaluasi']] },
+        { id: "Prestasi", title: "LAPORAN PRESTASI & KEHADIRAN", headers: [['Siswa', 'Tanggal', 'Pres. Akad', 'Pres. Non', 'Jml Prestasi', 'Absensi']] },
+        { id: "Notulen", title: "LAPORAN PERTEMUAN ORANG TUA / WALI", headers: [['Siswa', 'Tanggal', 'Nama Wali', 'Agenda/Kesepakatan', 'Tindak Lanjut']] },
+        { id: "RTL", title: "LAPORAN RENCANA TINDAK LANJUT (RTL)", headers: [['Siswa', 'Tanggal', 'Masalah Utama', 'Intervensi', 'Evaluasi']] }
+    ];
+
+    let isFirstPage = true;
+
+    categories.forEach((cat) => {
+        // Filter data berdasarkan jenisForm
+        const filteredData = allData.filter(d => {
+            if (cat.id === "Jurnal") return d.jenisForm === "Jurnal" || String(d.nisn) === "JURNAL_KELAS";
+            return d.jenisForm === cat.id;
+        });
+
+        // Jika tidak ada data di kategori ini, lewati halaman ini
+        if (filteredData.length === 0) return;
+
+        if (!isFirstPage) doc.addPage();
+        isFirstPage = false;
+
+        // --- Judul Halaman ---
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text(cat.title, pageWidth / 2, 15, { align: 'center' });
+        doc.setFontSize(10);
+        doc.text(`SMP NEGERI 8 CIKARANG UTARA`, pageWidth / 2, 20, { align: 'center' });
+        doc.line(14, 23, pageWidth - 14, 23); // Garis pemisah
+
+        // --- Tabel Data ---
+        doc.autoTable({
+            startY: 28,
+            head: cat.headers,
+            body: filteredData.map(d => {
+                if (cat.id === "Jurnal") return [d.mingguKe || '-', d.tanggal, d.kegiatan || '-', d.permasalahan || '-', d.tindakLanjut || '-'];
+                if (cat.id === "Monitoring") return [d.namaSiswa, d.tanggal, d.aspekAkad || '-', d.aspekNon || '-', d.catatan || '-'];
+                if (cat.id === "Observasi") return [d.namaSiswa, d.tanggal, d.aspekAkad || '-', d.permasalahan || '-', d.catatan || '-'];
+                if (cat.id === "BK") return [d.namaSiswa, d.tanggal, d.permasalahan || '-', d.tindakLanjut || '-', d.evaluasi || '-'];
+                if (cat.id === "Prestasi") return [d.namaSiswa, d.tanggal, d.aspekAkad || '-', d.aspekNon || '-', d.mingguKe || '-', d.kegiatan || '-'];
+                if (cat.id === "Notulen") return [d.namaSiswa, d.tanggal, d.namaWali || '-', d.agenda || '-', d.tindakLanjut || '-'];
+                if (cat.id === "RTL") return [d.namaSiswa, d.tanggal, d.permasalahan || '-', d.tindakLanjut || '-', d.evaluasi || '-'];
+                return [];
+            }),
+            theme: 'grid',
+            headStyles: { fillColor: [79, 70, 229], halign: 'center' },
+            styles: { fontSize: 8, cellPadding: 3 },
+            margin: { bottom: 60 } // Ruang untuk tanda tangan
+        });
+
+        // --- Bagian Tanda Tangan ---
+        const finalY = doc.lastAutoTable.finalY + 15;
+        const signatureY = finalY + 25; // Posisi nama setelah ruang tanda tangan
+
+        // Pastikan tanda tangan tidak terpotong ke halaman baru sendirian
+        if (signatureY > pageHeight - 20) {
+            doc.addPage();
+            // Reset Y jika pindah halaman
+            var newY = 20; 
+        } else {
+            var newY = finalY;
+        }
+
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+
+        // Tanggal Laporan (Kanan)
+        const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        doc.text(`Cikarang Utara, ${today}`, pageWidth - 70, newY);
+
+        // Sebelah Kiri: Kepala Sekolah
+        doc.text("Mengetahui,", 20, newY + 5);
+        doc.text("Kepala SMPN 8 Cikarang Utara,", 20, newY + 10);
+        doc.setFont("helvetica", "bold");
+        doc.text("HASANAH AISAH, M.Pd", 20, newY + 35);
+        doc.setFont("helvetica", "normal");
+        doc.text("NIP. 1969020319980202005", 20, newY + 40);
+
+        // Sebelah Kanan: Guru Wali (User Aktif)
+doc.text("Guru Wali Kelas,", pageWidth - 70, newY + 10);
+doc.setFont("helvetica", "bold");
+doc.text(session.nama.toUpperCase(), pageWidth - 70, newY + 35);
+doc.setFont("helvetica", "normal");
+
+// Mengambil NIP dari session, jika kosong tampilkan garis titik-titik
+const nipGuru = session.nip && session.nip !== "-" ? "NIP. " + session.nip : "NIP. ...........................";
+doc.text(nipGuru, pageWidth - 70, newY + 40);
+    });
+
+    doc.save(`Laporan_Lengkap_${session.nama}_${new Date().getTime()}.pdf`);
+    toggleLoading(false);
+}
 
     async function showPreview(nisn, nama) {
       const modal = document.getElementById('modal-preview');
