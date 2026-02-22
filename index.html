@@ -298,6 +298,63 @@
         margin-top: 10px;
     }
 }
+        /* --- OPTIMASI NAVIGASI MOBILE (HP) --- */
+@media (max-width: 991.98px) {
+    /* Membuat menu dropdown otomatis terbuka/rapi saat diklik */
+    .navbar-collapse {
+        background: #ffffff;
+        border-radius: 15px;
+        padding: 15px;
+        margin-top: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    /* Menyesuaikan jarak antar item menu di HP */
+    .nav-item {
+        border-bottom: 1px solid #f8f9fa;
+        padding: 5px 0;
+    }
+
+    .nav-item:last-child {
+        border-bottom: none;
+    }
+
+    /* Memastikan dropdown tidak tumpang tindih */
+    .dropdown-menu {
+        border: none !important;
+        background-color: #f8fbff !important;
+        margin: 5px 10px !important;
+        padding-left: 15px !important;
+        visibility: visible !important;
+        display: none; /* Kembali ke standar bootstrap agar bisa diklik */
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    /* Menampilkan dropdown saat menu profil/aktivitas diklik di HP */
+    .dropdown.show .dropdown-menu, 
+    .nav-item.dropdown:active .dropdown-menu,
+    .show > .dropdown-menu {
+        display: block !important;
+    }
+
+    /* Menyesuaikan tombol Login agar lebar penuh di HP */
+    .w-100-mobile {
+        width: 100% !important;
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    /* Memperbaiki alignment text di menu */
+    .nav-link {
+        padding: 10px 15px !important;
+        display: flex;
+        justify-content:间;
+        align-items: center;
+    }
+}
     </style>
 </head>
 <body>
@@ -1157,6 +1214,7 @@
 </style>
 </body>
 </html>
+
 
 
 
