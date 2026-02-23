@@ -65,13 +65,10 @@
 </div>
 
 <script>
-// URL Web App kamu
 const url = "https://script.google.com/macros/s/AKfycbwZqNpidIiF-pIZ0DEKMabR7JmQRUs5EvBhs2HqhuJ6EnBGhst_Fm7DUaBxuiREsIpn/exec";
 
-// Cache data siswa
 let dataSiswa = [];
 
-// Ambil data referensi siswa dari Apps Script
 fetch(url + "?action=getSiswa")
     .then(res => res.json())
     .then(data => {
@@ -82,7 +79,6 @@ fetch(url + "?action=getSiswa")
         console.error("Gagal memuat data siswa:", err);
     });
 
-// Fungsi mencari siswa berdasarkan ID
 function cariSiswa() {
     const id = document.getElementById("idSiswa").value.trim();
     const siswa = dataSiswa.find(s => s.ID_Siswa === id);
@@ -96,7 +92,6 @@ function cariSiswa() {
     }
 }
 
-// Fungsi kirim data absensi
 function kirimData() {
     const id = document.getElementById("idSiswa").value.trim();
     const nama = document.getElementById("namaSiswa").value.trim();
@@ -108,7 +103,6 @@ function kirimData() {
         return;
     }
 
-    // Format timestamp MM/DD/YYYY
     const now = new Date();
     const timestamp = 
         (now.getMonth() + 1) + "/" +
@@ -116,7 +110,7 @@ function kirimData() {
         now.getFullYear();
 
     const formData = new FormData();
-    formData.append("id", id); // penting: Apps Script menerima parameter "id"
+    formData.append("id", id);
     formData.append("Timestamp", timestamp);
     formData.append("Nama_Siswa", nama);
     formData.append("Status", status);
@@ -138,4 +132,5 @@ function kirimData() {
 </script>
 
 </body>
+
 </html>
