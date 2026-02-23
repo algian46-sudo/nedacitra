@@ -200,7 +200,6 @@
       toggleLoading(true);
       const res = await callGAS("login", { username: u, password: p });
       if(res.status === "success") {
-    // Ubah bagian ini agar menyimpan NIP juga
     session = { username: res.username, nama: res.nama, nip: res.nip }; 
     document.getElementById('display-nama-guru').innerText = `Halo, ${res.nama}!`;
     await loadDashboard();
@@ -216,7 +215,6 @@
       let html = "";
       if(Array.isArray(data) && data.length > 0) {
         data.forEach((s, index) => {
-          // Sanitasi nama untuk menghindari error quote dalam fungsi onclick
           const cleanName = s.nama.replace(/'/g, "\\'");
           html += `
             <div class="flex items-center gap-2 group">
@@ -432,7 +430,7 @@ doc.setFont("helvetica", "bold");
 doc.text(session.nama.toUpperCase(), pageWidth - 70, newY + 35);
 doc.setFont("helvetica", "normal");
 
-// Mengambil NIP dari session, jika kosong tampilkan garis titik-titik
+
 const nipGuru = session.nip && session.nip !== "-" ? "NIP. " + session.nip : "NIP. ...........................";
 doc.text(nipGuru, pageWidth - 70, newY + 40);
     });
@@ -450,7 +448,6 @@ doc.text(nipGuru, pageWidth - 70, newY + 40);
       
       try {
           const res = await callGAS("getRawData", { username: session.username });
-          // Perbaikan filter: Gunakan toString() dan trim() untuk memastikan pencocokan akurat
           const studentData = res.filter(d => 
             String(d.nisn).trim() === String(nisn).trim() && 
             d.jenisForm !== "Jurnal" && 
@@ -511,7 +508,7 @@ doc.text(nipGuru, pageWidth - 70, newY + 40);
             alert("Gagal menyimpan pilihan."); 
         }
     }
-  // Tambahkan event listener untuk menekan tombol Enter di form login
+
 document.addEventListener("DOMContentLoaded", function() {
   const loginForm = ["user", "pass"];
   
@@ -520,7 +517,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (element) {
       element.addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
-          event.preventDefault(); // Mencegah form submit default jika ada
+          event.preventDefault(); 
           handleLogin();
         }
       });
@@ -530,6 +527,7 @@ document.addEventListener("DOMContentLoaded", function() {
   </script>
 </body>
 </html>
+
 
 
 
