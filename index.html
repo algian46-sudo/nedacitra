@@ -9,12 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
     <style>
-        /* --- ROOT VARIABLES & THEME --- */
+        
         :root {
-            --primary-color: #007bff; /* Biru Langit Cerah */
-            --primary-dark: #004aad;  /* Biru Sekolah Lama */
-            --secondary-color: #ffc107; /* Kuning Matahari */
-            --accent-color: #0dcaf0; /* Cyan Cerah */
+            --primary-color: #007bff;
+            --primary-dark: #004aad;  
+            --secondary-color: #ffc107; 
+            --accent-color: #0dcaf0; 
             --dark-footer: #0f172a;
             --glass-bg: rgba(255, 255, 255, 0.85);
             --glass-border: rgba(255, 255, 255, 0.4);
@@ -22,11 +22,11 @@
             --shadow-hover: 0 20px 40px rgba(0, 74, 173, 0.2);
         }
 
-        /* --- ANIMATED BACKGROUND --- */
+        
         body {
             font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
             color: #333;
-            /* Gradasi Biru Langit Dinamis */
+            
             background: linear-gradient(-45deg, #e0f7fa, #b3e5fc, #e1f5fe, #ffffff);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
@@ -39,7 +39,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- ANIMATIONS KEYFRAMES --- */
+        
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -51,14 +51,14 @@
             100% { transform: translateY(0px); }
         }
 
-        /* --- TOP BAR --- */
+        
         .top-bar {
             background: linear-gradient(90deg, var(--primary-dark), var(--primary-color));
             color: white;
             font-size: 0.9rem;
         }
 
-        /* --- NAVBAR --- */
+        
         .navbar {
             background: rgba(255, 255, 255, 0.9) !important;
             --bg-opacity: 0.5
@@ -81,7 +81,7 @@
         .nav-link:hover, .nav-link.active {
             color: var(--primary-color) !important;
         }
-        /* Underline effect */
+        
         .nav-link::after {
             content: '';
             position: absolute;
@@ -96,7 +96,7 @@
             width: 100%;
         }
 
-        /* --- BUTTONS --- */
+        
         .btn-primary {
             background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
             border: none;
@@ -110,15 +110,15 @@
             background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
         }
 
-        /* --- CAROUSEL --- */
+        
         .carousel-item {
-            height: 500px; /* Tampilan lebih tinggi */
+            height: 500px; 
         }
         .carousel-item::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            /* Overlay Gradient Modern */
+            
             background: linear-gradient(to top, rgba(0, 74, 173, 0.8), rgba(0,0,0,0.2));
             z-index: 1;
         }
@@ -151,7 +151,7 @@
             background: #ffdb4d !important;
         }
 
-        /* --- SECTIONS (SAMBUTAN & CONTENT) --- */
+        
         .section-title {
             color: var(--primary-dark);
             font-weight: 800;
@@ -161,7 +161,7 @@
             background: linear-gradient(120deg, transparent 0%, transparent 100%);
             z-index: 1;
         }
-        /* Decorative underline */
+        
         .section-title::after {
             content: '';
             position: absolute;
@@ -196,7 +196,6 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.15);
         }
 
-        /* --- CARDS (KURIKULUM, BERITA) --- */
         .card {
             border: none;
             border-radius: 20px;
@@ -221,7 +220,7 @@
             transform: scale(1.2) rotate(10deg);
         }
 
-        /* --- VIDEO SECTION STYLING --- */
+    
         .video-container-custom {
             background: white;
             border-radius: 20px;
@@ -240,7 +239,7 @@
             z-index: 2;
         }
 
-        /* --- FOOTER --- */
+    
         footer {
             background: linear-gradient(to right, #0f172a, #1e3a8a);
             color: #ecf0f1;
@@ -248,7 +247,7 @@
             border-top: none;
             position: relative;
         }
-        /* Wave Effect Top Footer */
+        
         footer::before {
             content: '';
             position: absolute;
@@ -261,24 +260,24 @@
             background-repeat: no-repeat;
         }
 
-        /* --- RESPONSIVE FIXES --- */
+        
         @media (max-width: 768px) {
             .carousel-caption h1 { font-size: 2rem; }
             .carousel-item { height: 400px; }
         }
-        /* Optimasi Khusus Mobile */
+        
 @media (max-width: 991.98px) {
     .navbar-collapse {
         background: white;
-        margin: 0 -1rem; /* Full width ke pinggir layar */
+        margin: 0 -1rem; 
         padding: 1rem;
-        max-height: 80vh; /* Agar bisa di-scroll jika menu panjang */
+        max-height: 80vh; 
         overflow-y: auto;
         border-top: 1px solid #eee;
     }
     
     .navbar-nav {
-        align-items: flex-start !important; /* Menu rata kiri di HP */
+        align-items: flex-start !important; 
     }
 
     .nav-item {
@@ -287,20 +286,20 @@
     }
 
     .dropdown-menu {
-        background-color: #f8f9fa !important; /* Warna beda untuk dropdown */
+        background-color: #f8f9fa !important; 
         border: none !important;
-        margin-left: 1rem !important; /* Indentasi menu dropdown */
+        margin-left: 1rem !important; 
         box-shadow: none !important;
     }
 
     .btn-primary {
-        width: 100%; /* Tombol login jadi lebar penuh di HP */
+        width: 100%; 
         margin-top: 10px;
     }
 }
-        /* --- OPTIMASI NAVIGASI MOBILE (HP) --- */
+        
 @media (max-width: 991.98px) {
-    /* Membuat menu dropdown otomatis terbuka/rapi saat diklik */
+    
     .navbar-collapse {
         background: #ffffff;
         border-radius: 15px;
@@ -311,7 +310,7 @@
         overflow-y: auto;
     }
 
-    /* Menyesuaikan jarak antar item menu di HP */
+    
     .nav-item {
         border-bottom: 1px solid #f8f9fa;
         padding: 5px 0;
@@ -321,33 +320,33 @@
         border-bottom: none;
     }
 
-    /* Memastikan dropdown tidak tumpang tindih */
+    
     .dropdown-menu {
         border: none !important;
         background-color: #f8fbff !important;
         margin: 5px 10px !important;
         padding-left: 15px !important;
         visibility: visible !important;
-        display: none; /* Kembali ke standar bootstrap agar bisa diklik */
+        display: none; 
         opacity: 1 !important;
         transform: none !important;
     }
 
-    /* Menampilkan dropdown saat menu profil/aktivitas diklik di HP */
+    
     .dropdown.show .dropdown-menu, 
     .nav-item.dropdown:active .dropdown-menu,
     .show > .dropdown-menu {
         display: block !important;
     }
 
-    /* Menyesuaikan tombol Login agar lebar penuh di HP */
+    
     .w-100-mobile {
         width: 100% !important;
         margin-top: 10px;
         text-align: center;
     }
 
-    /* Memperbaiki alignment text di menu */
+    
     .nav-link {
         padding: 10px 15px !important;
         display: flex;
@@ -440,27 +439,27 @@
 </nav>
 
 <style>
-    /* Mengurangi jarak antar menu agar lebih padat */
+    
     .navbar-nav .nav-link {
-        font-size: 0.9rem; /* Ukuran font sedikit dikecilkan agar elegan */
+        font-size: 0.9rem; 
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
         transition: 0.2s;
     }
 
-    /* Efek hover yang lebih subtle */
+    
     .navbar-nav .nav-link:hover {
         color: #0d6efd !important;
         background: rgba(13, 110, 253, 0.05);
         border-radius: 8px;
     }
 
-    /* Memperkecil dropdown item agar tidak terlalu memakan ruang */
+    
     .dropdown-item {
         padding: 6px 12px;
     }
 
-    /* Animasi dropdown muncul dari bawah */
+    
     .dropdown-menu {
         display: block;
         opacity: 0;
@@ -474,19 +473,19 @@
         visibility: visible;
         transform: translateY(0);
     }
-    /* Optimasi Khusus Mobile */
+    
 @media (max-width: 991.98px) {
     .navbar-collapse {
         background: white;
-        margin: 0 -1rem; /* Full width ke pinggir layar */
+        margin: 0 -1rem; 
         padding: 1rem;
-        max-height: 80vh; /* Agar bisa di-scroll jika menu panjang */
+        max-height: 80vh; 
         overflow-y: auto;
         border-top: 1px solid #eee;
     }
     
     .navbar-nav {
-        align-items: flex-start !important; /* Menu rata kiri di HP */
+        align-items: flex-start !important; 
     }
 
     .nav-item {
@@ -495,40 +494,40 @@
     }
 
     .dropdown-menu {
-        background-color: #f8f9fa !important; /* Warna beda untuk dropdown */
+        background-color: #f8f9fa !important; 
         border: none !important;
-        margin-left: 1rem !important; /* Indentasi menu dropdown */
+        margin-left: 1rem !important; 
         box-shadow: none !important;
     }
 
     .btn-primary {
-        width: 100%; /* Tombol login jadi lebar penuh di HP */
+        width: 100%; 
         margin-top: 10px;
     }
 }
 </style>
     <html>
 <head>
-  <title>Running Text Modern</title>
+  <title>Running Text Nedacitra</title>
   <style>
     .running-text {
       width: 100%;
       overflow: hidden;
-      background: linear-gradient(to right, #87CEFA, #1E90FF); /* gradasi biru langit */
+      background: linear-gradient(to right, #87CEFA, #1E90FF); 
       color: white;
-      font-size: 14px;       /* lebih kecil */
-      font-weight: normal;   /* tidak terlalu tebal */
-      white-space: nowrap;   /* tetap satu baris */
+      font-size: 14px;       
+      font-weight: normal;   
+      white-space: nowrap;   
       padding: 8px 15px;
       position: relative;
-      border-radius: 12px;   /* sudut rounded */
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2); /* efek bayangan lembut */
+      border-radius: 12px;   
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2); 
     }
 
     .running-text span {
       display: inline-block;
-      padding-left: 100%; /* mulai dari luar layar */
-      animation: scrollText 20s linear infinite; /* animasi scroll */
+      padding-left: 100%; 
+      animation: scrollText 20s linear infinite; 
     }
 
     @keyframes scrollText {
@@ -539,7 +538,7 @@
 </head>
 <body>
   <div class="running-text">
-    <span>✨Selamat datang di situs resmi SMP Negeri 8 Cikarang Utara | Informasi Kegiatan: 23 Februari 2026, awal pembelajaran luring siswa di bulan Ramadhan.✨ </span>
+    <span>✨Selamat datang di situs resmi SMP Negeri 8 Cikarang Utara | Informasi Kegiatan: 23 Januari 2026, awal pembelajasan luring siswa di bulan Ramadhan.✨ </span>
   </div>
 </body>
 </html>
@@ -706,13 +705,13 @@
             </div>
      <title>Karya Siswa</title>
     <style>
-        /* Gaya ini hanya berlaku di dalam .student-works-section */
+        
         .student-works-section {
             font-family: 'Poppins', sans-serif;
             margin: 20px auto; 
             background: #f9f9f9;
             padding: 20px;
-            max-width: 1280px; /* Batas lebar untuk tampilan 4 kartu yang baik */
+            max-width: 1280px; 
         }
 
         .student-works-section h1 {
@@ -725,33 +724,30 @@
         .student-works-section .card-container { 
             display: flex; 
             flex-wrap: wrap; 
-            /* Tambahkan sedikit ruang negatif untuk mengatasi margin antar kartu */
             gap: 20px; 
-            justify-content: space-between; /* Untuk meratakan kartu */
+            justify-content: space-between; 
         }
 
         .student-works-section .card {
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            /* Hitung lebar untuk 4 kartu dalam satu baris, dikurangi ruang antar kartu */
-            width: calc(25% - 15px); /* (100% / 4 kartu) - sedikit penyesuaian gap */
-            min-width: 250px; /* Lebar minimum agar kartu tidak terlalu kecil */
+            width: calc(25% - 15px); 
+            min-width: 250px; 
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
         
-        /* Penyesuaian untuk tampilan responsif pada layar kecil */
-        @media (max-width: 1024px) {
+             @media (max-width: 1024px) {
             .student-works-section .card {
-                width: calc(50% - 10px); /* 2 kartu per baris */
+                width: calc(50% - 10px);
             }
         }
         
         @media (max-width: 600px) {
             .student-works-section .card {
-                width: 100%; /* 1 kartu per baris */
+                width: 100%;
             }
         }
 
@@ -806,7 +802,7 @@
             text-decoration: none;
             font-weight: bold;
         }
-        /* CSS KHUSUS MODAL GOOGLE FORM AGAR PROFESIONAL */
+        /* GOOGLE FORM  */
         .modal-form-custom .modal-content {
             border-radius: 20px;
             border: none;
@@ -820,12 +816,12 @@
         .iframe-container-modal {
             position: relative;
             width: 100%;
-            height: 70vh; /* Tinggi form di dalam popup */
+            height: 70vh; 
             overflow: hidden;
         }
         .iframe-container-modal iframe {
             position: absolute;
-            top: -50px; /* Sedikit memotong bagian ungu header Google Form */
+            top: -50px;
             left: 0;
             width: 100%;
             height: calc(100% + 50px);
@@ -840,7 +836,6 @@
     </div>
     
     <script>
-        // ⭐ PERBAIKAN DI SINI: Tambahkan ?mode=read ke URL
         const url = "https://script.google.com/macros/s/AKfycbz0Z6ak8N6FZQd18QQ1f9EPvOjNt3UvNfEfUXedIYd6hbeQSunA4u1nMn0Vx6Jqu5CU/exec?mode=read";
 
         fetch(url)
@@ -851,30 +846,20 @@
                 return response.json();
             })
             .then(data => {
-                
-                // PENTING: Periksa apakah GAS mengembalikan error JSON. 
-                // Jika GAS mengembalikan {result: "error", message: "..."}, kita harus tangani.
                 if (data.result === 'error') {
                     throw new Error(data.message || "GAS mengembalikan pesan error.");
                 }
-                
-                // Mengambil 4 item pertama
                 const top4 = data.slice(0, 4); 
                 const container = document.getElementById("karya-container");
-
                 container.innerHTML = '';
-
                 if (top4.length === 0) {
                      container.innerHTML = "<p>Tidak ada karya yang ditemukan.</p>";
                      return;
                 }
-
                 top4.forEach(item => {
                     const card = document.createElement("div");
                     card.className = "card";
-
                     const summary = item.content ? item.content.slice(0, 100) + '...' : 'Tidak ada deskripsi.';
-
                     card.innerHTML = `
                         ${item.imageLink ? `<img src="${item.imageLink}" alt="${item.title}">` : ""}
                         <div class="card-content">
@@ -898,24 +883,24 @@
     </script>
 </body>
 </html>
-<style>/* Styling Khusus untuk Google Form Embed */
+<style>/* Biar Bagus Google Formnya */
 .responsive-iframe {
     width: 100%;
-    min-height: 1000px; /* Atur tinggi minimum agar form terlihat penuh */
+    min-height: 1000px; 
     border: none;
 }
 .form-container {
     max-width: 800px; 
     width: 100%;
     background: white;
-    padding: 30px; /* Padding ditingkatkan */
+    padding: 30px; 
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     margin: 40px auto; 
     text-align: center;
 }
 .form-container h1 {
-    color: #004aad; /* Warna primer sekolah */
+    color: #004aad;
     margin-bottom: 10px;
     font-size: 2em;
 }
@@ -1008,10 +993,8 @@
                 &copy; 2025 SMP Negeri 8 Cikarang Utara. All Rights Reserved.
             </div>
         </div>
-    </footer>
+    </footer>  
 
-    
-    
     <script>
         const videoIds = [
           "o1zKPeYpAhc", "KA33cVPQbnA", "Tud3Hg2cGuM", "2Bh2vJcJfVM"
@@ -1122,36 +1105,40 @@
     </div>
     
 <script>
-    function validateLogin() {
-        // Ambil nilai input dari form
+    async function validateLogin() {
         const usernameInput = document.getElementById("usernameInput").value;
         const passwordInput = document.getElementById("passwordInput").value;
         const errorMessage = document.getElementById("error-message");
-
-        // --- SKENARIO 1: ADMIN (Input Berita) ---
-        if (usernameInput === "SMPN8CITRA" && passwordInput === "Nedacitra@08") {
-            // Jika Admin, sembunyikan pesan error dan arahkan
-            errorMessage.style.display = 'none';
-            window.location.href = "inputberita.html"; 
+        const loginBtn = document.querySelector("#loginForm button");
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-8FmKTyV448_aau0bcO-X_7cKF_TCOVBPiFem3NT4HD_gY8wbBGlnrhbUsAuWSPE/exec";
+        loginBtn.disabled = true;
+        loginBtn.innerText = "Memverifikasi...";
+        errorMessage.style.display = 'none';
         
-        // --- SKENARIO 2: SISWA (Input Karya) ---
-        } else if (usernameInput === "SMPN8CITRA" && passwordInput === "SISWA") {
-            // Jika Siswa, sembunyikan pesan error dan arahkan
-            errorMessage.style.display = 'none';
-            window.location.href = "Input Karya.html"; 
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: usernameInput,
+                    password: passwordInput
+                })
+            });
 
-        // --- SKENARIO 2: SISWA (Input Karya) ---
-        } else if (usernameInput === "SMPN8CITRA" && passwordInput === "UNTUKGURU") {
-            // Jika Siswa, sembunyikan pesan error dan arahkan
-            errorMessage.style.display = 'none';
-            window.location.href = "Halamanguru.html";
+            const result = await response.json();
 
-        // --- SKENARIO 3: SALAH ---
-        } else {
-            // Jika tidak cocok keduanya, tampilkan error
-            errorMessage.textContent = "Username atau Password salah. Silakan coba lagi.";
+            if (result.status === "success") {
+                window.location.href = result.redirect;
+            } else {
+                errorMessage.textContent = result.message;
+                errorMessage.style.display = 'block';
+                document.getElementById("passwordInput").value = "";
+            }
+        } catch (error) {
+            errorMessage.textContent = "Terjadi kesalahan koneksi.";
             errorMessage.style.display = 'block';
-            document.getElementById("passwordInput").value = ""; // Kosongkan password
+        } finally {
+            loginBtn.disabled = false;
+            loginBtn.innerText = "Login";
         }
     }
 </script>
@@ -1195,7 +1182,6 @@
     margin-right: 10px;
   }
 
-  /* Menghilangkan tulisan di layar HP yang kecil agar hanya ikon saja */
   @media screen and (max-width: 480px) {
     .floating-wa {
       width: 60px;
@@ -1214,8 +1200,6 @@
 </style>
 </body>
 </html>
-
-
 
 
 
