@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
     
     <style>
-        /* === COPY DARI STYLE VISI MISI AGAR KONSISTEN === */
+       
         :root {
             --primary-color: #004aad;
             --secondary-color: #007bff;
@@ -25,11 +25,11 @@
             overflow-x: hidden;
         }
 
-        /* Top Bar */
+       
         .top-bar { background: var(--primary-color); color: white; }
         .top-bar small { font-weight: 500; }
 
-        /* Navbar */
+        
         .navbar {
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             background: rgba(255, 255, 255, 0.95) !important;
@@ -44,7 +44,7 @@
         }
         .btn-login:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(0,74,173,0.3); }
 
-        /* Modern Card Base */
+        
         .modern-card {
             background: white;
             border-radius: 20px;
@@ -56,21 +56,18 @@
             margin-bottom: 30px;
         }
 
-        /* === STYLE KHUSUS KARTU GURU (NEW) === */
-        
-        /* Layout Kartu Guru */
+        /* STYLE KHUSUS KARTU GURU BIAR BAGUS */
         .teacher-card {
             text-align: center;
             padding: 30px 20px;
-            height: 100%; /* Agar tinggi kartu sama */
+            height: 100%;
         }
 
         .teacher-card:hover {
-            transform: translateY(-10px); /* Efek naik lebih tinggi */
+            transform: translateY(-10px);
             box-shadow: 0 15px 35px rgba(0, 74, 173, 0.15);
         }
 
-        /* Garis Dekorasi Atas */
         .teacher-card::before {
             content: '';
             position: absolute;
@@ -83,17 +80,17 @@
         }
 
         .teacher-card:hover::before {
-            height: 8px; /* Menebal saat dihover */
+            height: 8px;
         }
 
-        /* Foto Guru */
+        /* Buat Foto Guru */
         .teacher-img-container {
             width: 130px;
             height: 130px;
             margin: 0 auto 20px;
             border-radius: 50%;
             padding: 5px;
-            border: 2px dashed #ddd; /* Border putus-putus */
+            border: 2px dashed #ddd;
             position: relative;
             transition: all 0.4s ease;
         }
@@ -112,13 +109,13 @@
             background-color: #f0f0f0;
         }
 
-        /* Teks */
+        /* Teksnya */
         .teacher-name {
             font-size: 1.1rem;
             font-weight: 700;
             color: var(--primary-color);
             margin-bottom: 5px;
-            cursor: pointer; /* Indikasi bisa diklik */
+            cursor: pointer;
             transition: color 0.2s;
         }
         
@@ -143,16 +140,15 @@
             color: #aaa;
         }
 
-        /* Social Icons */
         .social-links {
             margin-top: 15px;
-            opacity: 0; /* Tersembunyi default */
+            opacity: 0; 
             transform: translateY(10px);
             transition: all 0.3s ease;
         }
 
         .teacher-card:hover .social-links {
-            opacity: 1; /* Muncul saat hover */
+            opacity: 1; 
             transform: translateY(0);
         }
 
@@ -164,7 +160,6 @@
         }
         .social-links a:hover { color: var(--primary-color); }
 
-        /* Kepala Sekolah Special Style */
         .kepsek-card {
             background: linear-gradient(to bottom right, #fff, #f0f8ff);
             border: 1px solid rgba(0, 74, 173, 0.1);
@@ -175,7 +170,7 @@
             border-color: var(--accent-color);
         }
 
-        /* Animations */
+
         .fade-in-up {
             animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
             opacity: 0;
@@ -189,9 +184,9 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* === CSS TAMBAHAN UNTUK MODAL POPUP === */
+        /* MODAL POPUP */
         .modal-header-profile {
-            background-color: #dc3545; /* Merah sesuai gambar */
+            background-color: #dc3545; 
             color: white;
             border-bottom: none;
         }
@@ -199,7 +194,6 @@
             filter: invert(1) grayscale(100%) brightness(200%);
         }
         
-        /* Sisi Kiri Modal */
         .modal-left-col {
             text-align: center;
             border-right: 1px solid #eee;
@@ -214,16 +208,15 @@
             margin-bottom: 15px;
         }
         .modal-role-title {
-            color: #dc3545; /* Merah */
+            color: #dc3545;
             font-weight: 800;
             text-transform: uppercase;
             font-size: 1.1rem;
             margin-top: 10px;
         }
 
-        /* Sisi Kanan Modal */
         .modal-name {
-            color: #007bff; /* Biru */
+            color: #007bff;
             font-weight: 700;
             font-size: 1.4rem;
             margin-bottom: 0;
@@ -235,17 +228,16 @@
             display: block;
         }
         
-        /* List Detail */
         .detail-item {
             margin-bottom: 10px;
-            border-bottom: 1px dashed #ddd; /* Garis putus-putus */
+            border-bottom: 1px dashed #ddd; 
             padding-bottom: 8px;
         }
         .detail-item:last-child {
             border-bottom: none;
         }
         .detail-label {
-            color: #004aad; /* Biru tua */
+            color: #004aad; 
             font-weight: 600;
             font-size: 0.9rem;
             display: block;
@@ -256,7 +248,6 @@
             font-size: 0.95rem;
         }
         
-        /* Responsif Modal */
         @media (max-width: 768px) {
             .modal-left-col {
                 border-right: none;
@@ -352,7 +343,6 @@
                     <div class="teacher-img-container">
                         <img src="https://i.imgur.com/bNuqo1A.png" alt="Kepala Sekolah" class="teacher-img">
                     </div>
-                    <!-- Data atribut ditambahkan di sini untuk popup -->
                     <h3 class="teacher-name" 
                         data-bs-toggle="modal" 
                         data-bs-target="#detailGuruModal"
@@ -858,13 +848,10 @@
                 </div>
                 <div class="modal-body p-4">
                     <div class="row">
-                        <!-- Kolom Kiri: Foto dan Role (Sesuai Gambar) -->
                         <div class="col-md-4 modal-left-col d-flex flex-column align-items-center justify-content-center">
                             <img src="" alt="Foto Guru" class="modal-profile-img" id="modalFoto">
                             <div class="modal-role-title" id="modalRole">GURU</div>
                         </div>
-                        
-                        <!-- Kolom Kanan: Detail Data (Sesuai Gambar dengan garis putus-putus) -->
                         <div class="col-md-8">
                             <h2 class="modal-name" id="modalNama">Nama Guru</h2>
                             <span class="modal-nip" id="modalNip">NIP. -</span>
@@ -904,14 +891,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Script untuk mengisi data modal secara dinamis -->
     <script>
         const detailModal = document.getElementById('detailGuruModal');
         detailModal.addEventListener('show.bs.modal', function (event) {
-            // Tombol yang memicu modal (elemen h4.teacher-name)
             const button = event.relatedTarget;
-            
-            // Ambil info dari data-* attributes
+
             const foto = button.getAttribute('data-foto');
             const nama = button.getAttribute('data-nama');
             const role = button.getAttribute('data-role');
@@ -923,7 +907,6 @@
             const pendidikan = button.getAttribute('data-pendidikan');
             const alamat = button.getAttribute('data-alamat');
 
-            // Update isi modal
             detailModal.querySelector('#modalFoto').src = foto;
             detailModal.querySelector('#modalNama').textContent = nama;
             detailModal.querySelector('#modalRole').textContent = role;
@@ -939,6 +922,7 @@
 </body>
 
 </html>
+
 
 
 
