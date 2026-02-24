@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rekap Tadarus Juz</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Poppins', sans-serif; }
+    .amiri { font-family: 'Amiri', serif; }
+    .pattern-bg {
+      background-color: #0d4f4f;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f4d03f' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .juz-btn { transition: all 0.2s ease; }
+    .juz-btn:hover { transform: scale(1.05); }
+    .juz-btn.completed {
+      background: linear-gradient(135deg, #f4d03f 0%, #e6b800 100%);
+      color: #0d4f4f;
+      box-shadow: 0 4px 15px rgba(244, 208, 63, 0.4);
+    }
+    .participant-card { transition: all 0.3s ease; }
+    .participant-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+    .progress-ring { transform: rotate(-90deg); }
+    .gold-border { border: 2px solid #f4d03f; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.4s ease forwards; }
+    .modal-overlay { background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+  </style>
+</head>
+<body class="h-full overflow-auto">
+  <div id="app" class="w-full min-h-full pattern-bg">
+    <header class="bg-gradient-to-r from-emerald-900 to-teal-800 py-6 px-4 shadow-lg gold-border border-t-0 border-x-0">
+      <div class="max-w-6xl mx-auto text-center">
+        <p class="amiri text-3xl text-amber-300 mb-2">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</p>
+        <h1 id="main-title" class="text-2xl md:text-3xl font-bold text-white mb-1">📖 Rekap Tadarus Al-Qur'an</h1>
+        <p id="subtitle-text" class="text-amber-200 text-sm md:text-base">Ramadhan 1446 H</p>
+      </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-4 py-6">
+      <div class="bg-white/95 rounded-2xl shadow-xl p-6 mb-6 gold-border">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="text-center md:text-left">
+            <h2 class="text-lg font-semibold text-emerald-800">Progress Keseluruhan</h2>
+            <p id="total-progress" class="text-3xl font-bold text-amber-600">0 / 420 Juz</p>
+            <p class="text-gray-500 text-sm">14 Peserta × 30 Juz</p>
+          </div>
+          <div class="relative">
+            <svg class="w-28 h-28 progress-ring">
+              <circle cx="56" cy="56" r="48" stroke="#e5e7eb" stroke-width="8" fill="none" />
+              <circle id="progress-circle" cx="56" cy="56" r="48" stroke="#f4d03f" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="301.59" stroke-dashoffset="301.59" />
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span id="progress-percent" class="text-2xl font-bold text-emerald-800">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="participants-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <div id="modal" class="fixed inset-0 modal-overlay hidden items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90%] overflow-hidden fade-in">
+        <div class="bg-gradient-to-r from-emerald-800 to-teal-700 p-4">
+          <h3 id="modal-title" class="text-xl font-bold text-white"></h3>
+          <p id="modal-progress" class="text-amber-200 text-sm"></p>
+        </div>
+        <div class="p-4 max-h-80 overflow-y-auto">
+          <p class="text-gray-600 text-sm mb-3">Pilih juz yang sudah diselesaikan:</p>
+          <div id="juz-grid" class="grid grid-cols-6 gap-2"></div>
+        </div>
+        <div class="p-4 border-t bg-gray-50 flex gap-2">
+          <button id="select-all-btn" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white py-2 px-4 rounded-lg font-medium transition"> Pilih Semua </button>
+          <button id="close-modal-btn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded-lg font-medium transition"> Tutup </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="loading-overlay" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+      <div class="bg-white rounded-xl p-6 flex items-center gap-3">
+        <svg class="animate-spin h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span class="text-gray-700">Memproses Data...</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // URL Deployment GAS Anda
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhzy9qQg_GDZmkg3G8HvlilFThOFb20-cBV6sJRarsIpExlF5YyqsubLkDbNxDqmzO/exec";
+
+    const participants = [
+      { id: 'p1', name: 'ALGIAN MANGGARA, S.Agr' },
+      { id: 'p2', name: 'SRI YULIANTI, S.Pd.' },
+      { id: 'p3', name: 'EUIS SA\'ADAH, S.Ag.' },
+      { id: 'p4', name: 'NUR AMALIA, S.E.' },
+      { id: 'p5', name: 'PURWANINGSIH, S.Pd.' },
+      { id: 'p6', name: 'USWATUL HASANAH, S.Pd.' },
+      { id: 'p7', name: 'RESHAMAYORI ALVIANITA, S.Sos.' },
+      { id: 'p8', name: 'NURUL INTAN SEPTIANA M, S.Pd.' },
+      { id: 'p9', name: 'ANITA SARI, S.M.' },
+      { id: 'p10', name: 'TOYIB, S.Pd' },
+      { id: 'p11', name: 'SIFA NURLAITIFAH, S.Pd' },
+      { id: 'p12', name: 'SEVILLA DELA AMIRUDIN, S.Pd' },
+      { id: 'p13', name: 'HASANAH AISAH, M.Pd' },
+      { id: 'p14', name: 'IRA YULYANTI, S.Kom' }
+    ];
+
+    let completedJuz = [];
+    let currentParticipantId = null;
+    let isLoading = false;
+
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalProgress = document.getElementById('modal-progress');
+    const juzGrid = document.getElementById('juz-grid');
+    const participantsGrid = document.getElementById('participants-grid');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    // --- DATA SDK REPLACEMENT ---
+    window.dataSdk = {
+      async refresh() {
+        try {
+          const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'read' }) });
+          const data = await res.json();
+          completedJuz = Array.isArray(data) ? data : [];
+          updateUI();
+        } catch (e) { showToast("Gagal mengambil data"); }
+      },
+      async create(entry) {
+        try {
+          const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'create', ...entry }) });
+          const result = await res.json();
+          if (result.isOk) await this.refresh();
+          return result;
+        } catch (e) { return { isOk: false }; }
+      },
+      async delete(entry) {
+        try {
+          const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', ...entry }) });
+          const result = await res.json();
+          if (result.isOk) await this.refresh();
+          return result;
+        } catch (e) { return { isOk: false }; }
+      }
+    };
+
+    function initParticipantCards() {
+      participantsGrid.innerHTML = '';
+      participants.forEach((p, index) => {
+        const card = document.createElement('div');
+        card.className = 'participant-card bg-white/95 rounded-xl p-4 shadow-lg cursor-pointer gold-border';
+        card.innerHTML = `
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-600 to-teal-500 flex items-center justify-center text-white font-bold text-sm">${p.name.charAt(0)}</div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-emerald-900 text-sm truncate">${p.name}</h3>
+              <p class="text-xs text-gray-500 juz-count" data-id="${p.id}">0/30 Juz</p>
+            </div>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+            <div class="progress-bar bg-gradient-to-r from-amber-400 to-amber-500 h-full rounded-full transition-all duration-500" data-id="${p.id}" style="width: 0%"></div>
+          </div>`;
+        card.addEventListener('click', () => openModal(p.id));
+        participantsGrid.appendChild(card);
+      });
+    }
+
+    function updateUI() {
+      let totalCompleted = 0;
+      participants.forEach(p => {
+        const completed = completedJuz.filter(j => j.participant_id === p.id).map(j => Number(j.juz_number));
+        const count = completed.length;
+        totalCompleted += count;
+        const countEl = document.querySelector(`.juz-count[data-id="${p.id}"]`);
+        const barEl = document.querySelector(`.progress-bar[data-id="${p.id}"]`);
+        if (countEl) countEl.textContent = `${count}/30 Juz`;
+        if (barEl) barEl.style.width = `${(count / 30) * 100}%`;
+      });
+
+      const totalJuz = participants.length * 30;
+      const percent = Math.round((totalCompleted / totalJuz) * 100);
+      document.getElementById('total-progress').textContent = `${totalCompleted} / ${totalJuz} Juz`;
+      document.getElementById('progress-percent').textContent = `${percent}%`;
+      const circle = document.getElementById('progress-circle');
+      circle.style.strokeDashoffset = 301.59 - (percent / 100) * 301.59;
+      if (currentParticipantId) updateModalJuzGrid();
+    }
+
+    function openModal(participantId) {
+      currentParticipantId = participantId;
+      const participant = participants.find(p => p.id === participantId);
+      modalTitle.textContent = participant.name;
+      renderJuzGrid();
+      modal.classList.replace('hidden', 'flex');
+    }
+
+    function closeModal() {
+      modal.classList.replace('flex', 'hidden');
+      currentParticipantId = null;
+    }
+
+    function renderJuzGrid() {
+      juzGrid.innerHTML = '';
+      const completed = completedJuz.filter(j => j.participant_id === currentParticipantId).map(j => Number(j.juz_number));
+      modalProgress.textContent = `${completed.length}/30 Juz selesai`;
+      for (let i = 1; i <= 30; i++) {
+        const btn = document.createElement('button');
+        const isCompleted = completed.includes(i);
+        btn.className = `juz-btn w-full aspect-square rounded-lg font-medium text-sm ${isCompleted ? 'completed' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`;
+        btn.textContent = i;
+        btn.addEventListener('click', () => toggleJuz(i));
+        juzGrid.appendChild(btn);
+      }
+    }
+
+    function updateModalJuzGrid() {
+      const completed = completedJuz.filter(j => j.participant_id === currentParticipantId).map(j => Number(j.juz_number));
+      modalProgress.textContent = `${completed.length}/30 Juz selesai`;
+      const buttons = juzGrid.querySelectorAll('.juz-btn');
+      buttons.forEach((btn, index) => {
+        const isCompleted = completed.includes(index + 1);
+        btn.className = `juz-btn w-full aspect-square rounded-lg font-medium text-sm ${isCompleted ? 'completed' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`;
+      });
+    }
+
+    async function toggleJuz(juzNumber) {
+      if (isLoading) return;
+      const existingRecord = completedJuz.find(j => j.participant_id === currentParticipantId && Number(j.juz_number) === juzNumber);
+      isLoading = true;
+      showLoading(true);
+      if (existingRecord) await window.dataSdk.delete(existingRecord);
+      else await window.dataSdk.create({ participant_id: currentParticipantId, juz_number: juzNumber, completed_at: new Date().toISOString() });
+      isLoading = false;
+      showLoading(false);
+    }
+
+    async function selectAllJuz() {
+      if (isLoading) return;
+      const completed = completedJuz.filter(j => j.participant_id === currentParticipantId).map(j => Number(j.juz_number));
+      const remaining = Array.from({length: 30}, (_, i) => i + 1).filter(i => !completed.includes(i));
+      if (remaining.length === 0) return showToast("Sudah selesai semua!");
+      
+      isLoading = true;
+      showLoading(true);
+      for (const juzNum of remaining) {
+        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'create', participant_id: currentParticipantId, juz_number: juzNum, completed_at: new Date().toISOString() }) });
+      }
+      await window.dataSdk.refresh();
+      isLoading = false;
+      showLoading(false);
+    }
+
+    function showLoading(show) { loadingOverlay.classList.toggle('hidden', !show); loadingOverlay.classList.toggle('flex', show); }
+
+    function showToast(msg) {
+      const t = document.createElement('div');
+      t.className = 'fixed bottom-4 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg z-50 fade-in';
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 3000);
+    }
+
+    document.getElementById('close-modal-btn').addEventListener('click', closeModal);
+    document.getElementById('select-all-btn').addEventListener('click', selectAllJuz);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    async function init() {
+      initParticipantCards();
+      await window.dataSdk.refresh();
+    }
+
+    init();
+  </script>
+</body>
+</html>
