@@ -4,39 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galeri Fasilitas | SMP NEGERI 8 CIKARANG UTARA</title>
-    
-    <!-- Favicon (menggunakan placeholder yang sama) -->
     <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
-    
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts: Playfair Display (Heading) & Lora (Body/Classic) -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        /* --- 1. Variable dan Font Klasik Modern --- */
         :root {
-            --primary: #004aad;     /* Biru Tua (Foundation) */
-            --accent: #00bcd4;      /* Cyan (Aksen Dinamis) */
-            --secondary: #ff9800;   /* Oranye (Highlight) */
-            --bg-light: #f0f7f8;    /* Background Sangat Cerah */
-            --font-heading: 'Playfair Display', serif; /* Font Klasik Keren */
-            --font-body: 'Lora', serif; /* Font Body Lebih Klasik/Elegant */
+            --primary: #004aad;
+            --accent: #00bcd4;
+            --secondary: #ff9800;
+            --bg-light: #f0f7f8;
+            --font-heading: 'Playfair Display', serif; 
+            --font-body: 'Lora', serif; 
             --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         body {
             font-family: var(--font-body);
             color: #333;
-            background-color: var(--bg-light); /* Background lebih lembut */
+            background-color: var(--bg-light);
             line-height: 1.7;
         }
         h1, h2, h3, h4 {
             font-family: var(--font-heading);
             color: var(--primary);
         }
-
-        /* --- STYLES NAVIGASI --- */
         .top-bar { background-color: var(--primary); color: white; font-size: 0.85rem; }
         .navbar { 
             box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
@@ -46,22 +38,20 @@
             font-weight: 600; 
             color: #333 !important; 
             transition: color 0.3s, border-bottom 0.3s;
-            border-bottom: 2px solid transparent; /* Garis bawah elegan */
+            border-bottom: 2px solid transparent;
         }
         .nav-link:hover, .nav-link.active { 
             color: var(--primary) !important; 
-            border-bottom: 2px solid var(--accent); /* Aksen dinamis */
+            border-bottom: 2px solid var(--accent); 
         }
         .dropdown-menu {
             border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        /* --- HERO SECTION --- */
         .hero-galeri {
-            padding: 150px 5%; /* Padding lebih besar */
-            /* Menggunakan gradien yang lebih dalam dan efek parallax */
+            padding: 150px 5%;
             background: linear-gradient(rgba(0, 74, 173, 0.8), rgba(0, 150, 200, 0.8)), url('https://i.imgur.com/c1n4bWr.png') no-repeat center center;
-            background-attachment: fixed; /* Efek Parallax */
+            background-attachment: fixed; 
             background-size: cover;
             text-align: center;
             color: white;
@@ -69,9 +59,9 @@
         }
         .hero-galeri h1 {
             color: white;
-            font-size: clamp(2.5rem, 6vw, 4.5rem); /* Responsive font size */
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
             text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
-            animation: fadeInDown 1s ease-out; /* Animasi Judul */
+            animation: fadeInDown 1s ease-out; 
         }
         .hero-galeri p {
             font-weight: 300;
@@ -88,9 +78,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- GALERI KHUSUS (Card dinamis) --- */
         .facility-card-wrapper {
-             /* Wrapper untuk animasi scroll */
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.7s ease-out, transform 0.7s ease-out;
@@ -110,30 +98,30 @@
             margin-bottom: 25px;
             text-align: center;
             cursor: pointer;
-            border-bottom: 6px solid var(--primary); /* Garis bawah tebal */
+            border-bottom: 6px solid var(--primary); 
         }
         .facility-card:hover {
-            transform: translateY(-8px); /* Efek lift dinamis */
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); /* Shadow lebih kuat */
-            border-bottom: 6px solid var(--accent); /* Ganti warna saat hover */
+            transform: translateY(-8px); 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-bottom: 6px solid var(--accent); 
         }
         
         .card-icon {
-            background-color: var(--primary); /* Warna dasar Biru Tua */
+            background-color: var(--primary); 
             color: white;
             padding: 30px 25px;
             font-size: 3.5em;
             transition: transform 0.4s, background-color 0.4s;
         }
         .facility-card:hover .card-icon {
-            background-color: var(--accent); /* Warna aksen saat hover */
+            background-color: var(--accent);
             transform: scale(1.05);
         }
         .card-body {
             padding: 25px;
         }
         .card-body h5 {
-            font-family: var(--font-heading); /* Judul card menggunakan Playfair Display */
+            font-family: var(--font-heading); 
             font-weight: 700;
             color: var(--primary); 
             transition: color 0.4s;
@@ -151,7 +139,6 @@
             margin-top: 10px;
         }
 
-        /* --- SECTION DIVIDER --- */
         .section-divider {
             margin: 70px 0 40px;
             text-align: center;
@@ -174,7 +161,6 @@
             border-radius: 2px;
         }
 
-        /* Styling tambahan untuk Modal Carousel */
         .modal-content {
             border-radius: 15px;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
@@ -204,7 +190,6 @@
 </head>
 <body>
 
-    <!-- Top Bar dan Navbar -->
     <div class="top-bar py-2 d-none d-md-block">
         <div class="container text-end font-monospace">
             <small><i class="fas fa-phone me-2"></i>(0857) 7429 3159 &nbsp;|&nbsp; <i class="fas fa-envelope me-2"></i>smpn8citra@gmail.com</small>
@@ -272,8 +257,7 @@
         </div>
     </div>
 </nav>
-    
-    <!-- Hero Section Khusus Galeri -->
+
     <header class="hero-galeri">
         <div class="container">
             <h1>Fasilitas Penunjang Pembelajaran</h1>
@@ -282,7 +266,7 @@
     </header>
 
     <main class="container">
-        <!-- Fasilitas Umum -->
+
         <div class="section-divider">
             <h2><i class="fas fa-building me-2" style="color: var(--primary);"></i> Fasilitas Umum di Sekolah</h2>
         </div>
@@ -462,7 +446,7 @@
     
     <footer class="footer bg-light py-4 border-top">
         <div class="container text-center text-muted">
-            &copy; 2025 SMP NEGERI 8 CIKARANG UTARA. All Rights Reserved.
+            &copy; 2025-2026 SMP NEGERI 8 CIKARANG UTARA. All Rights Reserved.
         </div>
     </footer>
 
@@ -477,7 +461,6 @@
                 <div class="modal-body p-1">
                     <div id="facilityCarousel" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner" id="carouselInner">
-                            <!-- Isi Carousel akan di-inject oleh JavaScript -->
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#facilityCarousel" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -496,7 +479,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Data Fasilitas dan Gambar (TIDAK BERUBAH)
         const facilityData = {
             ruang_kelas: {
                 name: "Ruang Kelas",
@@ -594,7 +576,6 @@
             const carouselInner = document.getElementById('carouselInner');
             const facilityModal = new bootstrap.Modal(document.getElementById('facilityModal'));
 
-            // --- Logika Scroll Reveal Dinamis ---
             const observerOptions = {
                 root: null,
                 rootMargin: '0px',
@@ -605,25 +586,15 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
-                        // Opsional: berhenti mengamati setelah terlihat
-                        // observer.unobserve(entry.target); 
                     } else {
-                        // Agar bisa dilihat berulang kali saat scroll naik turun
                         entry.target.classList.remove('visible'); 
                     }
                 });
             }, observerOptions);
-
-            // Terapkan Intersection Observer ke setiap wrapper kartu
             document.querySelectorAll('.facility-card-wrapper').forEach((el, index) => {
-                // Tambahkan delay berdasarkan index agar muncul bergantian
                 el.style.setProperty('--delay', `${index * 0.1}s`); 
                 observer.observe(el);
             });
-            // --- Akhir Logika Scroll Reveal ---
-
-
-            // --- Logika Modal Galeri (TIDAK BERUBAH) ---
             facilityCards.forEach(card => {
                 card.addEventListener('click', function() {
                     const facilityId = this.getAttribute('data-facility-id');
@@ -639,24 +610,17 @@
                             if (index === 0) {
                                 carouselItem.classList.add('active');
                             }
-                            
-                            // Tambahkan image dengan fallback onerror
+
                             carouselItem.innerHTML = `
                                 <img src="${url}" class="d-block w-100" alt="${data.name} Foto ${index + 1}" 
                                     onerror="this.onerror=null; this.src='https://placehold.co/1200x800/CCCCCC/000000?text=Gambar+Tidak+Tersedia';">
                             `;
                             carouselInner.appendChild(carouselItem);
                         });
-                        
-                        // Tampilkan modal
                         facilityModal.show();
                     } else {
-                        // Menggunakan custom alert karena alert() dilarang
                         const cardName = this.querySelector('h5').textContent;
                         console.warn(`Tidak ada data gambar untuk ${cardName}.`);
-                        
-                        // Membuat pesan sederhana di konsol karena tidak boleh menggunakan alert
-                        // Dalam implementasi nyata, ini akan diganti dengan Toast atau Custom Modal UI
                         const modalMessage = document.createElement('div');
                         modalMessage.className = 'p-3 bg-warning text-dark rounded-lg position-fixed top-50 start-50 translate-middle shadow-lg z-30';
                         modalMessage.style.zIndex = 1050;
@@ -666,11 +630,11 @@
                     }
                 });
             });
-            // --- Akhir Logika Modal Galeri ---
         });
     </script>
 </body>
 </html>
+
 
 
 
