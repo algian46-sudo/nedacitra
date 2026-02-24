@@ -13,29 +13,28 @@
       background-color: #0d4f4f;
       background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f4d03f' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
-    .juz-btn { transition: all 0.2s ease; }
-    .juz-btn:hover { transform: scale(1.05); }
-    .juz-btn.completed {
-      background: linear-gradient(135deg, #f4d03f 0%, #e6b800 100%);
-      color: #0d4f4f;
-      box-shadow: 0 4px 15px rgba(244, 208, 63, 0.4);
-    }
+    /* Status Colors */
+    .status-none { background-color: #f3f4f6; color: #374151; }
+    .status-progres { background-color: #d2b48c !important; color: #fff !important; }
+    .status-selesai { background: linear-gradient(135deg, #f4d03f 0%, #e6b800 100%) !important; color: #0d4f4f !important; }
+
+    .juz-btn { transition: all 0.2s ease; border: 1px solid transparent; }
     .participant-card { transition: all 0.3s ease; }
     .participant-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
     .progress-ring { transform: rotate(-90deg); }
     .gold-border { border: 2px solid #f4d03f; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .fade-in { animation: fadeIn 0.4s ease forwards; }
-    .modal-overlay { background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+    .fade-in { animation: fadeIn 0.3s ease forwards; }
+    .modal-overlay { background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); }
   </style>
 </head>
 <body class="h-full overflow-auto">
-  <div id="app" class="w-full min-h-full pattern-bg">
+  <div id="app" class="w-full min-h-full pattern-bg pb-10">
     <header class="bg-gradient-to-r from-emerald-900 to-teal-800 py-6 px-4 shadow-lg gold-border border-t-0 border-x-0">
       <div class="max-w-6xl mx-auto text-center">
         <p class="amiri text-3xl text-amber-300 mb-2">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</p>
-        <h1 id="main-title" class="text-2xl md:text-3xl font-bold text-white mb-1">📖 Rekap Tadarus Al-Qur'an</h1>
-        <p id="subtitle-text" class="text-amber-200 text-sm md:text-base">Ramadhan 1446 H</p>
+        <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">📖 Rekap Tadarus Al-Qur'an</h1>
+        <p class="text-amber-200 text-sm md:text-base">Ramadhan 1446 H</p>
       </div>
     </header>
 
@@ -45,7 +44,7 @@
           <div class="text-center md:text-left">
             <h2 class="text-lg font-semibold text-emerald-800">Progress Keseluruhan</h2>
             <p id="total-progress" class="text-3xl font-bold text-amber-600">0 / 420 Juz</p>
-            <p class="text-gray-500 text-sm">14 Peserta × 30 Juz</p>
+            <p class="text-gray-500 text-sm italic">* Hanya menghitung juz yang sudah "Selesai"</p>
           </div>
           <div class="relative">
             <svg class="w-28 h-28 progress-ring">
@@ -59,70 +58,81 @@
         </div>
       </div>
 
+      <div class="bg-white/95 rounded-2xl shadow-xl p-6 mb-6 gold-border">
+        <h2 class="text-lg font-semibold text-emerald-800 mb-4 flex items-center gap-2">📊 Kontrol Juz Kolektif</h2>
+        <div id="global-juz-recap" class="grid grid-cols-5 sm:grid-cols-10 gap-2"></div>
+        <div class="mt-4 flex flex-wrap gap-4 text-xs font-medium">
+          <div class="flex items-center gap-1.5"><div class="w-3 h-3 bg-amber-400 rounded"></div> Selesai</div>
+          <div class="flex items-center gap-1.5"><div class="w-3 h-3 bg-[#d2b48c] rounded"></div> Sedang Dibaca</div>
+          <div class="flex items-center gap-1.5"><div class="w-3 h-3 bg-gray-200 border border-gray-300 rounded"></div> Belum Ada</div>
+        </div>
+      </div>
+
       <div id="participants-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>
 
-    <div id="modal" class="fixed inset-0 modal-overlay hidden items-center justify-center z-50 p-4">
+    <div id="modal" class="fixed inset-0 modal-overlay hidden items-center justify-center z-40 p-4">
       <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90%] overflow-hidden fade-in">
         <div class="bg-gradient-to-r from-emerald-800 to-teal-700 p-4">
           <h3 id="modal-title" class="text-xl font-bold text-white"></h3>
           <p id="modal-progress" class="text-amber-200 text-sm"></p>
         </div>
         <div class="p-4 max-h-80 overflow-y-auto">
-          <p class="text-gray-600 text-sm mb-3">Pilih juz yang sudah diselesaikan:</p>
           <div id="juz-grid" class="grid grid-cols-6 gap-2"></div>
         </div>
         <div class="p-4 border-t bg-gray-50 flex gap-2">
-          <button id="select-all-btn" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white py-2 px-4 rounded-lg font-medium transition"> Pilih Semua </button>
-          <button id="close-modal-btn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded-lg font-medium transition"> Tutup </button>
+          <button id="select-all-btn" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg font-medium transition text-sm"> Selesaikan Semua </button>
+          <button id="close-modal-btn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded-lg font-medium transition text-sm"> Tutup </button>
         </div>
       </div>
     </div>
 
-    <div id="loading-overlay" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div id="status-modal" class="fixed inset-0 modal-overlay hidden items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-xl shadow-2xl p-6 max-w-xs w-full fade-in">
+        <h4 id="status-modal-title" class="font-bold text-emerald-900 mb-4 text-center">Set Status Juz</h4>
+        <div class="flex flex-col gap-2">
+          <button onclick="saveStatus('selesai')" class="w-full bg-amber-400 hover:bg-amber-500 text-emerald-900 py-3 rounded-lg font-bold">✅ Sudah Selesai</button>
+          <button onclick="saveStatus('progres')" class="w-full bg-[#d2b48c] hover:bg-[#c4a47c] text-white py-3 rounded-lg font-bold">📖 Sedang Dibaca</button>
+          <button onclick="saveStatus('hapus')" class="w-full bg-red-50 hover:bg-red-100 text-red-600 py-2 rounded-lg text-sm">Kosongkan Status</button>
+          <button onclick="closeStatusModal()" class="w-full mt-2 text-gray-400 text-xs">Batal</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="loading-overlay" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[60]">
       <div class="bg-white rounded-xl p-6 flex items-center gap-3">
-        <svg class="animate-spin h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        <span class="text-gray-700">Memproses Data...</span>
+        <div class="animate-spin h-6 w-6 border-4 border-emerald-600 border-t-transparent rounded-full"></div>
+        <span class="text-gray-700 font-medium">Menyimpan...</span>
       </div>
     </div>
   </div>
 
   <script>
-    // URL Deployment GAS Anda
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhzy9qQg_GDZmkg3G8HvlilFThOFb20-cBV6sJRarsIpExlF5YyqsubLkDbNxDqmzO/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyMunr4kkb79JE6gFmMEqAifvu5wbpY0SaZhbuWWQp84OJh3uIDAFHhA9m4FCTxyl17/exec";
 
     const participants = [
-      { id: 'p1', name: 'ALGIAN MANGGARA, S.Agr' },
-      { id: 'p2', name: 'SRI YULIANTI, S.Pd.' },
-      { id: 'p3', name: 'EUIS SA\'ADAH, S.Ag.' },
-      { id: 'p4', name: 'NUR AMALIA, S.E.' },
-      { id: 'p5', name: 'PURWANINGSIH, S.Pd.' },
-      { id: 'p6', name: 'USWATUL HASANAH, S.Pd.' },
-      { id: 'p7', name: 'RESHAMAYORI ALVIANITA, S.Sos.' },
-      { id: 'p8', name: 'NURUL INTAN SEPTIANA M, S.Pd.' },
-      { id: 'p9', name: 'ANITA SARI, S.M.' },
-      { id: 'p10', name: 'TOYIB, S.Pd' },
-      { id: 'p11', name: 'SIFA NURLAITIFAH, S.Pd' },
-      { id: 'p12', name: 'SEVILLA DELA AMIRUDIN, S.Pd' },
-      { id: 'p13', name: 'HASANAH AISAH, M.Pd' },
-      { id: 'p14', name: 'IRA YULYANTI, S.Kom' }
+      { id: 'p1', name: 'ALGIAN MANGGARA, S.Agr' }, { id: 'p2', name: 'SRI YULIANTI, S.Pd.' },
+      { id: 'p3', name: 'EUIS SA\'ADAH, S.Ag.' }, { id: 'p4', name: 'NUR AMALIA, S.E.' },
+      { id: 'p5', name: 'PURWANINGSIH, S.Pd.' }, { id: 'p6', name: 'USWATUL HASANAH, S.Pd.' },
+      { id: 'p7', name: 'RESHAMAYORI ALVIANITA, S.Sos.' }, { id: 'p8', name: 'NURUL INTAN SEPTIANA M, S.Pd.' },
+      { id: 'p9', name: 'ANITA SARI, S.M.' }, { id: 'p10', name: 'TOYIB, S.Pd' },
+      { id: 'p11', name: 'SIFA NURLAITIFAH, S.Pd' }, { id: 'p12', name: 'SEVILLA DELA AMIRUDIN, S.Pd' },
+      { id: 'p13', name: 'HASANAH AISAH, M.Pd' }, { id: 'p14', name: 'IRA YULYANTI, S.Kom' }
     ];
 
     let completedJuz = [];
     let currentParticipantId = null;
+    let selectedJuzNumber = null;
     let isLoading = false;
 
+    // DOM
     const modal = document.getElementById('modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalProgress = document.getElementById('modal-progress');
+    const statusModal = document.getElementById('status-modal');
     const juzGrid = document.getElementById('juz-grid');
     const participantsGrid = document.getElementById('participants-grid');
-    const loadingOverlay = document.getElementById('loading-overlay');
+    const globalRecapGrid = document.getElementById('global-juz-recap');
 
-    // --- DATA SDK REPLACEMENT ---
+    // MOCK SDK
     window.dataSdk = {
       async refresh() {
         try {
@@ -130,152 +140,157 @@
           const data = await res.json();
           completedJuz = Array.isArray(data) ? data : [];
           updateUI();
-        } catch (e) { showToast("Gagal mengambil data"); }
-      },
-      async create(entry) {
-        try {
-          const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'create', ...entry }) });
-          const result = await res.json();
-          if (result.isOk) await this.refresh();
-          return result;
-        } catch (e) { return { isOk: false }; }
-      },
-      async delete(entry) {
-        try {
-          const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', ...entry }) });
-          const result = await res.json();
-          if (result.isOk) await this.refresh();
-          return result;
-        } catch (e) { return { isOk: false }; }
+        } catch (e) { console.error(e); }
       }
     };
 
     function initParticipantCards() {
       participantsGrid.innerHTML = '';
-      participants.forEach((p, index) => {
+      participants.forEach(p => {
         const card = document.createElement('div');
         card.className = 'participant-card bg-white/95 rounded-xl p-4 shadow-lg cursor-pointer gold-border';
         card.innerHTML = `
           <div class="flex items-center gap-3 mb-3">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-600 to-teal-500 flex items-center justify-center text-white font-bold text-sm">${p.name.charAt(0)}</div>
-            <div class="flex-1 min-w-0">
-              <h3 class="font-semibold text-emerald-900 text-sm truncate">${p.name}</h3>
-              <p class="text-xs text-gray-500 juz-count" data-id="${p.id}">0/30 Juz</p>
+            <div class="w-10 h-10 rounded-full bg-emerald-700 flex items-center justify-center text-white font-bold">${p.name.charAt(0)}</div>
+            <div class="flex-1 overflow-hidden">
+              <h3 class="font-bold text-emerald-900 text-sm truncate">${p.name}</h3>
+              <p class="text-xs text-gray-500 juz-count" data-id="${p.id}">0 Selesai</p>
             </div>
           </div>
-          <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-            <div class="progress-bar bg-gradient-to-r from-amber-400 to-amber-500 h-full rounded-full transition-all duration-500" data-id="${p.id}" style="width: 0%"></div>
+          <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+            <div class="progress-bar bg-amber-400 h-full transition-all duration-500" data-id="${p.id}" style="width: 0%"></div>
           </div>`;
-        card.addEventListener('click', () => openModal(p.id));
+        card.onclick = () => openModal(p.id);
         participantsGrid.appendChild(card);
       });
     }
 
     function updateUI() {
-      let totalCompleted = 0;
+      let totalCompletedCount = 0;
+      const juzStatusMap = {}; // Untuk rekap global
+
       participants.forEach(p => {
-        const completed = completedJuz.filter(j => j.participant_id === p.id).map(j => Number(j.juz_number));
-        const count = completed.length;
-        totalCompleted += count;
-        const countEl = document.querySelector(`.juz-count[data-id="${p.id}"]`);
-        const barEl = document.querySelector(`.progress-bar[data-id="${p.id}"]`);
-        if (countEl) countEl.textContent = `${count}/30 Juz`;
-        if (barEl) barEl.style.width = `${(count / 30) * 100}%`;
+        const pData = completedJuz.filter(j => j.participant_id === p.id);
+        const doneCount = pData.filter(j => j.status === 'selesai').length;
+        totalCompletedCount += doneCount;
+
+        pData.forEach(d => {
+          const num = Number(d.juz_number);
+          if (!juzStatusMap[num] || d.status === 'selesai') {
+            juzStatusMap[num] = d.status;
+          }
+        });
+
+        document.querySelector(`.juz-count[data-id="${p.id}"]`).textContent = `${doneCount}/30 Selesai`;
+        document.querySelector(`.progress-bar[data-id="${p.id}"]`).style.width = `${(doneCount / 30) * 100}%`;
       });
 
+      // Update Rekap Global
+      globalRecapGrid.innerHTML = '';
+      for (let i = 1; i <= 30; i++) {
+        const status = juzStatusMap[i] || 'none';
+        const box = document.createElement('div');
+        box.className = `p-2 rounded-lg text-xs font-bold border transition-colors flex items-center justify-center ${
+          status === 'selesai' ? 'status-selesai border-amber-500 shadow-sm' : 
+          status === 'progres' ? 'status-progres border-amber-200' : 'bg-white text-gray-300 border-gray-100'
+        }`;
+        box.textContent = i;
+        globalRecapGrid.appendChild(box);
+      }
+
+      // Circle Progress
       const totalJuz = participants.length * 30;
-      const percent = Math.round((totalCompleted / totalJuz) * 100);
-      document.getElementById('total-progress').textContent = `${totalCompleted} / ${totalJuz} Juz`;
+      const percent = Math.round((totalCompletedCount / totalJuz) * 100);
+      document.getElementById('total-progress').textContent = `${totalCompletedCount} / ${totalJuz} Juz`;
       document.getElementById('progress-percent').textContent = `${percent}%`;
-      const circle = document.getElementById('progress-circle');
-      circle.style.strokeDashoffset = 301.59 - (percent / 100) * 301.59;
-      if (currentParticipantId) updateModalJuzGrid();
+      document.getElementById('progress-circle').style.strokeDashoffset = 301.59 - (percent / 100) * 301.59;
+
+      if (currentParticipantId) renderJuzGrid();
     }
 
-    function openModal(participantId) {
-      currentParticipantId = participantId;
-      const participant = participants.find(p => p.id === participantId);
-      modalTitle.textContent = participant.name;
+    function openModal(id) {
+      currentParticipantId = id;
+      document.getElementById('modal-title').textContent = participants.find(p => p.id === id).name;
       renderJuzGrid();
       modal.classList.replace('hidden', 'flex');
     }
 
-    function closeModal() {
-      modal.classList.replace('flex', 'hidden');
-      currentParticipantId = null;
-    }
-
     function renderJuzGrid() {
       juzGrid.innerHTML = '';
-      const completed = completedJuz.filter(j => j.participant_id === currentParticipantId).map(j => Number(j.juz_number));
-      modalProgress.textContent = `${completed.length}/30 Juz selesai`;
+      const pData = completedJuz.filter(j => j.participant_id === currentParticipantId);
+      document.getElementById('modal-progress').textContent = `${pData.filter(j => j.status === 'selesai').length}/30 Selesai`;
+
       for (let i = 1; i <= 30; i++) {
+        const data = pData.find(j => Number(j.juz_number) === i);
+        const status = data ? data.status : 'none';
         const btn = document.createElement('button');
-        const isCompleted = completed.includes(i);
-        btn.className = `juz-btn w-full aspect-square rounded-lg font-medium text-sm ${isCompleted ? 'completed' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`;
+        btn.className = `juz-btn aspect-square rounded-lg font-bold text-sm ${
+          status === 'selesai' ? 'status-selesai' : status === 'progres' ? 'status-progres' : 'bg-gray-100'
+        }`;
         btn.textContent = i;
-        btn.addEventListener('click', () => toggleJuz(i));
+        btn.onclick = () => { selectedJuzNumber = i; openStatusModal(); };
         juzGrid.appendChild(btn);
       }
     }
 
-    function updateModalJuzGrid() {
-      const completed = completedJuz.filter(j => j.participant_id === currentParticipantId).map(j => Number(j.juz_number));
-      modalProgress.textContent = `${completed.length}/30 Juz selesai`;
-      const buttons = juzGrid.querySelectorAll('.juz-btn');
-      buttons.forEach((btn, index) => {
-        const isCompleted = completed.includes(index + 1);
-        btn.className = `juz-btn w-full aspect-square rounded-lg font-medium text-sm ${isCompleted ? 'completed' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`;
-      });
+    function openStatusModal() {
+      document.getElementById('status-modal-title').textContent = `Juz ${selectedJuzNumber}`;
+      statusModal.classList.replace('hidden', 'flex');
     }
 
-    async function toggleJuz(juzNumber) {
-      if (isLoading) return;
-      const existingRecord = completedJuz.find(j => j.participant_id === currentParticipantId && Number(j.juz_number) === juzNumber);
-      isLoading = true;
+    function closeStatusModal() {
+      statusModal.classList.replace('flex', 'hidden');
+    }
+
+    async function saveStatus(status) {
+      closeStatusModal();
       showLoading(true);
-      if (existingRecord) await window.dataSdk.delete(existingRecord);
-      else await window.dataSdk.create({ participant_id: currentParticipantId, juz_number: juzNumber, completed_at: new Date().toISOString() });
-      isLoading = false;
+      const existing = completedJuz.find(j => j.participant_id === currentParticipantId && Number(j.juz_number) === selectedJuzNumber);
+      
+      try {
+        if (status === 'hapus') {
+          if (existing) await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', ...existing }) });
+        } else {
+          // Jika sudah ada, hapus dulu baru buat baru (update)
+          if (existing) await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', ...existing }) });
+          await fetch(SCRIPT_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ 
+              action: 'create', 
+              participant_id: currentParticipantId, 
+              juz_number: selectedJuzNumber, 
+              status: status,
+              completed_at: new Date().toISOString() 
+            }) 
+          });
+        }
+        await window.dataSdk.refresh();
+      } catch (e) { alert("Gagal menyimpan!"); }
       showLoading(false);
     }
 
     async function selectAllJuz() {
-      if (isLoading) return;
-      const completed = completedJuz.filter(j => j.participant_id === currentParticipantId).map(j => Number(j.juz_number));
-      const remaining = Array.from({length: 30}, (_, i) => i + 1).filter(i => !completed.includes(i));
-      if (remaining.length === 0) return showToast("Sudah selesai semua!");
-      
-      isLoading = true;
-      showLoading(true);
-      for (const juzNum of remaining) {
-        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'create', participant_id: currentParticipantId, juz_number: juzNum, completed_at: new Date().toISOString() }) });
-      }
-      await window.dataSdk.refresh();
-      isLoading = false;
-      showLoading(false);
+        if (!confirm("Tandai semua juz sebagai selesai?")) return;
+        showLoading(true);
+        for(let i=1; i<=30; i++) {
+            const existing = completedJuz.find(j => j.participant_id === currentParticipantId && Number(j.juz_number) === i);
+            if (!existing || existing.status !== 'selesai') {
+                if(existing) await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', ...existing }) });
+                await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ 
+                    action: 'create', participant_id: currentParticipantId, juz_number: i, status: 'selesai', completed_at: new Date().toISOString() 
+                })});
+            }
+        }
+        await window.dataSdk.refresh();
+        showLoading(false);
     }
 
-    function showLoading(show) { loadingOverlay.classList.toggle('hidden', !show); loadingOverlay.classList.toggle('flex', show); }
+    function showLoading(s) { document.getElementById('loading-overlay').classList.toggle('hidden', !s); document.getElementById('loading-overlay').classList.toggle('flex', s); }
+    document.getElementById('close-modal-btn').onclick = () => modal.classList.replace('flex', 'hidden');
+    document.getElementById('select-all-btn').onclick = selectAllJuz;
 
-    function showToast(msg) {
-      const t = document.createElement('div');
-      t.className = 'fixed bottom-4 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg z-50 fade-in';
-      t.textContent = msg;
-      document.body.appendChild(t);
-      setTimeout(() => t.remove(), 3000);
-    }
-
-    document.getElementById('close-modal-btn').addEventListener('click', closeModal);
-    document.getElementById('select-all-btn').addEventListener('click', selectAllJuz);
-    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-
-    async function init() {
-      initParticipantCards();
-      await window.dataSdk.refresh();
-    }
-
-    init();
+    initParticipantCards();
+    window.dataSdk.refresh();
   </script>
 </body>
 </html>
