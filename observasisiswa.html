@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Portal & Teacher Monitoring - Final Version</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: #f0f4f8; }
+    .glass-morphism { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+    .tab-active { background: #3b82f6 !important; color: white !important; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+    .test-card:hover { transform: scale(1.03); }
+    .custom-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body class="h-full">
+  <div id="app" class="min-h-full">
+    
+    <div id="loading" class="fixed inset-0 bg-white/80 z-[100] flex items-center justify-center hidden">
+      <div class="flex flex-col items-center">
+        <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <p class="mt-4 font-bold text-blue-900">Memproses Data...</p>
+      </div>
+    </div>
+
+    <div id="login-page" class="min-h-screen flex items-center justify-center p-6">
+      <div class="glass-morphism p-10 rounded-[2.5rem] custom-shadow w-full max-w-md animate-in fade-in duration-700">
+        <div class="text-center mb-8">
+          <div class="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg shadow-blue-200">🎓</div>
+          <h1 class="text-3xl font-black text-slate-800 tracking-tight">PORTAL PENDIDIKAN</h1>
+          <p class="text-slate-500 font-medium">Sistem Monitoring & Evaluasi</p>
+        </div>
+        <form id="login-form" class="space-y-4">
+          <input type="text" id="log-user" placeholder="Nama Lengkap" class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 outline-none transition-all" required>
+          <input type="password" id="log-pass" placeholder="NISN / Kode Akses" class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 outline-none transition-all" required>
+          <div class="flex gap-2 p-1 bg-slate-100 rounded-2xl">
+            <button type="button" onclick="setRole('siswa')" id="r-siswa" class="flex-1 py-2 rounded-xl font-bold bg-white text-blue-600 shadow-sm">Siswa</button>
+            <button type="button" onclick="setRole('guru')" id="r-guru" class="flex-1 py-2 rounded-xl font-bold text-slate-400">Guru</button>
+          </div>
+          <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-lg hover:bg-blue-700 active:scale-95 transition-all shadow-lg shadow-blue-100">MASUK SEKARANG</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="dashboard" class="hidden min-h-screen flex flex-col">
+      <nav class="bg-white border-b px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-xl">🚀</div>
+          <h2 class="font-black text-slate-800 hidden md:block uppercase tracking-tight">Portal Belajar</h2>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="text-right hidden sm:block">
+            <p id="user-display" class="font-bold text-slate-900 leading-none"></p>
+            <p id="id-display" class="text-xs text-slate-500 font-medium"></p>
+          </div>
+          <button onclick="logout()" class="px-4 py-2 hover:bg-red-50 text-red-500 rounded-xl transition-colors font-bold text-sm">KELUAR</button>
+        </div>
+      </nav>
+
+      <main class="flex-1 p-6 max-w-6xl mx-auto w-full">
+        
+        <div id="view-siswa" class="hidden">
+          <div class="flex overflow-x-auto gap-2 mb-8 no-scrollbar pb-2">
+            <button onclick="tab(1)" id="b1" class="tab-btn px-6 py-3 rounded-2xl font-black text-sm bg-white text-slate-400 border border-slate-100 transition-all">📘 AKADEMIK</button>
+            <button onclick="tab(2)" id="b2" class="tab-btn px-6 py-3 rounded-2xl font-black text-sm bg-white text-slate-400 border border-slate-100 transition-all">🌟 KARAKTER</button>
+            <button onclick="tab(3)" id="b3" class="tab-btn px-6 py-3 rounded-2xl font-black text-sm bg-white text-slate-400 border border-slate-100 transition-all">🏆 PRESTASI</button>
+            <button onclick="tab(4)" id="b4" class="tab-btn px-6 py-3 rounded-2xl font-black text-sm bg-white text-slate-400 border border-slate-100 transition-all">📊 REKAP</button>
+          </div>
+
+          <div id="c1" class="tab-content hidden animate-in fade-in slide-in-from-bottom-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="academic-grid"></div>
+          </div>
+
+          <div id="c2" class="tab-content hidden animate-in fade-in slide-in-from-bottom-4">
+            <div class="glass-morphism p-10 rounded-[3rem] text-center border-2 border-dashed border-blue-200">
+              <div class="text-6xl mb-6">🤝</div>
+              <h2 class="text-3xl font-black text-slate-800 mb-2">Survei Karakter</h2>
+              <p class="text-slate-500 max-w-md mx-auto mb-8 font-medium">Evaluasi profil pelajar Pancasila: Integritas, Gotong Royong, Mandiri, dan Kreatif.</p>
+              <button onclick="startTest('Survei Karakter')" class="bg-indigo-600 text-white px-12 py-4 rounded-2xl font-black hover:bg-indigo-700 shadow-xl shadow-indigo-100">MULAI SURVEI</button>
+            </div>
+          </div>
+
+          <div id="c3" class="tab-content hidden animate-in fade-in slide-in-from-bottom-4">
+            <div class="glass-morphism p-8 rounded-[3rem]">
+              <h2 class="text-2xl font-black mb-6">Catat Prestasimu 🏆</h2>
+              <form id="pres-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input type="text" id="p-title" class="px-6 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-blue-500 outline-none" placeholder="Nama Lomba" required>
+                <select id="p-cat" class="px-6 py-4 rounded-2xl bg-slate-50 outline-none font-bold">
+                  <option>Akademik</option><option>Olahraga</option><option>Seni</option><option>Lainnya</option>
+                </select>
+                <select id="p-lvl" class="px-6 py-4 rounded-2xl bg-slate-50 outline-none font-bold">
+                  <option>Sekolah</option><option>Kota</option><option>Nasional</option><option>Internasional</option>
+                </select>
+                <input type="date" id="p-date" class="px-6 py-4 rounded-2xl bg-slate-50 outline-none font-bold" required>
+                <button type="submit" class="md:col-span-2 bg-green-600 text-white py-5 rounded-3xl font-black text-lg">SIMPAN PRESTASI</button>
+              </form>
+            </div>
+          </div>
+
+          <div id="c4" class="tab-content hidden animate-in fade-in slide-in-from-bottom-4">
+            <h2 class="text-2xl font-black mb-6">Riwayat Aktivitas 📜</h2>
+            <div id="rekap-list" class="space-y-4"></div>
+          </div>
+        </div>
+
+        <div id="view-guru" class="hidden space-y-6">
+          <div class="glass-morphism p-8 rounded-[2.5rem] shadow-sm border border-blue-100">
+            <h2 class="text-2xl font-black text-slate-800 mb-4 flex items-center gap-3">
+              <span>👨‍🏫</span> Monitoring Individual Siswa
+            </h2>
+            <div class="max-w-md space-y-2">
+              <label class="text-xs font-black text-slate-400 ml-2 uppercase">Pilih Nama Siswa:</label>
+              <select id="guru-student-select" onchange="renderIndividualReport()" class="w-full px-6 py-4 rounded-2xl bg-white border-2 border-slate-100 focus:border-blue-500 outline-none font-bold text-slate-700 shadow-sm transition-all">
+                <option value="">-- Pilih Siswa --</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="individual-report" class="hidden space-y-6">
+            <div id="auto-conclusion" class="p-8 rounded-[2.5rem] border-l-[12px] transition-all"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="glass-morphism p-8 rounded-[2.5rem]">
+                <h3 class="font-black text-slate-800 mb-4 flex items-center gap-2">📘 Nilai Akademik</h3>
+                <div id="report-akademik" class="space-y-3"></div>
+              </div>
+              <div class="glass-morphism p-8 rounded-[2.5rem]">
+                <h3 class="font-black text-slate-800 mb-4 flex items-center gap-2">🏆 Prestasi & Karakter</h3>
+                <div id="report-karakter" class="space-y-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <div id="exam-overlay" class="fixed inset-0 bg-slate-900 z-[60] p-6 hidden overflow-y-auto">
+        <div class="max-w-3xl mx-auto w-full pt-10 pb-20">
+          <div class="flex justify-between items-center mb-8">
+            <h2 id="ex-title" class="text-white text-2xl font-black uppercase">UJIAN</h2>
+            <span class="bg-white/10 text-white px-4 py-1 rounded-full text-xs font-black">SOAL <span id="q-num">1</span>/10</span>
+          </div>
+          <div class="w-full bg-white/10 h-3 rounded-full mb-10 overflow-hidden">
+            <div id="ex-progress" class="bg-blue-500 h-full w-0 transition-all duration-500"></div>
+          </div>
+          <div id="q-container" class="bg-white rounded-[3rem] p-10 custom-shadow"></div>
+          <div class="mt-8 text-center">
+            <button onclick="if(confirm('Batalkan?')){location.reload()}" class="text-white/40 hover:text-white font-bold">BATAL</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== CONFIG & DATA ====================
+    const URL = "https://script.google.com/macros/s/AKfycbz6krwSZvGZ1_cvZZ_AxFw4Sja8oOunZKzclQG9kgcGJiw6Fdw5B1Ucxty0frpY__up/exec";
+    let allData = [], role = 'siswa', user = null, currentTest = null;
+
+    const QUESTS = {
+      'Matematika': [
+        {q:"25 + 15 x 4 - 30 : 5 = ?", a:["79","81","84","85"], c:0},
+        {q:"Luas persegi 144 cm², kelilingnya?", a:["36 cm","44 cm","48 cm","52 cm"], c:2},
+        {q:"3x + 7 = 22, nilai x + 5?", a:["5","10","15","20"], c:1},
+        {q:"FPB dari 36, 48, 72?", a:["6","12","18","24"], c:1},
+        {q:"Hasil 2/5 + 0,75?", a:["1,15","1,25","1,35","1,45"], c:0},
+        {q:"Jari-jari 7cm, tinggi 10cm, volume tabung?", a:["154 cm³","1540 cm³","15400 cm³","440 cm³"], c:1},
+        {q:"Median data: 6,8,5,7,6,9,8,7,8?", a:["6","7","7,5","8"], c:1},
+        {q:"Skala 1:500rb, jarak 4cm, jarak asli?", a:["2 km","20 km","200 km","2000 km"], c:1},
+        {q:"-12 + 7 x (-3) = ?", a:["-33","-15","15","33"], c:0},
+        {q:"Banyak titik sudut limas segiempat?", a:["4","5","6","8"], c:1}
+      ],
+      'IPA': [
+        {q:"Tempat fotosintesis pada tumbuhan?", a:["Vakuola","Kloroplas","Mitokondria","Ribosom"], c:1},
+        {q:"Planet Merah adalah?", a:["Venus","Mars","Jupiter","Saturnus"], c:1},
+        {q:"Penguapan air dari daun?", a:["Evaporasi","Kondensasi","Transpirasi","Presipitasi"], c:2},
+        {q:"Alat kelamin jantan bunga?", a:["Putik","Kelopak","Benang Sari","Mahkota"], c:2},
+        {q:"Gas menjadi cair disebut?", a:["Mengembun","Menyublim","Mencair","Membeku"], c:0},
+        {q:"Hewan ruminansia?", a:["Kuda","Kucing","Sapi","Ayam"], c:2},
+        {q:"Satuan SI suhu?", a:["Celcius","Reamur","Kelvin","Fahrenheit"], c:2},
+        {q:"Usus yang menyerap air sisa?", a:["Lambung","Usus Halus","Usus Besar","Anus"], c:2},
+        {q:"Energi panas bumi disebut?", a:["Biomassa","Geotermal","Hidroelektrik","Nuklir"], c:1},
+        {q:"Simbiosis kerbau dan jalak?", a:["Komensalisme","Mutualisme","Parasitisme","Netral"], c:1}
+      ],
+      'IPS': [
+        {q:"Negara ASEAN tak pernah dijajah?", a:["Vietnam","Thailand","Malaysia","Filipina"], c:1},
+        {q:"Benua terkecil?", a:["Eropa","Australia","Antartika","Amerika"], c:1},
+        {q:"Prasasti Yupa dari kerajaan?", a:["Taruma","Kutai","Majapahit","Sriwijaya"], c:1},
+        {q:"Garis khayal pembagi Utara-Selatan?", a:["Bujur","Lintang","Khatulistiwa","Meridian"], c:2},
+        {q:"Tujuan utama ASEAN?", a:["Militer","Ekonomi Sosial","Penjajahan","Perang"], c:1},
+        {q:"Bapak Proklamator?", a:["Moh Hatta","Soekarno-Hatta","Ki Hajar","Syahrir"], c:1},
+        {q:"Distribusi adalah kegiatan?", a:["Produksi","Konsumsi","Penyaluran","Investasi"], c:2},
+        {q:"Borobudur peninggalan dinasti?", a:["Sanjaya","Syailendra","Isyana","Girindra"], c:1},
+        {q:"SDA dapat diperbarui?", a:["Minyak","Batu Bara","Hutan","Emas"], c:2},
+        {q:"Pendiri Majapahit?", a:["Hayam Wuruk","Raden Wijaya","Gajah Mada","Ken Arok"], c:1}
+      ],
+      'Bahasa Indonesia': [
+        {q:"Ide pokok biasanya ada di kalimat?", a:["Penjelas","Utama","Pendukung","Tengah"], c:1},
+        {q:"Antonim Pascapanen?", a:["Setelah","Pra-panen","Saat","Gagal"], c:1},
+        {q:"Kapital yang benar?", a:["ke Jakarta","ke jakarta","Ke Jakarta","KE JAKARTA"], c:2},
+        {q:"Kalimat perintah disebut?", a:["Deklaratif","Interogatif","Imperatif","Eksklamatif"], c:2},
+        {q:"Dongeng tokoh hewan?", a:["Mite","Legenda","Fabel","Sage"], c:2},
+        {q:"Kata dasar Pertanggungjawaban?", a:["Tanggung","Tanggung Jawab","Jawab","Tanggungjawab"], c:1},
+        {q:"Majas benda mati hidup?", a:["Metafora","Hiperbola","Personifikasi","Litotes"], c:2},
+        {q:"Antonim Prolog?", a:["Dialog","Epilog","Monolog","Katalog"], c:1},
+        {q:"Teks langkah-langkah?", a:["Narasi","Deskripsi","Prosedur","Eksplanasi"], c:2},
+        {q:"Persamaan bunyi akhir puisi?", a:["Irama","Rima","Bait","Majas"], c:1}
+      ],
+      'Bahasa Inggris': [
+        {q:"She ... to school.", a:["Go","Goes","Going","Gone"], c:1},
+        {q:"English for Perpustakaan?", a:["Laboratory","Library","Canteen","Class"], c:1},
+        {q:"I have a ... . It meows.", a:["Dog","Cat","Bird","Rabbit"], c:1},
+        {q:"Yesterday I ... a bird.", a:["See","Saw","Seen","Seeing"], c:1},
+        {q:"Which is fruit?", a:["Spinach","Carrot","Apple","Onion"], c:2},
+        {q:"Sun rises in the ...", a:["West","East","South","North"], c:1},
+        {q:"Ten plus fifteen?", a:["20","25","30","15"], c:1},
+        {q:"Father's brother is my ...", a:["Aunt","Uncle","Grandpa","Cousin"], c:1},
+        {q:"How ... you?", a:["Is","Am","Are","Do"], c:2},
+        {q:"Hat is for our ...", a:["Shoes","Socks","Head","Belt"], c:2}
+      ],
+      'Logika': [
+        {q:"Deret: 2, 4, 8, 16, ...", a:["20","24","32","64"], c:2},
+        {q:"Anak Mary: Nana, Nene, Nini, Nono. Ke-5?", a:["Nunu","Nani","Mary","Noni"], c:2},
+        {q:"Lebih berat: 1kg Kapas / 1kg Besi?", a:["Kapas","Besi","Sama","Tempat"], c:2},
+        {q:"Senin, 3 hari lalu?", a:["Kamis","Jumat","Sabtu","Minggu"], c:1},
+        {q:"Pilih yang beda:", a:["Meja","Kursi","Lemari","Mangga"], c:3},
+        {q:"1=5, 2=25, 3=125, 4=625, 5=?", a:["3125","1","5","2500"], c:1},
+        {q:"Asap kereta listrik ke mana?", a:["Selatan","Utara","Timur","Tidak ada"], c:3},
+        {q:"Bulan dengan 28 hari?", a:["Hanya Feb","Januari","Semua","Maret"], c:2},
+        {q:"Tangan:Sarung = Kepala:?", a:["Bando","Topi","Helm","Semua"], c:3},
+        {q:"Mawar adalah bunga, mawar pasti?", a:["Merah","Bunga mawar","Bunga","Berduri"], c:2}
+      ],
+      'Kreativitas': [
+        {q:"Warna Hijau = ... + ...", a:["M+K","B+K","M+B","H+P"], c:1},
+        {q:"Alat musik NTT?", a:["Gitar","Sasando","Kecapi","Suling"], c:1},
+        {q:"Melipat kertas Jepang?", a:["Ikebana","Origami","Bonsai","Kimono"], c:1},
+        {q:"Botol plastik bekas untuk?", a:["Hiasan","Pot","Pensil","Semua"], c:3},
+        {q:"Pencipta Indonesia Raya?", a:["Ibu Sud","WR Supratman","Ismail","C Siman"], c:1},
+        {q:"Bahan alam kolase?", a:["Plastik","Biji","Kaca","Kabel"], c:1},
+        {q:"Gambar cerita?", a:["Karikatur","Ilustrasi","Sketsa","Vignet"], c:1},
+        {q:"Warna panas?", a:["Tenang","Semangat","Sedih","Dingin"], c:1},
+        {q:"Tari Kecak dari?", a:["Jawa","Bali","Aceh","Papua"], c:1},
+        {q:"Teknik patung tanah liat?", a:["Pahat","Butsir","Cetak","Tenun"], c:1}
+      ],
+      'Kepemimpinan': [
+        {q:"Ciri pemimpin baik?", a:["Perintah","Dengar","Menang","Galak"], c:1},
+        {q:"Teman berantem, sikapmu?", a:["Ikut","Lerai","Diam","Lapor"], c:1},
+        {q:"Tugas pemimpin?", a:["Buang","Bagi","Sembunyi","Tambah"], c:1},
+        {q:"Musyawarah untuk?", a:["Untung","Mufakat","Menang","Puas"], c:1},
+        {q:"Ing Ngarsa Sung Tulada?", a:["Belakang","Depan","Tengah","Samping"], c:1},
+        {q:"Ide gagal, sikapmu?", a:["Salahkan","Evaluasi","Bubar","Tangis"], c:1},
+        {q:"Sifat jujur pemimpin?", a:["Integritas","Kreatif","Otoritas","Populer"], c:0},
+        {q:"Pemimpin mulai dari?", a:["Ortu","Diri sendiri","Negara","Sekolah"], c:1},
+        {q:"Arti Tanggung Jawab?", a:["Terima konsekuensi","Lari","Tunjuk","Diam"], c:0},
+        {q:"Anggota malas, sikapmu?", a:["Keluarkan","Motivasi","Marah","Kerjakan"], c:1}
+      ],
+      'Survei Karakter': [
+        {q:"Mengerjakan tugas tanpa diawasi.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Mengembalikan barang temuan.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Mendengar pendapat teman.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Berani mengakui kesalahan.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Membantu guru yang kesulitan.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Tidak menyontek saat ujian.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Menghargai perbedaan agama.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Datang sekolah tepat waktu.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Menjaga kebersihan lingkungan.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Mengucapkan terima kasih.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Aktif dalam kegiatan sosial.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Meminta maaf jika salah.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Berdoa sebelum memulai kegiatan.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Membagi bekal ke teman.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Bangga atas prestasi teman.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Bicara sopan ke guru.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Merapikan tempat tidur sendiri.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Menaati rambu lalu lintas.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Tidak pilih-pilih teman.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]},
+        {q:"Mau bekerja kelompok dengan siapa saja.", a:["Sangat Tidak Setuju","Tidak Setuju","Setuju","Sangat Setuju"], s:[1,2,3,4]}
+      ]
+    };
+
+    // ==================== ENGINE ====================
+    async function initApp() {
+      showLoading(true);
+      try {
+        const res = await fetch(`${URL}?action=read`);
+        const json = await res.json();
+        allData = json.data || [];
+        renderAcademicGrid();
+        const saved = localStorage.getItem('session_user');
+        if(saved) {
+          user = JSON.parse(saved);
+          role = localStorage.getItem('session_role');
+          startDashboard();
+        }
+      } catch(e) { alert("Koneksi gagal."); }
+      showLoading(false);
+    }
+
+    function renderAcademicGrid() {
+      const sub = [
+        {n:'Matematika', i:'📐', c:'bg-blue-500'}, {n:'IPA', i:'🔬', c:'bg-green-500'},
+        {n:'IPS', i:'🌍', c:'bg-orange-500'}, {n:'Bahasa Indonesia', i:'📖', c:'bg-red-500'},
+        {n:'Bahasa Inggris', i:'🔤', c:'bg-purple-500'}, {n:'Logika', i:'🧠', c:'bg-cyan-500'},
+        {n:'Kreativitas', i:'🎨', c:'bg-pink-500'}, {n:'Kepemimpinan', i:'👑', c:'bg-amber-500'}
+      ];
+      document.getElementById('academic-grid').innerHTML = sub.map(s => `
+        <button onclick="startTest('${s.n}')" class="test-card glass-morphism p-6 rounded-[2.5rem] text-left transition-all hover:shadow-xl group">
+          <div class="w-14 h-14 ${s.c} rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:rotate-12 transition-transform">${s.i}</div>
+          <h3 class="font-black text-slate-800 text-lg">${s.n}</h3>
+          <p class="text-[10px] text-slate-400 font-bold mt-2 italic uppercase">Mulai →</p>
+        </button>
+      `).join('');
+    }
+
+    function setRole(r) {
+      role = r;
+      document.getElementById('r-siswa').className = r === 'siswa' ? 'flex-1 py-2 rounded-xl font-bold bg-white text-blue-600 shadow-sm' : 'flex-1 py-2 rounded-xl font-bold text-slate-400';
+      document.getElementById('r-guru').className = r === 'guru' ? 'flex-1 py-2 rounded-xl font-bold bg-white text-blue-600 shadow-sm' : 'flex-1 py-2 rounded-xl font-bold text-slate-400';
+    }
+
+    document.getElementById('login-form').onsubmit = (e) => {
+      e.preventDefault();
+      const u = document.getElementById('log-user').value.trim().toLowerCase();
+      const p = document.getElementById('log-pass').value.trim();
+      const f = allData.find(d => {
+        if(role === 'siswa') return d.record_type === 'student' && d.student_name.toLowerCase() === u && d.student_nisn.toString() === p;
+        return d.record_type === 'teacher' && d.teacher_name.toLowerCase() === u && d.teacher_code.toString() === p;
+      });
+      if(f) {
+        user = f;
+        localStorage.setItem('session_user', JSON.stringify(f));
+        localStorage.setItem('session_role', role);
+        startDashboard();
+      } else { alert("Login Gagal!"); }
+    };
+
+    function startDashboard() {
+      document.getElementById('login-page').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+      document.getElementById('user-display').innerText = (user.student_name || user.teacher_name).toUpperCase();
+      document.getElementById('id-display').innerText = (role === 'siswa' ? 'NISN: ' : 'ID: ') + (user.student_nisn || user.teacher_code);
+      if(role === 'siswa') {
+        document.getElementById('view-siswa').classList.remove('hidden');
+        tab(1); renderRekap();
+      } else {
+        document.getElementById('view-guru').classList.remove('hidden');
+        populateStudentSelect();
+      }
+    }
+
+    // ==================== TEST LOGIC ====================
+    function startTest(title) {
+      currentTest = { title, index: 0, score: 0, total: QUESTS[title].length, qs: QUESTS[title] };
+      document.getElementById('ex-title').innerText = title;
+      document.getElementById('exam-overlay').classList.remove('hidden');
+      renderQ();
+    }
+
+    function renderQ() {
+      const q = currentTest.qs[currentTest.index];
+      const prog = ((currentTest.index + 1) / currentTest.total) * 100;
+      document.getElementById('ex-progress').style.width = prog + "%";
+      document.getElementById('q-num').innerText = currentTest.index + 1;
+      let h = `<h2 class="text-xl md:text-2xl font-black text-slate-800 mb-8">${q.q}</h2><div class="grid gap-3">`;
+      q.a.forEach((opt, i) => {
+        h += `<button onclick="next(${i})" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 font-bold transition-all flex items-center gap-4">
+          <span class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center font-black">${String.fromCharCode(65+i)}</span>
+          <span>${opt}</span></button>`;
+      });
+      document.getElementById('q-container').innerHTML = h + "</div>";
+    }
+
+    function next(idx) {
+      const q = currentTest.qs[currentTest.index];
+      if(currentTest.title === 'Survei Karakter') currentTest.score += q.s[idx];
+      else if(idx === q.c) currentTest.score += 10;
+      
+      if(currentTest.index < currentTest.total - 1) {
+        currentTest.index++; renderQ();
+      } else { finishTest(); }
+    }
+
+    async function finishTest() {
+      showLoading(true);
+      const isK = currentTest.title === 'Survei Karakter';
+      const score = isK ? Math.round((currentTest.score/80)*100) : currentTest.score;
+      const cat = isK ? (score >= 80 ? 'Sangat Baik' : 'Baik') : (score >= 70 ? 'Kompeten' : 'Cukup');
+      const payload = {
+        record_type: 'student', student_name: user.student_name, student_nisn: "'" + user.student_nisn,
+        test_type: currentTest.title.toUpperCase(),
+        [isK ? 'character_scores' : 'test_score']: score,
+        [isK ? 'character_result' : 'test_category']: cat,
+        [isK ? 'character_date' : 'test_date']: new Date().toLocaleString('id-ID')
+      };
+      await fetch(URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+      alert("Selesai! Skor: " + score);
+      location.reload();
+    }
+
+    // ==================== TEACHER MONITORING ====================
+    function populateStudentSelect() {
+      const sel = document.getElementById('guru-student-select');
+      const s = [...new Set(allData.filter(d => d.record_type === 'student').map(d => JSON.stringify({n:d.student_name, i:d.student_nisn})))];
+      sel.innerHTML = '<option value="">-- Pilih Siswa --</option>';
+      s.forEach(x => {
+        const d = JSON.parse(x);
+        sel.innerHTML += `<option value="${d.i}">${d.n.toUpperCase()}</option>`;
+      });
+    }
+
+    function renderIndividualReport() {
+      const nisn = document.getElementById('guru-student-select').value;
+      if(!nisn) { document.getElementById('individual-report').classList.add('hidden'); return; }
+      document.getElementById('individual-report').classList.remove('hidden');
+      
+      const dataS = allData.filter(d => d.student_nisn && d.student_nisn.toString().replace(/'/g,"") === nisn.toString());
+      let hA = "", hK = "", total = 0, count = 0;
+
+      dataS.forEach(d => {
+        if(d.test_type) {
+          const isK = d.test_type === "SURVEI KARAKTER";
+          const sc = d.test_score || d.character_scores;
+          if(!isK) { total += parseInt(sc); count++; }
+          const row = `<div class="flex justify-between p-3 bg-white/50 rounded-xl border border-slate-100"><span class="font-bold text-slate-600">${d.test_type}</span><span class="font-black text-blue-600">${sc}</span></div>`;
+          if(isK) hK += row; else hA += row;
+        } else if(d.achievement_title) {
+          hK += `<div class="flex justify-between p-3 bg-green-50 rounded-xl border border-green-100"><span class="font-bold text-green-700">🏆 ${d.achievement_title}</span><span class="text-[10px] font-black text-green-600 uppercase">${d.achievement_level}</span></div>`;
+        }
+      });
+
+      document.getElementById('report-akademik').innerHTML = hA || "<p class='text-slate-400 italic text-sm'>Belum ada nilai akademik.</p>";
+      document.getElementById('report-karakter').innerHTML = hK || "<p class='text-slate-400 italic text-sm'>Belum ada data prestasi/karakter.</p>";
+
+      // Kesimpulan Otomatis
+      const avg = count > 0 ? total / count : 0;
+      const box = document.getElementById('auto-conclusion');
+      let t = "", d = "", c = "";
+
+      if(avg >= 85) { t = "Sangat Memuaskan"; d = `Siswa unggul dengan rata-rata ${avg.toFixed(1)}. Siap untuk tantangan kompetisi.`; c = "bg-green-50 border-green-500 text-green-800"; }
+      else if(avg >= 70) { t = "Stabil & Cukup"; d = `Rata-rata ${avg.toFixed(1)}. Konsistensi baik, perlu penguatan di beberapa materi.`; c = "bg-blue-50 border-blue-500 text-blue-800"; }
+      else if(avg > 0) { t = "Perlu Perhatian"; d = `Rata-rata ${avg.toFixed(1)} di bawah target. Butuh bimbingan intensif.`; c = "bg-red-50 border-red-500 text-red-800"; }
+      else { t = "Data Belum Cukup"; d = "Siswa belum menuntaskan ujian akademik."; c = "bg-slate-50 border-slate-300"; }
+
+      box.className = `p-8 rounded-[2.5rem] border-l-[12px] transition-all ${c}`;
+      box.innerHTML = `<h4 class="text-[10px] font-black uppercase opacity-60 mb-1">Analisis Sistem</h4><h3 class="text-2xl font-black mb-2">${t}</h3><p class="font-medium">${d}</p>`;
+    }
+
+    // ==================== HELPERS ====================
+    function tab(n) {
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
+      document.getElementById('c'+n).classList.remove('hidden');
+      document.getElementById('b'+n).classList.add('tab-active');
+    }
+
+    function renderRekap() {
+      const f = allData.filter(d => d.student_nisn && d.student_nisn.toString() === user.student_nisn.toString());
+      document.getElementById('rekap-list').innerHTML = f.reverse().map(d => `
+        <div class="glass-morphism p-5 rounded-3xl flex justify-between items-center border-l-8 ${d.test_type?'border-blue-500':'border-green-500'}">
+          <div><p class="text-[10px] font-black text-slate-400 uppercase">${d.test_type||d.achievement_type}</p>
+          <h4 class="font-black text-slate-800">${d.test_type?'Hasil Ujian':d.achievement_title}</h4></div>
+          <div class="text-right"><p class="text-xl font-black ${d.test_type?'text-blue-600':'text-green-600'}">${d.test_score||d.achievement_level}</p></div>
+        </div>
+      `).join('') || "<p class='text-center opacity-30'>Kosong</p>";
+    }
+
+    document.getElementById('pres-form').onsubmit = async (e) => {
+      e.preventDefault(); showLoading(true);
+      const payload = {
+        record_type: 'student', student_name: user.student_name, student_nisn: "'" + user.student_nisn,
+        achievement_title: document.getElementById('p-title').value,
+        achievement_type: document.getElementById('p-cat').value,
+        achievement_level: document.getElementById('p-lvl').value,
+        achievement_date: document.getElementById('p-date').value
+      };
+      await fetch(URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+      location.reload();
+    };
+
+    function showLoading(s) { document.getElementById('loading').classList[s?'remove':'add']('hidden'); }
+    function logout() { localStorage.clear(); location.reload(); }
+    initApp();
+  </script>
+</body>
+</html>
