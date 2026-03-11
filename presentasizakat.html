@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Materi Sanlat Ramadhan - Zakat</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&amp;family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    
+    .font-amiri { font-family: 'Amiri', serif; }
+    .font-poppins { font-family: 'Poppins', sans-serif; }
+    
+    .geometric-pattern {
+      background-image: 
+        linear-gradient(30deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
+        linear-gradient(150deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
+        linear-gradient(30deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
+        linear-gradient(150deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03));
+      background-size: 80px 140px;
+      background-position: 0 0, 0 0, 40px 70px, 40px 70px;
+    }
+    
+    .slide-enter {
+      animation: slideIn 0.6s ease-out forwards;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .fade-up {
+      animation: fadeUp 0.5s ease-out forwards;
+    }
+    
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .stagger-1 { animation-delay: 0.1s; opacity: 0; }
+    .stagger-2 { animation-delay: 0.2s; opacity: 0; }
+    .stagger-3 { animation-delay: 0.3s; opacity: 0; }
+    .stagger-4 { animation-delay: 0.4s; opacity: 0; }
+    .stagger-5 { animation-delay: 0.5s; opacity: 0; }
+    .stagger-6 { animation-delay: 0.6s; opacity: 0; }
+    .stagger-7 { animation-delay: 0.7s; opacity: 0; }
+    .stagger-8 { animation-delay: 0.8s; opacity: 0; }
+    
+    .islamic-border {
+      border: 2px solid rgba(212, 175, 55, 0.3);
+      border-radius: 12px;
+      position: relative;
+    }
+    
+    .islamic-border::before {
+      content: '✦';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a3a4a;
+      padding: 0 10px;
+      color: #d4af37;
+      font-size: 14px;
+    }
+    
+    .golden-glow {
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+    }
+    
+    .nav-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .nav-btn:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+    }
+    
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    .progress-bar {
+      transition: width 0.5s ease;
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
+    .crescent-moon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      box-shadow: 15px 0 0 0 #d4af37;
+      margin: 0 auto 20px;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full font-poppins">
+  <div id="app-wrapper" class="h-full w-full overflow-auto geometric-pattern" style="background-color: #1a3a4a;"><!-- Progress Bar -->
+   <div class="fixed top-0 left-0 right-0 h-1 bg-gray-800 z-50">
+    <div id="progress" class="progress-bar h-full" style="background-color: #d4af37; width: 8.33%;"></div>
+   </div><!-- Slide Container -->
+   <div id="slide-container" class="min-h-full flex flex-col"><!-- Slides will be rendered here -->
+   </div><!-- Navigation -->
+   <div class="fixed bottom-0 left-0 right-0 p-4 flex justify-between items-center" style="background: linear-gradient(to top, rgba(26, 58, 74, 0.98), transparent);"><button id="prev-btn" class="nav-btn px-6 py-3 rounded-full font-semibold flex items-center gap-2" style="background-color: #d4af37; color: #1a3a4a;">
+     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+     </svg> Sebelumnya </button>
+    <div class="flex items-center gap-2"><span id="slide-indicator" class="text-sm" style="color: #c9a227;">1 / 12</span>
+    </div><button id="next-btn" class="nav-btn px-6 py-3 rounded-full font-semibold flex items-center gap-2" style="background-color: #d4af37; color: #1a3a4a;"> Selanjutnya 
+     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+     </svg></button>
+   </div><!-- Footer -->
+   <div id="footer-text" class="fixed bottom-16 left-0 right-0 text-center text-xs py-2" style="color: rgba(201, 162, 39, 0.6);">
+    Materi Sanlat Ramadhan - Pembelajaran Zakat
+   </div>
+  </div>
+  <script>
+    // Configuration
+    const defaultConfig = {
+      presentation_title: "Materi Sanlat Ramadhan",
+      footer_text: "Materi Sanlat Ramadhan - Pembelajaran Zakat",
+      background_color: "#1a3a4a",
+      accent_color: "#d4af37",
+      text_color: "#f0e6d3",
+      secondary_color: "#234d5e",
+      highlight_color: "#c9a227",
+      font_family: "Poppins",
+      font_size: 16
+    };
+
+    let currentSlide = 0;
+    const totalSlides = 12;
+
+    // Slide content data
+    const slides = [
+      {
+        type: "title",
+        title: "Zakat Fitrah & Zakat Mal",
+        subtitle: "Materi Sanlat Ramadhan",
+        arabicText: "وَأَقِيمُوا الصَّلَاةَ وَآتُوا الزَّكَاةَ",
+        translation: "Dan dirikanlah shalat serta tunaikanlah zakat (QS. Al-Baqarah: 43)"
+      },
+      {
+        type: "definition",
+        title: "Pengertian Zakat",
+        icon: "💎",
+        content: [
+          {
+            term: "Secara Bahasa",
+            definition: "Zakat berasal dari kata 'zakā' yang berarti suci, berkah, tumbuh, dan berkembang."
+          },
+          {
+            term: "Secara Istilah",
+            definition: "Harta tertentu yang wajib dikeluarkan oleh seorang Muslim untuk diberikan kepada orang yang berhak menerimanya sesuai syariat Islam."
+          }
+        ],
+        highlight: "Tujuan utama: Membersihkan harta dan jiwa serta membantu sesama Muslim yang membutuhkan."
+      },
+      {
+        type: "pillars",
+        title: "Hukum Zakat",
+        subtitle: "Rukun Islam Ketiga",
+        content: [
+          { name: "Syahadat", icon: "☝️", active: false },
+          { name: "Shalat", icon: "🕌", active: false },
+          { name: "Zakat", icon: "💰", active: true },
+          { name: "Puasa", icon: "🌙", active: false },
+          { name: "Haji", icon: "🕋", active: false }
+        ],
+        note: "Zakat hukumnya WAJIB bagi setiap Muslim yang memenuhi syarat. Meninggalkannya adalah dosa besar."
+      },
+      {
+        type: "fitrah-intro",
+        title: "Zakat Fitrah",
+        arabicText: "زَكَاةُ الْفِطْرِ",
+        definition: "Zakat yang wajib dikeluarkan oleh setiap Muslim pada bulan Ramadhan menjelang Idul Fitri.",
+        purpose: "Menyucikan diri dari perbuatan sia-sia dan perkataan kotor selama berpuasa."
+      },
+      {
+        type: "fitrah-rules",
+        title: "Ketentuan Zakat Fitrah",
+        items: [
+          { icon: "⚖️", title: "Besaran", desc: "2,5 - 3 kg makanan pokok (beras/gandum) atau senilai uangnya" },
+          { icon: "📅", title: "Waktu Wajib", desc: "Mulai terbenam matahari akhir Ramadhan hingga sebelum shalat Idul Fitri" },
+          { icon: "⏰", title: "Waktu Boleh", desc: "Boleh dibayarkan sejak awal Ramadhan" },
+          { icon: "⚠️", title: "Batas Akhir", desc: "Makruh jika dibayar setelah shalat Ied, haram jika ditunda tanpa uzur" }
+        ]
+      },
+      {
+        type: "who-pays",
+        title: "Siapa yang Wajib Membayar?",
+        conditions: [
+          { icon: "☪️", text: "Beragama Islam" },
+          { icon: "🌅", text: "Hidup saat matahari terbenam akhir Ramadhan" },
+          { icon: "🍚", text: "Memiliki kelebihan makanan untuk diri dan keluarga" }
+        ],
+        note: "Kepala keluarga wajib membayarkan zakat fitrah untuk seluruh anggota keluarga yang menjadi tanggungannya."
+      },
+      {
+        type: "mal-intro",
+        title: "Zakat Mal (Harta)",
+        arabicText: "زَكَاةُ الْمَالِ",
+        definition: "Zakat yang dikeluarkan dari harta yang dimiliki jika sudah mencapai nisab dan haul.",
+        terms: [
+          { term: "Nisab", meaning: "Batas minimal harta yang wajib dizakati (setara 85 gram emas)" },
+          { term: "Haul", meaning: "Kepemilikan harta selama satu tahun hijriah penuh" }
+        ]
+      },
+      {
+        type: "mal-types",
+        title: "Jenis Harta yang Wajib Dizakati",
+        items: [
+          { icon: "🪙", name: "Emas & Perak", nisab: "85 gram emas", zakat: "2,5%" },
+          { icon: "💵", name: "Uang & Tabungan", nisab: "Setara 85 gram emas", zakat: "2,5%" },
+          { icon: "🏪", name: "Perdagangan", nisab: "Setara 85 gram emas", zakat: "2,5%" },
+          { icon: "🌾", name: "Pertanian", nisab: "653 kg gabah", zakat: "5-10%" },
+          { icon: "🐄", name: "Peternakan", nisab: "Bervariasi", zakat: "Bervariasi" },
+          { icon: "⛏️", name: "Hasil Tambang", nisab: "Setara 85 gram emas", zakat: "2,5-20%" }
+        ]
+      },
+      {
+        type: "recipients",
+        title: "8 Golongan Penerima Zakat",
+        arabicTitle: "الأصناف الثمانية",
+        groups: [
+          { name: "Fakir", desc: "Tidak memiliki harta dan tidak mampu bekerja", icon: "😢" },
+          { name: "Miskin", desc: "Memiliki harta tapi tidak mencukupi kebutuhan", icon: "🏚️" },
+          { name: "Amil", desc: "Petugas yang mengurus pengumpulan dan penyaluran zakat", icon: "📋" },
+          { name: "Muallaf", desc: "Orang yang baru masuk Islam dan perlu dikuatkan imannya", icon: "🤲" },
+          { name: "Riqab", desc: "Budak yang ingin memerdekakan diri (konteks historis)", icon: "⛓️" },
+          { name: "Gharimin", desc: "Orang yang terlilit hutang untuk kebutuhan halal", icon: "📜" },
+          { name: "Fisabilillah", desc: "Pejuang di jalan Allah (dakwah, pendidikan Islam)", icon: "🎓" },
+          { name: "Ibnu Sabil", desc: "Musafir yang kehabisan bekal dalam perjalanan", icon: "🧳" }
+        ]
+      },
+      {
+        type: "hikmah",
+        title: "Hikmah & Manfaat Zakat",
+        benefits: [
+          { category: "Spiritual", items: ["Membersihkan harta dari hak orang lain", "Mensucikan jiwa dari sifat kikir", "Mendekatkan diri kepada Allah", "Mendapat pahala berlipat ganda"] },
+          { category: "Sosial", items: ["Membantu fakir miskin", "Mengurangi kesenjangan sosial", "Menciptakan solidaritas umat", "Mencegah kecemburuan sosial"] },
+          { category: "Ekonomi", items: ["Meningkatkan daya beli masyarakat", "Mendorong distribusi kekayaan", "Mengentaskan kemiskinan", "Membangun ekonomi umat"] }
+        ]
+      },
+      {
+        type: "comparison",
+        title: "Perbedaan Zakat Fitrah & Zakat Mal",
+        comparisons: [
+          { aspect: "Waktu", fitrah: "Bulan Ramadhan", mal: "Kapan saja saat memenuhi syarat" },
+          { aspect: "Objek", fitrah: "Makanan pokok/uang", mal: "Berbagai jenis harta" },
+          { aspect: "Syarat", fitrah: "Setiap Muslim", mal: "Memenuhi nisab & haul" },
+          { aspect: "Besaran", fitrah: "2,5-3 kg beras", mal: "2,5% dari harta" },
+          { aspect: "Tujuan", fitrah: "Menyucikan diri", mal: "Menyucikan harta" }
+        ]
+      },
+      {
+        type: "conclusion",
+        title: "Kesimpulan",
+        points: [
+          "Zakat adalah rukun Islam ketiga yang wajib ditunaikan",
+          "Zakat Fitrah wajib bagi setiap Muslim di bulan Ramadhan",
+          "Zakat Mal wajib bagi Muslim yang hartanya mencapai nisab dan haul",
+          "Ada 8 golongan yang berhak menerima zakat",
+          "Zakat membawa keberkahan bagi pemberi dan penerima"
+        ],
+        closingArabic: "خُذْ مِنْ أَمْوَالِهِمْ صَدَقَةً تُطَهِّرُهُمْ وَتُزَكِّيهِم بِهَا",
+        closingTranslation: "Ambillah zakat dari sebagian harta mereka, dengan zakat itu kamu membersihkan dan mensucikan mereka (QS. At-Taubah: 103)"
+      }
+    ];
+
+    // Render functions for each slide type
+    function renderSlide(slideData, index) {
+      const container = document.getElementById('slide-container');
+      container.innerHTML = '';
+      
+      let slideHTML = '';
+      
+      switch(slideData.type) {
+        case 'title':
+          slideHTML = renderTitleSlide(slideData);
+          break;
+        case 'definition':
+          slideHTML = renderDefinitionSlide(slideData);
+          break;
+        case 'pillars':
+          slideHTML = renderPillarsSlide(slideData);
+          break;
+        case 'fitrah-intro':
+          slideHTML = renderFitrahIntroSlide(slideData);
+          break;
+        case 'fitrah-rules':
+          slideHTML = renderFitrahRulesSlide(slideData);
+          break;
+        case 'who-pays':
+          slideHTML = renderWhoPaysSlide(slideData);
+          break;
+        case 'mal-intro':
+          slideHTML = renderMalIntroSlide(slideData);
+          break;
+        case 'mal-types':
+          slideHTML = renderMalTypesSlide(slideData);
+          break;
+        case 'recipients':
+          slideHTML = renderRecipientsSlide(slideData);
+          break;
+        case 'hikmah':
+          slideHTML = renderHikmahSlide(slideData);
+          break;
+        case 'comparison':
+          slideHTML = renderComparisonSlide(slideData);
+          break;
+        case 'conclusion':
+          slideHTML = renderConclusionSlide(slideData);
+          break;
+      }
+      
+      container.innerHTML = slideHTML;
+      updateProgress();
+      updateNavigation();
+    }
+
+    function renderTitleSlide(data) {
+      return `
+        <div class="slide-enter flex-1 flex flex-col items-center justify-center px-8 py-16 text-center">
+          <div class="crescent-moon fade-up stagger-1"></div>
+          <h1 id="main-title" class="font-amiri text-5xl md:text-7xl font-bold mb-4 fade-up stagger-2" style="color: #d4af37;">${data.title}</h1>
+          <p class="text-xl md:text-2xl mb-8 fade-up stagger-3" style="color: #f0e6d3;">${data.subtitle}</p>
+          <div class="islamic-border p-6 max-w-2xl fade-up stagger-4">
+            <p class="font-amiri text-2xl md:text-3xl mb-3" style="color: #d4af37;">${data.arabicText}</p>
+            <p class="text-sm md:text-base italic" style="color: #c9a227;">${data.translation}</p>
+          </div>
+          <div class="mt-12 fade-up stagger-5">
+            <p class="text-sm" style="color: rgba(201, 162, 39, 0.7);">Tekan tombol "Selanjutnya" untuk memulai</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDefinitionSlide(data) {
+      return `
+        <div class="slide-enter flex-1 flex flex-col px-6 md:px-16 py-20">
+          <div class="text-center mb-8">
+            <span class="text-5xl fade-up stagger-1">${data.icon}</span>
+            <h2 class="font-amiri text-4xl md:text-5xl font-bold mt-4 fade-up stagger-2" style="color: #d4af37;">${data.title}</h2>
+          </div>
+          <div class="flex-1 flex flex-col justify-center max-w-4xl mx-auto w-full space-y-6">
+            ${data.content.map((item, i) => `
+              <div class="islamic-border p-6 fade-up stagger-${i + 3}" style="background-color: rgba(35, 77, 94, 0.5);">
+                <h3 class="text-lg font-semibold mb-2" style="color: #d4af37;">${item.term}</h3>
+                <p class="text-lg" style="color: #f0e6d3;">${item.definition}</p>
+              </div>
+            `).join('')}
+            <div class="p-6 rounded-xl text-center fade-up stagger-5" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(201, 162, 39, 0.1));">
+              <p class="text-lg font-medium" style="color: #f0e6d3;">💡 ${data.highlight}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPillarsSlide(data) {
+      return `
+        <div class="slide-enter flex-1 flex flex-col px-6 md:px-16 py-20">
+          <div class="text-center mb-8">
+            <h2 class="font-amiri text-4xl md:text-5xl font-bold fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
+            <p class="text-xl mt-2 fade-up stagger-2" style="color: #c9a227;">${data.subtitle}</p>
+          </div>
+          <div class="flex-1 flex flex-col justify-center">
+            <div class="flex flex-wrap justify-center gap-4 md:gap-6 mb-8">
+              ${data.content.map((pillar, i) => `
+                <div class="card-hover flex flex-col items-center p-4 md:p-6 rounded-2xl w-28 md:w-36 fade-up stagger-${i + 3} ${pillar.active ? 'golden-glow' : ''}" 
+                     style="background-color: ${pillar.active ? 'rgba(212, 175, 55, 0.3)' : 'rgba(35, 77, 94, 0.5)'}; border: 2px solid ${pillar.active ? '#d4af37' : 'transparent'};">
+                  <span class="text-3xl md:text-4xl mb-2">${pillar.icon}</span>
+                  <span class="text-sm md:text-base font-semibold text-center" style="color: ${pillar.active ? '#d4af37' : '#f0e6d3'};">${pillar.name}</span>
+                </div>
+              `).join('')}
+            </div>
+            <div class="islamic-border p-6 max-w-2xl mx-auto text-center fade-up stagger-8" style="background-color: rgba(35, 77, 94, 0.5);">
+              <p class="text-lg" style="color: #f0e6d3;">${data.note}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderFitrahIntroSlide(data) {
+      return `
+        <div class="slide-enter flex-1 flex flex-col items-center justify-center px-6 md:px-16 py-20 text-center">
+          <div class="mb-6 fade-up stagger-1">
+            <span class="text-6xl">🌙</span>
+          </div>
+          <h2 class="font-amiri text-4xl md:text-5xl font-bold mb-2 fade-up stagger-2" style="color: #d4af37;">${data.title}</h2>
+          <p class="font-amiri text-2xl md:text-3xl mb-8 fade-up stagger-3" style="color: #c9a227;">${data.arabicText}</p>
+          <div class="islamic-border p-8 max-w-3xl fade-up stagger-4" style="background-color: rgba(35, 77, 94, 0.5);">
+            <p class="text-xl mb-6" style="color: #f0e6d3;">${data.definition}</p>
+            <div class="p-4 rounded-lg" style="background-color: rgba(212, 175, 55, 0.15);">
+              <p class="font-medium" style="color: #d4af37;">🎯 Tujuan: ${data.purpose}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderFitrahRulesSlide(data) {
+      return `
+        <div class="slide-enter flex-1 flex flex-col px-6 md:px-16 py-20">
+          <h2 class="font-amiri text-4xl md:text-5xl font-bold text-center mb-10 fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
+          <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto w-full">
+            ${data.items.map((item, i) => `
+              <div class="card-hover islamic-border p-6 fade-up stagger-${i + 2}" style="background-color: rgba(35, 77, 94, 0.5);">
+                <div class="flex items-start gap-4">
+                  <span class="text-3xl">${item.icon}</span>
+                  <div>
+                    <h3 class="text-xl font-bold mb-2" style="color: #d4af37;">${item.title}</h3>
+                    <p style="color: #f0e6d3;">${item.desc}</p>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderWhoPaysSlide(data) {
+      return `
+        <div class="slide-enter flex-1 flex flex-col px-6 md:px-16 py-20">
+          <h2 class="font-amiri text-4xl md:text-5xl font-bold text-center mb-10 fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
+          <div class="flex-1 flex flex-col justify-center max-w-3xl mx-auto w-full">
+            <div class="space-y-4 mb-8">
+              ${data.conditions.map((cond, i) => `
+                <div class="card-hover flex items-center gap-4 p-5 rounded-xl fade-up stagger-${i + 2}" style="background-color: rgba(35, 77, 94, 0.5); border-left: 4px solid #d4af37;">
+                  <span class="text-3xl">${cond.icon}</span>
+                  <p class="text-lg" style="color: #f0e6d3;">${cond.text}</p>
+                </div>
+              `).join('')}
+            </div>
+            <div class="p-6 rounded-xl text-center fade-up stagger-5" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(201, 162, 39, 0.1));">
+              <p class="text-lg" style="color: #f0e6d3;">👨‍👩‍👧‍👦 ${data.note}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMalIntroSlide(data) {
+      return `
+        <div class="slide-enter flex-1 flex flex-col items-center justify-center px-6 md:px-16 py-20 text-center">
+          <div class="mb-6 fade-up stagger-1">
+            <span class="text-6xl">💰</span>
+          </div>
+          <h2 class="font-amiri text-4xl md:text-5xl font-bold mb-2 fade-up stagger-2" style="color: #d4af37;">${data.title}</h2>
+          <p class="font-amiri text-2xl md:text-3xl mb-8 fade-up stagger-3" style="color: #c9a227;">${data.arabicText}</p>
+          <div class="islamic-border p-8 max-w-3xl mb-8 fade-up stagger-4" style="background-color: rgba(35, 77, 94, 0.5);">
+            <p class="text-xl" style="color: #f0e6d3;">${data.definition}</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl w-full">
+            ${data.terms.map((term, i) => `
+              <div class="card-hover p-5 rounded-xl fade-up stagger-${i + 5}" style="background-color: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.3);">
+                <h3 class="font-bold text-lg mb-1" style="color: #d4af37;">${term.term}</h3>
+                <p class="text-sm" style="color: #f0e6d3;">${term.meaning}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMalTypesSlide(data) {
+      return `
+        <div class="slide-enter flex-1 flex flex-col px-6 md:px-16 py-16">
+          <h2 class="font-amiri text-3xl md:text-4xl font-bold text-center mb-8 fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
+          <div class="flex-1 grid grid-cols-2 md:grid-cols-3 gap-4 max-w-5xl mx-auto w-full">
+            ${data.items.map((item, i) => `
+              <div class="card-hover p-4 rounded-xl text-center fade-up stagger-${i + 2}" style="background-color: rgba(35, 77, 94, 0.5); border: 1px solid rgba(212, 175, 55, 0.2);">
+                <span class="text-3xl block mb-2">${item.icon}</span>
+                <h3 class="font-bold mb-1" style="color: #d4af37;">${item.name}</h3>
+                <p class="text-xs mb-1" style="color: #c9a227;">Nisab: ${item.nisab}</p>
+                <p class="text-sm font-semibold" style="color: #f0e6d3;">Zakat: ${item.zakat}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderRecipientsSlide(data) {
+      return `
+        <div class="slide-enter flex-1 flex flex-col px-4 md:px-12 py-14">
+          <div class="text-center mb-6">
+            <h2 class="font-amiri text-3xl md:text-4xl font-bold fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
+            <p class="font-amiri text-xl mt-1 fade-up stagger-2" style="color: #c9a227;">${data.arabicTitle}</p>
+          </div>
+          <div class="flex-1 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-6xl mx-auto w-full">
+            ${data.groups.map((group, i) => `
+              <div class="card-hover p-3 rounded-xl text-center fade-up stagger-${(i % 4) + 3}" style="background-color: rgba(35, 77, 94, 0.5); border: 1px solid rgba(212, 175, 55, 0.2);">
+                <span class="text-2xl block mb-1">${group.icon}</span>
+                <h3 class="font-bold text-sm mb-1" style="color: #d4af37;">${group.name}</h3>
+                <p class="text-xs" style="color: #f0e6d3;">${group.desc}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderHikmahSlide(data) {
+      return `
+        <div class="slide-enter flex-1 flex flex-col px-6 md:px-16 py-16">
+          <h2 class="font-amiri text-3xl md:text-4xl font-bold text-center mb-8 fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
+          <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-6xl mx-auto w-full">
+            ${data.benefits.map((benefit, i) => `
+              <div class="card-hover p-5 rounded-xl fade-up stagger-${i + 2}" style="background-color: rgba(35, 77, 94, 0.5); border-top: 3px solid #d4af37;">
+                <h3 class="font-bold text-lg mb-4 text-center" style="color: #d4af37;">${benefit.category}</h3>
+                <ul class="space-y-2">
+                  ${benefit.items.map(item => `
+                    <li class="flex items-start gap-2 text-sm" style="color: #f0e6d3;">
+                      <span style="color: #d4af37;">✦</span>
+                      ${item}
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderComparisonSlide(data) {
+      return `
+        <div class="slide-enter flex-1 flex flex-col px-4 md:px-12 py-16">
+          <h2 class="font-amiri text-3xl md:text-4xl font-bold text-center mb-8 fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
+          <div class="flex-1 overflow-x-auto">
+            <table class="w-full max-w-4xl mx-auto border-collapse fade-up stagger-2" style="min-width: 500px;">
+              <thead>
+                <tr>
+                  <th class="p-3 text-left text-sm font-bold rounded-tl-lg" style="background-color: rgba(212, 175, 55, 0.3); color: #d4af37;">Aspek</th>
+                  <th class="p-3 text-center text-sm font-bold" style="background-color: rgba(212, 175, 55, 0.3); color: #d4af37;">🌙 Zakat Fitrah</th>
+                  <th class="p-3 text-center text-sm font-bold rounded-tr-lg" style="background-color: rgba(212, 175, 55, 0.3); color: #d4af37;">💰 Zakat Mal</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${data.comparisons.map((comp, i) => `
+                  <tr class="fade-up stagger-${i + 3}" style="background-color: ${i % 2 === 0 ? 'rgba(35, 77, 94, 0.3)' : 'rgba(35, 77, 94, 0.5)'};">
+                    <td class="p-3 text-sm font-semibold" style="color: #d4af37;">${comp.aspect}</td>
+                    <td class="p-3 text-center text-sm" style="color: #f0e6d3;">${comp.fitrah}</td>
+                    <td class="p-3 text-center text-sm" style="color: #f0e6d3;">${comp.mal}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderConclusionSlide(data) {
+      return `
+        <div class="slide-enter flex-1 flex flex-col items-center justify-center px-6 md:px-16 py-16 text-center">
+          <h2 class="font-amiri text-4xl md:text-5xl font-bold mb-8 fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
+          <div class="max-w-3xl mb-8">
+            <ul class="space-y-3 text-left">
+              ${data.points.map((point, i) => `
+                <li class="flex items-start gap-3 fade-up stagger-${i + 2}" style="color: #f0e6d3;">
+                  <span class="text-xl" style="color: #d4af37;">✓</span>
+                  <span class="text-lg">${point}</span>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+          <div class="islamic-border p-6 max-w-2xl fade-up stagger-7" style="background-color: rgba(35, 77, 94, 0.5);">
+            <p class="font-amiri text-xl md:text-2xl mb-3" style="color: #d4af37;">${data.closingArabic}</p>
+            <p class="text-sm italic" style="color: #c9a227;">${data.closingTranslation}</p>
+          </div>
+          <div class="mt-8 fade-up stagger-8">
+            <p class="text-lg font-semibold" style="color: #d4af37;">جَزَاكُمُ اللهُ خَيْرًا</p>
+            <p class="text-sm mt-1" style="color: #c9a227;">Semoga Allah memberkahi kita semua</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateProgress() {
+      const progress = ((currentSlide + 1) / totalSlides) * 100;
+      document.getElementById('progress').style.width = `${progress}%`;
+      document.getElementById('slide-indicator').textContent = `${currentSlide + 1} / ${totalSlides}`;
+    }
+
+    function updateNavigation() {
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+      
+      prevBtn.disabled = currentSlide === 0;
+      nextBtn.disabled = currentSlide === totalSlides - 1;
+      
+      nextBtn.innerHTML = currentSlide === totalSlides - 1 
+        ? 'Selesai ✓' 
+        : 'Selanjutnya <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        renderSlide(slides[currentSlide], currentSlide);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        renderSlide(slides[currentSlide], currentSlide);
+      }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+
+    // Button event listeners
+    document.getElementById('next-btn').addEventListener('click', nextSlide);
+    document.getElementById('prev-btn').addEventListener('click', prevSlide);
+
+    // Element SDK Integration
+    async function onConfigChange(config) {
+      const title = config.presentation_title || defaultConfig.presentation_title;
+      const footer = config.footer_text || defaultConfig.footer_text;
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const accentColor = config.accent_color || defaultConfig.accent_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+      const highlightColor = config.highlight_color || defaultConfig.highlight_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      
+      // Update footer
+      const footerEl = document.getElementById('footer-text');
+      if (footerEl) footerEl.textContent = footer;
+      
+      // Update main title in slides data
+      slides[0].subtitle = title;
+      
+      // Update colors
+      document.getElementById('app-wrapper').style.backgroundColor = bgColor;
+      
+      // Re-render current slide to apply changes
+      renderSlide(slides[currentSlide], currentSlide);
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => { config.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
+          },
+          {
+            get: () => config.secondary_color || defaultConfig.secondary_color,
+            set: (value) => { config.secondary_color = value; window.elementSdk.setConfig({ secondary_color: value }); }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+          },
+          {
+            get: () => config.accent_color || defaultConfig.accent_color,
+            set: (value) => { config.accent_color = value; window.elementSdk.setConfig({ accent_color: value }); }
+          },
+          {
+            get: () => config.highlight_color || defaultConfig.highlight_color,
+            set: (value) => { config.highlight_color = value; window.elementSdk.setConfig({ highlight_color: value }); }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => { config.font_family = value; window.elementSdk.setConfig({ font_family: value }); }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => { config.font_size = value; window.elementSdk.setConfig({ font_size: value }); }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["presentation_title", config.presentation_title || defaultConfig.presentation_title],
+        ["footer_text", config.footer_text || defaultConfig.footer_text]
+      ]);
+    }
+
+    // Initialize
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+    
+    // Initial render
+    renderSlide(slides[0], 0);
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9da7f57243a54536',t:'MTc3MzIwNDg0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
