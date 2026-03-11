@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Struktur Organisasi OSIS SMPN 8 Cikarang Utara</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="ASET/LOGO SMPN8 citra.png">
+  <style>
+    * { font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.3s ease; }
+    .period-tab.active { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3); }
+    .org-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); animation: fadeInUp 0.5s ease forwards; opacity: 0; cursor: pointer; }
+    .org-card:hover { transform: translateY(-8px) scale(1.02); }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .avatar-ring { background: linear-gradient(135deg, #3b82f6, #8b5cf6); padding: 3px; border-radius: 50%; }
+    #modal { transition: all 0.3s ease; }
+    .modal-active { opacity: 1 !important; visibility: visible !important; }
+    .bg-logo {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60%; 
+        opacity: 0.10; 
+        z-index: -1; 
+        pointer-events: none;
+    }
+    header {
+        position: relative; 
+        overflow: hidden;
+        padding: 40px 16px;
+        background: #0f172a55; 
+    }
+
+    header::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
+        opacity: 0.4; 
+        z-index: 0;
+    }
+
+    header .relative {
+        position: relative;
+        z-index: 10;
+    }
+    .btn-home {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 99px;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-home:hover {
+        background: white;
+        color: #1e40af;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+
+<body class="h-full overflow-auto" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);">
+    <img src="ASET/logoosis.png" class="bg-logo" alt="Background Logo">
+
+  <div id="modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md invisible opacity-0 text-slate-200">
+    <div id="modal-content" class="bg-slate-900 w-full max-w-sm rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl transform scale-95 transition-transform duration-300">
+      <div class="h-28 bg-gradient-to-r from-blue-600 to-purple-600 relative">
+        <button onclick="closeModal()" class="absolute top-4 right-4 text-white/70 hover:text-white bg-black/20 hover:bg-black/40 rounded-full p-2 z-10">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="px-8 pb-10 text-center -mt-14 relative">
+        <div class="inline-block p-1.5 bg-slate-900 rounded-full mb-4 shadow-2xl">
+          <img id="m-foto" src="" class="w-28 h-28 rounded-full border-4 border-slate-900 object-cover bg-slate-800">
+        </div>
+        <h3 id="m-nama" class="text-xl font-extrabold text-white mb-1 italic">Nama Siswa</h3>
+        <p id="m-jabatan" class="text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4">Jabatan</p>
+        
+        <div class="mb-6 px-4">
+            <p id="m-moto" class="text-slate-400 text-xs italic leading-relaxed font-medium">"Moto Siswa"</p>
+        </div>
+
+        <div class="space-y-3 text-left bg-slate-800/50 p-6 rounded-3xl border border-white/5">
+          <div class="flex justify-between border-b border-white/5 pb-2">
+            <span class="text-[9px] text-slate-500 uppercase font-black tracking-wider">NISN</span>
+            <span id="m-nisn" class="text-xs font-mono text-blue-100"></span>
+          </div>
+          <div class="flex justify-between border-b border-white/5 pb-2">
+            <span class="text-[9px] text-slate-500 uppercase font-black tracking-wider">Kelas</span>
+            <span id="m-kelas" class="text-xs font-bold text-blue-100"></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-[9px] text-slate-500 uppercase font-black tracking-wider">Tgl Lahir</span>
+            <span id="m-tgl" class="text-xs font-bold text-blue-100"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="min-h-full w-full">
+    <header>
+      <div class="relative max-w-6xl mx-auto text-center">
+        <div class="flex justify-start mb-6">
+          <a href="index.html" class="btn-home group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Beranda
+          </a>
+        </div>
+        <div class="flex flex-col items-center gap-4">
+           <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-md border border-white/30 shadow-xl">
+             <img src="ASET/logoosis.png" class="w-16 h-16 object-contain">
+           </div>
+           <h1 class="text-2xl md:text-3xl font-black text-white uppercase mb-1">SMP NEGERI 8 CIKARANG UTARA</h1>
+           <p class="text-[10px] font-bold text-blue-100 tracking-[0.4em] uppercase opacity-80 italic">"BERSATU DALAM KREATIVITAS, MAJU DALAM PRESTASI"</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-700 shadow-lg">
+      <div class="max-w-6xl mx-auto px-4 py-4 flex justify-center gap-3" id="period-tabs"></div>
+    </div>
+
+    <main class="max-w-6xl mx-auto px-4 py-12" id="main-content"></main>
+
+    <footer class="bg-slate-950 border-t border-slate-800 py-10 text-center">
+      <p class="text-slate-500 text-[9px] font-black uppercase tracking-[0.5em]">SMPN 8 CIKARANG UTARA • OSIS DIGITAL 2026</p>
+    </footer>
+  </div>
+
+  <script>
+    // UPDATE createSiswa dengan parameter 'moto'
+    const createSiswa = (nama, kelas, nisn, tgl, jabatan, foto, moto) => ({ 
+      nama, kelas, nisn, tgl, jabatan, foto, 
+      moto: moto || "Belajar, Berkarya, Berbakti untuk SMP Negeri 8 Cikarang Utara." 
+    });
+
+    const osisData = {
+      "2026/2027": {
+        pembinaOsis: createSiswa("Sri Yulianti, S.Pd", "GURU", "NIP. 19990926 202521 2 010", "26 September 1999", "Pembina Utama OSIS", "https://i.imgur.com/REdif30.png", "Membimbing generasi muda menjadi pemimpin masa depan."),
+        ketua: createSiswa("Dyla Agustina Ramadhani", "VIII-1", "0111577151", "21 Agustus 2011", "Ketua OSIS", "ASET/DYLA.png", "Pemimpin sejati menginspirasi melalui aksi."),
+        wakilKetua: createSiswa("Sakhwa Nur Sakinah", "VIII-2", "0124052553", "06 April 2012", "Wakil Ketua", "ASET/SAKHWA.png", "Bekerja sama untuk mencapai cita-cita bersama."),
+        sekretaris: [
+          createSiswa("Refi Andriansyah", "VIII-1", "0117077640", "30 Mei 2011", "Sekretaris 1", "ASET/REFI.png", "Ketelitian adalah kunci kesuksesan organisasi."),
+          createSiswa("Zahra Aurellia", "VIII-2", "0116781133", "09 Oktober 2011", "Sekretaris 2", "ASET/ZAHRA.png", "Merapikan hari ini untuk masa depan yang lebih baik.")
+        ],
+        bendahara: [
+          createSiswa("M. Hafy Ridwan", "VIII-1", "0106164108", "23 Desember 2010", "Bendahara 1", "ASET/HAFY.png", "Transparan dan jujur dalam mengelola amanah."),
+          createSiswa("Nazwa Kirana Rinjani", "VIII-2", "0108635978", "13 Juli 2010", "Bendahara 2", "ASET/RINJANI.png", "Hemat pangkal kaya, bijak pangkal sukses.")
+        ],
+        seksi: [
+          { bidang: "Sekbid 1: Ketaqwaan Terhadap Tuhan YME", icon: "🕌", pembina: createSiswa("Toyib, S.Pd", "GURU", "NIP. 20000513 202521 1 030", "13 Mei 2000", "Pembina", "https://i.imgur.com/WdEJpU9.png", "Ikhlas dalam membimbing."), koordinator: createSiswa("Nabila Azumi Alqisti", "VIII-2", "0117515789", "14 Agustus 2011", "Koordinator", "ASET/NABILA.png", "Utamakan adab di atas ilmu."), anggota: [createSiswa("Bintang Agustin", "VII-1", "3125895716", "13 September 2012", "Anggota", "ASET/BINTANG.png"), createSiswa("Farah Nur Hafizah", "VII-1", "0125247696", "07 September 2012", "Anggota", "ASET/FARAH.png"), createSiswa("Diana Pebriani", "VII-1", "3134919163", "27 Februari 2013", "Anggota", "ASET/DIANA.png")] },
+          { bidang: "Sekbid 2: Pembinaan Kehidupan Berbangsa dan Bernegara", icon: "📚", pembina: createSiswa("Anita Sari, S.M", "GURU", "NIP. 19990515 202521 2 058", "15 Mei 1999", "Pembina", "https://i.imgur.com/4U85Kj9.png", "Ikhlas dalam membimbing."), koordinator: createSiswa("Bayu Oktaviana", "VIII-1", "0112384089", "26 Oktober 2011", "Koordinator", "ASET/BAYU.png", "Karakter adalah mahkota bagi setiap siswa."), anggota: [createSiswa("Tristan Raffliandra", "VII-2", "0129559615", "27 November 2012", "Anggota", "ASET/TRISTAN.png"), createSiswa("Alesya Aurelia Rusna Nayyara", "VII-1", "20127669597", "29 Oktober 2012", "Anggota", "ASET/ALESYA.png")] },
+          { bidang: "Sekbid 3: Pembinaan Pendidikan Pendahuluan Bina Negara", icon: "🇮🇩", pembina: createSiswa("Euis Sa'adah, S.Ag", "GURU", "NIP. 19701101 202421 2 002", "01 November 1970", "Pembina", "https://i.imgur.com/iPlLW3G.png", "Ikhlas dalam membimbing."), koordinator: createSiswa("Umairoh Salsabilah", "VIII-1", "0126494981", "2o Mei 2012", "Koordinator", "ASET/UMAIROH.png", "Cinta tanah air adalah sebagian dari iman."), anggota: [createSiswa("Ken Baltik Jabalsoffa", "VII-2", "3131070401", "27 Februari 2013", "Anggota", "ASET/KEN.png"), createSiswa("Zaenal Hertawan", "VII-1", "-", "-", "Anggota", "ASET/ZAENAL.png")] },
+          { bidang: "Sekbid 4: Pembinaan Berorganisasi, Pendidikan Politik dan Kepemimpinan", icon: "👩‍⚖️", pembina: createSiswa("Sevilla Dela Amirudin, S.Pd", "GURU", "NIP. -", "-", "Pembina", "https://i.imgur.com/wLKyvhl.png", "Ikhlas dalam membimbing."), koordinator: createSiswa("Eka Meyla", "VIII-1", "0115335298", "19 Mei 2011", "Koordinator", "ASET/EKA.png", "Kreativitas tanpa batas, prestasi tanpa henti."), anggota: [createSiswa("Ifki Nahdiati Masruroh", "VII-2", "0136643693", "2 Januari 2013", "Anggota", "ASET/IFKI.png"), createSiswa("Volan Aufar Ramadhan", "VII-1", "0128238263", "23 Juli 2012", "Anggota", "ASET/VOLAN.png"), createSiswa("Muhammad Nur Alifiansyah", "VII-2", "0121593735", "20 Desember 2012", "Anggota", "ASET/NUR ALFIANSYAH.png")] },
+          { bidang: "Sekbid 5: Pembinaan Keterampilan dan Kewirausahaan", icon: "🎯", pembina: createSiswa("Nur Amalia, S.E", "GURU", "NIP. -", "09 Agustus 1997", "Pembina", "https://i.imgur.com/0AUZJuR.png", "Ikhlas dalam membimbing."), koordinator: createSiswa("Caca Listiana", "VIII-1", "3118987832", "01 November 2011", "Koordinator", "ASET/CACA.png", "Suara kita adalah masa depan sekolah kita."), anggota: [createSiswa("Tiara Azmi Aurora", "VII-1", "3137140791", "10 Mei 2013", "Anggota", "ASET/TIARA.png"), createSiswa("Ilyasa Abbas", "VII-1", "23121452325", "13 Juli 2013", "Anggota", "ASET/ILYAS.png"), createSiswa("Intan Aulia Putri", "VII-1", "0132327912", "22 April 2013", "Anggota", "ASET/INTAN.png")] },
+          { bidang: "Sekbid 6: Pembinaan Kepribadian dan Budi Pekerti Luhur ", icon: "💼", pembina: createSiswa("Nurul Intan Septiana Margarita, S.Pd", "GURU", "NIP. 19940907 202521 2 066", "07 September 1994", "Pembina", "https://i.imgur.com/jcXGqZd.png", "Ikhlas dalam membimbing."), koordinator: createSiswa("Divo Arlyan Septiyandra", "VIII-1", "0118936371", "20 September 2011", "Koordinator", "ASET/DIVO.png", "Mandiri dan inovatif dalam setiap usaha."), anggota: [createSiswa("Putri Rahmadani Alkomariah", "VII-2", "0129226690", "30 Juli 2012", "Anggota", "ASET/PUTRI R.png"), createSiswa("Lisna Nabila", "VII-2", "3128592806", "15 Oktober 2012", "Anggota", "ASET/LISNA.png"), createSiswa("Muhammad Faris Baihaki", "VII-1", "3125110635", "23 Mei 2012", "Anggota", "ASET/FARIS.png")] },
+          { bidang: "Sekbid 7: Kesegaran Jasmani dan Daya Kreasi", icon: "⚽", pembina: createSiswa("Algian Manggara, S.Agr", "GURU", "NIP. 19940412 202521 1 046", "12 April 1994", "Pembina", "https://i.imgur.com/DfsMY0y.png", "Ikhlas dalam membimbing."), koordinator: createSiswa("Khoirudin Al Fazri", "VIII-1", "0113502825", "28 Oktober 2011", "Koordinator", "ASET/UDIN.png", "Men sana in corpore sano."), anggota: [createSiswa("Putri Herdayanti", "VII-2", "3121514875", "20 Juni 2012", "Anggota", "ASET/PUTRI H.png"), createSiswa("Melandri Raffly Firdaus", "VII-1", "0124241579", "08 Mei 2012", "Anggota", "ASET/MELANDRI.png"), createSiswa("Revalina Agustin", "VII-2", "3129274597", "22 Agustus 2012", "Anggota", "ASET/REVA.png")] },
+          { bidang: "Sekbid 8: Pembinaan Persepsi, Apresiasi dan Kreasi Seni", icon: "🎨", pembina: createSiswa("Siva Nurlatifah, S.Pd", "GURU", "NIP. -", "-", "Pembina", "https://i.imgur.com/BmJu9TN.png", "Ikhlas dalam membimbing."), koordinator: createSiswa("Syamila Fahra Setiana", "VIII-2", "0112444154", "21 Desember 2011", "Koordinator", "ASET/SYAMILA.png", "Lestarikan budaya, tunjukkan identitas bangsa."), anggota: [createSiswa("Giovany Satria Alvaro", "VII-1", "3138536811", "24 Februari 2013", "Anggota", "ASET/GIO.png"), createSiswa("Faiz Alhafiz", "VII-1", "0121309276", "29 Oktober 2012", "Anggota", "ASET/FAIZ.png")] },
+          
+        ]
+      },
+      "2025/2026": {
+        pembinaOsis: createSiswa("Sri Yulianti, S.Pd", "GURU", "NIP. 19990926 202521 2 010", "26 September 1999", "Pembina Utama OSIS", "https://i.imgur.com/REdif30.png", "Membimbing generasi muda menjadi pemimpin masa depan."),
+        ketua: createSiswa("Andara Devisa", "VIII-2", "00114801421", "20 April 2011", "Ketua OSIS", "ASET/ANDARA.png", "Pemimpin sejati menginspirasi melalui aksi."),
+        wakilKetua: createSiswa("Aad Adriyan", "VIII-1", "0101022866", "06 Juni 2010", "Wakil Ketua", "ASET/AAD.png", "Bekerja sama untuk mencapai cita-cita bersama."),
+        sekretaris: [
+          createSiswa("Abu Bakar", "VIII-2", "00119511741", "11 Mei 2011", "Sekretaris 1", "ASET/ABU.png", "Ketelitian adalah kunci kesuksesan organisasi."),
+          createSiswa("Nurcahya Kintan", "VIII-1", "0112965512", "16 Mar 2011", "Sekretaris 2", "ASET/KINTAN.png", "Merapikan hari ini untuk masa depan yang lebih baik.")
+        ],
+        bendahara: [
+          createSiswa("Chubah Natasyah", "VIII-1", "0106974597", "01 Februari 2010", "Bendahara 1", "ASET/CUBAH.png", "Transparan dan jujur dalam mengelola amanah."),
+          createSiswa("Muhammad Danu", "VIII-2", "0103044065", "27 Desember 2010", "Bendahara 2", "ASET/DANU.png", "Hemat pangkal kaya, bijak pangkal sukses.")
+        ],
+        seksi: [
+          { bidang: "Sekbid 1: Ketaqwaan Terhadap Tuhan YME", icon: "🕌", koordinator: createSiswa("Muhammad Ardiyansyah", "VIII-1", "0112336064", "07 Maret 2011", "Koordinator", "ASET/ANDRI.png", "Utamakan adab di atas ilmu."), anggota: [createSiswa("Refi Andriansyah", "VII-1", "0117077640", "30 Mei 2011", "Anggota", "ASET/REFI.png"), createSiswa("Caca Listiana", "VII-1", "3118987832", "01 November 2011", "Anggota", "ASET/CACA.png")] },
+          { bidang: "Sekbid 2: Pembinaan Kehidupan Berbangsa dan Bernegara", icon: "📚", koordinator: createSiswa("Novan Nazril", "VIII-1", "0103901431", "14 November 2010", "Koordinator", "ASET/NOVAN.png", "Karakter adalah mahkota bagi setiap siswa."), anggota: [createSiswa("Eka Meyla", "VII-1", "0115335298", "19 Mei 2011", "Anggota", "ASET/EKA.png")] },
+          { bidang: "Sekbid 3: Pembinaan Pendidikan Pendahuluan Bina Negara", icon: "🇮🇩", koordinator: createSiswa("Nina Aulia", "VIII-2", "00111531718", "23 April 2011", "Koordinator", "ASET/NINA.png", "Cinta tanah air adalah sebagian dari iman."), anggota: [createSiswa("Syamila Fahra", "VII-2", "0112444154", "21 Desember 2011", "Anggota", "ASET/SYAMILA.png"), createSiswa("Bayu Oktaviana", "VII-1", "20112384089", "26 Oktober 2011", "Anggota", "ASET/BAYU.png")] },
+          { bidang: "Sekbid 4: Pembinaan Berorganisasi, Pendidikan Politik dan Kepemimpinan", icon: "🎭", koordinator: createSiswa("Nyai Fatimah", "VIII-1", "0117942338", "16 Februari 2011", "Koordinator", "ASET/NYAI.png", "Kreativitas tanpa batas, prestasi tanpa henti."), anggota: [createSiswa("Divo Arlyan", "VII-1", "0118936371", "20 September 2011", "Anggota", "ASET/DIVO.png")] },
+          { bidang: "Sekbid 5: Pembinaan Keterampilan dan Kewirausahaan", icon: "🎯", koordinator: createSiswa("Nazwa Kirana Rinjani", "VII-1", "3118987832", "13 Juli 2010", "Koordinator", "ASET/RINJANI.png", "Suara kita adalah masa depan sekolah kita."), anggota: [createSiswa("Zahra Aurellia", "VII-2", "0116781133", "09 Oktober 2011", "Anggota", "ASET/ZAHRA.png")] },
+          { bidang: "Sekbid 6: Pembinaan Kepribadian dan Budi Pekerti Luhur ", icon: "💼", koordinator: createSiswa("M. Hafy Ridwan", "VII-2", "0113502825", "23 Desember 2010", "Koordinator", "ASET/HAFY.png", "Mandiri dan inovatif dalam setiap usaha."), anggota: [createSiswa("Dyla Agustina", "VII-1", "0111577151", "21 Agustus 2011", "Anggota", "ASET/DYLA.png")] },
+          { bidang: "Sekbid 7: Kesegaran Jasmani dan Daya Kreasi", icon: "⚽", koordinator: createSiswa("Khoirudin Al Fazri", "VII-1", "0113502825", "28 Oktober 2011", "Koordinator", "ASET/UDIN.png", "Men sana in corpore sano."), anggota: [createSiswa("Nabila Azumi", "VII-2", "0117515789", "14 Agustus 2011", "Anggota", "ASET/NABILA.png"), createSiswa("Umairoh Salsabilah", "VII-1", "0126494981", "20 Mei 2012", "Anggota", "ASET/UMAIROH.png")] },
+          { bidang: "Sekbid 8: Pembinaan Persepsi, Apresiasi dan Kreasi Seni", icon: "🎨", koordinator: createSiswa("Nazwa Farizhatul", "VIII-2", "0101409804", "-", "Koordinator", "ASET/FARICHATUL.png", "Lestarikan budaya, tunjukkan identitas bangsa."), anggota: [createSiswa("Sakhwa Nur", "VII-2", "0124052553", "06 April 2012", "Anggota", "ASET/SAKHWA.png")] },
+          
+        ]
+      },
+     
+    };
+
+    const periods = Object.keys(osisData).sort().reverse();
+    let currentPeriod = periods[0];
+
+    // FUNGSI MODAL DENGAN DATA MOTO
+    function openModal(p) {
+      if(!p) return;
+      document.getElementById('m-nama').innerText = p.nama;
+      document.getElementById('m-jabatan').innerText = p.jabatan;
+      document.getElementById('m-kelas').innerText = p.kelas;
+      document.getElementById('m-nisn').innerText = p.nisn;
+      document.getElementById('m-tgl').innerText = p.tgl;
+      document.getElementById('m-foto').src = p.foto;
+      document.getElementById('m-moto').innerText = `"${p.moto}"`; // Set moto ke elemen
+      document.getElementById('modal').classList.add('modal-active');
+      document.getElementById('modal-content').classList.replace('scale-95', 'scale-100');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('modal-active');
+      document.getElementById('modal-content').classList.replace('scale-100', 'scale-95');
+    }
+
+   function createCard(data, type, delay = 0) {
+      if(!data) return '';
+      
+      // Di sini kita menyimpan daftar warna berdasarkan jabatan
+      const colors = {
+        pembina: 'from-amber-600 to-yellow-500', // Warna Emas untuk Pembina Utama
+        ketua: 'from-amber-500 to-orange-600',
+        wakil: 'from-blue-500 to-cyan-500',
+        sekretaris: 'from-emerald-500 to-teal-500',
+        bendahara: 'from-pink-500 to-rose-500'
+      };
+
+      // Jika type tidak ditemukan di daftar atas, gunakan warna abu-abu (slate)
+      const g = colors[type] || 'from-slate-500 to-slate-600';
+
+      return `
+        <div onclick='openModal(${JSON.stringify(data)})' class="org-card bg-slate-800/80 backdrop-blur-sm rounded-3xl p-6 border border-slate-700 shadow-xl" style="animation-delay: ${delay}ms;">
+          <div class="flex flex-col items-center">
+            <div class="avatar-ring mb-4"><img src="${data.foto}" class="w-20 h-20 rounded-full border-4 border-slate-800 object-cover"></div>
+            <span class="inline-block px-3 py-1 rounded-full text-[8px] font-black mb-3 bg-gradient-to-r ${g} text-white uppercase tracking-widest">${data.jabatan}</span>
+            <h3 class="font-bold text-white text-sm text-center mb-1">${data.nama}</h3>
+            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-tighter">Kelas ${data.kelas}</p>
+          </div>
+        </div>
+      `;
+    }
+
+   function createSeksiCard(s, delay = 0) {
+  return `
+    <div class="org-card bg-slate-800/50 backdrop-blur-sm rounded-3xl p-6 border border-slate-700 shadow-xl" style="animation-delay: ${delay}ms;">
+      <div class="flex items-center gap-3 mb-5">
+        <span class="text-3xl">${s.icon}</span>
+        <h4 class="font-black text-white text-[9px] uppercase tracking-widest leading-none">${s.bidang}</h4>
+      </div>
+
+      ${s.pembina ? `
+      <div onclick='openModal(${JSON.stringify(s.pembina)})' class="flex items-center gap-3 p-3 rounded-2xl bg-amber-500/10 mb-3 border border-amber-500/20 hover:bg-amber-500/20 transition-all cursor-pointer">
+        <div class="relative">
+          <img src="${s.pembina.foto}" class="w-10 h-10 rounded-full border-2 border-amber-500/30 object-cover">
+          <div class="absolute -bottom-1 -right-1 bg-amber-500 rounded-full p-0.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-2 w-2 text-slate-900" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" /><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" /></svg>
+          </div>
+        </div>
+        <div>
+          <p class="text-[7px] font-black uppercase text-amber-500">Pembina Sekbid</p>
+          <p class="text-[10px] font-bold text-white leading-tight">${s.pembina.nama}</p>
+        </div>
+      </div>
+      ` : ''}
+
+      <div onclick='openModal(${JSON.stringify(s.koordinator)})' class="flex items-center gap-3 p-3 rounded-2xl bg-blue-500/10 mb-4 border border-blue-500/20 hover:bg-blue-500/20 transition-all cursor-pointer">
+        <img src="${s.koordinator.foto}" class="w-10 h-10 rounded-full border border-blue-500/30 object-cover">
+        <div>
+          <p class="text-[7px] font-black uppercase text-blue-400">Koordinator</p>
+          <p class="text-[11px] font-bold text-white">${s.koordinator.nama}</p>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        ${s.anggota.map(a => `
+          <div onclick='openModal(${JSON.stringify(a)})' class="flex items-center gap-3 p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-all cursor-pointer">
+            <img src="${a.foto}" class="w-7 h-7 rounded-full border border-white/10 object-cover">
+            <p class="text-[10px] font-medium text-slate-300">${a.nama}</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+   function render() {
+      const d = osisData[currentPeriod];
+      document.getElementById('period-tabs').innerHTML = periods.map(p => `
+        <button onclick="switchPeriod('${p}')" class="period-tab px-6 py-2 rounded-full font-black text-[10px] uppercase tracking-widest ${p === currentPeriod ? 'active bg-white text-blue-600 shadow-xl' : 'bg-slate-800 text-slate-500 border border-slate-700 hover:text-slate-300'}">${p}</button>
+      `).join('');
+
+      document.getElementById('main-content').innerHTML = `
+        <div class="space-y-24">
+          ${d.pembinaOsis ? `
+          <section class="max-w-xs mx-auto mb-12">
+            <h2 class="text-center text-amber-500 font-black text-[10px] tracking-[0.5em] mb-6 uppercase italic">Pembina Utama</h2>
+            ${createCard(d.pembinaOsis, 'pembina', 50)}
+          </section>
+          ` : ''}
+
+          <section class="max-w-2xl mx-auto grid md:grid-cols-2 gap-8">
+            ${createCard(d.ketua, 'ketua', 100)}
+            ${createCard(d.wakilKetua, 'wakil', 200)}
+          </section>
+
+          <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            ${d.sekretaris.map((s,i) => createCard(s, 'sekretaris', 100+i*50)).join('')}
+            ${d.bendahara.map((b,i) => createCard(b, 'bendahara', 200+i*50)).join('')}
+          </section>
+
+          <section>
+            <h2 class="text-center text-slate-500 font-black text-[10px] tracking-[0.5em] mb-12 uppercase italic">Seksi-Seksi Bidang OSIS</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              ${d.seksi.map((s, i) => createSeksiCard(s, i*50)).join('')}
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    function switchPeriod(p) { currentPeriod = p; render(); }
+    window.onclick = (e) => { if(e.target == document.getElementById('modal')) closeModal(); }
+    render();
+  </script>
+</body>
+</html>
