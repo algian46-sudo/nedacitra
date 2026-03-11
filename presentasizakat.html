@@ -63,7 +63,7 @@
     .stagger-8 { animation-delay: 0.8s; opacity: 0; }
     
     .islamic-border {
-      border: 2px solid rgba(212, 175, 55, 0.3);
+      border: 2px solid rgba(27, 122, 61, 0.3);
       border-radius: 12px;
       position: relative;
     }
@@ -74,14 +74,14 @@
       top: -10px;
       left: 50%;
       transform: translateX(-50%);
-      background: #1a3a4a;
+      background: #ffffff;
       padding: 0 10px;
-      color: #d4af37;
+      color: #1b7a3d;
       font-size: 14px;
     }
     
     .golden-glow {
-      box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+      box-shadow: 0 0 30px rgba(27, 122, 61, 0.2);
     }
     
     .nav-btn {
@@ -90,7 +90,7 @@
     
     .nav-btn:hover:not(:disabled) {
       transform: scale(1.05);
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+      box-shadow: 0 4px 15px rgba(27, 122, 61, 0.4);
     }
     
     .nav-btn:disabled {
@@ -115,7 +115,7 @@
       width: 60px;
       height: 60px;
       border-radius: 50%;
-      box-shadow: 15px 0 0 0 #d4af37;
+      box-shadow: 15px 0 0 0 #1b7a3d;
       margin: 0 auto 20px;
     }
   </style>
@@ -123,23 +123,23 @@
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
  <body class="h-full font-poppins">
-  <div id="app-wrapper" class="h-full w-full overflow-auto geometric-pattern" style="background-color: #1a3a4a;"><!-- Progress Bar -->
+  <div id="app-wrapper" class="h-full w-full overflow-auto geometric-pattern" style="background-color: #ffffff;"><!-- Progress Bar -->
    <div class="fixed top-0 left-0 right-0 h-1 bg-gray-800 z-50">
     <div id="progress" class="progress-bar h-full" style="background-color: #d4af37; width: 8.33%;"></div>
    </div><!-- Slide Container -->
    <div id="slide-container" class="min-h-full flex flex-col"><!-- Slides will be rendered here -->
    </div><!-- Navigation -->
-   <div class="fixed bottom-0 left-0 right-0 p-4 flex justify-between items-center" style="background: linear-gradient(to top, rgba(26, 58, 74, 0.98), transparent);"><button id="prev-btn" class="nav-btn px-6 py-3 rounded-full font-semibold flex items-center gap-2" style="background-color: #d4af37; color: #1a3a4a;">
+   <div class="fixed bottom-0 left-0 right-0 p-4 flex justify-between items-center" style="background: linear-gradient(to top, rgba(255, 255, 255, 0.98), transparent);"><button id="prev-btn" class="nav-btn px-6 py-3 rounded-full font-semibold flex items-center gap-2" style="background-color: #1b7a3d; color: #ffffff;">
      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
      </svg> Sebelumnya </button>
-    <div class="flex items-center gap-2"><span id="slide-indicator" class="text-sm" style="color: #c9a227;">1 / 12</span>
-    </div><button id="next-btn" class="nav-btn px-6 py-3 rounded-full font-semibold flex items-center gap-2" style="background-color: #d4af37; color: #1a3a4a;"> Selanjutnya 
+    <div class="flex items-center gap-2"><span id="slide-indicator" class="text-sm" style="color: #1b7a3d;">1 / 12</span>
+    </div><button id="next-btn" class="nav-btn px-6 py-3 rounded-full font-semibold flex items-center gap-2" style="background-color: #1b7a3d; color: #ffffff;"> Selanjutnya 
      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
      </svg></button>
    </div><!-- Footer -->
-   <div id="footer-text" class="fixed bottom-16 left-0 right-0 text-center text-xs py-2" style="color: rgba(201, 162, 39, 0.6);">
+   <div id="footer-text" class="fixed bottom-16 left-0 right-0 text-center text-xs py-2" style="color: rgba(27, 122, 61, 0.6);">
     Materi Sanlat Ramadhan - Pembelajaran Zakat
    </div>
   </div>
@@ -148,11 +148,11 @@
     const defaultConfig = {
       presentation_title: "Materi Sanlat Ramadhan",
       footer_text: "Materi Sanlat Ramadhan - Pembelajaran Zakat",
-      background_color: "#1a3a4a",
-      accent_color: "#d4af37",
-      text_color: "#f0e6d3",
-      secondary_color: "#234d5e",
-      highlight_color: "#c9a227",
+      background_color: "#ffffff",
+      accent_color: "#1b7a3d",
+      text_color: "#1a1a1a",
+      secondary_color: "#e8f5e9",
+      highlight_color: "#2e8b57",
       font_family: "Poppins",
       font_size: 16
     };
@@ -351,15 +351,15 @@
     function renderTitleSlide(data) {
       return `
         <div class="slide-enter flex-1 flex flex-col items-center justify-center px-8 py-16 text-center">
-          <div class="crescent-moon fade-up stagger-1"></div>
-          <h1 id="main-title" class="font-amiri text-5xl md:text-7xl font-bold mb-4 fade-up stagger-2" style="color: #d4af37;">${data.title}</h1>
-          <p class="text-xl md:text-2xl mb-8 fade-up stagger-3" style="color: #f0e6d3;">${data.subtitle}</p>
-          <div class="islamic-border p-6 max-w-2xl fade-up stagger-4">
-            <p class="font-amiri text-2xl md:text-3xl mb-3" style="color: #d4af37;">${data.arabicText}</p>
-            <p class="text-sm md:text-base italic" style="color: #c9a227;">${data.translation}</p>
+          <div class="crescent-moon fade-up stagger-1" style="box-shadow: 15px 0 0 0 #1b7a3d;"></div>
+          <h1 id="main-title" class="font-amiri text-5xl md:text-7xl font-bold mb-4 fade-up stagger-2" style="color: #1b7a3d;">${data.title}</h1>
+          <p class="text-xl md:text-2xl mb-8 fade-up stagger-3" style="color: #2e8b57;">${data.subtitle}</p>
+          <div class="islamic-border p-6 max-w-2xl fade-up stagger-4" style="background-color: #e8f5e9; border-color: #1b7a3d;">
+            <p class="font-amiri text-2xl md:text-3xl mb-3" style="color: #1b7a3d;">${data.arabicText}</p>
+            <p class="text-sm md:text-base italic" style="color: #2e8b57;">${data.translation}</p>
           </div>
           <div class="mt-12 fade-up stagger-5">
-            <p class="text-sm" style="color: rgba(201, 162, 39, 0.7);">Tekan tombol "Selanjutnya" untuk memulai</p>
+            <p class="text-sm" style="color: #1b7a3d;">Tekan tombol "Selanjutnya" untuk memulai</p>
           </div>
         </div>
       `;
@@ -370,17 +370,17 @@
         <div class="slide-enter flex-1 flex flex-col px-6 md:px-16 py-20">
           <div class="text-center mb-8">
             <span class="text-5xl fade-up stagger-1">${data.icon}</span>
-            <h2 class="font-amiri text-4xl md:text-5xl font-bold mt-4 fade-up stagger-2" style="color: #d4af37;">${data.title}</h2>
+            <h2 class="font-amiri text-4xl md:text-5xl font-bold mt-4 fade-up stagger-2" style="color: #1b7a3d;">${data.title}</h2>
           </div>
           <div class="flex-1 flex flex-col justify-center max-w-4xl mx-auto w-full space-y-6">
             ${data.content.map((item, i) => `
-              <div class="islamic-border p-6 fade-up stagger-${i + 3}" style="background-color: rgba(35, 77, 94, 0.5);">
-                <h3 class="text-lg font-semibold mb-2" style="color: #d4af37;">${item.term}</h3>
-                <p class="text-lg" style="color: #f0e6d3;">${item.definition}</p>
+              <div class="islamic-border p-6 fade-up stagger-${i + 3}" style="background-color: #e8f5e9;">
+                <h3 class="text-lg font-semibold mb-2" style="color: #1b7a3d;">${item.term}</h3>
+                <p class="text-lg" style="color: #2e8b57;">${item.definition}</p>
               </div>
             `).join('')}
-            <div class="p-6 rounded-xl text-center fade-up stagger-5" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(201, 162, 39, 0.1));">
-              <p class="text-lg font-medium" style="color: #f0e6d3;">💡 ${data.highlight}</p>
+            <div class="p-6 rounded-xl text-center fade-up stagger-5" style="background-color: #e8f5e9;">
+              <p class="text-lg font-medium" style="color: #1b7a3d;">💡 ${data.highlight}</p>
             </div>
           </div>
         </div>
@@ -391,21 +391,21 @@
       return `
         <div class="slide-enter flex-1 flex flex-col px-6 md:px-16 py-20">
           <div class="text-center mb-8">
-            <h2 class="font-amiri text-4xl md:text-5xl font-bold fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
-            <p class="text-xl mt-2 fade-up stagger-2" style="color: #c9a227;">${data.subtitle}</p>
+            <h2 class="font-amiri text-4xl md:text-5xl font-bold fade-up stagger-1" style="color: #1b7a3d;">${data.title}</h2>
+            <p class="text-xl mt-2 fade-up stagger-2" style="color: #2e8b57;">${data.subtitle}</p>
           </div>
           <div class="flex-1 flex flex-col justify-center">
             <div class="flex flex-wrap justify-center gap-4 md:gap-6 mb-8">
               ${data.content.map((pillar, i) => `
-                <div class="card-hover flex flex-col items-center p-4 md:p-6 rounded-2xl w-28 md:w-36 fade-up stagger-${i + 3} ${pillar.active ? 'golden-glow' : ''}" 
-                     style="background-color: ${pillar.active ? 'rgba(212, 175, 55, 0.3)' : 'rgba(35, 77, 94, 0.5)'}; border: 2px solid ${pillar.active ? '#d4af37' : 'transparent'};">
+                <div class="card-hover flex flex-col items-center p-4 md:p-6 rounded-2xl w-28 md:w-36 fade-up stagger-${i + 3}" 
+                     style="background-color: ${pillar.active ? '#1b7a3d' : '#e8f5e9'}; border: 2px solid ${pillar.active ? '#1b7a3d' : '#2e8b57'};">
                   <span class="text-3xl md:text-4xl mb-2">${pillar.icon}</span>
-                  <span class="text-sm md:text-base font-semibold text-center" style="color: ${pillar.active ? '#d4af37' : '#f0e6d3'};">${pillar.name}</span>
+                  <span class="text-sm md:text-base font-semibold text-center" style="color: ${pillar.active ? '#ffffff' : '#1b7a3d'};">${pillar.name}</span>
                 </div>
               `).join('')}
             </div>
-            <div class="islamic-border p-6 max-w-2xl mx-auto text-center fade-up stagger-8" style="background-color: rgba(35, 77, 94, 0.5);">
-              <p class="text-lg" style="color: #f0e6d3;">${data.note}</p>
+            <div class="islamic-border p-6 max-w-2xl mx-auto text-center fade-up stagger-8" style="background-color: #e8f5e9;">
+              <p class="text-lg" style="color: #1b7a3d;">${data.note}</p>
             </div>
           </div>
         </div>
@@ -418,12 +418,12 @@
           <div class="mb-6 fade-up stagger-1">
             <span class="text-6xl">🌙</span>
           </div>
-          <h2 class="font-amiri text-4xl md:text-5xl font-bold mb-2 fade-up stagger-2" style="color: #d4af37;">${data.title}</h2>
-          <p class="font-amiri text-2xl md:text-3xl mb-8 fade-up stagger-3" style="color: #c9a227;">${data.arabicText}</p>
-          <div class="islamic-border p-8 max-w-3xl fade-up stagger-4" style="background-color: rgba(35, 77, 94, 0.5);">
-            <p class="text-xl mb-6" style="color: #f0e6d3;">${data.definition}</p>
-            <div class="p-4 rounded-lg" style="background-color: rgba(212, 175, 55, 0.15);">
-              <p class="font-medium" style="color: #d4af37;">🎯 Tujuan: ${data.purpose}</p>
+          <h2 class="font-amiri text-4xl md:text-5xl font-bold mb-2 fade-up stagger-2" style="color: #1b7a3d;">${data.title}</h2>
+          <p class="font-amiri text-2xl md:text-3xl mb-8 fade-up stagger-3" style="color: #2e8b57;">${data.arabicText}</p>
+          <div class="islamic-border p-8 max-w-3xl fade-up stagger-4" style="background-color: #e8f5e9;">
+            <p class="text-xl mb-6" style="color: #1b7a3d;">${data.definition}</p>
+            <div class="p-4 rounded-lg" style="background-color: #ffffff;">
+              <p class="font-medium" style="color: #1b7a3d;">🎯 Tujuan: ${data.purpose}</p>
             </div>
           </div>
         </div>
@@ -433,15 +433,15 @@
     function renderFitrahRulesSlide(data) {
       return `
         <div class="slide-enter flex-1 flex flex-col px-6 md:px-16 py-20">
-          <h2 class="font-amiri text-4xl md:text-5xl font-bold text-center mb-10 fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
+          <h2 class="font-amiri text-4xl md:text-5xl font-bold text-center mb-10 fade-up stagger-1" style="color: #1b7a3d;">${data.title}</h2>
           <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto w-full">
             ${data.items.map((item, i) => `
-              <div class="card-hover islamic-border p-6 fade-up stagger-${i + 2}" style="background-color: rgba(35, 77, 94, 0.5);">
+              <div class="card-hover islamic-border p-6 fade-up stagger-${i + 2}" style="background-color: #e8f5e9;">
                 <div class="flex items-start gap-4">
                   <span class="text-3xl">${item.icon}</span>
                   <div>
-                    <h3 class="text-xl font-bold mb-2" style="color: #d4af37;">${item.title}</h3>
-                    <p style="color: #f0e6d3;">${item.desc}</p>
+                    <h3 class="text-xl font-bold mb-2" style="color: #1b7a3d;">${item.title}</h3>
+                    <p style="color: #2e8b57;">${item.desc}</p>
                   </div>
                 </div>
               </div>
@@ -454,18 +454,18 @@
     function renderWhoPaysSlide(data) {
       return `
         <div class="slide-enter flex-1 flex flex-col px-6 md:px-16 py-20">
-          <h2 class="font-amiri text-4xl md:text-5xl font-bold text-center mb-10 fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
+          <h2 class="font-amiri text-4xl md:text-5xl font-bold text-center mb-10 fade-up stagger-1" style="color: #1b7a3d;">${data.title}</h2>
           <div class="flex-1 flex flex-col justify-center max-w-3xl mx-auto w-full">
             <div class="space-y-4 mb-8">
               ${data.conditions.map((cond, i) => `
-                <div class="card-hover flex items-center gap-4 p-5 rounded-xl fade-up stagger-${i + 2}" style="background-color: rgba(35, 77, 94, 0.5); border-left: 4px solid #d4af37;">
+                <div class="card-hover flex items-center gap-4 p-5 rounded-xl fade-up stagger-${i + 2}" style="background-color: #e8f5e9; border-left: 4px solid #1b7a3d;">
                   <span class="text-3xl">${cond.icon}</span>
-                  <p class="text-lg" style="color: #f0e6d3;">${cond.text}</p>
+                  <p class="text-lg" style="color: #1b7a3d;">${cond.text}</p>
                 </div>
               `).join('')}
             </div>
-            <div class="p-6 rounded-xl text-center fade-up stagger-5" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(201, 162, 39, 0.1));">
-              <p class="text-lg" style="color: #f0e6d3;">👨‍👩‍👧‍👦 ${data.note}</p>
+            <div class="p-6 rounded-xl text-center fade-up stagger-5" style="background-color: #e8f5e9;">
+              <p class="text-lg" style="color: #1b7a3d;">👨‍👩‍👧‍👦 ${data.note}</p>
             </div>
           </div>
         </div>
@@ -478,16 +478,16 @@
           <div class="mb-6 fade-up stagger-1">
             <span class="text-6xl">💰</span>
           </div>
-          <h2 class="font-amiri text-4xl md:text-5xl font-bold mb-2 fade-up stagger-2" style="color: #d4af37;">${data.title}</h2>
-          <p class="font-amiri text-2xl md:text-3xl mb-8 fade-up stagger-3" style="color: #c9a227;">${data.arabicText}</p>
-          <div class="islamic-border p-8 max-w-3xl mb-8 fade-up stagger-4" style="background-color: rgba(35, 77, 94, 0.5);">
-            <p class="text-xl" style="color: #f0e6d3;">${data.definition}</p>
+          <h2 class="font-amiri text-4xl md:text-5xl font-bold mb-2 fade-up stagger-2" style="color: #1b7a3d;">${data.title}</h2>
+          <p class="font-amiri text-2xl md:text-3xl mb-8 fade-up stagger-3" style="color: #2e8b57;">${data.arabicText}</p>
+          <div class="islamic-border p-8 max-w-3xl mb-8 fade-up stagger-4" style="background-color: #e8f5e9;">
+            <p class="text-xl" style="color: #1b7a3d;">${data.definition}</p>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl w-full">
             ${data.terms.map((term, i) => `
-              <div class="card-hover p-5 rounded-xl fade-up stagger-${i + 5}" style="background-color: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.3);">
-                <h3 class="font-bold text-lg mb-1" style="color: #d4af37;">${term.term}</h3>
-                <p class="text-sm" style="color: #f0e6d3;">${term.meaning}</p>
+              <div class="card-hover p-5 rounded-xl fade-up stagger-${i + 5}" style="background-color: #e8f5e9; border: 1px solid #2e8b57;">
+                <h3 class="font-bold text-lg mb-1" style="color: #1b7a3d;">${term.term}</h3>
+                <p class="text-sm" style="color: #2e8b57;">${term.meaning}</p>
               </div>
             `).join('')}
           </div>
@@ -498,14 +498,14 @@
     function renderMalTypesSlide(data) {
       return `
         <div class="slide-enter flex-1 flex flex-col px-6 md:px-16 py-16">
-          <h2 class="font-amiri text-3xl md:text-4xl font-bold text-center mb-8 fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
+          <h2 class="font-amiri text-3xl md:text-4xl font-bold text-center mb-8 fade-up stagger-1" style="color: #1b7a3d;">${data.title}</h2>
           <div class="flex-1 grid grid-cols-2 md:grid-cols-3 gap-4 max-w-5xl mx-auto w-full">
             ${data.items.map((item, i) => `
-              <div class="card-hover p-4 rounded-xl text-center fade-up stagger-${i + 2}" style="background-color: rgba(35, 77, 94, 0.5); border: 1px solid rgba(212, 175, 55, 0.2);">
+              <div class="card-hover p-4 rounded-xl text-center fade-up stagger-${i + 2}" style="background-color: #e8f5e9; border: 1px solid #2e8b57;">
                 <span class="text-3xl block mb-2">${item.icon}</span>
-                <h3 class="font-bold mb-1" style="color: #d4af37;">${item.name}</h3>
-                <p class="text-xs mb-1" style="color: #c9a227;">Nisab: ${item.nisab}</p>
-                <p class="text-sm font-semibold" style="color: #f0e6d3;">Zakat: ${item.zakat}</p>
+                <h3 class="font-bold mb-1" style="color: #1b7a3d;">${item.name}</h3>
+                <p class="text-xs mb-1" style="color: #2e8b57;">Nisab: ${item.nisab}</p>
+                <p class="text-sm font-semibold" style="color: #1b7a3d;">Zakat: ${item.zakat}</p>
               </div>
             `).join('')}
           </div>
@@ -517,15 +517,15 @@
       return `
         <div class="slide-enter flex-1 flex flex-col px-4 md:px-12 py-14">
           <div class="text-center mb-6">
-            <h2 class="font-amiri text-3xl md:text-4xl font-bold fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
-            <p class="font-amiri text-xl mt-1 fade-up stagger-2" style="color: #c9a227;">${data.arabicTitle}</p>
+            <h2 class="font-amiri text-3xl md:text-4xl font-bold fade-up stagger-1" style="color: #1b7a3d;">${data.title}</h2>
+            <p class="font-amiri text-xl mt-1 fade-up stagger-2" style="color: #2e8b57;">${data.arabicTitle}</p>
           </div>
           <div class="flex-1 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-6xl mx-auto w-full">
             ${data.groups.map((group, i) => `
-              <div class="card-hover p-3 rounded-xl text-center fade-up stagger-${(i % 4) + 3}" style="background-color: rgba(35, 77, 94, 0.5); border: 1px solid rgba(212, 175, 55, 0.2);">
+              <div class="card-hover p-3 rounded-xl text-center fade-up stagger-${(i % 4) + 3}" style="background-color: #e8f5e9; border: 1px solid #2e8b57;">
                 <span class="text-2xl block mb-1">${group.icon}</span>
-                <h3 class="font-bold text-sm mb-1" style="color: #d4af37;">${group.name}</h3>
-                <p class="text-xs" style="color: #f0e6d3;">${group.desc}</p>
+                <h3 class="font-bold text-sm mb-1" style="color: #1b7a3d;">${group.name}</h3>
+                <p class="text-xs" style="color: #2e8b57;">${group.desc}</p>
               </div>
             `).join('')}
           </div>
@@ -536,15 +536,15 @@
     function renderHikmahSlide(data) {
       return `
         <div class="slide-enter flex-1 flex flex-col px-6 md:px-16 py-16">
-          <h2 class="font-amiri text-3xl md:text-4xl font-bold text-center mb-8 fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
+          <h2 class="font-amiri text-3xl md:text-4xl font-bold text-center mb-8 fade-up stagger-1" style="color: #1b7a3d;">${data.title}</h2>
           <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-6xl mx-auto w-full">
             ${data.benefits.map((benefit, i) => `
-              <div class="card-hover p-5 rounded-xl fade-up stagger-${i + 2}" style="background-color: rgba(35, 77, 94, 0.5); border-top: 3px solid #d4af37;">
-                <h3 class="font-bold text-lg mb-4 text-center" style="color: #d4af37;">${benefit.category}</h3>
+              <div class="card-hover p-5 rounded-xl fade-up stagger-${i + 2}" style="background-color: #e8f5e9; border-top: 3px solid #1b7a3d;">
+                <h3 class="font-bold text-lg mb-4 text-center" style="color: #1b7a3d;">${benefit.category}</h3>
                 <ul class="space-y-2">
                   ${benefit.items.map(item => `
-                    <li class="flex items-start gap-2 text-sm" style="color: #f0e6d3;">
-                      <span style="color: #d4af37;">✦</span>
+                    <li class="flex items-start gap-2 text-sm" style="color: #2e8b57;">
+                      <span style="color: #1b7a3d;">✦</span>
                       ${item}
                     </li>
                   `).join('')}
@@ -559,22 +559,22 @@
     function renderComparisonSlide(data) {
       return `
         <div class="slide-enter flex-1 flex flex-col px-4 md:px-12 py-16">
-          <h2 class="font-amiri text-3xl md:text-4xl font-bold text-center mb-8 fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
+          <h2 class="font-amiri text-3xl md:text-4xl font-bold text-center mb-8 fade-up stagger-1" style="color: #1b7a3d;">${data.title}</h2>
           <div class="flex-1 overflow-x-auto">
             <table class="w-full max-w-4xl mx-auto border-collapse fade-up stagger-2" style="min-width: 500px;">
               <thead>
                 <tr>
-                  <th class="p-3 text-left text-sm font-bold rounded-tl-lg" style="background-color: rgba(212, 175, 55, 0.3); color: #d4af37;">Aspek</th>
-                  <th class="p-3 text-center text-sm font-bold" style="background-color: rgba(212, 175, 55, 0.3); color: #d4af37;">🌙 Zakat Fitrah</th>
-                  <th class="p-3 text-center text-sm font-bold rounded-tr-lg" style="background-color: rgba(212, 175, 55, 0.3); color: #d4af37;">💰 Zakat Mal</th>
+                  <th class="p-3 text-left text-sm font-bold rounded-tl-lg" style="background-color: #1b7a3d; color: #ffffff;">Aspek</th>
+                  <th class="p-3 text-center text-sm font-bold" style="background-color: #1b7a3d; color: #ffffff;">🌙 Zakat Fitrah</th>
+                  <th class="p-3 text-center text-sm font-bold rounded-tr-lg" style="background-color: #1b7a3d; color: #ffffff;">💰 Zakat Mal</th>
                 </tr>
               </thead>
               <tbody>
                 ${data.comparisons.map((comp, i) => `
-                  <tr class="fade-up stagger-${i + 3}" style="background-color: ${i % 2 === 0 ? 'rgba(35, 77, 94, 0.3)' : 'rgba(35, 77, 94, 0.5)'};">
-                    <td class="p-3 text-sm font-semibold" style="color: #d4af37;">${comp.aspect}</td>
-                    <td class="p-3 text-center text-sm" style="color: #f0e6d3;">${comp.fitrah}</td>
-                    <td class="p-3 text-center text-sm" style="color: #f0e6d3;">${comp.mal}</td>
+                  <tr class="fade-up stagger-${i + 3}" style="background-color: ${i % 2 === 0 ? '#e8f5e9' : '#ffffff'};">
+                    <td class="p-3 text-sm font-semibold" style="color: #1b7a3d;">${comp.aspect}</td>
+                    <td class="p-3 text-center text-sm" style="color: #2e8b57;">${comp.fitrah}</td>
+                    <td class="p-3 text-center text-sm" style="color: #2e8b57;">${comp.mal}</td>
                   </tr>
                 `).join('')}
               </tbody>
@@ -587,24 +587,24 @@
     function renderConclusionSlide(data) {
       return `
         <div class="slide-enter flex-1 flex flex-col items-center justify-center px-6 md:px-16 py-16 text-center">
-          <h2 class="font-amiri text-4xl md:text-5xl font-bold mb-8 fade-up stagger-1" style="color: #d4af37;">${data.title}</h2>
+          <h2 class="font-amiri text-4xl md:text-5xl font-bold mb-8 fade-up stagger-1" style="color: #1b7a3d;">${data.title}</h2>
           <div class="max-w-3xl mb-8">
             <ul class="space-y-3 text-left">
               ${data.points.map((point, i) => `
-                <li class="flex items-start gap-3 fade-up stagger-${i + 2}" style="color: #f0e6d3;">
-                  <span class="text-xl" style="color: #d4af37;">✓</span>
+                <li class="flex items-start gap-3 fade-up stagger-${i + 2}" style="color: #1b7a3d;">
+                  <span class="text-xl" style="color: #1b7a3d;">✓</span>
                   <span class="text-lg">${point}</span>
                 </li>
               `).join('')}
             </ul>
           </div>
-          <div class="islamic-border p-6 max-w-2xl fade-up stagger-7" style="background-color: rgba(35, 77, 94, 0.5);">
-            <p class="font-amiri text-xl md:text-2xl mb-3" style="color: #d4af37;">${data.closingArabic}</p>
-            <p class="text-sm italic" style="color: #c9a227;">${data.closingTranslation}</p>
+          <div class="islamic-border p-6 max-w-2xl fade-up stagger-7" style="background-color: #e8f5e9;">
+            <p class="font-amiri text-xl md:text-2xl mb-3" style="color: #1b7a3d;">${data.closingArabic}</p>
+            <p class="text-sm italic" style="color: #2e8b57;">${data.closingTranslation}</p>
           </div>
           <div class="mt-8 fade-up stagger-8">
-            <p class="text-lg font-semibold" style="color: #d4af37;">جَزَاكُمُ اللهُ خَيْرًا</p>
-            <p class="text-sm mt-1" style="color: #c9a227;">Semoga Allah memberkahi kita semua</p>
+            <p class="text-lg font-semibold" style="color: #1b7a3d;">جَزَاكُمُ اللهُ خَيْرًا</p>
+            <p class="text-sm mt-1" style="color: #2e8b57;">Semoga Allah memberkahi kita semua</p>
           </div>
         </div>
       `;
@@ -737,5 +737,5 @@
     // Initial render
     renderSlide(slides[0], 0);
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9da7f57243a54536',t:'MTc3MzIwNDg0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9da80b2dc542910a',t:'MTc3MzIwNTczMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
