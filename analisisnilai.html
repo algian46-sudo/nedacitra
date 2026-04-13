@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisis Hasil Sumatif - SMPN 8 Cikarang Utara</title>
+    <style>
+    body { font-family: Arial, sans-serif; font-size: 11px; background: #f0f2f5; padding: 20px; }
+    .sheet { background: white; padding: 25px; border: 1px solid #ccc; min-width: 1150px; margin: auto; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
+    h2 { text-align: center; text-decoration: underline; margin-bottom: 5px; font-size: 16px; text-transform: uppercase; cursor: pointer; }
+    
+    .info-container { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 2px solid #333; padding-bottom: 5px; }
+    .info-table { width: 48%; border-collapse: collapse; }
+    .info-table td { border: none; text-align: left; padding: 1px 2px; vertical-align: top; }
+    .info-table input { text-align: left; border-bottom: 1px dotted #ccc; text-transform: none; }
+
+    .control-panel { background: #f8f9fa; padding: 10px; border: 1px solid #dee2e6; border-radius: 6px; margin-bottom: 15px; display: flex; gap: 10px; align-items: flex-end; }
+    
+    table { width: 100%; border-collapse: collapse; margin-top: 5px; table-layout: fixed; }
+    table th, table td { border: 1px solid black; text-align: center; padding: 3px; font-size: 10px; overflow: hidden; }
+    .bg-header { background-color: #e9ecef; font-weight: bold; }
+    .bg-kunci { background-color: #fff9c4; }
+    .bg-footer { background-color: #fdfdfe; font-weight: bold; }
+    .bg-kesimpulan { background-color: #e3f2fd; font-weight: bold; }
+    
+    input { width: 100%; border: none; text-align: center; outline: none; background: transparent; font-family: inherit; font-size: inherit; text-transform: none !important; }
+    .input-nama { text-align: left !important; padding-left: 5px !important; font-weight: bold; text-transform: none; }
+    
+    .row-detail td { background-color: #fcfcfc; border-top: none !important; padding: 2px 5px !important; }
+    .input-jawaban-wide { background: #fffde7 !important; text-align: left !important; padding: 4px 8px !important; letter-spacing: 2px; font-family: monospace; font-weight: bold; border: 1px solid #eee !important; }
+    .label-kecil { font-size: 9px; color: #666; font-style: italic; }
+
+    .analysis-section { margin-top: 20px; border-top: 2px solid #333; padding-top: 10px; }
+    .analysis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .analysis-box { border: 1px solid #ccc; padding: 8px; }
+    .analysis-title { font-weight: bold; background: #eee; padding: 3px 5px; margin-bottom: 5px; border-bottom: 1px solid #ccc; }
+    .remedial-list { margin-top: 10px; border: 1px solid #ccc; padding: 8px; min-height: 30px; }
+
+    .signature-grid { display: flex; justify-content: space-between; margin-top: 30px; text-align: center; }
+    .sig-col { flex: 0 0 280px; display: flex; flex-direction: column; align-items: center; }
+    .sig-space { height: 50px; }
+    .name-underlined { font-weight: bold; border-bottom: 1px solid #000; width: 100%; padding-bottom: 2px; margin-bottom: 3px; }
+    
+    .btn { padding: 6px 12px; cursor: pointer; border: none; border-radius: 4px; font-weight: bold; font-size: 11px; }
+    .btn-update { background: #2ecc71; color: white; }
+    .btn-calc { background: #e67e22; color: white; }
+    .btn-print { background: #34495e; color: white; }
+    .btn-reset { background: #e74c3c; color: white; }
+
+    .col-esai-bg { background-color: #e3f2fd !important; }
+
+    @media print {
+        .control-panel, .btn, .no-print { display: none !important; }
+        .sheet { border: none; box-shadow: none; width: 100% !important; padding: 0 !important; }
+        @page { size: A4 landscape; margin: 0.5cm; }
+        .analysis-section { page-break-inside: avoid; }
+    }
+    </style>
+</head>
+<body onkeydown="navigateTable(event)">
+
+<div class="sheet">
+    <h2 type="text" id="judulujian" contenteditable="true">ANALISIS NILAI</h2>
+    
+    <div class="info-container">
+        <table class="info-table">
+            <tr><td>Satuan Pendidikan</td><td>:</td><td><input type="text" id="infoSekolah" class="nav-input" value="SMP NEGERI 8 CIKARANG UTARA" oninput="saveToLocal()"></td></tr>
+            <tr><td>Mata Pelajaran</td><td>:</td><td><input type="text" id="infoMapel" class="nav-input" value="-" oninput="saveToLocal()"></td></tr>
+            <tr><td>Materi Pokok</td><td>:</td><td><input type="text" id="infoMateri" class="nav-input" value="-" oninput="saveToLocal()"></td></tr>
+            <tr><td>Kelas/Semester</td><td>:</td><td><input type="text" id="infoKelas" class="nav-input" value="- / -" oninput="saveToLocal()"></td></tr>
+        </table>
+        <table class="info-table">
+            <tr><td>KKM</td><td>:</td><td><input type="number" id="infoKKM" class="nav-input" value="75" oninput="saveToLocal()"></td></tr>
+            <tr><td>Tahun Ajaran</td><td>:</td><td><input type="text" id="infoTahun" class="nav-input" value="2025-2026" oninput="saveToLocal()"></td></tr>
+            <tr><td>Tanggal</td><td>:</td><td><input type="text" id="infoTanggal" class="nav-input" value="00 Bulan 1990" oninput="saveToLocal()"></td></tr>
+            <tr><td>Banyak Siswa</td><td>:</td><td><input type="text" id="countSiswa" readonly value="0"></td></tr>
+        </table>
+    </div>
+
+    <div class="control-panel">
+        <div><label>Jml PG:</label><input type="number" id="inPG" value="10" style="width:40px;" oninput="saveToLocal()"></div>
+        <div><label>Jml Esai:</label><input type="number" id="inEsai" value="2" style="width:40px;" oninput="saveToLocal()"></div>
+        <button class="btn btn-update" onclick="initTable()">Update Struktur</button>
+        <button class="btn btn-calc" onclick="calculateAll()">Hitung Analisis</button>
+        <button class="btn btn-print" onclick="window.print()">Cetak</button>
+        <button class="btn btn-reset" onclick="confirmReset()">Reset Data</button>
+    </div>
+
+    <table id="mainTable">
+        <thead>
+            <tr id="h1"></tr>
+            <tr id="h2"></tr>
+            <tr class="bg-kunci" id="rowKunci"></tr>
+            <tr class="bg-header" id="rowMaks"></tr>
+        </thead>
+        <tbody id="studentBody"></tbody>
+        <tfoot id="tableFooter">
+            <tr class="bg-footer" id="fSum"></tr>
+            <tr class="bg-footer" id="fAvg"></tr>
+            <tr class="bg-footer" id="fIdeal"></tr>
+            <tr class="bg-footer" id="fPercent"></tr>
+            <tr class="bg-footer" id="fStatus"></tr>
+            <tr class="bg-kesimpulan" id="fTotalDayaSerap"></tr>
+            <tr class="bg-kesimpulan" id="fKesimpulanButir"></tr>
+        </tfoot>
+    </table>
+
+    <div style="margin-top: 15px;" class="no-print">
+        <button class="btn" onclick="addStudentRow(); saveToLocal();" style="background:#95a5a6; color:white;">+ Tambah Baris</button>
+    </div>
+
+    <div class="analysis-section">
+        <h3 id="displayJudul" style="text-align:center; margin-bottom:15px;">HASIL ANALISIS NILAI</h3>
+        <div class="analysis-grid">
+            <div class="analysis-box">
+                <div class="analysis-title">A. KETUNTASAN BELAJAR</div>
+                <table style="width:100%; border:none;">
+                    <tr><td style="border:none; text-align:left;">Siswa Ikut Ulangan</td><td style="border:none;">:</td><td style="border:none; text-align:left;" id="resSiswaIkut">-</td></tr>
+                    <tr><td style="border:none; text-align:left;">Siswa Tuntas Belajar</td><td style="border:none;">:</td><td style="border:none; text-align:left;" id="resSiswaTuntas">-</td></tr>
+                    <tr><td style="border:none; text-align:left;">Siswa Tidak Tuntas</td><td style="border:none;">:</td><td style="border:none; text-align:left;" id="resSiswaGagal">-</td></tr>
+                    <tr><td style="border:none; text-align:left;">Persentase Ketuntasan</td><td style="border:none;">:</td><td style="border:none; text-align:left;" id="resPersenTuntas">-</td></tr>
+                </table>
+            </div>
+            <div class="analysis-box">
+                <div class="analysis-title">B. KETUNTASAN BUTIR SOAL</div>
+                <table style="width:100%; border:none;">
+                    <tr><td style="border:none; text-align:left;">Banyak Soal</td><td style="border:none;">:</td><td style="border:none; text-align:left;" id="resJmlSoal">-</td></tr>
+                    <tr><td style="border:none; text-align:left;">Butir Soal Tuntas</td><td style="border:none;">:</td><td style="border:none; text-align:left;" id="resButirTuntas">-</td></tr>
+                    <tr><td style="border:none; text-align:left;">Butir Soal Tidak Tuntas</td><td style="border:none;">:</td><td style="border:none; text-align:left;" id="resButirGagal">-</td></tr>
+                    <tr><td style="border:none; text-align:left;">Daya Serap Klasikal</td><td style="border:none;">:</td><td style="border:none; text-align:left;" id="resDayaSerap">-</td></tr>
+                </table>
+            </div>
+        </div>
+        <div class="remedial-list">
+            <div class="analysis-title">C. TINDAK LANJUT (DAFTAR SISWA REMEDIAL)</div>
+            <div id="remedialNames" style="line-height:1.6;">-</div>
+        </div>
+
+        <div class="signature-grid">
+            <div class="sig-col">
+                <div>Mengetahui,</div>
+                <div>Kepala Sekolah</div>
+                <div class="sig-space"></div>
+                <div class="name-underlined">Hasanah Aisah, M.Pd</div>
+                <div>NIP. 196902031998022005</div>
+            </div>
+            <div class="sig-col">
+                <div>
+                    Cikarang Utara, 
+                    <input type="text" id="infoTanggal" class="nav-input" value="00 Bulan 0000" oninput="saveToLocal()" style="text-align:left; width:110px; text-transform: none;">
+                </div>
+                <div>Guru Mata Pelajaran</div>
+                <div class="sig-space"></div>
+                <div class="name-underlined">
+                    <input type="text" id="namaGuru" class="nav-input" value="Algian Manggara, S.Agr" oninput="saveToLocal()" style="font-weight:bold; text-align:center; text-transform: none;">
+                </div>
+                <div style="display:flex; gap:5px">
+                    NIP. <input type="text" id="nipGuru" class="nav-input" value="199404122025211046" oninput="saveToLocal()" style="text-align:left; width:150px; text-transform: none;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let nPG, nEsai;
+
+    function clearZero(el) {
+        if (el.value == "0") el.value = "";
+    }
+
+    function initTable() {
+        nPG = parseInt(document.getElementById('inPG').value) || 0;
+        nEsai = parseInt(document.getElementById('inEsai').value) || 0;
+
+        let h1Html = `<th rowspan="2" width="30">No</th><th rowspan="2" width="250">Nama Siswa / Jawaban PG</th><th rowspan="2" width="80">Ket</th><th colspan="${nPG}">Hasil Skor PG</th>`;
+        if (nEsai > 0) h1Html += `<th colspan="${nEsai}" class="col-esai-bg">Esai</th>`;
+        h1Html += `<th rowspan="2" width="50">Jml</th><th rowspan="2" width="50">NILAI</th><th colspan="2" width="60">Tuntas</th>`;
+        document.getElementById('h1').innerHTML = h1Html;
+
+        let h2 = '';
+        for(let i=1; i<=nPG; i++) h2 += `<th width="25">${i}</th>`;
+        for(let i=1; i<=nEsai; i++) h2 += `<th width="35" class="col-esai-bg">E${i}</th>`;
+        h2 += `<th>Ya</th><th>Tdk</th>`;
+        document.getElementById('h2').innerHTML = h2;
+
+        let rk = `<td colspan="2">Kunci Jawaban PG (Deret)</td><td>➔</td><td colspan="${nPG + nEsai}"><input type="text" id="kunciPG" class="input-jawaban-wide nav-input" placeholder="ABCDE..." oninput="saveToLocal()"></td><td colspan="4"></td>`;
+        document.getElementById('rowKunci').innerHTML = rk;
+
+        let rm = `<td colspan="3">Skor Maks Tiap Soal</td>`;
+        for(let i=0; i<nPG; i++) rm += `<td><input type="number" class="m-pg nav-input" value="1" oninput="saveToLocal()" onfocus="clearZero(this)"></td>`;
+        for(let i=0; i<nEsai; i++) rm += `<td class="col-esai-bg"><input type="number" class="m-esai nav-input" value="5" oninput="saveToLocal()" onfocus="clearZero(this)"></td>`;
+        rm += `<td id="totalMaksDisplay">-</td><td>100</td><td>-</td><td>-</td>`;
+        document.getElementById('rowMaks').innerHTML = rm;
+
+        document.getElementById('studentBody').innerHTML = '';
+        for(let i=0; i<5; i++) addStudentRow(); 
+        calculateAll();
+    }
+
+    function addStudentRow() {
+        const body = document.getElementById('studentBody');
+        const sIdx = (body.rows.length / 2) + 1;
+        
+        const tr1 = body.insertRow(-1);
+        tr1.innerHTML = `<td rowspan="2">${sIdx}</td>
+            <td><input type="text" class="input-nama nav-input" placeholder="Nama Siswa" oninput="saveToLocal()" onpaste="handlePaste(event, this)"></td>
+            <td style="color:#999; font-size:8px">Skor ⮕</td>` + 
+            Array(nPG).fill(0).map(() => `<td class="r-pg-score">0</td>`).join('') +
+            Array(nEsai).fill(0).map(() => `<td class="col-esai-bg"><input type="number" class="v-esai nav-input" value="0" oninput="saveToLocal()" onfocus="clearZero(this)"></td>`).join('') +
+            `<td rowspan="2" class="r-sum">-</td><td rowspan="2" class="r-val">-</td><td rowspan="2" class="r-ya">-</td><td rowspan="2" class="r-tdk">-</td>`;
+
+        const tr2 = body.insertRow(-1);
+        tr2.className = "row-detail";
+        tr2.innerHTML = `<td colspan="2" style="text-align:right"><span class="label-kecil">Jawaban PG:</span></td>
+            <td colspan="${nPG + nEsai}"><input type="text" class="v-ans-string input-jawaban-wide nav-input" placeholder="ABCDE..." oninput="saveToLocal()"></td>`;
+        
+        document.getElementById('countSiswa').value = sIdx;
+    }
+
+    function handlePaste(e, input) {
+        e.preventDefault();
+        const clipboard = (e.clipboardData || window.clipboardData).getData('Text');
+        const lines = clipboard.split(/\r?\n/).filter(l => l.trim() !== "");
+        if (lines.length > 1) {
+            const body = document.getElementById('studentBody');
+            let startIdx = Array.from(body.rows).indexOf(input.closest('tr'));
+            lines.forEach((val, i) => {
+                let targetIdx = startIdx + (i * 2);
+                if (!body.rows[targetIdx]) addStudentRow();
+                let targetInput = body.rows[targetIdx].querySelector('.input-nama');
+                if (targetInput) targetInput.value = val.trim();
+            });
+            saveToLocal();
+            calculateAll();
+        } else { input.value = clipboard; saveToLocal(); }
+    }
+
+    function calculateAll() {
+        const kkm = parseFloat(document.getElementById('infoKKM').value) || 75;
+        const kunci = (document.getElementById('kunciPG').value || "").toUpperCase().replace(/\s/g, '');
+        const mPG = Array.from(document.querySelectorAll('.m-pg')).map(i => parseFloat(i.value) || 0);
+        const mEsai = Array.from(document.querySelectorAll('.m-esai')).map(i => parseFloat(i.value) || 0);
+        const allMaks = [...mPG, ...mEsai];
+        const totalMaks = allMaks.reduce((a, b) => a + b, 0);
+        
+        document.getElementById('totalMaksDisplay').innerText = totalMaks;
+        const body = document.getElementById('studentBody');
+        let colSums = new Array(allMaks.length).fill(0);
+        let totalNilaiSiswa = 0, tuntasSiswa = 0, remedialNames = [];
+        let nSiswa = body.rows.length / 2;
+
+        for (let i = 0; i < body.rows.length; i += 2) {
+            const r1 = body.rows[i];
+            const r2 = body.rows[i+1];
+            const sIdx = (i/2) + 1;
+            const nama = r1.querySelector('.input-nama').value || "Siswa " + sIdx;
+            const ans = (r2.querySelector('.v-ans-string').value || "").toUpperCase().replace(/\s/g, '');
+            
+            let sRowPG = [];
+            r1.querySelectorAll('.r-pg-score').forEach((td, j) => {
+                let skor = (ans[j] === kunci[j] && kunci[j]) ? mPG[j] : 0;
+                td.innerText = skor;
+                sRowPG.push(skor);
+                colSums[j] += skor;
+            });
+
+            let sRowEsai = Array.from(r1.querySelectorAll('.v-esai')).map((inp, j) => {
+                let v = parseFloat(inp.value) || 0;
+                colSums[nPG + j] += v;
+                return v;
+            });
+
+            let rowSum = [...sRowPG, ...sRowEsai].reduce((a, b) => a + b, 0);
+            let rowVal = totalMaks > 0 ? Math.round((rowSum / totalMaks) * 100) : 0;
+            totalNilaiSiswa += rowVal;
+
+            r1.querySelector('.r-sum').innerText = rowSum;
+            r1.querySelector('.r-val').innerText = rowVal;
+            r1.querySelector('.r-ya').innerText = rowVal >= kkm ? 'V' : '';
+            r1.querySelector('.r-tdk').innerText = rowVal < kkm ? 'V' : '';
+            r1.querySelector('.r-val').style.color = rowVal < kkm ? 'red' : 'black';
+
+            if(rowVal < kkm) { remedialNames.push(`${sIdx}. ${nama}`); } else { tuntasSiswa++; }
+        }
+
+        document.getElementById('resSiswaIkut').innerText = nSiswa;
+        document.getElementById('resSiswaTuntas').innerText = tuntasSiswa;
+        document.getElementById('resSiswaGagal').innerText = nSiswa - tuntasSiswa;
+        document.getElementById('resPersenTuntas').innerText = nSiswa > 0 ? (tuntasSiswa/nSiswa*100).toFixed(1) + "%" : "0%";
+        document.getElementById('resJmlSoal').innerText = allMaks.length;
+        document.getElementById('resDayaSerap').innerText = nSiswa > 0 ? (totalNilaiSiswa/nSiswa).toFixed(1) + "%" : "0%";
+        document.getElementById('remedialNames').innerText = remedialNames.length ? remedialNames.join(', ') : "Semua Tuntas.";
+
+        renderFooter(colSums, allMaks, nSiswa, totalNilaiSiswa);
+    }
+
+    function renderFooter(sums, maks, n, totalNilai) {
+        const ids = ['fSum', 'fAvg', 'fIdeal', 'fPercent', 'fStatus'];
+        const labels = ['Jumlah Skor', 'Rata-rata', 'Skor Ideal', '% Capaian', 'Ketuntasan'];
+        let countTuntasButir = 0;
+
+        ids.forEach((id, idx) => {
+            let html = `<td colspan="3">${labels[idx]}</td>`;
+            sums.forEach((sum, i) => {
+                let val = "-";
+                if(n > 0) {
+                    if(idx === 0) val = sum;
+                    if(idx === 1) val = (sum / n).toFixed(1);
+                    if(idx === 2) val = n * maks[i];
+                    if(idx === 3) val = Math.round(sum / (n * maks[i]) * 100) + "%";
+                    if(idx === 4) {
+                        let pct = (sum / (n * maks[i]) * 100);
+                        if(pct >= 75) { val = "Ya"; countTuntasButir++; } else { val = "Td"; }
+                    }
+                }
+                html += `<td class="${i >= nPG ? 'col-esai-bg' : ''}">${val}</td>`;
+            });
+            document.getElementById(id).innerHTML = html + `<td colspan="4"></td>`;
+        });
+
+        if(n > 0) {
+            let avgDS = Math.round(totalNilai / n);
+            document.getElementById('fTotalDayaSerap').innerHTML = `<td colspan="3">TOTAL DAYA SERAP</td><td colspan="${sums.length}">${avgDS}%</td><td colspan="4">KESIMPULAN: ${avgDS >= 75 ? 'BAIK' : 'CUKUP'}</td>`;
+            document.getElementById('fKesimpulanButir').innerHTML = `<td colspan="3">KETUNTASAN BUTIR</td><td colspan="${sums.length}">${countTuntasButir} dari ${sums.length} Tuntas</td><td colspan="4">EFEKTIVITAS: ${Math.round(countTuntasButir/sums.length*100)}%</td>`;
+            document.getElementById('resButirTuntas').innerText = countTuntasButir;
+            document.getElementById('resButirGagal').innerText = sums.length - countTuntasButir;
+        }
+    }
+
+    function saveToLocal() {
+        const data = {
+            info: {
+                sekolah: document.getElementById('infoSekolah').value,
+                mapel: document.getElementById('infoMapel').value,
+                materi: document.getElementById('infoMateri').value,
+                kelas: document.getElementById('infoKelas').value,
+                kkm: document.getElementById('infoKKM').value,
+                tahun: document.getElementById('infoTahun').value,
+                tanggal: document.getElementById('infoTanggal').value,
+                nPG: document.getElementById('inPG').value,
+                nEsai: document.getElementById('inEsai').value,
+                kunci: document.getElementById('kunciPG').value,
+                namaGuru: document.getElementById('namaGuru').value,
+                nipGuru: document.getElementById('nipGuru').value
+            },
+            maksPG: Array.from(document.querySelectorAll('.m-pg')).map(i => i.value),
+            maksEsai: Array.from(document.querySelectorAll('.m-esai')).map(i => i.value),
+            students: Array.from(document.querySelectorAll('#studentBody tr:not(.row-detail)')).map((r, i) => ({
+                nama: r.querySelector('.input-nama').value,
+                ans: document.querySelectorAll('.v-ans-string')[i].value,
+                esai: Array.from(r.querySelectorAll('.v-esai')).map(e => e.value)
+            }))
+        };
+        localStorage.setItem('sumatif_final_storage', JSON.stringify(data));
+        document.getElementById('displayJudul').innerText = document.getElementById('judulujian').innerText;
+    }
+
+    function loadFromLocal() {
+        const saved = localStorage.getItem('sumatif_final_storage');
+        if (!saved) { initTable(); return; }
+        const data = JSON.parse(saved);
+        
+        document.getElementById('infoSekolah').value = data.info.sekolah;
+        document.getElementById('infoMapel').value = data.info.mapel;
+        document.getElementById('infoMateri').value = data.info.materi;
+        document.getElementById('infoKelas').value = data.info.kelas;
+        document.getElementById('infoKKM').value = data.info.kkm;
+        document.getElementById('infoTahun').value = data.info.tahun;
+        document.getElementById('infoTanggal').value = data.info.tanggal;
+        document.getElementById('inPG').value = data.info.nPG;
+        document.getElementById('inEsai').value = data.info.nEsai;
+        document.getElementById('namaGuru').value = data.info.namaGuru;
+        document.getElementById('nipGuru').value = data.info.nipGuru;
+
+        initTable();
+
+        document.getElementById('kunciPG').value = data.info.kunci;
+        const mPG = document.querySelectorAll('.m-pg');
+        data.maksPG.forEach((v, i) => { if(mPG[i]) mPG[i].value = v; });
+        const mEsai = document.querySelectorAll('.m-esai');
+        data.maksEsai.forEach((v, i) => { if(mEsai[i]) mEsai[i].value = v; });
+
+        document.getElementById('studentBody').innerHTML = '';
+        data.students.forEach((s, idx) => {
+            addStudentRow();
+            const rows = document.getElementById('studentBody').rows;
+            const rMain = rows[idx * 2];
+            const rDetail = rows[(idx * 2) + 1];
+            rMain.querySelector('.input-nama').value = s.nama;
+            rDetail.querySelector('.v-ans-string').value = s.ans;
+            const esaiInputs = rMain.querySelectorAll('.v-esai');
+            s.esai.forEach((ev, ei) => { if(esaiInputs[ei]) esaiInputs[ei].value = ev; });
+        });
+        calculateAll();
+    }
+
+    function confirmReset() {
+        if(confirm("Hapus semua data inputan?")) {
+            localStorage.removeItem('sumatif_final_storage');
+            location.reload();
+        }
+    }
+
+    function navigateTable(e) {
+        const active = document.activeElement;
+        if (!active || active.tagName !== 'INPUT') return;
+        const keys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter"];
+        if (!keys.includes(e.key)) return;
+        const allInputs = Array.from(document.querySelectorAll('.nav-input'));
+        const currentIndex = allInputs.indexOf(active);
+        const currentTd = active.closest('td');
+        const currentTr = active.closest('tr');
+        const colIndex = currentTd.cellIndex;
+        let target;
+        if (e.key === "ArrowDown" || e.key === "Enter") {
+            e.preventDefault();
+            let nextTr = currentTr.nextElementSibling;
+            while (nextTr) {
+                target = nextTr.cells[colIndex]?.querySelector('input');
+                if (target) break;
+                nextTr = nextTr.nextElementSibling;
+            }
+        } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            let prevTr = currentTr.previousElementSibling;
+            while (prevTr) {
+                target = prevTr.cells[colIndex]?.querySelector('input');
+                if (target) break;
+                prevTr = prevTr.previousElementSibling;
+            }
+        } else if (e.key === "ArrowRight") {
+            if (active.selectionEnd === active.value.length) target = allInputs[currentIndex + 1];
+        } else if (e.key === "ArrowLeft") {
+            if (active.selectionStart === 0) target = allInputs[currentIndex - 1];
+        }
+        if (target) {
+            target.focus();
+            if (target.tagName === 'INPUT') target.select();
+        }
+    }
+
+    window.onload = loadFromLocal;
+</script>
+</body>
+</html>
