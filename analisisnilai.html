@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analisis Hasil Sumatif - SMPN 8 Cikarang Utara</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
     <style>
     body { font-family: Arial, sans-serif; font-size: 11px; background: #f0f2f5; padding: 20px; }
     .sheet { background: white; padding: 25px; border: 1px solid #ccc; min-width: 1150px; margin: auto; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
@@ -147,7 +148,7 @@
             <div class="sig-col">
                 <div>
                     Cikarang Utara, 
-                    <input type="text" id="infoTanggal" class="nav-input" value="00 Bulan 0000" oninput="saveToLocal()" style="text-align:left; width:110px; text-transform: none;">
+                    <input type="text" id="infoTanggal" class="nav-input" value="00 Bulan 1990" oninput="saveToLocal()" style="text-align:left; width:110px; text-transform: none;">
                 </div>
                 <div>Guru Mata Pelajaran</div>
                 <div class="sig-space"></div>
@@ -213,7 +214,7 @@
         const tr2 = body.insertRow(-1);
         tr2.className = "row-detail";
         tr2.innerHTML = `<td colspan="2" style="text-align:right"><span class="label-kecil">Jawaban PG:</span></td>
-            <td colspan="${nPG + nEsai}"><input type="text" class="v-ans-string input-jawaban-wide nav-input" placeholder="ABCDE..." oninput="saveToLocal()"></td>`;
+            <td colspan="${nPG + nEsai}"><input type="text" class="v-ans-string input-jawaban-wide nav-input" placeholder="---" oninput="saveToLocal()"></td>`;
         
         document.getElementById('countSiswa').value = sIdx;
     }
