@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Ujian Anti-Curang</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; user-select: none; }
+        #exam-container { display: none; }
+        .warning { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen">
+        <h2>Ujian Online Sekolah</h2>
+        <p>Klik tombol di bawah untuk memulai. Ujian akan otomatis dibatalkan jika Anda keluar dari layar ini.</p>
+        <button onclick="startExam()">Mulai Ujian (Full Screen)</button>
+    </div>
+
+    <div id="exam-container">
+        <h1>Soal Ujian Sedang Berlangsung</h1>
+        <p>Jangan keluar dari mode Fullscreen atau membuka aplikasi lain!</p>
+        <!-- Form Ujian Disini -->
+        <button onclick="submitExam()">Selesai Ujian</button>
+    </div>
+
+    <script>
+        const examContainer = document.getElementById('exam-container');
+        const startScreen = document.getElementById('start-screen');
+
+        function startExam() {
+            // Aktifkan Fullscreen
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { // Safari
+                elem.webkitRequestFullscreen();
+            }
+
+            startScreen.style.display = 'none';
+            examContainer.style.display = 'block';
+
+            // Jalankan deteksi kecurangan
+            activateAntiCheat();
+        }
+
+        function activateAntiCheat() {
+            // 1. Deteksi Ganti Tab atau Keluar Browser
+            document.addEventListener("visibilitychange", () => {
+                if (document.hidden) {
+                    forceSubmit("Keluar dari tab/browser terdeteksi!");
+                }
+            });
+
+            // 2. Deteksi Jendela Mengambang atau Notifikasi (Loss of Focus)
+            window.addEventListener("blur", () => {
+                forceSubmit("Gangguan sistem atau jendela mengambang terdeteksi!");
+            });
+
+            // 3. Deteksi Keluar dari Fullscreen
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement) {
+                    forceSubmit("Mode Fullscreen dimatikan!");
+                }
+            });
+        }
+
+        function forceSubmit(reason) {
+            alert("Ujian DIBATALKAN: " + reason);
+            // Logika untuk mengirim data jawaban yang tersisa ke server secara otomatis
+            window.location.reload(); // Reset halaman
+        }
+
+        function submitExam() {
+            alert("Ujian selesai dengan sukses!");
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>
