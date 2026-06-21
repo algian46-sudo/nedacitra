@@ -52,6 +52,23 @@
         .form-group textarea, .form-group input { width: 100%; padding: 10px 14px; box-sizing: border-box; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px; background: #fff; transition: border 0.2s; }
         .form-group textarea:focus, .form-group input:focus { outline: none; border-color: var(--secondary-color); }
         
+        /* EDITABLE AREA KHUSUS UNTUK MENANGKAP GAMBAR (RICH TEXT) */
+        .rich-editor {
+            width: 100%;
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            background: #fff;
+            white-space: pre-wrap;
+        }
+        .rich-editor:focus { outline: none; border-color: var(--secondary-color); box-shadow: 0 0 0 1px var(--secondary-color); }
+        .rich-editor img { max-width: 200px; max-height: 150px; display: block; margin: 10px 0; border: 1px solid #ddd; }
+
         .step-box { background: #f0fdf4; border-left: 4px solid var(--accent-color); padding: 15px; margin-bottom: 20px; border-radius: 6px; font-size: 13.5px; line-height: 1.6; color: #166534; }
         
         /* TOMBOL AKSI CONTROLS */
@@ -105,7 +122,8 @@
         .no-soal-title { border-bottom: 1px solid black; font-weight: bold; font-size: 11px; padding: 2px; }
         .no-soal-num { font-weight: bold; font-size: 14px; padding: 4px; }
 
-        .rumusan-text-area { font-size: 12px; line-height: 1.5; white-space: pre-line; padding-top: 5px; min-height: 180px; }
+        .rumusan-text-area { font-size: 12px; line-height: 1.5; padding-top: 5px; min-height: 180px; }
+        .rumusan-text-area img { max-width: 100%; max-height: 160px; display: block; margin: 8px 0; }
         
         .kunci-badge { border: 1px solid black; text-align: center; width: 50px; margin-top: 15px; }
         .kunci-title { border-bottom: 1px solid black; font-weight: bold; font-size: 11px; padding: 2px; }
@@ -197,15 +215,15 @@
         <div class="card-panel">
             <h3 style="margin-top:0; color: var(--primary-color);">2. Input Data & Eksekusi Komponen AI</h3>
             <div class="step-box">
-                <strong>Panduan Langkah:</strong><br>
-                1. Masukkan rumusan butir soal mentah di bawah ini.<br>
-                2. Klik <strong>"Salin Perintah & Analisis AI"</strong>. Sistem membuka tab Gemini secara terpisah.<br>
-                3. Tempel (Paste) di kolom chat Gemini, kirim, lalu salin satu baris teks output bergaris tegak (|) kembali ke sini.
+                <strong>Panduan Langkah Baru (Bisa Pakai Gambar):</strong><br>
+                1. Silakan blok soal di Word **sekaligus dengan gambarnya**, lalu Copy (Ctrl+C).<br>
+                2. Tempel (Paste/Ctrl+V) di kotak editor visual di bawah. Gambar otomatis akan langsung ter-render.<br>
+                3. Klik **"Salin Perintah & Analisis AI"** (AI hanya akan membaca instruksi teks), lalu tempel hasilnya seperti biasa.
             </div>
 
             <div class="form-group">
-                <label id="labelSoalMentah">Masukkan Soal Pilihan Ganda Mentah Anda:</label>
-                <textarea id="rawSoal" rows="5" placeholder="Masukkan teks pertanyaan beserta opsi pilihan jawaban / perintah uraian di sini..."></textarea>
+                <label id="labelSoalMentah">Masukkan Soal Pilihan Ganda Mentah Anda (Mendukung Gambar):</label>
+                <div id="rawSoal" class="rich-editor" contenteditable="true" placeholder="Paste soal teks + gambar Anda di sini..."></div>
             </div>
 
             <div class="form-group" id="formGroupSkor" style="display: none;">
@@ -239,7 +257,6 @@
     <div id="printArea" class="print-container"></div>
 
     <script>
-        // INISIALISASI DATABASE LOKAL BROWSER (LOCALSTORAGE)
         let currentTab = 'PG';
         let lembarKerjaList = JSON.parse(localStorage.getItem('lembarKerjaData')) || [];
         let configData = JSON.parse(localStorage.getItem('configData')) || {};
@@ -255,11 +272,11 @@
             document.getElementById('tabUraian').className = (type === 'Uraian') ? 'tab-btn active' : 'tab-btn';
             
             if(type === 'Uraian') {
-                document.getElementById('labelSoalMentah').innerText = "Masukkan Soal Uraian Mentah Anda:";
-                document.getElementById('formGroupSkor').style.display = 'block'; // Tampilkan input skor
+                document.getElementById('labelSoalMentah').innerText = "Masukkan Soal Uraian Mentah Anda (Mendukung Gambar):";
+                document.getElementById('formGroupSkor').style.display = 'block';
             } else {
-                document.getElementById('labelSoalMentah').innerText = "Masukkan Soal Pilihan Ganda Mentah Anda:";
-                document.getElementById('formGroupSkor').style.display = 'none'; // Sembunyikan input skor
+                document.getElementById('labelSoalMentah').innerText = "Masukkan Soal Pilihan Ganda Mentah Anda (Mendukung Gambar):";
+                document.getElementById('formGroupSkor').style.display = 'none';
             }
         }
 
@@ -297,9 +314,10 @@
         }
 
         function salinPromptKeAI() {
-            const rawSoal = document.getElementById('rawSoal').value;
+            // Mengambil teks murni saja untuk diproses oleh AI agar tidak merusak perintah prompt
+            const rawSoalText = document.getElementById('rawSoal').innerText;
             const mapel = document.getElementById('inputMapel').value;
-            if(!rawSoal.trim()) return alert('Isi teks soal mentah terlebih dahulu.');
+            if(!rawSoalText.trim()) return alert('Isi teks soal mentah terlebih dahulu.');
 
             let additionalInstruction = currentTab === 'PG' ? 
                 "Kunci Jawaban (Hanya satu huruf kapital A/B/C/D)" : 
@@ -311,7 +329,7 @@ Analisis soal berikut ini dengan cermat. Berikan output analisis HANYA dalam sat
 Tujuan Pembelajaran | Materi Soal | Indikator Soal | Level Kognitif (Pilih salah satu di antara tiga ini: Pengetahuan / Aplikasi / Penalaran) | ${additionalInstruction}
 
 Berikut adalah teks soalnya:
-${rawSoal}`;
+${rawSoalText}`;
 
             navigator.clipboard.writeText(promptFormat);
             alert('Perintah instruksi komplit berhasil disalin! Tab halaman Gemini Web akan segera terbuka.');
@@ -320,10 +338,11 @@ ${rawSoal}`;
 
         function prosesTambahHalaman() {
             const aiData = document.getElementById('aiResponseInput').value;
-            const rawSoal = document.getElementById('rawSoal').value;
+            const rawSoalHTML = document.getElementById('rawSoal').innerHTML; // Mengambil konten HTML (termasuk gambar)
+            const rawSoalText = document.getElementById('rawSoal').innerText;
             const skorUraian = document.getElementById('inputSkorUraian').value;
 
-            if(!aiData.trim() || !rawSoal.trim()) {
+            if(!aiData.trim() || !rawSoalText.trim()) {
                 return alert('Pastikan parameter input soal mentah dan baris teks respon dari AI terisi.');
             }
 
@@ -340,15 +359,15 @@ ${rawSoal}`;
                 indikator: kepingan[2].trim(),
                 levelKognitif: kepingan[3].trim(),
                 kunciOrKriteria: kepingan[4].trim(),
-                soalText: rawSoal,
-                skor: currentTab === 'Uraian' ? skorUraian : '' // Menyimpan nilai skor
+                soalHTML: rawSoalHTML, // Kita simpan bentuk HTML-nya agar gambarnya awet
+                skor: currentTab === 'Uraian' ? skorUraian : ''
             };
 
             lembarKerjaList.push(itemLembar);
             localStorage.setItem('lembarKerjaData', JSON.stringify(lembarKerjaList));
             
-            // Reset input parsial
-            document.getElementById('rawSoal').value = '';
+            // Reset input editor visual dan respon
+            document.getElementById('rawSoal').innerHTML = '';
             document.getElementById('aiResponseInput').value = '';
             
             renderSemuaHalaman();
@@ -382,7 +401,6 @@ ${rawSoal}`;
                 return;
             }
 
-            // Ambil data konfigurasi terupdate
             const judul = document.getElementById('inputJudul').value;
             const sekolah = document.getElementById('inputSekolah').value;
             const kelas = document.getElementById('inputKelas').value;
@@ -400,7 +418,6 @@ ${rawSoal}`;
             lembarKerjaList.forEach((item, index) => {
                 const nomorSoal = index + 1;
 
-                // 1. Render item baris di dashboard monitoring control
                 const rowItem = document.createElement('div');
                 rowItem.className = 'page-item-row';
                 rowItem.innerHTML = `
@@ -409,13 +426,11 @@ ${rawSoal}`;
                 `;
                 monitorList.appendChild(rowItem);
 
-                // 2. Logic Ceklis Level Kognitif
                 let chkPemahaman = "", chkAplikasi = "", chkPenalaran = "";
                 if(item.levelKognitif.toLowerCase().includes("pengetahuan") || item.levelKognitif.toLowerCase().includes("pemahaman")) chkPemahaman = "V";
                 else if (item.levelKognitif.toLowerCase().includes("aplikasi")) chkAplikasi = "V";
                 else if (item.levelKognitif.toLowerCase().includes("penalaran")) chkPenalaran = "V";
 
-                // 3. Render Struktur HTML Cetak
                 let tableContentHTML = '';
 
                 if(item.tipe === 'PG') {
@@ -471,7 +486,7 @@ ${rawSoal}`;
                                 <td colspan="3" rowspan="2">
                                     <strong>Rumusan Butir Soal</strong>
                                     <div class="no-soal-badge"><div class="no-soal-title">No soal</div><div class="no-soal-num">${nomorSoal}</div></div>
-                                    <div class="rumusan-text-area">${item.soalText}</div>
+                                    <div class="rumusan-text-area">${item.soalHTML}</div>
                                     <div class="kunci-badge"><div class="kunci-title">Kunci</div><div class="kunci-letter">${item.kunciOrKriteria}</div></div>
                                 </td>
                             </tr>
@@ -533,7 +548,7 @@ ${rawSoal}`;
                                 <td colspan="3">
                                     <strong>Rumusan Butir Soal</strong>
                                     <div class="no-soal-badge"><div class="no-soal-title">No soal</div><div class="no-soal-num">${nomorSoal}</div></div>
-                                    <div class="rumusan-text-area">${item.soalText}</div>
+                                    <div class="rumusan-text-area">${item.soalHTML}</div>
                                 </td>
                             </tr>
                         </table>
@@ -556,7 +571,6 @@ ${rawSoal}`;
             });
         }
 
-        // FUNGSI EKSPOR MANUAL KE FORMAT WORD (.DOC)
         function eksporKeWord() {
             if(lembarKerjaList.length === 0) return alert('Tidak ada data untuk diekspor.');
             
@@ -578,6 +592,7 @@ ${rawSoal}`;
                     .chk-box { border: 1px solid black; width: 15px; height: 15px; text-align: center; display: inline-block; font-weight: bold; }
                     .table-uraian-footer { width: 100%; margin-top: -1px; }
                     .table-uraian-footer td { border: 1px solid black; }
+                    .rumusan-text-area img { max-width: 400px; height: auto; }
                 </style>
             </head>
             <body>
@@ -589,7 +604,7 @@ ${rawSoal}`;
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'KARTU_SOAL_ASAT_ASAJ.doc';
+            a.download = 'KARTU_SOAL_LENGKAP_GAMBAR.doc';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
