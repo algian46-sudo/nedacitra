@@ -55,13 +55,14 @@
         .sheet { border: none; box-shadow: none; width: 100% !important; padding: 0 !important; }
         @page { size: A4 landscape; margin: 0.5cm; }
         .analysis-section { page-break-inside: avoid; }
+        .page-break-analysis { page-break-before: always !important; margin-top: 30px !important; }
     }
     </style>
 </head>
 <body onkeydown="navigateTable(event)">
 
 <div class="sheet">
-    <h2 type="text" id="judulujian" contenteditable="true">ANALISIS NILAI</h2>
+    <h2 id="judulujian" contenteditable="true" oninput="syncJudul()">ANALISIS NILAI</h2>
     
     <div class="info-container">
         <table class="info-table">
@@ -111,7 +112,7 @@
     </div>
 
     <div class="analysis-section">
-        <h3 id="displayJudul" style="text-align:center; margin-bottom:15px;">HASIL ANALISIS NILAI</h3>
+        <h3 id="displayJudul" style="text-align:center; margin-bottom:15px; text-transform:uppercase;">HASIL ANALISIS NILAI</h3>
         <div class="analysis-grid">
             <div class="analysis-box">
                 <div class="analysis-title">A. KETUNTASAN BELAJAR</div>
@@ -137,6 +138,35 @@
             <div id="remedialNames" style="line-height:1.6;">-</div>
         </div>
 
+        <div class="page-break-analysis" style="margin-top: 30px; border-top: 3px double #333; padding-top: 20px;">
+            <h3 id="displayJudulButir" style="text-align:center; text-transform:uppercase; font-size:14px; margin-bottom:15px;">ANALISIS BUTIR SOAL</h3>
+            <table id="itemAnalysisTable" style="width: 100%; border-collapse: collapse; table-layout: auto;">
+                <thead>
+                    <tr class="bg-header">
+                        <th rowspan="2" width="30">No.</th>
+                        <th rowspan="2" width="40">No. Item</th>
+                        <th colspan="3">Statistika Item</th>
+                        <th colspan="3">Statistics Option</th>
+                        <th colspan="4">Tafsiran</th>
+                    </tr>
+                    <tr class="bg-header">
+                        <th width="60">Prop. Correct</th>
+                        <th width="60">Biser</th>
+                        <th width="60">Point Biser</th>
+                        <th width="30">Opt.</th>
+                        <th width="60">Prop. Endorsing</th>
+                        <th width="80">Key/ Kunci Option #</th>
+                        <th width="120">Daya Beda</th>
+                        <th width="80">Tingkat Kesukaran</th>
+                        <th width="140">Efektifitas Option</th>
+                        <th width="135">Status Soal</th>
+                    </tr>
+                </thead>
+                <tbody id="itemAnalysisBody">
+                    <tr><td colspan="12" style="padding:10px; color:#999;">Belum ada data kalkulasi analisis.</td></tr>
+                </tbody>
+            </table>
+        </div>
         <div class="signature-grid">
             <div class="sig-col">
                 <div>Mengetahui,</div>
@@ -148,7 +178,7 @@
             <div class="sig-col">
                 <div>
                     Cikarang Utara, 
-                    <input type="text" id="infoTanggal" class="nav-input" value="00 Bulan 1990" oninput="saveToLocal()" style="text-align:left; width:110px; text-transform: none;">
+                    <input type="text" id="infoTanggalBawah" class="nav-input" value="00 Bulan 1990" oninput="saveToLocal()" style="text-align:left; width:110px; text-transform: none;">
                 </div>
                 <div>Guru Mata Pelajaran</div>
                 <div class="sig-space"></div>
@@ -170,6 +200,12 @@
         if (el.value == "0") el.value = "";
     }
 
+    function syncJudul() {
+        const text = document.getElementById('judulujian').innerText;
+        document.getElementById('displayJudul').innerText = "HASIL " + text;
+        document.getElementById('displayJudulButir').innerText = text + " (ANALISIS BUTIR SOAL)";
+    }
+
     function initTable() {
         nPG = parseInt(document.getElementById('inPG').value) || 0;
         nEsai = parseInt(document.getElementById('inEsai').value) || 0;
@@ -185,7 +221,7 @@
         h2 += `<th>Ya</th><th>Tdk</th>`;
         document.getElementById('h2').innerHTML = h2;
 
-        let rk = `<td colspan="2">Kunci Jawaban PG (Deret)</td><td>➔</td><td colspan="${nPG + nEsai}"><input type="text" id="kunciPG" class="input-jawaban-wide nav-input" placeholder="ABCDE..." oninput="saveToLocal()"></td><td colspan="4"></td>`;
+        let rk = `<td colspan="2">Kunci Jawaban PG (Deret)</td><td>➔</td><td colspan="${nPG + nEsai}"><input type="text" id="kunciPG" class="input-jawaban-wide nav-input" placeholder="ABCD..." oninput="saveToLocal()"></td><td colspan="4"></td>`;
         document.getElementById('rowKunci').innerHTML = rk;
 
         let rm = `<td colspan="3">Skor Maks Tiap Soal</td>`;
@@ -196,6 +232,7 @@
 
         document.getElementById('studentBody').innerHTML = '';
         for(let i=0; i<5; i++) addStudentRow(); 
+        syncJudul();
         calculateAll();
     }
 
@@ -294,6 +331,119 @@
         document.getElementById('remedialNames').innerText = remedialNames.length ? remedialNames.join(', ') : "Semua Tuntas.";
 
         renderFooter(colSums, allMaks, nSiswa, totalNilaiSiswa);
+
+        // ================= KODE LOGIKA: ANALISIS BUTIR SOAL DEFAULTS ABCD =================
+        const analysisBody = document.getElementById('itemAnalysisBody');
+        analysisBody.innerHTML = ''; 
+
+        if (nSiswa > 0 && nPG > 0) {
+            let totalScores = [];
+            let studentData = []; 
+
+            for (let i = 0; i < body.rows.length; i += 2) {
+                const r1 = body.rows[i];
+                const r2 = body.rows[i+1];
+                const scoreTotal = parseFloat(r1.querySelector('.r-sum').innerText) || 0;
+                const ansString = (r2.querySelector('.v-ans-string').value || "").toUpperCase().replace(/\s/g, '');
+                
+                totalScores.push(scoreTotal);
+                studentData.push({ ans: ansString, total: scoreTotal });
+            }
+
+            const Mt = totalScores.reduce((a, b) => a + b, 0) / nSiswa;
+            const varianceT = totalScores.reduce((a, b) => a + Math.pow(b - Mt, 2), 0) / nSiswa;
+            const SDt = Math.sqrt(varianceT) || 1; 
+
+            for (let j = 0; j < nPG; j++) {
+                const kunciButir = kunci[j] || '';
+                let optCounts = { 'A': 0, 'B': 0, 'C': 0, 'D': 0 };
+                let totalSkorSiswaBenar = 0;
+                let jumlahSiswaBenar = 0;
+
+                studentData.forEach(student => {
+                    let pilihan = student.ans[j] || '';
+                    if (['A', 'B', 'C', 'D'].includes(pilihan)) {
+                        optCounts[pilihan]++;
+                    }
+
+                    if (pilihan === kunciButir && kunciButir !== '') {
+                        jumlahSiswaBenar++;
+                        totalSkorSiswaBenar += student.total;
+                    }
+                });
+
+                const p = jumlahSiswaBenar / nSiswa; 
+                const q = 1 - p;
+                const Mp = jumlahSiswaBenar > 0 ? (totalSkorSiswaBenar / jumlahSiswaBenar) : 0; 
+
+                let rpbi = 0;
+                if (p > 0 && q > 0) {
+                    rpbi = ((Mp - Mt) / SDt) * Math.sqrt(p / q);
+                }
+                
+                let rbis = rpbi * 1.25; 
+                if (rbis > 1) rbis = 1.00;
+                if (rbis < -1) rbis = -1.00;
+
+                const options = ['A', 'B', 'C', 'D'];
+                
+                let tafsiranKesukaran = "Sedang";
+                if (p < 0.30) tafsiranKesukaran = "Sulit";
+                if (p > 0.70) tafsiranKesukaran = "Mudah";
+
+                let tafsiranDayaBeda = "Dapat Membedakan";
+                if (rpbi < 0.20) tafsiranDayaBeda = "Tidak dapat membedakan";
+
+                let opsiKurangEfektif = false;
+                options.forEach(opt => {
+                    if (opt !== kunciButir) {
+                        const propEndorsing = optCounts[opt] / nSiswa;
+                        if (propEndorsing > 0 && propEndorsing < 0.05) opsiKurangEfektif = true; 
+                    }
+                });
+                let tafsiranOpsi = opsiKurangEfektif ? "Ada Option lain yang bekerja lebih baik." : "Baik";
+
+                let statusSoal = "Dapat diterima";
+                let statusColor = "black";
+                if (rpbi < 0.20 || p < 0.15) {
+                    statusSoal = "Ditolak/ Jangan Digunakan";
+                    statusColor = "red";
+                } else if (opsiKurangEfektif || rpbi < 0.30) {
+                    statusSoal = "Direvisi";
+                    statusColor = "orange";
+                }
+
+                options.forEach((opt, optIdx) => {
+                    const tr = document.createElement('tr');
+                    const propEndorsing = optCounts[opt] / nSiswa;
+                    const isKey = (opt === kunciButir) ? '#' : '';
+
+                    let rowHtml = '';
+                    if (optIdx === 0) {
+                        rowHtml += `<td rowspan="4" style="vertical-align: middle;">${j + 1}</td><td rowspan="4" style="vertical-align: middle;">${j + 1}</td>`;
+                        rowHtml += `<td rowspan="4" style="vertical-align: middle;">${p.toFixed(3)}</td>`;
+                        rowHtml += `<td rowspan="4" style="vertical-align: middle;">${rbis.toFixed(3)}</td>`;
+                        rowHtml += `<td rowspan="4" style="vertical-align: middle;">${rpbi.toFixed(3)}</td>`;
+                    }
+
+                    rowHtml += `<td>${opt}</td>`;
+                    rowHtml += `<td>${propEndorsing.toFixed(3)}</td>`;
+                    rowHtml += `<td class="bg-kunci" style="font-weight:bold">${isKey}</td>`;
+
+                    if (optIdx === 0) {
+                        rowHtml += `<td rowspan="4" style="vertical-align: middle; text-align: left; padding-left: 5px;">${tafsiranDayaBeda}</td>`;
+                        rowHtml += `<td rowspan="4" style="vertical-align: middle;">${tafsiranKesukaran}</td>`;
+                        rowHtml += `<td rowspan="4" style="vertical-align: middle; text-align: left; padding-left: 5px;">${tafsiranOpsi}</td>`;
+                        rowHtml += `<td rowspan="4" style="vertical-align: middle; color:${statusColor}; font-weight:bold;">${statusSoal}</td>`;
+                    }
+
+                    tr.innerHTML = rowHtml;
+                    analysisBody.appendChild(tr);
+                });
+            }
+        } else {
+            analysisBody.innerHTML = '<tr><td colspan="12" style="padding:10px; color:#999;">Masukan data siswa dan soal untuk memulai perhitungan.</td></tr>';
+        }
     }
 
     function renderFooter(sums, maks, n, totalNilai) {
@@ -339,6 +489,7 @@
                 kkm: document.getElementById('infoKKM').value,
                 tahun: document.getElementById('infoTahun').value,
                 tanggal: document.getElementById('infoTanggal').value,
+                tanggalBawah: document.getElementById('infoTanggalBawah').value,
                 nPG: document.getElementById('inPG').value,
                 nEsai: document.getElementById('inEsai').value,
                 kunci: document.getElementById('kunciPG').value,
@@ -354,7 +505,7 @@
             }))
         };
         localStorage.setItem('sumatif_final_storage', JSON.stringify(data));
-        document.getElementById('displayJudul').innerText = document.getElementById('judulujian').innerText;
+        syncJudul();
     }
 
     function loadFromLocal() {
@@ -369,6 +520,7 @@
         document.getElementById('infoKKM').value = data.info.kkm;
         document.getElementById('infoTahun').value = data.info.tahun;
         document.getElementById('infoTanggal').value = data.info.tanggal;
+        if(data.info.tanggalBawah) document.getElementById('infoTanggalBawah').value = data.info.tanggalBawah;
         document.getElementById('inPG').value = data.info.nPG;
         document.getElementById('inEsai').value = data.info.nEsai;
         document.getElementById('namaGuru').value = data.info.namaGuru;
@@ -393,6 +545,7 @@
             const esaiInputs = rMain.querySelectorAll('.v-esai');
             s.esai.forEach((ev, ei) => { if(esaiInputs[ei]) esaiInputs[ei].value = ev; });
         });
+        syncJudul();
         calculateAll();
     }
 
