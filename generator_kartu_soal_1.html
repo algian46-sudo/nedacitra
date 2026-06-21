@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistem Manajemen Kartu Soal Digital</title>
+    <style>
+        /* TEMA & DESAIN MODERN (TERINSPIRASI PORTAL PREMIUM) */
+        :root {
+            --primary-color: #0b2f61; /* Biru Tua */
+            --secondary-color: #1e40af;
+            --accent-color: #10b981; /* Hijau */
+            --danger-color: #ef4444; /* Merah */
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --border-color: #cbd5e1;
+        }
+
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background: var(--bg-light); 
+            color: var(--text-dark); 
+        }
+
+        /* HEADER & DASHBOARD NAVIGASI */
+        .navbar {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .navbar h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.5px; }
+
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        
+        /* MENU TABS */
+        .tabs-container { display: flex; background: #e2e8f0; padding: 4px; border-radius: 8px; margin-bottom: 25px; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; font-weight: 600; font-size: 14px; cursor: pointer; border-radius: 6px; color: #64748b; transition: 0.2s; }
+        .tab-btn.active { background: white; color: var(--primary-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        /* PANEL INPUT & KARTU */
+        .card-panel { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; margin-bottom: 25px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: #475569; }
+        .form-group textarea, .form-group input { width: 100%; padding: 10px 14px; box-sizing: border-box; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px; background: #fff; transition: border 0.2s; }
+        .form-group textarea:focus, .form-group input:focus { outline: none; border-color: var(--secondary-color); }
+        
+        .step-box { background: #f0fdf4; border-left: 4px solid var(--accent-color); padding: 15px; margin-bottom: 20px; border-radius: 6px; font-size: 13.5px; line-height: 1.6; color: #166534; }
+        
+        /* TOMBOL AKSI CONTROLS */
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        button.action-btn { padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-blue { background: var(--secondary-color); color: white; }
+        .btn-blue:hover { background: #1d4ed8; }
+        .btn-green { background: var(--accent-color); color: white; }
+        .btn-green:hover { background: #059669; }
+        .btn-danger { background: #fee2e2; color: var(--danger-color); }
+        .btn-danger:hover { background: #fca5a5; color: #991b1b; }
+        .btn-grey { background: #e2e8f0; color: #475569; }
+        .btn-grey:hover { background: #cbd5e1; }
+
+        /* ITEM MONITOR LIST HALAMAN */
+        .item-list-title { font-weight: bold; font-size: 16px; margin: 30px 0 10px 0; display: flex; justify-content: space-between; align-items: center; }
+        .page-item-row { background: white; padding: 15px 20px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .page-item-info { font-size: 14px; }
+        .page-item-info strong { color: var(--primary-color); }
+
+        /* =================================================== */
+        /* STRUCTURAL LAYOUT STRIP KARTU SOAL PRINT A4 PRESISI */
+        /* =================================================== */
+        .print-container { margin-top: 30px; }
+        .kartu-soal-page { 
+            background: white; 
+            width: 210mm; 
+            min-height: 297mm; 
+            padding: 15mm 15mm 15mm 20mm; 
+            margin: 40px auto; 
+            box-sizing: border-box; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            font-family: "Arial", Arial, Helvetica, sans-serif;
+            color: #000;
+            position: relative;
+        }
+        
+        .kop-surat { text-align: center; margin-bottom: 15px; }
+        .kop-judul { font-size: 14px; font-weight: bold; text-transform: uppercase; margin-bottom: 2px; }
+        .kop-sub { font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
+        .black-bar { background: black; height: 18px; width: 100%; margin-bottom: 5px; }
+        .kop-kemendikbud { font-size: 13px; font-weight: bold; text-transform: uppercase; margin-bottom: 3px; }
+
+        .main-table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+        .main-table td { border: 1px solid black; padding: 6px; vertical-align: top; }
+        
+        .level-box-container { display: flex; justify-content: space-around; font-size: 11px; text-align: center; margin-top: 5px; }
+        .chk-box { border: 1px solid black; width: 14px; height: 14px; margin: 0 auto 4px auto; font-size: 11px; line-height: 14px; font-weight: bold; text-align: center; }
+        
+        .no-soal-badge { border: 1px solid black; text-align: center; margin-top: 5px; width: 50px; }
+        .no-soal-title { border-bottom: 1px solid black; font-weight: bold; font-size: 11px; padding: 2px; }
+        .no-soal-num { font-weight: bold; font-size: 14px; padding: 4px; }
+
+        .rumusan-text-area { font-size: 12px; line-height: 1.5; white-space: pre-line; padding-top: 5px; min-height: 180px; }
+        
+        .kunci-badge { border: 1px solid black; text-align: center; width: 50px; margin-top: 15px; }
+        .kunci-title { border-bottom: 1px solid black; font-weight: bold; font-size: 11px; padding: 2px; }
+        .kunci-letter { font-weight: bold; font-size: 16px; padding: 6px; }
+
+        /* TAMBAHAN STRUKTUR TABEL BAWAH KHUSUS SOAL URAIAN (MENGACU DOKUMEN BARU) */
+        .table-uraian-footer { width: 100%; border-collapse: collapse; margin-top: -1px; font-size: 12px; }
+        .table-uraian-footer td { border: 1px solid black; padding: 8px; text-align: left; vertical-align: top; }
+
+        /* PENGATURAN TEKNIS CETAK BROWSWER */
+        @media print {
+            body { background: white; margin: 0; padding: 0; }
+            .no-print, .navbar, .tabs-container, .card-panel, .item-list-title, .page-item-row { display: none !important; }
+            .print-container { margin: 0; }
+            .kartu-soal-page { border: none; box-shadow: none; padding: 10mm 10mm 10mm 15mm; margin: 0; page-break-after: always; width: auto; min-height: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar no-print">
+        <h1>Sistem Manajemen Kartu Soal Digital</h1>
+        <div>
+            <button class="action-btn btn-danger" onclick="resetSemuaData()">🗑️ Reset Semua Basis Data</button>
+        </div>
+    </div>
+
+    <div class="container no-print">
+        
+        <div class="tabs-container">
+            <button id="tabPG" class="tab-btn active" onclick="switchTab('PG')">Pilihan Ganda (PG)</button>
+            <button id="tabUraian" class="tab-btn" onclick="switchTab('Uraian')">Soal Uraian</button>
+        </div>
+
+        <div class="card-panel">
+            <h3 style="margin-top:0; color: var(--primary-color);">1. Parameter Administrasi Kartu Soal</h3>
+            <div class="form-group">
+                <label>Judul Kartu Soal (Bagian Atas Kertas):</label>
+                <input type="text" id="inputJudul" value="KARTU SOAL SUMATIF AKHIR JENJANG" onchange="saveConfig()">
+            </div>
+            <div class="grid-3">
+                <div class="form-group">
+                    <label>Jenis Sekolah:</label>
+                    <input type="text" id="inputSekolah" value="SMP" onchange="saveConfig()">
+                </div>
+                <div class="form-group">
+                    <label>Bahan Kelas/Semester:</label>
+                    <input type="text" id="inputKelas" value="IX/1-2" onchange="saveConfig()">
+                </div>
+                <div class="form-group">
+                    <label>Mata Pelajaran:</label>
+                    <input type="text" id="inputMapel" value="Seni Rupa" onchange="saveConfig()">
+                </div>
+            </div>
+            <div class="grid-3">
+                <div class="form-group">
+                    <label>Kurikulum:</label>
+                    <input type="text" id="inputKurikulum" value="Merdeka" onchange="saveConfig()">
+                </div>
+                <div class="form-group">
+                    <label>Tahun Ajaran:</label>
+                    <input type="text" id="inputTA" value="2025/2026" onchange="saveConfig()">
+                </div>
+                <div class="form-group">
+                    <label>Kabupaten/Kota:</label>
+                    <input type="text" id="inputKab" value="Kabupaten Bekasi" onchange="saveConfig()">
+                </div>
+            </div>
+            <div class="grid-3">
+                <div class="form-group">
+                    <label>Nama Penyusun:</label>
+                    <input type="text" id="inputGuru" value="Algian Manggara, S.Agr" onchange="saveConfig()">
+                </div>
+                <div class="form-group">
+                    <label>NIP Penyusun (Kosongkan jika tidak ada):</label>
+                    <input type="text" id="inputNIP" value="" onchange="saveConfig()">
+                </div>
+                <div class="form-group">
+                    <label>Unit Kerja:</label>
+                    <input type="text" id="inputUnit" value="SMPN 8 Cikarang Utara" onchange="saveConfig()">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Buku Sumber / Penulis:</label>
+                <input type="text" id="inputBuku" value="Buku Paket Seni Rupa Kelas IX / Kemendikbud" onchange="saveConfig()">
+            </div>
+        </div>
+
+        <div class="card-panel">
+            <h3 style="margin-top:0; color: var(--primary-color);">2. Input Data & Eksekusi Komponen AI</h3>
+            <div class="step-box">
+                <strong>Panduan Langkah:</strong><br>
+                1. Masukkan rumusan butir soal mentah di bawah ini.<br>
+                2. Klik <strong>"Salin Perintah & Analisis AI"</strong>. Sistem membuka tab Gemini secara terpisah.<br>
+                3. Tempel (Paste) di kolom chat Gemini, kirim, lalu salin satu baris teks output bergaris tegak (|) kembali ke sini.
+            </div>
+
+            <div class="form-group">
+                <label id="labelSoalMentah">Masukkan Soal Pilihan Ganda Mentah Anda:</label>
+                <textarea id="rawSoal" rows="5" placeholder="Masukkan teks pertanyaan beserta opsi pilihan jawaban / perintah uraian di sini..."></textarea>
+            </div>
+
+            <div class="form-group" id="formGroupSkor" style="display: none;">
+                <label style="color: var(--secondary-color);">Skor Maksimal Soal Uraian ini:</label>
+                <input type="number" id="inputSkorUraian" value="10" min="0" max="100" placeholder="Contoh: 10 atau 20">
+            </div>
+
+            <button class="action-btn btn-blue" style="width: 100%;" onclick="salinPromptKeAI()">📋 Salin Perintah & Analisis AI</button>
+
+            <div class="form-group" style="margin-top: 20px;">
+                <label>Tempel (Paste) Hasil Baris Tegak dari AI di Sini:</label>
+                <input type="text" id="aiResponseInput" placeholder="Hasil analisa AI: Tujuan Pembelajaran | Materi Soal | Indikator Soal | Level Kognitif | Kunci/Kriteria">
+            </div>
+
+            <div class="btn-group">
+                <button class="action-btn btn-green" onclick="prosesTambahHalaman()">✨ Tambahkan Lembar Halaman</button>
+            </div>
+        </div>
+
+        <div class="item-list-title">
+            <span>Daftar Halaman Kartu Soal Terbuat</span>
+            <div style="display:flex; gap:10px;">
+                <button class="action-btn btn-grey" onclick="eksporKeWord()">📝 Ekspor ke .doc (Word)</button>
+                <button class="action-btn btn-blue" onclick="window.print()">🖨️ Cetak Semua (A4)</button>
+            </div>
+        </div>
+        <div id="monitorList"></div>
+
+    </div>
+
+    <div id="printArea" class="print-container"></div>
+
+    <script>
+        // INISIALISASI DATABASE LOKAL BROWSER (LOCALSTORAGE)
+        let currentTab = 'PG';
+        let lembarKerjaList = JSON.parse(localStorage.getItem('lembarKerjaData')) || [];
+        let configData = JSON.parse(localStorage.getItem('configData')) || {};
+
+        window.onload = function() {
+            loadConfig();
+            renderSemuaHalaman();
+        };
+
+        function switchTab(type) {
+            currentTab = type;
+            document.getElementById('tabPG').className = (type === 'PG') ? 'tab-btn active' : 'tab-btn';
+            document.getElementById('tabUraian').className = (type === 'Uraian') ? 'tab-btn active' : 'tab-btn';
+            
+            if(type === 'Uraian') {
+                document.getElementById('labelSoalMentah').innerText = "Masukkan Soal Uraian Mentah Anda:";
+                document.getElementById('formGroupSkor').style.display = 'block'; // Tampilkan input skor
+            } else {
+                document.getElementById('labelSoalMentah').innerText = "Masukkan Soal Pilihan Ganda Mentah Anda:";
+                document.getElementById('formGroupSkor').style.display = 'none'; // Sembunyikan input skor
+            }
+        }
+
+        function saveConfig() {
+            const config = {
+                judul: document.getElementById('inputJudul').value,
+                sekolah: document.getElementById('inputSekolah').value,
+                kelas: document.getElementById('inputKelas').value,
+                mapel: document.getElementById('inputMapel').value,
+                kurikulum: document.getElementById('inputKurikulum').value,
+                ta: document.getElementById('inputTA').value,
+                kab: document.getElementById('inputKab').value,
+                guru: document.getElementById('inputGuru').value,
+                nip: document.getElementById('inputNIP').value,
+                unit: document.getElementById('inputUnit').value,
+                buku: document.getElementById('inputBuku').value
+            };
+            localStorage.setItem('configData', JSON.stringify(config));
+        }
+
+        function loadConfig() {
+            if (configData.judul) {
+                document.getElementById('inputJudul').value = configData.judul;
+                document.getElementById('inputSekolah').value = configData.sekolah;
+                document.getElementById('inputKelas').value = configData.kelas;
+                document.getElementById('inputMapel').value = configData.mapel;
+                document.getElementById('inputKurikulum').value = configData.kurikulum;
+                document.getElementById('inputTA').value = configData.ta;
+                document.getElementById('inputKab').value = configData.kab;
+                document.getElementById('inputGuru').value = configData.guru;
+                document.getElementById('inputNIP').value = configData.nip;
+                document.getElementById('inputUnit').value = configData.unit;
+                document.getElementById('inputBuku').value = configData.buku;
+            }
+        }
+
+        function salinPromptKeAI() {
+            const rawSoal = document.getElementById('rawSoal').value;
+            const mapel = document.getElementById('inputMapel').value;
+            if(!rawSoal.trim()) return alert('Isi teks soal mentah terlebih dahulu.');
+
+            let additionalInstruction = currentTab === 'PG' ? 
+                "Kunci Jawaban (Hanya satu huruf kapital A/B/C/D)" : 
+                "Esensi Kriteria Kunci Jawaban Singkat untuk Uraian tersebut";
+
+            const promptFormat = `Anda adalah asisten ahli administrasi kurikulum merdeka untuk mata pelajaran ${mapel}. 
+Analisis soal berikut ini dengan cermat. Berikan output analisis HANYA dalam satu baris teks murni dengan pembatas tanda garis tegak (|) persis seperti format di bawah ini tanpa penjelasan tambahan apa pun:
+
+Tujuan Pembelajaran | Materi Soal | Indikator Soal | Level Kognitif (Pilih salah satu di antara tiga ini: Pengetahuan / Aplikasi / Penalaran) | ${additionalInstruction}
+
+Berikut adalah teks soalnya:
+${rawSoal}`;
+
+            navigator.clipboard.writeText(promptFormat);
+            alert('Perintah instruksi komplit berhasil disalin! Tab halaman Gemini Web akan segera terbuka.');
+            window.open('https://gemini.google.com', '_blank');
+        }
+
+        function prosesTambahHalaman() {
+            const aiData = document.getElementById('aiResponseInput').value;
+            const rawSoal = document.getElementById('rawSoal').value;
+            const skorUraian = document.getElementById('inputSkorUraian').value;
+
+            if(!aiData.trim() || !rawSoal.trim()) {
+                return alert('Pastikan parameter input soal mentah dan baris teks respon dari AI terisi.');
+            }
+
+            const kepingan = aiData.split('|');
+            if(kepingan.length < 5) {
+                return alert('Format baris pemisah tegak tidak sesuai. Gunakan ulang tombol salin instruksi.');
+            }
+
+            const itemLembar = {
+                id: Date.now(),
+                tipe: currentTab,
+                tp: kepingan[0].trim(),
+                materi: kepingan[1].trim(),
+                indikator: kepingan[2].trim(),
+                levelKognitif: kepingan[3].trim(),
+                kunciOrKriteria: kepingan[4].trim(),
+                soalText: rawSoal,
+                skor: currentTab === 'Uraian' ? skorUraian : '' // Menyimpan nilai skor
+            };
+
+            lembarKerjaList.push(itemLembar);
+            localStorage.setItem('lembarKerjaData', JSON.stringify(lembarKerjaList));
+            
+            // Reset input parsial
+            document.getElementById('rawSoal').value = '';
+            document.getElementById('aiResponseInput').value = '';
+            
+            renderSemuaHalaman();
+        }
+
+        function hapusHalaman(idIndex) {
+            if(confirm("Apakah Anda yakin ingin menghapus lembar halaman ini?")) {
+                lembarKerjaList = lembarKerjaList.filter(item => item.id !== idIndex);
+                localStorage.setItem('lembarKerjaData', JSON.stringify(lembarKerjaList));
+                renderSemuaHalaman();
+            }
+        }
+
+        function resetSemuaData() {
+            if(confirm("PENTING: Seluruh progres pengerjaan kartu soal yang tersimpan di browser akan dihapus total. Lanjutkan?")) {
+                localStorage.removeItem('lembarKerjaData');
+                lembarKerjaList = [];
+                renderSemuaHalaman();
+            }
+        }
+
+        function renderSemuaHalaman() {
+            const printArea = document.getElementById('printArea');
+            const monitorList = document.getElementById('monitorList');
+            
+            printArea.innerHTML = '';
+            monitorList.innerHTML = '';
+
+            if(lembarKerjaList.length === 0) {
+                monitorList.innerHTML = `<div style="text-align:center; padding: 20px; color: #94a3b8;">Belum ada lembar kartu soal yang dibuat.</div>`;
+                return;
+            }
+
+            // Ambil data konfigurasi terupdate
+            const judul = document.getElementById('inputJudul').value;
+            const sekolah = document.getElementById('inputSekolah').value;
+            const kelas = document.getElementById('inputKelas').value;
+            const mapel = document.getElementById('inputMapel').value;
+            const kurikulum = document.getElementById('inputKurikulum').value;
+            const ta = document.getElementById('inputTA').value;
+            const kab = document.getElementById('inputKab').value;
+            const guru = document.getElementById('inputGuru').value;
+            const nip = document.getElementById('inputNIP').value;
+            const unit = document.getElementById('inputUnit').value;
+            const buku = document.getElementById('inputBuku').value;
+
+            let penyusunFull = guru + (nip.trim() !== "" ? " / NIP. " + nip : "");
+
+            lembarKerjaList.forEach((item, index) => {
+                const nomorSoal = index + 1;
+
+                // 1. Render item baris di dashboard monitoring control
+                const rowItem = document.createElement('div');
+                rowItem.className = 'page-item-row';
+                rowItem.innerHTML = `
+                    <div class="page-item-info">Halaman <strong>#${nomorSoal}</strong>: Format [${item.tipe}] - ${item.materi.substring(0, 30)}...</div>
+                    <button class="action-btn btn-danger" style="padding:6px 12px; font-size:12px;" onclick="hapusHalaman(${item.id})">❌ Hapus</button>
+                `;
+                monitorList.appendChild(rowItem);
+
+                // 2. Logic Ceklis Level Kognitif
+                let chkPemahaman = "", chkAplikasi = "", chkPenalaran = "";
+                if(item.levelKognitif.toLowerCase().includes("pengetahuan") || item.levelKognitif.toLowerCase().includes("pemahaman")) chkPemahaman = "V";
+                else if (item.levelKognitif.toLowerCase().includes("aplikasi")) chkAplikasi = "V";
+                else if (item.levelKognitif.toLowerCase().includes("penalaran")) chkPenalaran = "V";
+
+                // 3. Render Struktur HTML Cetak
+                let tableContentHTML = '';
+
+                if(item.tipe === 'PG') {
+                    tableContentHTML = `
+                    <div class="kartu-soal-page">
+                        <div class="kop-surat">
+                            <div class="kop-judul">${judul}</div>
+                            <div class="kop-sub">Soal Pilihan Ganda</div>
+                            <div class="black-bar"></div>
+                            <div class="kop-kemendikbud">KEMENTERIAN PENDIDIKAN DAN KEBUDAYAAN</div>
+                            <div class="kop-judul">KARTU SOAL</div>
+                            <div class="kop-sub">Tahun Ajaran : ${ta}</div>
+                            <div class="kop-sub" style="margin-top:5px;">${kab}</div>
+                        </div>
+                        <table class="main-table">
+                            <tr>
+                                <td width="22%">Jenis Sekolah</td><td width="3%">:</td><td width="25%">${sekolah}</td>
+                                <td width="22%">Nama Penyusun</td><td width="3%">:</td><td width="25%">${penyusunFull}</td>
+                            </tr>
+                            <tr>
+                                <td>Bahan Kelas/Semester</td><td>:</td><td>${kelas}</td>
+                                <td>Unit Kerja</td><td>:</td><td>${unit}</td>
+                            </tr>
+                            <tr>
+                                <td>Mata Pelajaran</td><td>:</td><td>${mapel}</td>
+                                <td colspan="3" rowspan="2"></td>
+                            </tr>
+                            <tr>
+                                <td>Kurikulum</td><td>:</td><td>${kurikulum}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="height: 80px;"><strong>Tujuan Pembelajaran:</strong><br><br>${item.tp}</td>
+                                <td colspan="3" rowspan="2">
+                                    <table style="width:100%; border-collapse:collapse; border:none; font-size:11px;">
+                                        <tr>
+                                            <td style="border:none; width:45%;"><strong>Buku Sumber :</strong><br>${buku}</td>
+                                            <td style="border:none; width:55%;">
+                                                <div class="level-box-container">
+                                                    <div><div class="chk-box">${chkPemahaman}</div>Pengetahuan &<br>Pemahaman</div>
+                                                    <div><div class="chk-box">${chkAplikasi}</div>Aplikasi</div>
+                                                    <div><div class="chk-box">${chkPenalaran}</div>Penalaran</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="height: 60px;"><strong>Materi:</strong><br><br>${item.materi}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="height: 110px;"><strong>Indikator soal:</strong><br><br>${item.indikator}</td>
+                                <td colspan="3" rowspan="2">
+                                    <strong>Rumusan Butir Soal</strong>
+                                    <div class="no-soal-badge"><div class="no-soal-title">No soal</div><div class="no-soal-num">${nomorSoal}</div></div>
+                                    <div class="rumusan-text-area">${item.soalText}</div>
+                                    <div class="kunci-badge"><div class="kunci-title">Kunci</div><div class="kunci-letter">${item.kunciOrKriteria}</div></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="border-bottom: 1px solid black;"></td>
+                            </tr>
+                        </table>
+                    </div>`;
+                } else {
+                    tableContentHTML = `
+                    <div class="kartu-soal-page">
+                        <div class="kop-surat">
+                            <div class="kop-judul">${judul}</div>
+                            <div class="kop-sub">Soal Uraian</div>
+                            <div class="black-bar"></div>
+                            <div class="kop-kemendikbud">KEMENTERIAN PENDIDIKAN DAN KEBUDAYAAN</div>
+                            <div class="kop-judul">KARTU SOAL</div>
+                            <div class="kop-sub">Tahun Ajaran : ${ta}</div>
+                            <div class="kop-sub" style="margin-top:5px;">${kab}</div>
+                        </div>
+                        <table class="main-table">
+                            <tr>
+                                <td width="22%">Jenis Sekolah</td><td width="3%">:</td><td width="25%">${sekolah}</td>
+                                <td width="22%">Nama Penyusun</td><td width="3%">:</td><td width="25%">${penyusunFull}</td>
+                            </tr>
+                            <tr>
+                                <td>Bahan Kelas/Semester</td><td>:</td><td>${kelas}</td>
+                                <td>Unit Kerja</td><td>:</td><td>${unit}</td>
+                            </tr>
+                            <tr>
+                                <td>Mata Pelajaran</td><td>:</td><td>${mapel}</td>
+                                <td colspan="3" rowspan="2"></td>
+                            </tr>
+                            <tr>
+                                <td>Kurikulum</td><td>:</td><td>${kurikulum}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="height: 80px;"><strong>Tujuan Pembelajaran:</strong><br><br>${item.tp}</td>
+                                <td colspan="3" rowspan="2">
+                                    <table style="width:100%; border-collapse:collapse; border:none; font-size:11px;">
+                                        <tr>
+                                            <td style="border:none; width:45%;"><strong>Buku Sumber :</strong><br>${buku}</td>
+                                            <td style="border:none; width:55%;">
+                                                <div class="level-box-container">
+                                                    <div><div class="chk-box">${chkPemahaman}</div>Pengetahuan &<br>Pemahaman</div>
+                                                    <div><div class="chk-box">${chkAplikasi}</div>Aplikasi</div>
+                                                    <div><div class="chk-box">${chkPenalaran}</div>Penalaran</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="height: 60px;"><strong>Materi:</strong><br><br>${item.materi}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="height: 110px;"><strong>Indikator soal:</strong><br><br>${item.indikator}</td>
+                                <td colspan="3">
+                                    <strong>Rumusan Butir Soal</strong>
+                                    <div class="no-soal-badge"><div class="no-soal-title">No soal</div><div class="no-soal-num">${nomorSoal}</div></div>
+                                    <div class="rumusan-text-area">${item.soalText}</div>
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="table-uraian-footer">
+                            <tr>
+                                <td width="15%" style="text-align:center; font-weight:bold;">Nomor</td>
+                                <td width="70%" style="text-align:center; font-weight:bold;">Kunci/Kriteria Jawaban</td>
+                                <td width="15%" style="text-align:center; font-weight:bold;">Skor</td>
+                            </tr>
+                            <tr style="height: 120px;">
+                                <td style="text-align:center; font-weight:bold; vertical-align:middle;">${nomorSoal}</td>
+                                <td>${item.kunciOrKriteria}</td>
+                                <td style="text-align:center; font-weight:bold; vertical-align:middle; font-size:16px;">${item.skor}</td>
+                            </tr>
+                        </table>
+                    </div>`;
+                }
+
+                printArea.innerHTML += tableContentHTML;
+            });
+        }
+
+        // FUNGSI EKSPOR MANUAL KE FORMAT WORD (.DOC)
+        function eksporKeWord() {
+            if(lembarKerjaList.length === 0) return alert('Tidak ada data untuk diekspor.');
+            
+            const htmlContent = document.getElementById('printArea').innerHTML;
+            
+            const blobContent = `
+            <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+            <head>
+                <title>Ekspor Kartu Soal</title>
+                <style>
+                    @page { size: 21cm 29.7cm; margin: 1.5cm 1.5cm 1.5cm 2cm; }
+                    div.kartu-soal-page { page-break-after: always; clear: both; }
+                    table { border-collapse: collapse; width: 100%; }
+                    td { border: 1px solid black; padding: 6px; font-family: Arial; font-size: 11pt; vertical-align: top; }
+                    .kop-judul { font-size: 13pt; font-weight: bold; text-align: center; }
+                    .kop-sub { font-size: 11pt; font-weight: bold; text-align: center; }
+                    .black-bar { background-color: black; height: 15px; }
+                    .level-box-container { display: table; width: 100%; }
+                    .chk-box { border: 1px solid black; width: 15px; height: 15px; text-align: center; display: inline-block; font-weight: bold; }
+                    .table-uraian-footer { width: 100%; margin-top: -1px; }
+                    .table-uraian-footer td { border: 1px solid black; }
+                </style>
+            </head>
+            <body>
+                ${htmlContent}
+            </body>
+            </html>`;
+
+            const blob = new Blob(['\ufeff' + blobContent], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'KARTU_SOAL_ASAT_ASAJ.doc';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+</html>
