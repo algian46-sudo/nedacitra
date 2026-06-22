@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
     <style>
     body { font-family: Arial, sans-serif; font-size: 11px; background: #f0f2f5; padding: 20px; }
-    .sheet { background: white; padding: 25px; border: 1px solid #ccc; min-width: 1150px; margin: auto; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
+    .sheet { background: white; padding: 25px; border: 1px solid #ccc; max-width: 1200px; margin: auto; box-shadow: 0 0 15px rgba(0,0,0,0.2); overflow: hidden; }
     h2 { text-align: center; text-decoration: underline; margin-bottom: 5px; font-size: 16px; text-transform: uppercase; cursor: pointer; }
     
     .info-container { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 2px solid #333; padding-bottom: 5px; }
@@ -17,8 +17,22 @@
 
     .control-panel { background: #f8f9fa; padding: 10px; border: 1px solid #dee2e6; border-radius: 6px; margin-bottom: 15px; display: flex; gap: 10px; align-items: flex-end; }
     
-    table { width: 100%; border-collapse: collapse; margin-top: 5px; table-layout: fixed; }
-    table th, table td { border: 1px solid black; text-align: center; padding: 3px; font-size: 10px; overflow: hidden; }
+    /* MENYEMBUNYIKAN TOMBOL DROP DOWN / PANAH PADA INPUT ANGKA */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+    }
+    input[type=number] {
+        -moz-appearance: textfield; /* Untuk Firefox */
+    }
+
+    /* WADAH SCROLL: Memaksa tabel input nilai mengalah dan bisa di-scroll ke kanan */
+    .table-responsive-container { width: 100%; overflow-x: auto; margin-top: 5px; border: 1px solid #ccc; background: #fff; max-height: 500px; }
+    
+    #mainTable { width: max-content; min-width: 100%; border-collapse: collapse; table-layout: fixed; }
+    #mainTable th, #mainTable td { border: 1px solid black; text-align: center; padding: 3px; font-size: 10px; overflow: hidden; }
+    
     .bg-header { background-color: #e9ecef; font-weight: bold; }
     .bg-kunci { background-color: #fff9c4; }
     .bg-footer { background-color: #fdfdfe; font-weight: bold; }
@@ -31,11 +45,15 @@
     .input-jawaban-wide { background: #fffde7 !important; text-align: left !important; padding: 4px 8px !important; letter-spacing: 2px; font-family: monospace; font-weight: bold; border: 1px solid #eee !important; }
     .label-kecil { font-size: 9px; color: #666; font-style: italic; }
 
-    .analysis-section { margin-top: 20px; border-top: 2px solid #333; padding-top: 10px; }
+    .analysis-section { margin-top: 20px; border-top: 2px solid #333; padding-top: 10px; width: 100%; clear: both; }
     .analysis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     .analysis-box { border: 1px solid #ccc; padding: 8px; }
     .analysis-title { font-weight: bold; background: #eee; padding: 3px 5px; margin-bottom: 5px; border-bottom: 1px solid #ccc; }
     .remedial-list { margin-top: 10px; border: 1px solid #ccc; padding: 8px; min-height: 30px; }
+
+    /* Gaya tabel analisis butir soal agar stabil di layar bawah */
+    #itemAnalysisTable { table-layout: auto !important; width: 100% !important; margin-top: 10px; border-collapse: collapse; }
+    #itemAnalysisTable th, #itemAnalysisTable td { border: 1px solid black; text-align: center; padding: 4px; font-size: 10px; }
 
     .signature-grid { display: flex; justify-content: space-between; margin-top: 30px; text-align: center; }
     .sig-col { flex: 0 0 280px; display: flex; flex-direction: column; align-items: center; }
@@ -52,7 +70,9 @@
 
     @media print {
         .control-panel, .btn, .no-print { display: none !important; }
-        .sheet { border: none; box-shadow: none; width: 100% !important; padding: 0 !important; }
+        .sheet { border: none; box-shadow: none; width: 100% !important; padding: 0 !important; max-width: none; overflow: visible; }
+        .table-responsive-container { overflow-x: visible !important; border: none; max-height: none; }
+        #mainTable { width: 100% !important; table-layout: auto !important; }
         @page { size: A4 landscape; margin: 0.5cm; }
         .analysis-section { page-break-inside: avoid; }
         .page-break-analysis { page-break-before: always !important; margin-top: 30px !important; }
@@ -80,32 +100,34 @@
     </div>
 
     <div class="control-panel">
-        <div><label>Jml PG:</label><input type="number" id="inPG" value="10" style="width:40px;" oninput="saveToLocal()"></div>
-        <div><label>Jml Esai:</label><input type="number" id="inEsai" value="2" style="width:40px;" oninput="saveToLocal()"></div>
+        <div><label>Jml PG:</label><input type="number" id="inPG" value="10" style="width:35px; border-bottom: 1px solid #999;" oninput="saveToLocal()"></div>
+        <div><label>Jml Esai:</label><input type="number" id="inEsai" value="2" style="width:35px; border-bottom: 1px solid #999;" oninput="saveToLocal()"></div>
         <button class="btn btn-update" onclick="initTable()">Update Struktur</button>
         <button class="btn btn-calc" onclick="calculateAll()">Hitung Analisis</button>
         <button class="btn btn-print" onclick="window.print()">Cetak</button>
         <button class="btn btn-reset" onclick="confirmReset()">Reset Data</button>
     </div>
 
-    <table id="mainTable">
-        <thead>
-            <tr id="h1"></tr>
-            <tr id="h2"></tr>
-            <tr class="bg-kunci" id="rowKunci"></tr>
-            <tr class="bg-header" id="rowMaks"></tr>
-        </thead>
-        <tbody id="studentBody"></tbody>
-        <tfoot id="tableFooter">
-            <tr class="bg-footer" id="fSum"></tr>
-            <tr class="bg-footer" id="fAvg"></tr>
-            <tr class="bg-footer" id="fIdeal"></tr>
-            <tr class="bg-footer" id="fPercent"></tr>
-            <tr class="bg-footer" id="fStatus"></tr>
-            <tr class="bg-kesimpulan" id="fTotalDayaSerap"></tr>
-            <tr class="bg-kesimpulan" id="fKesimpulanButir"></tr>
-        </tfoot>
-    </table>
+    <div class="table-responsive-container">
+        <table id="mainTable">
+            <thead>
+                <tr id="h1"></tr>
+                <tr id="h2"></tr>
+                <tr class="bg-kunci" id="rowKunci"></tr>
+                <tr class="bg-header" id="rowMaks"></tr>
+            </thead>
+            <tbody id="studentBody"></tbody>
+            <tfoot id="tableFooter">
+                <tr class="bg-footer" id="fSum"></tr>
+                <tr class="bg-footer" id="fAvg"></tr>
+                <tr class="bg-footer" id="fIdeal"></tr>
+                <tr class="bg-footer" id="fPercent"></tr>
+                <tr class="bg-footer" id="fStatus"></tr>
+                <tr class="bg-kesimpulan" id="fTotalDayaSerap"></tr>
+                <tr class="bg-kesimpulan" id="fKesimpulanButir"></tr>
+            </tfoot>
+        </table>
+    </div>
 
     <div style="margin-top: 15px;" class="no-print">
         <button class="btn" onclick="addStudentRow(); saveToLocal();" style="background:#95a5a6; color:white;">+ Tambah Baris</button>
@@ -140,7 +162,7 @@
 
         <div class="page-break-analysis" style="margin-top: 30px; border-top: 3px double #333; padding-top: 20px;">
             <h3 id="displayJudulButir" style="text-align:center; text-transform:uppercase; font-size:14px; margin-bottom:15px;">ANALISIS BUTIR SOAL</h3>
-            <table id="itemAnalysisTable" style="width: 100%; border-collapse: collapse; table-layout: auto;">
+            <table id="itemAnalysisTable">
                 <thead>
                     <tr class="bg-header">
                         <th rowspan="2" width="30">No.</th>
@@ -216,8 +238,8 @@
         document.getElementById('h1').innerHTML = h1Html;
 
         let h2 = '';
-        for(let i=1; i<=nPG; i++) h2 += `<th width="25">${i}</th>`;
-        for(let i=1; i<=nEsai; i++) h2 += `<th width="35" class="col-esai-bg">E${i}</th>`;
+        for(let i=1; i<=nPG; i++) h2 += `<th width="30">${i}</th>`;
+        for(let i=1; i<=nEsai; i++) h2 += `<th width="40" class="col-esai-bg">E${i}</th>`;
         h2 += `<th>Ya</th><th>Tdk</th>`;
         document.getElementById('h2').innerHTML = h2;
 
@@ -332,7 +354,6 @@
 
         renderFooter(colSums, allMaks, nSiswa, totalNilaiSiswa);
 
-        // ================= KODE LOGIKA: ANALISIS BUTIR SOAL DEFAULTS ABCD =================
         const analysisBody = document.getElementById('itemAnalysisBody');
         analysisBody.innerHTML = ''; 
 
