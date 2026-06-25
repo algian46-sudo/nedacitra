@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Bank Soal Digital - Modern & Professional Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
+
+    <style>
+        /* Desain Kustom & Animasi Dinamis */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .pulse-soft {
+            animation: softPulse 2s infinite ease-in-out;
+        }
+        @keyframes softPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.98); }
+        }
+
+        /* ================= AREA CSS KHUSUS CETAK KERTAS A4 ================= */
+        @media print {
+            body, .no-print, #login-section, #mapel-section, .quill, button, form, label {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            #print-area-container {
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 22mm 20mm 20mm 20mm;
+            }
+            .soal-item {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col items-center justify-center p-4 md:p-8 relative overflow-x-hidden">
+    
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none no-print"></div>
+    <div class="absolute bottom-10 right-1/4 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none no-print"></div>
+
+    <script>
+        // URL Web App Google Apps Script Aktif Terbaru Anda
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzJ0tNQSGafKvfiHLghFhdPRb32Vj0vN9r5YuFqYqIcSWMjHQL1lMv5o8uptSHtEWa2/exec";
+        let currentUser = "";
+        let selectedMapel = "";
+        let quillEditor;
+        let nomorSoalLokal = 1;
+    </script>
+
+    <div id="login-section" class="w-full max-w-md bg-slate-800/90 border border-slate-700/50 p-8 rounded-2xl shadow-2xl no-print transition-all duration-300 transform scale-100">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600/20 text-blue-400 mb-4 border border-blue-500/30">
+                <i class="fa-solid fa-graduation-cap text-3xl"></i>
+            </div>
+            <h2 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Bank Soal Digital</h2>
+            <p class="text-slate-400 text-sm mt-2">SMP NEGERI 8 CIKARAANG UTARA</p>
+        </div>
+        <div class="mb-5">
+            <label class="block text-slate-300 text-sm font-semibold mb-2">Username</label>
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500"><i class="fa-solid fa-user"></i></span>
+                <input type="text" id="username" placeholder="Masukkan username" class="w-full pl-10 pr-4 p-3 bg-slate-900/60 border border-slate-700 rounded-xl text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all">
+            </div>
+        </div>
+        <div class="mb-6">
+            <label class="block text-slate-300 text-sm font-semibold mb-2">Password</label>
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500"><i class="fa-solid fa-lock"></i></span>
+                <input type="password" id="password" placeholder="••••••••" class="w-full pl-10 pr-4 p-3 bg-slate-900/60 border border-slate-700 rounded-xl text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all">
+            </div>
+        </div>
+        <button onclick="handleLogin()" id="login-btn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-3.5 rounded-xl font-bold hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-600/20 focus:outline-none focus:ring-2 focus:ring-blue-400">Masuk Aplikasi</button>
+    </div>
+
+    <div id="mapel-section" class="w-full max-w-md bg-slate-800/90 border border-slate-700/50 p-8 rounded-2xl shadow-2xl hidden no-print transition-all duration-300">
+        <h2 class="text-2xl font-bold text-slate-100 flex items-center gap-2 mb-1">
+            <span class="text-emerald-400"><i class="fa-solid fa-circle-user"></i></span> Halo, <span id="user-display" class="text-blue-400"></span>
+        </h2>
+        <p class="text-slate-400 text-sm mb-6">Silakan tentukan mapel pilihan anda:</p>
+        <div class="mb-6">
+            <label class="block text-slate-300 font-semibold mb-2 text-sm">Pilih Mata Pelajaran</label>
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500"><i class="fa-solid fa-book-bookmark"></i></span>
+                <select id="mapel-select" class="w-full pl-10 pr-4 p-3.5 bg-slate-900/80 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 appearance-none cursor-pointer">
+                    </select>
+                <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500 pointer-events-none"><i class="fa-solid fa-chevron-down text-xs"></i></span>
+            </div>
+        </div>
+        <button onclick="goToInputSoal()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-3.5 rounded-xl font-bold hover:from-emerald-500 hover:to-teal-500 transition-all shadow-lg shadow-emerald-600/20">
+            Buka Lembar Input Soal <i class="fa-solid fa-arrow-right ml-1 text-sm"></i>
+        </button>
+    </div>
+
+    <div id="soal-section" class="w-full max-w-6xl flex flex-col gap-6 hidden">
+        
+        <div class="bg-slate-800/80 border border-slate-700/50 p-6 rounded-2xl shadow-2xl no-print backdrop-blur-md">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 border-b border-slate-700/60 pb-4 gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 rounded-xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 text-blue-400 border border-blue-500/20">
+                        <i class="fa-solid fa-paste text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-100 tracking-tight">INPUT SOAL HASIL ANALISIS</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Mata Pelajaran: <span id="mapel-display" class="font-semibold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20"></span></p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="flex items-center justify-center gap-2 text-rose-400 hover:text-rose-300 font-medium text-xs border border-rose-500/20 bg-rose-500/5 px-4 py-2 rounded-xl hover:bg-rose-500/10 transition-all self-start md:self-auto">
+                    <i class="fa-solid fa-arrow-left-long"></i> Ganti Mapel / Keluar
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="flex flex-col">
+                    <label class="block text-slate-300 font-bold mb-2 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-blue-500"></span> 1. Area Tempel (Ctrl + V Dari Word Beserta Gambar)
+                    </label>
+                    <div class="bg-slate-900 border border-slate-700 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-blue-500/50 transition-all flex-1 flex flex-col">
+                        <div id="editor-container" class="text-slate-900" style="height: 260px; background: white;"></div>
+                    </div>
+                    <button onclick="parseDataDariWord()" class="w-full mt-3 bg-amber-500 hover:bg-amber-400 text-slate-950 p-3 rounded-xl font-bold transition-all shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bolt-lightning"></i> Ekstrak & Pisahkan Komponen Soal
+                    </button>
+                </div>
+
+                <div>
+                    <form id="soal-form" onsubmit="handleSaveSoal(event)" class="h-full flex flex-col justify-between">
+                        <div>
+                            <label class="block text-slate-300 font-bold mb-2 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> 2. Validasi Struktur & Atribut
+                            </label>
+                            
+                            <div class="space-y-3 bg-slate-900/60 p-4 rounded-xl border border-slate-700/60 max-h-[315px] overflow-y-auto">
+                                <div>
+                                    <label class="block text-slate-400 text-xs font-semibold mb-1">Deskripsi Butir Soal</label>
+                                    <textarea id="soal-text" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-emerald-500 h-16 resize-none"></textarea>
+                                </div>
+
+                                <div id="image-preview-container" class="hidden">
+                                    <label class="block text-slate-400 text-xs font-semibold mb-1">Ilustrasi Gambar Terdeteksi</label>
+                                    <div class="inline-block relative bg-slate-800 p-1.5 rounded-lg border border-slate-700">
+                                        <img id="extracted-image" class="max-h-20 object-contain rounded" src="" alt="Preview">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div><label class="block text-slate-400 text-xs font-semibold mb-0.5">Pilihan A</label><input type="text" id="opsi-a" required class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-emerald-500"></div>
+                                    <div><label class="block text-slate-400 text-xs font-semibold mb-0.5">Pilihan B</label><input type="text" id="opsi-b" required class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-emerald-500"></div>
+                                    <div><label class="block text-slate-400 text-xs font-semibold mb-0.5">Pilihan C</label><input type="text" id="opsi-c" required class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-emerald-500"></div>
+                                    <div><label class="block text-slate-400 text-xs font-semibold mb-0.5">Pilihan D</label><input type="text" id="opsi-d" required class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-emerald-500"></div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-slate-400 text-xs font-semibold mb-1">Status Validasi</label>
+                                    <select id="status-soal" class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-sm font-medium text-slate-200 cursor-pointer focus:outline-none">
+                                        <option value="Diterima" class="text-emerald-400">Diterima (Langsung Masuk Kertas Cetak)</option>
+                                        <option value="Direvisi" class="text-amber-400">Direvisi (Simpan ke DB Saja)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="submit-btn" class="w-full mt-4 bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white p-3 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Generate Soal & Update Kertas Cetak
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full flex flex-col items-center">
+            <div class="w-full max-w-4xl flex justify-between items-center mb-3 no-print bg-slate-800 border border-slate-700 p-3.5 rounded-xl shadow-md">
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"><i class="fa-solid fa-file-lines"></i></span>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-bold text-slate-200">Pratinjau Dokumen Bank Soal Fisik</span>
+                        <span class="text-[11px] text-slate-400">Layout diatur otomatis sesuai standar halaman portrait cetak A4</span>
+                    </div>
+                    <span id="loading-soal-status" class="text-xs bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2.5 py-1 rounded-full pulse-soft hidden"><i class="fa-solid fa-rotate mr-1"></i> Sinkronisasi...</span>
+                </div>
+                <button onclick="window.print()" class="bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-5 py-2 rounded-xl font-bold text-sm hover:from-indigo-500 hover:to-blue-500 transition-all shadow shadow-indigo-600/10 flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i> Cetak Dokumen (A4)
+                </button>
+            </div>
+
+            <div id="print-area-container" class="w-full max-w-4xl bg-white p-16 rounded-xl shadow-2xl border text-black font-serif min-h-[297mm]">
+                <div class="text-center border-b-4 border-double border-black pb-4 mb-8">
+                    <h1 class="text-2xl font-bold uppercase tracking-wider font-serif">Daftar Bank Soal Ujian</h1>
+                    <p class="text-xs font-sans mt-1 text-gray-600 uppercase tracking-wide">Mata Pelajaran: <span id="print-mapel" class="font-bold text-black">-</span>  |  Penyusun: <span id="print-guru" class="font-bold text-black">-</span></p>
+                </div>
+
+                <div id="print-soal-list" class="space-y-6 text-[15px] leading-relaxed">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            quillEditor = new Quill('#editor-container', {
+                theme: 'snow',
+                placeholder: 'Gunakan Ctrl+V di sini untuk menempel soal beserta objek gambar dari MS Word...',
+                modules: { toolbar: false }
+            });
+            
+            // CEK ATRIBUT SESI SAAT HALAMAN DIBUKA ATAU DIREFRESH
+            checkSessionStorage();
+        };
+
+        // MANAJEMEN SESI REFRESH AMAN (SESSION STORAGE BROWSER)
+        function checkSessionStorage() {
+            const savedUser = sessionStorage.getItem("bank_soal_user");
+            const savedMapel = sessionStorage.getItem("bank_soal_mapel");
+
+            if (savedUser) {
+                currentUser = savedUser;
+                document.getElementById("user-display").innerText = currentUser;
+                document.getElementById("print-guru").innerText = currentUser;
+                
+                if (savedMapel) {
+                    selectedMapel = savedMapel;
+                    document.getElementById("mapel-display").innerText = selectedMapel;
+                    document.getElementById("print-mapel").innerText = selectedMapel;
+                    showSection("soal-section");
+                    fetchDatabaseSoal();
+                } else {
+                    loadMapel();
+                }
+            } else {
+                showSection("login-section");
+            }
+        }
+
+        function showSection(id) {
+            document.getElementById("login-section").classList.add("hidden");
+            document.getElementById("mapel-section").classList.add("hidden");
+            document.getElementById("soal-section").classList.add("hidden");
+            document.getElementById(id).classList.remove("hidden");
+        }
+
+        async function handleLogin() {
+            const userInp = document.getElementById("username").value;
+            const passInp = document.getElementById("password").value;
+            const loginBtn = document.getElementById("login-btn");
+
+            if(!userInp || !passInp) return alert("Harap isi data login!");
+            loginBtn.disabled = true; loginBtn.innerText = "Memverifikasi...";
+
+            try {
+                const res = await fetch(WEB_APP_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "login", username: userInp, password: passInp })
+                });
+                const result = await res.json();
+                if(result.status === "success") {
+                    currentUser = result.name;
+                    
+                    // Simpan identitas ke Session Storage agar tahan Refresh tab
+                    sessionStorage.setItem("bank_soal_user", currentUser);
+                    
+                    document.getElementById("user-display").innerText = currentUser;
+                    document.getElementById("print-guru").innerText = currentUser;
+                    await loadMapel();
+                } else { alert(result.message); }
+            } catch(err) { alert("Gagal terhubung ke Server Web App."); }
+            finally { loginBtn.disabled = false; loginBtn.innerText = "Masuk Aplikasi"; }
+        }
+
+        async function loadMapel() {
+            try {
+                const res = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "getMapel" }) });
+                const result = await res.json();
+                if(result.status === "success") {
+                    const select = document.getElementById("mapel-select");
+                    select.innerHTML = "";
+                    result.data.forEach(m => {
+                        let opt = document.createElement("option"); opt.value = m; opt.innerText = m;
+                        select.appendChild(opt);
+                    });
+                    
+                    // Jika mapel berubah, hapus cache pilihan mapel sebelumnya
+                    sessionStorage.removeItem("bank_soal_mapel");
+                    showSection("mapel-section");
+                }
+            } catch (err) { alert("Gagal mengambil data mata pelajaran."); }
+        }
+
+        async function goToInputSoal() {
+            selectedMapel = document.getElementById("mapel-select").value;
+            if(!selectedMapel) return alert("Pilih mata pelajaran!");
+            
+            // Simpan pilihan Mapel ke Session Storage
+            sessionStorage.setItem("bank_soal_mapel", selectedMapel);
+            
+            document.getElementById("mapel-display").innerText = selectedMapel;
+            document.getElementById("print-mapel").innerText = selectedMapel;
+            showSection("soal-section");
+            
+            await fetchDatabaseSoal();
+        }
+
+        function logout() { 
+            // Hapus semua data sesi di browser saat klik tombol Keluar
+            sessionStorage.clear(); 
+            showSection("mapel-section"); 
+            checkSessionStorage();
+        }
+
+        // SINKRONISASI DATA DAN BYPASS PROTEKSI GAMBAR DRIVE
+        async function fetchDatabaseSoal() {
+            const statusLabel = document.getElementById("loading-soal-status");
+            const printList = document.getElementById("print-soal-list");
+            
+            statusLabel.classList.remove("hidden");
+            printList.innerHTML = ""; 
+            nomorSoalLokal = 1;
+
+            try {
+                const res = await fetch(WEB_APP_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "getSoalByMapel", mapel: selectedMapel })
+                });
+                const result = await res.json();
+
+                if(result.status === "success") {
+                    const soalDiterima = result.data.filter(s => s.statusSoal.toString().trim() === "Diterima");
+                    
+                    if(soalDiterima.length === 0) {
+                        printList.innerHTML = `<p id="placeholder-print" class="text-slate-400 font-sans italic text-center no-print py-8">Belum ada bank soal berstatus 'Diterima' untuk Mata Pelajaran ini.</p>`;
+                    } else {
+                        soalDiterima.forEach(item => {
+                            renderSoalKeKertas(item.soal, item.imageId, item.opsiA, item.opsiB, item.opsiC, item.opsiD);
+                        });
+                    }
+                }
+            } catch (err) {
+                printList.innerHTML = `<p class="text-rose-500 text-center font-sans py-4">Gagal mensinkronisasikan riwayat database soal.</p>`;
+            } finally {
+                statusLabel.classList.add("hidden");
+            }
+        }
+
+        function renderSoalKeKertas(soal, imageId, opA, opB, opC, opD) {
+            const printList = document.getElementById("print-soal-list");
+            const placeholder = document.getElementById("placeholder-print");
+            if(placeholder) placeholder.remove();
+
+            let imgHtml = "";
+            if (imageId && imageId !== "") {
+                // FIXED TYPO: Membersihkan prefiks '0' dan menyempurnakan dual-layer fallback render Google Drive
+                imgHtml = `
+                    <div class="my-3 block">
+                        <img src="https://docs.google.com/uc?export=view&id=${imageId}" 
+                             class="max-h-52 object-contain border border-gray-300 rounded bg-white p-1" 
+                             onerror="this.onerror=null; this.src='https://lh3.googleusercontent.com/d/${imageId}';">
+                    </div>
+                `;
+            }
+
+            let htmlSoal = `
+                <div class="soal-item">
+                    <div class="flex items-start gap-2">
+                        <span class="font-bold min-w-[20px] text-right">${nomorSoalLokal}. </span>
+                        <div class="w-full">
+                            <p class="whitespace-pre-line mb-1 text-justify font-serif text-black">${soal}</p>
+                            ${imgHtml}
+                            <div class="grid grid-cols-2 gap-x-6 gap-y-1 font-sans text-sm mt-2 text-gray-900">
+                                <div>A. ${opA}</div>
+                                <div>B. ${opB}</div>
+                                <div>C. ${opC}</div>
+                                <div>D. ${opD}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            printList.insertAdjacentHTML('beforeend', htmlSoal);
+            nomorSoalLokal++;
+        }
+
+        // PARSER INPUT COPY PASTE DARI MICROSOFT WORD
+        function parseDataDariWord() {
+            const htmlContent = quillEditor.root.innerHTML;
+            const textContent = quillEditor.getText();
+            if(textContent.trim() === "") return alert("Editor kosong!");
+
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, 'text/html');
+            const imgTag = doc.querySelector('img');
+            const previewContainer = document.getElementById("image-preview-container");
+            const previewImg = document.getElementById("extracted-image");
+
+            if (imgTag && imgTag.src.startsWith('data:image')) {
+                previewImg.src = imgTag.src;
+                previewContainer.classList.remove("hidden");
+            } else {
+                previewImg.src = "";
+                previewContainer.classList.add("hidden");
+            }
+
+            const baris = textContent.split('\n').map(b => b.trim()).filter(b => b !== "");
+            let soalTeks = ""; let opsiA = "", opsiB = "", opsiC = "", opsiD = "";
+
+            baris.forEach(line => {
+                if (line.match(/^[A|a][\.\)]/)) { opsiA = line.replace(/^[A|a][\.\)]\s*/, ""); } 
+                else if (line.match(/^[B|b][\.\)]/)) { opsiB = line.replace(/^[B|b][\.\)]\s*/, ""); } 
+                else if (line.match(/^[C|c][\.\)]/)) { opsiC = line.replace(/^[C|c][\.\)]\s*/, ""); } 
+                else if (line.match(/^[D|d][\.\)]/)) { opsiD = line.replace(/^[D|d][\.\)]\s*/, ""); } 
+                else {
+                    if(soalTeks === "") { soalTeks = line; } else { soalTeks += "\n" + line; }
+                }
+            });
+
+            document.getElementById("soal-text").value = soalTeks;
+            document.getElementById("opsi-a").value = opsiA;
+            document.getElementById("opsi-b").value = opsiB;
+            document.getElementById("opsi-c").value = opsiC;
+            document.getElementById("opsi-d").value = opsiD;
+        }
+
+        // PROSES KIRIM & SIMPAN DATA KE SPREADSHEET
+        async function handleSaveSoal(e) {
+            e.preventDefault();
+            const btn = document.getElementById("submit-btn");
+            btn.disabled = true; btn.innerText = "Sinkronisasi Cloud...";
+
+            const base64Image = document.getElementById("extracted-image").src;
+            let imageFile = null; let imageName = "";
+
+            if(base64Image && base64Image.startsWith('data:image')) {
+                imageFile = base64Image;
+                imageName = "Gambar_Soal_" + Date.now() + ".png";
+            }
+
+            const payload = {
+                action: "addSoal",
+                mapel: selectedMapel,
+                soal: document.getElementById("soal-text").value,
+                opsiA: document.getElementById("opsi-a").value,
+                opsiB: document.getElementById("opsi-b").value,
+                opsiC: document.getElementById("opsi-c").value,
+                opsiD: document.getElementById("opsi-d").value,
+                statusSoal: document.getElementById("status-soal").value,
+                imageFile: imageFile,
+                imageName: imageName
+            };
+
+            try {
+                const res = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
+                const result = await res.json();
+                
+                if(result.status === "success") {
+                    alert("Sukses! Soal berhasil disimpan.");
+                    await fetchDatabaseSoal();
+
+                    document.getElementById("soal-form").reset();
+                    document.getElementById("image-preview-container").classList.add("hidden");
+                    quillEditor.setText("");
+                } else { alert("Gagal: " + result.message); }
+            } catch (err) { alert("Terjadi kesalahan jaringan."); }
+            finally { btn.disabled = false; btn.innerText = "Kirim ke Spreadsheet & Update Kertas Cetak"; }
+        }
+    </script>
+</body>
+</html>
