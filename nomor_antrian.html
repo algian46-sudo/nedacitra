@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Antrian Rapor</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* Efek transisi halus antar halaman pendaftaran/tiket */
+    .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col justify-center items-center p-4 antialiased">
+
+  <div id="viewOrangTua" class="bg-white p-6 md:p-8 rounded-2xl shadow-xl w-full max-w-md fade-in border border-gray-100">
+    <div class="text-center mb-6">
+      <div class="inline-flex p-3 bg-blue-50 rounded-full text-blue-600 mb-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+        </svg>
+      </div>
+      <h2 class="text-2xl font-bold text-gray-800">Antrian Ambil Rapor</h2>
+      <p class="text-sm text-gray-500 mt-1">Silakan isi data di bawah untuk mendapatkan nomor antrian Anda</p>
+    </div>
+
+    <div id="formContainer" class="space-y-4">
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Orang Tua / Siswa</label>
+        <input type="text" id="nama" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 placeholder-gray-400" placeholder="Masukkan nama lengkap...">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Pilih Kelas</label>
+        <div class="relative">
+          <select id="kelas" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-800 appearance-none">
+            <option value="" disabled selected>-- Pilih Kelas Anda --</option>
+            <option value="7.1">Kelas 7.1</option>
+            <option value="7.2">Kelas 7.2</option>
+            <option value="8.1">Kelas 8.1</option>
+            <option value="8.2">Kelas 8.2</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+          </div>
+        </div>
+      </div>
+      <button onclick="prosesAntrian()" id="btnSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:shadow-lg transition duration-200 flex justify-center items-center">
+        <span>Ambil Nomor Antrian</span>
+      </button>
+    </div>
+
+    <div id="tiketContainer" class="hidden text-center border-2 border-dashed border-blue-200 p-6 rounded-2xl bg-blue-50 fade-in">
+      <p class="text-xs uppercase tracking-widest text-blue-500 font-bold">Nomor Antrian Anda</p>
+      <div id="noAntrian" class="text-5xl font-black text-blue-700 my-4 tracking-wide">---</div>
+      <div class="border-t border-blue-200 pt-4 text-left text-sm text-gray-700 space-y-2">
+        <div class="flex justify-between"><span class="text-gray-500">Nama:</span><span id="resNama" class="font-semibold text-gray-900 text-right"></span></div>
+        <div class="flex justify-between"><span class="text-gray-500">Kelas:</span><span id="resKelas" class="font-semibold text-gray-900"></span></div>
+        <div class="flex justify-between"><span class="text-gray-500">Waktu Daftar:</span><span id="resWaktu" class="font-medium text-gray-600"></span></div>
+      </div>
+      <div class="mt-5 pt-3 border-t border-gray-200">
+        <p class="text-xs text-red-500 font-medium leading-relaxed">*PENTING: Silakan ambil tangkapan layar (screenshot) halaman ini sebagai bukti urutan antrian Anda kepada Wali Kelas.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="viewAdmin" class="hidden bg-white p-6 rounded-2xl shadow-xl w-full max-w-2xl fade-in border border-gray-100">
+    <div class="flex justify-between items-center mb-6 border-b pb-4">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-800">Ruang Kontrol Wali Kelas</h2>
+        <p class="text-xs text-gray-500">Pantau, panggil, dan kelola antrian pembagian rapor</p>
+      </div>
+      <button onclick="muatDataAdmin()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-xl text-xs transition">
+        🔄 Perbarui Data
+      </button>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 text-sm">
+        <thead class="bg-gray-50 font-semibold text-gray-600">
+          <tr>
+            <th class="px-4 py-3 text-left">No. Antrian</th>
+            <th class="px-4 py-3 text-left">Nama</th>
+            <th class="px-4 py-3 text-left">Kelas</th>
+            <th class="px-4 py-3 text-left">Status</th>
+            <th class="px-4 py-3 text-center">Tindakan</th>
+          </tr>
+        </thead>
+        <tbody id="tabelAntrianBody" class="divide-y divide-gray-200 text-gray-700">
+          <tr><td colspan="5" class="text-center py-4 text-gray-400">Memuat data antrian...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="text-center mt-6 text-xs text-gray-400">&copy; 2026 Sistem Antrian Digital Sekolah</div>
+
+  <script>
+    // URL API Apps Script Terbaru yang Anda berikan
+    var urlAPI = "https://script.google.com/macros/s/AKfycbyMuHsG7G5NoKkLdb7swUJDDTBFYbPfyLOOxvb6Nivt-5T--sLfNIBYWrUmD803Lcwd/exec";
+
+    // Router URL Hash Detection
+    window.addEventListener("DOMContentLoaded", function() {
+      // Jika di belakang URL ditambah tanda pagar '#admin', ubah ke mode kontrol guru
+      if(window.location.hash === "#admin") {
+        document.getElementById("viewOrangTua").classList.add("hidden");
+        document.getElementById("viewAdmin").classList.remove("hidden");
+        muatDataAdmin();
+      }
+    });
+
+    // --- FITUR SISI ORANG TUA (DAFTAR) ---
+    function prosesAntrian() {
+      var namaInput = document.getElementById('nama').value.trim();
+      var kelasInput = document.getElementById('kelas').value;
+      var btn = document.getElementById('btnSubmit');
+
+      if (!namaInput) { alert('Mohon masukkan Nama Orang Tua atau Siswa terlebih dahulu!'); return; }
+      if (!kelasInput) { alert('Mohon pilih kelas terlebih dahulu!'); return; }
+
+      btn.disabled = true;
+      btn.innerHTML = `<span>Memproses...</span>`;
+
+      // Menyusun parameter pencatatan data ke URL query string (Metode GET)
+      var urlDaftar = urlAPI + "?aksi=daftar&nama=" + encodeURIComponent(namaInput) + "&kelas=" + encodeURIComponent(kelasInput);
+
+      fetch(urlDaftar, { method: "GET" })
+      .then(response => {
+        if (!response.ok) { throw new Error('Respons jaringan bermasalah.'); }
+        return response.json();
+      })
+      .then(result => {
+        if (result.status === "success") {
+          document.getElementById('formContainer').classList.add('hidden');
+          document.getElementById('tiketContainer').classList.remove('hidden');
+          
+          document.getElementById('noAntrian').innerText = result.nomor;
+          document.getElementById('resNama').innerText = result.nama;
+          document.getElementById('resKelas').innerText = result.kelas;
+          
+          var sekarang = new Date();
+          var jam = String(sekarang.getHours()).padStart(2, '0');
+          var menit = String(sekarang.getMinutes()).padStart(2, '0');
+          document.getElementById('resWaktu').innerText = jam + ':' + menit + ' WIB';
+        } else {
+          alert('Gagal mengambil antrian: ' + result.message);
+          pulihkanTombol(btn);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan koneksi atau konfigurasi di server.');
+        pulihkanTombol(btn);
+      });
+    }
+
+    function pulihkanTombol(btn) {
+      btn.disabled = false;
+      btn.innerText = "Ambil Nomor Antrian";
+    }
+
+    // --- FITUR SISI ADMIN / WALI KELAS (PANGGIL) ---
+    function muatDataAdmin() {
+      var tbody = document.getElementById("tabelAntrianBody");
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-400">Memperbarui data...</td></tr>';
+
+      fetch(urlAPI + "?aksi=ambil_semua", { method: "GET" })
+      .then(res => res.json())
+      .then(res => {
+        if(res.status === "success") {
+          tbody.innerHTML = "";
+          if(res.data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-400">Belum ada antrian yang terdaftar.</td></tr>';
+            return;
+          }
+          
+          res.data.forEach(item => {
+            var badgeColor = item.status === "Dipanggil" ? "bg-amber-100 text-amber-800 font-bold animate-pulse" : (item.status === "Selesai" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600");
+            
+            var btnAksi = "";
+            if (item.status === "Menunggu") {
+              btnAksi = `<button onclick="ubahStatus(${item.row}, 'Dipanggil')" class="bg-amber-500 hover:bg-amber-600 text-white font-medium py-1 px-3 rounded-lg text-xs transition">Panggil</button>`;
+            } else if (item.status === "Dipanggil") {
+              btnAksi = `<button onclick="ubahStatus(${item.row}, 'Selesai')" class="bg-green-500 hover:bg-green-600 text-white font-medium py-1 px-3 rounded-lg text-xs transition">Selesai</button>`;
+            } else {
+              btnAksi = `<span class="text-gray-400 text-xs font-semibold">Selesai Pelayanan</span>`;
+            }
+
+            var rowHtml = `
+              <tr class="hover:bg-gray-50 transition">
+                <td class="px-4 py-3 font-bold text-blue-600">${item.nomor}</td>
+                <td class="px-4 py-3 font-medium">${item.nama}</td>
+                <td class="px-4 py-3">${item.kelas}</td>
+                <td class="px-4 py-3"><span class="px-2 py-1 rounded-md text-xs ${badgeColor}">${item.status}</span></td>
+                <td class="px-4 py-3 text-center">${btnAksi}</td>
+              </tr>
+            `;
+            tbody.insertAdjacentHTML('beforeend', rowHtml);
+          });
+        }
+      })
+      .catch(err => { 
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Gagal menyinkronkan data dari server.</td></tr>'; 
+      });
+    }
+
+    function ubahStatus(rowIndex, statusBaru) {
+      fetch(urlAPI + `?aksi=update_status&row=${rowIndex}&status=${encodeURIComponent(statusBaru)}`, { method: "GET" })
+      .then(res => res.json())
+      .then(res => { 
+        if(res.status === "success") { muatDataAdmin(); } 
+      })
+      .catch(err => alert("Gagal memperbarui status antrian."));
+    }
+  </script>
+</body>
+</html>
