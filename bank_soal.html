@@ -20,7 +20,7 @@
             .no-print, #login-section, #mapel-section, .quill, button, form, label, .absolute {
                 display: none !important;
             }
-            body { background: white !important; color: black !important; padding: 0 !important; margin: 0 !important; }
+            body { background: white !important; color: black !important; padding: 0 !important; margin: 0 !important; width: 100% !important;}
             #print-area-container, #print-area-table-container { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; }
             .soal-item, tr { page-break-inside: avoid; break-inside: avoid; }
         }
@@ -37,8 +37,8 @@
     <div class="absolute bottom-10 right-1/4 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none no-print"></div>
 
     <script>
-        // URL Web App Hasil Deploy Terbaru Anda
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyRaCxLYnLppEGdXAVA63ZQdQSLDLRAlaD2H50YwmGX38Hb3bd2QZkUPdv5PPge2EE/exec";
+        // MASUKKAN URL DEPLOY WEB APP BARU DI SINI
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyl0t7Y5yCOd83OlQsz9g6MhNTYpkfAWDk9bF07j5FfOvjWpL4R97ND6kk5W0UzX80_/exec";
         let currentUser = "";
         let selectedMapel = "";
         let quillEditor;
@@ -46,7 +46,6 @@
         let rawDatabaseSoal = []; 
     </script>
 
-    <!-- SECTION 1: LOGIN -->
     <div id="login-section" class="w-full max-w-md bg-slate-800/90 border border-slate-700/50 p-8 rounded-2xl shadow-2xl no-print">
         <div class="text-center mb-8">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600/20 text-blue-400 mb-4 border border-blue-500/30">
@@ -66,7 +65,6 @@
         <button onclick="handleLogin()" id="login-btn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-3.5 rounded-xl font-bold hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg">Masuk Aplikasi</button>
     </div>
 
-    <!-- SECTION 2: MAPEL -->
     <div id="mapel-section" class="w-full max-w-md bg-slate-800/90 border border-slate-700/50 p-8 rounded-2xl shadow-2xl hidden no-print">
         <h2 class="text-2xl font-bold text-slate-100 mb-1">Halo, <span id="user-display" class="text-blue-400"></span></h2>
         <p class="text-slate-400 text-sm mb-6">Silakan tentukan target instrumen penilaian:</p>
@@ -77,7 +75,6 @@
         <button onclick="goToInputSoal()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-3.5 rounded-xl font-bold shadow-lg">Buka Lembar Input Soal <i class="fa-solid fa-arrow-right ml-1"></i></button>
     </div>
 
-    <!-- SECTION 3: INPUT SOAL -->
     <div id="soal-section" class="w-full max-w-6xl flex flex-col gap-6 hidden">
         <div class="bg-slate-800/80 border border-slate-700/50 p-6 rounded-2xl shadow-2xl no-print backdrop-blur-md">
             <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 border-b border-slate-700/60 pb-4 gap-4">
@@ -92,14 +89,12 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Kiri: Quill Editor -->
                 <div class="flex flex-col">
                     <label class="block text-slate-300 font-bold mb-2 text-xs uppercase tracking-wider">1. Area Tempel (Ctrl + V Dari Word Beserta Gambar)</label>
                     <div id="editor-container" class="text-slate-900 rounded-xl" style="height: 260px; background: white;"></div>
                     <button onclick="parseDataDariWord()" class="w-full mt-3 bg-amber-500 hover:bg-amber-400 text-slate-950 p-3 rounded-xl font-bold transition-all shadow-md"><i class="fa-solid fa-bolt-lightning"></i> Ekstrak & Pisahkan Komponen Soal</button>
                 </div>
 
-                <!-- Kanan: Form Validasi -->
                 <form id="soal-form" onsubmit="handleSaveSoal(event)" class="flex flex-col justify-between">
                     <div class="space-y-3 bg-slate-900/60 p-4 rounded-xl border border-slate-700/60 max-h-[315px] overflow-y-auto">
                         <div>
@@ -107,7 +102,7 @@
                             <textarea id="soal-text" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200 h-16 resize-none"></textarea>
                         </div>
                         <div id="image-preview-container" class="hidden">
-                            <label class="block text-slate-400 text-xs font-semibold mb-1">Ilustrasi Gambar Terdeteksi</label>
+                            <label class="block text-slate-400 text-xs font-semibold mb-1">Ilustrasi Gambar Terdeteksi (Base64 Murni)</label>
                             <div class="inline-block bg-slate-800 p-1.5 rounded-lg border border-slate-700">
                                 <img id="extracted-image" class="max-h-20 object-contain rounded" src="" alt="Preview">
                             </div>
@@ -118,27 +113,32 @@
                             <div><label class="block text-slate-400 text-xs mb-0.5">Pilihan C</label><input type="text" id="opsi-c" required class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200"></div>
                             <div><label class="block text-slate-400 text-xs mb-0.5">Pilihan D</label><input type="text" id="opsi-d" required class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200"></div>
                         </div>
-                        <div>
-                            <label class="block text-slate-400 text-xs font-semibold mb-1">Status Validasi</label>
-                            <select id="status-soal" class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200">
-                                <option value="Diterima">Diterima (Langsung Masuk Kertas Cetak)</option>
-                                <option value="Direvisi">Direvisi (Simpan ke DB Saja)</option>
-                            </select>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-slate-400 text-xs font-semibold mb-1">Status Validasi</label>
+                                <select id="status-soal" class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200">
+                                    <option value="Diterima">Diterima (Cetak)</option>
+                                    <option value="Direvisi">Direvisi</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 text-xs font-semibold mb-1">Target Pengujian</label>
+                                <input type="text" id="pengujian-soal" placeholder="Cth: ASAT 2026 / Kosongkan" class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200">
+                            </div>
                         </div>
                     </div>
-                    <button type="submit" id="submit-btn" class="w-full mt-4 bg-gradient-to-r from-blue-600 to-emerald-600 text-white p-3 rounded-xl font-bold shadow-lg"><i class="fa-solid fa-cloud-arrow-up"></i> Generate & Update Kertas Cetak</button>
+                    <button type="submit" id="submit-btn" class="w-full mt-4 bg-gradient-to-r from-blue-600 to-emerald-600 text-white p-3 rounded-xl font-bold shadow-lg"><i class="fa-solid fa-cloud-arrow-up"></i> Kirim ke Spreadsheet & Kirim Gambar</button>
                 </form>
             </div>
         </div>
 
-        <!-- PRATINJAU DOKUMEN -->
         <div class="w-full flex flex-col items-center">
             <div class="w-full max-w-4xl flex flex-col sm:flex-row justify-between items-center mb-3 no-print bg-slate-800 border border-slate-700 p-3.5 rounded-xl gap-4 shadow-md">
                 <div class="flex items-center gap-3">
                     <span class="text-indigo-400"><i class="fa-solid fa-file-lines text-xl"></i></span>
                     <div class="flex flex-col">
-                        <span class="text-sm font-bold text-slate-200">Pratinjau Dokumen Ujian Fisik</span>
-                        <span id="loading-soal-status" class="text-[11px] text-slate-400 hidden"><i class="fa-solid fa-rotate mr-1 animate-spin"></i> Sinkronisasi...</span>
+                        <span class="text-sm font-bold text-slate-200">Pratinjau Dokumen Ujian Fisik (A4)</span>
+                        <span id="loading-soal-status" class="text-[11px] text-slate-400 hidden"><i class="fa-solid fa-rotate mr-1 animate-spin"></i> Sinkronisasi Cloud...</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 w-full sm:w-auto">
@@ -150,7 +150,6 @@
                 </div>
             </div>
 
-            <!-- Tampilan 1: Portrait Kertas Lembar Ujian -->
             <div id="print-area-container" class="w-full max-w-4xl bg-white p-16 rounded-xl border text-black font-serif min-h-[297mm]">
                 <div class="text-center border-b-4 border-double border-black pb-4 mb-8">
                     <h1 class="text-2xl font-bold uppercase font-serif">Daftar Bank Soal Pembelajaran</h1>
@@ -159,7 +158,6 @@
                 <div id="print-soal-list" class="space-y-6 text-[15px]"></div>
             </div>
 
-            <!-- Tampilan 2: Landscape Format Tabel Ringkasan -->
             <div id="print-area-table-container" class="w-full max-w-5xl bg-white p-10 rounded-xl border text-black font-sans min-h-[210mm] hidden">
                 <div class="text-center border-b-4 border-double border-black pb-3 mb-6">
                     <h1 class="text-xl font-bold uppercase">Tabel Ringkasan Bank Soal Pembelajaran</h1>
@@ -169,12 +167,13 @@
                     <thead>
                         <tr class="bg-gray-100">
                             <th class="border border-black p-2 text-center font-bold" style="width: 4%;">No.</th>
-                            <th class="border border-black p-2 text-left font-bold" style="width: 44%;">Soal</th>
-                            <th class="border border-black p-2 text-center font-bold" style="width: 11%;">A</th>
-                            <th class="border border-black p-2 text-center font-bold" style="width: 11%;">B</th>
-                            <th class="border border-black p-2 text-center font-bold" style="width: 11%;">C</th>
-                            <th class="border border-black p-2 text-center font-bold" style="width: 11%;">D</th>
+                            <th class="border border-black p-2 text-left font-bold" style="width: 36%;">Soal</th>
+                            <th class="border border-black p-2 text-center font-bold" style="width: 10%;">A</th>
+                            <th class="border border-black p-2 text-center font-bold" style="width: 10%;">B</th>
+                            <th class="border border-black p-2 text-center font-bold" style="width: 10%;">C</th>
+                            <th class="border border-black p-2 text-center font-bold" style="width: 10%;">D</th>
                             <th class="border border-black p-2 text-center font-bold" style="width: 8%;">Status</th>
+                            <th class="border border-black p-2 text-center font-bold" style="width: 12%;">Pengujian</th>
                         </tr>
                     </thead>
                     <tbody id="print-table-body"></tbody>
@@ -291,32 +290,42 @@
             const mode = document.getElementById("layout-mode-select").value;
             const printList = document.getElementById("print-soal-list");
             const tableBody = document.getElementById("print-table-body");
+            
             printList.innerHTML = ""; tableBody.innerHTML = "";
             nomorSoalLokal = 1;
 
             if(rawDatabaseSoal.length === 0) {
                 printList.innerHTML = `<p class="text-slate-400 italic text-center py-8">Belum ada bank soal berstatus 'Diterima' dari Anda.</p>`;
-                tableBody.innerHTML = `<tr><td colspan="7" class="text-center p-4 italic text-gray-400">Belum ada data.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="8" class="text-center p-4 italic text-gray-400">Belum ada data.</td></tr>`;
                 return;
             }
 
             rawDatabaseSoal.forEach(item => {
+                let isImageExist = item.imageId && item.imageId.toString().startsWith("data:image");
+
                 if (mode === "landscape-table") {
-                    let imgHtml = (item.imageId && !item.imageId.startsWith("PROSES_")) ? `<br><img src="${item.imageId}" class="max-h-24 mt-1 object-contain">` : "";
+                    let imgHtml = isImageExist ? `<br><img src="${item.imageId}" class="max-h-24 mt-1 object-contain">` : "";
+                    let textPengujianDisplay = item.pengujian ? item.pengujian.toString().trim() : "";
+
                     tableBody.insertAdjacentHTML('beforeend', `
-                        <tr class="align-top text-black"><td class="border border-black p-2 text-center font-bold">${nomorSoalLokal}</td>
-                        <td class="border border-black p-2 whitespace-pre-line">${item.soal}${imgHtml}</td>
-                        <td class="border border-black p-2">${item.opsiA}</td><td class="border border-black p-2">${item.opsiB}</td>
-                        <td class="border border-black p-2">${item.opsiC}</td><td class="border border-black p-2">${item.opsiD}</td>
-                        <td class="border border-black p-2 text-center text-emerald-700 font-bold">${item.statusSoal}</td></tr>
+                        <tr class="align-top text-black">
+                            <td class="border border-black p-2 text-center font-bold">${nomorSoalLokal}</td>
+                            <td class="border border-black p-2 whitespace-pre-line">${item.soal}${imgHtml}</td>
+                            <td class="border border-black p-2">${item.opsiA}</td>
+                            <td class="border border-black p-2">${item.opsiB}</td>
+                            <td class="border border-black p-2">${item.opsiC}</td>
+                            <td class="border border-black p-2">${item.opsiD}</td>
+                            <td class="border border-black p-2 text-center text-emerald-700 font-bold">${item.statusSoal}</td>
+                            <td class="border border-black p-2 text-center font-medium">${textPengujianDisplay}</td>
+                        </tr>
                     `);
                 } else {
-                    let imgHtml = (item.imageId && !item.imageId.startsWith("PROSES_")) ? `<div class="my-2"><img src="${item.imageId}" class="max-h-48 object-contain border p-1 bg-white"></div>` : "";
+                    let imgHtml = isImageExist ? `<div class="my-2"><img src="${item.imageId}" class="max-h-48 object-contain border p-1 bg-white"></div>` : "";
                     printList.insertAdjacentHTML('beforeend', `
                         <div class="soal-item flex items-start gap-2"><span class="font-bold min-w-[20px] text-right">${nomorSoalLokal}.</span>
                         <div class="w-full"><p class="whitespace-pre-line font-serif text-black text-justify">${item.soal}</p>${imgHtml}
                         <div class="grid grid-cols-2 gap-x-6 gap-y-1 font-sans text-sm mt-2 text-gray-900">
-                        <div>A. ${item.opsiA}</div><div>B. ${item.opsiB}</div><div>C. ${item.opsiB}</div><div>C. ${item.opsiC}</div><div>D. ${item.opsiD}</div></div></div></div>
+                        <div>A. ${item.opsiA}</div><div>B. ${item.opsiB}</div><div>C. ${item.opsiC}</div><div>D. ${item.opsiD}</div></div></div></div>
                     `);
                 }
                 nomorSoalLokal++;
@@ -358,6 +367,7 @@
             e.preventDefault();
             const btn = document.getElementById("submit-btn");
             btn.disabled = true; btn.innerText = "Menyimpan ke Cloud...";
+            
             const base64Image = document.getElementById("extracted-image").src;
 
             const payload = {
@@ -369,22 +379,38 @@
                 opsiC: document.getElementById("opsi-c").value,
                 opsiD: document.getElementById("opsi-d").value,
                 statusSoal: document.getElementById("status-soal").value,
-                imageFile: base64Image.startsWith('data:image') ? base64Image : "",
-                namaGuru: currentUser 
+                imageFile: base64Image.startsWith('data:image') ? base64Image : "", 
+                namaGuru: currentUser,
+                pengujian: document.getElementById("pengujian-soal").value.trim()
             };
 
             try {
-                const res = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
-                const result = await res.json();
-                if(result.status === "success") {
-                    alert("Sukses! Soal berhasil disimpan.");
+                // MENGGUNAKAN JALUR TEXT PLAIN NO-CORS (Lolos Sensor Enkripsi Google Data Besar)
+                await fetch(WEB_APP_URL, { 
+                    method: "POST", 
+                    mode: "no-cors", 
+                    headers: { "Content-Type": "text/plain" },
+                    body: JSON.stringify(payload) 
+                });
+
+                alert("Data berhasil diproses! Sinkronisasi halaman cetak...");
+                
+                // Jeda 2.5 Detik untuk memberi napas Google Sheet dalam menulis baris sel teks panjang
+                setTimeout(async () => {
                     await fetchDatabaseSoal();
                     document.getElementById("soal-form").reset();
                     document.getElementById("image-preview-container").classList.add("hidden");
+                    document.getElementById("extracted-image").src = "";
                     quillEditor.setText("");
-                } else { alert("Gagal: " + result.message); }
-            } catch (err) { alert("Terjadi kesalahan jaringan."); }
-            finally { btn.disabled = false; btn.innerText = "Kirim ke Spreadsheet & Update Kertas Cetak"; }
+                    btn.disabled = false; 
+                    btn.innerText = "Kirim ke Spreadsheet & Kirim Gambar";
+                }, 2500);
+
+            } catch (err) { 
+                alert("Terjadi kesalahan jaringan."); 
+                btn.disabled = false; 
+                btn.innerText = "Kirim ke Spreadsheet & Kirim Gambar";
+            }
         }
     </script>
 </body>
