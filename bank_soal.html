@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Bank Soal Digital - Modern & Professional Dashboard</title>
+    <title>Sistem Bank Soal Digital - SMPN 8 CIKARANG UTARA</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
@@ -28,9 +28,10 @@
             50% { opacity: 0.6; transform: scale(0.98); }
         }
 
-        /* ================= AREA CSS KHUSUS CETAK KERTAS A4 ================= */
+        /* ================= AREA CSS KHUSUS CETAK KERTAS ================= */
         @media print {
-            body, .no-print, #login-section, #mapel-section, .quill, button, form, label {
+            /* Sembunyikan elemen dashboard & navigasi, JANGAN menyembunyikan 'body' */
+            .no-print, #login-section, #mapel-section, .quill, button, form, label, .absolute {
                 display: none !important;
             }
             body {
@@ -39,23 +40,28 @@
                 padding: 0 !important;
                 margin: 0 !important;
             }
-            #print-area-container {
-                display: block !important;
-                width: 100% !important;
-                max-width: 100% !important;
+            #print-area-container, #print-area-table-container {
                 box-shadow: none !important;
+                border: none !important;
                 padding: 0 !important;
                 margin: 0 !important;
-            }
-            @page {
-                size: A4 portrait;
-                margin: 22mm 20mm 20mm 20mm;
+                width: 100% !important;
+                max-width: 100% !important;
             }
             .soal-item {
                 page-break-inside: avoid;
                 break-inside: avoid;
             }
+            tr {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
         }
+    </style>
+    <style id="print-page-style">
+        @page { size: A4 portrait; margin: 22mm 20mm 20mm 20mm; }
+        #print-area-table-container { display: none !important; }
+        #print-area-container { display: block; }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col items-center justify-center p-4 md:p-8 relative overflow-x-hidden">
@@ -70,6 +76,7 @@
         let selectedMapel = "";
         let quillEditor;
         let nomorSoalLokal = 1;
+        let rawDatabaseSoal = []; // Cache untuk mempermudah penggantian mode layout tanpa request ulang
     </script>
 
     <div id="login-section" class="w-full max-w-md bg-slate-800/90 border border-slate-700/50 p-8 rounded-2xl shadow-2xl no-print transition-all duration-300 transform scale-100">
@@ -101,7 +108,7 @@
         <h2 class="text-2xl font-bold text-slate-100 flex items-center gap-2 mb-1">
             <span class="text-emerald-400"><i class="fa-solid fa-circle-user"></i></span> Halo, <span id="user-display" class="text-blue-400"></span>
         </h2>
-        <p class="text-slate-400 text-sm mb-6">Silakan tentukan mapel pilihan anda:</p>
+        <p class="text-slate-400 text-sm mb-6">Silakan tentukan target instrumen penilaian:</p>
         <div class="mb-6">
             <label class="block text-slate-300 font-semibold mb-2 text-sm">Pilih Mata Pelajaran</label>
             <div class="relative">
@@ -125,7 +132,7 @@
                         <i class="fa-solid fa-paste text-xl"></i>
                     </div>
                     <div>
-                        <h2 class="text-xl font-bold text-slate-100 tracking-tight">INPUT SOAL HASIL ANALISIS</h2>
+                        <h2 class="text-xl font-bold text-slate-100 tracking-tight">INPUT SOAL HASIL ANALSIS</h2>
                         <p class="text-xs text-slate-400 mt-0.5">Mata Pelajaran: <span id="mapel-display" class="font-semibold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20"></span></p>
                     </div>
                 </div>
@@ -185,7 +192,7 @@
                         </div>
 
                         <button type="submit" id="submit-btn" class="w-full mt-4 bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white p-3 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> Generate Soal & Update Kertas Cetak
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Kirim ke Spreadsheet & Update Kertas Cetak
                         </button>
                     </form>
                 </div>
@@ -193,28 +200,58 @@
         </div>
 
         <div class="w-full flex flex-col items-center">
-            <div class="w-full max-w-4xl flex justify-between items-center mb-3 no-print bg-slate-800 border border-slate-700 p-3.5 rounded-xl shadow-md">
+            <div class="w-full max-w-4xl flex flex-col sm:flex-row justify-between items-center mb-3 no-print bg-slate-800 border border-slate-700 p-3.5 rounded-xl shadow-md gap-4">
                 <div class="flex items-center gap-3">
                     <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"><i class="fa-solid fa-file-lines"></i></span>
                     <div class="flex flex-col">
-                        <span class="text-sm font-bold text-slate-200">Pratinjau Dokumen Bank Soal Fisik</span>
-                        <span class="text-[11px] text-slate-400">Layout diatur otomatis sesuai standar halaman portrait cetak A4</span>
+                        <span class="text-sm font-bold text-slate-200">Pratinjau Dokumen Ujian Fisik</span>
+                        <span id="loading-soal-status" class="text-[11px] text-slate-400"><i class="fa-solid fa-rotate mr-1"></i> Sinkronisasi...</span>
                     </div>
-                    <span id="loading-soal-status" class="text-xs bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2.5 py-1 rounded-full pulse-soft hidden"><i class="fa-solid fa-rotate mr-1"></i> Sinkronisasi...</span>
                 </div>
-                <button onclick="window.print()" class="bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-5 py-2 rounded-xl font-bold text-sm hover:from-indigo-500 hover:to-blue-500 transition-all shadow shadow-indigo-600/10 flex items-center gap-2">
-                    <i class="fa-solid fa-print"></i> Cetak Dokumen (A4)
-                </button>
+                
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <label class="text-xs text-slate-400 font-semibold whitespace-nowrap">Mode Cetak:</label>
+                    <select id="layout-mode-select" onchange="switchLayoutMode()" class="bg-slate-900 border border-slate-700 rounded-lg text-xs p-2 text-slate-200 focus:outline-none cursor-pointer">
+                        <option value="portrait-default">📇 Lembar Standar (A4 Portrait)</option>
+                        <option value="landscape-table">📊 Tabel Ringkasan (A4 Landscape)</option>
+                    </select>
+                    <button onclick="window.print()" class="bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-5 py-2 rounded-xl font-bold text-sm hover:from-indigo-500 hover:to-blue-500 transition-all shadow shadow-indigo-600/10 flex items-center gap-2 whitespace-nowrap">
+                        <i class="fa-solid fa-print"></i> Cetak Dokumen
+                    </button>
+                </div>
             </div>
 
             <div id="print-area-container" class="w-full max-w-4xl bg-white p-16 rounded-xl shadow-2xl border text-black font-serif min-h-[297mm]">
                 <div class="text-center border-b-4 border-double border-black pb-4 mb-8">
-                    <h1 class="text-2xl font-bold uppercase tracking-wider font-serif">Daftar Bank Soal Ujian</h1>
+                    <h1 class="text-2xl font-bold uppercase tracking-wider font-serif">Daftar Bank Soal Pembelajaran</h1>
                     <p class="text-xs font-sans mt-1 text-gray-600 uppercase tracking-wide">Mata Pelajaran: <span id="print-mapel" class="font-bold text-black">-</span>  |  Penyusun: <span id="print-guru" class="font-bold text-black">-</span></p>
                 </div>
 
                 <div id="print-soal-list" class="space-y-6 text-[15px] leading-relaxed">
                     </div>
+            </div>
+
+            <div id="print-area-table-container" class="w-full max-w-5xl bg-white p-10 rounded-xl shadow-2xl border text-black font-sans min-h-[210mm] hidden">
+                <div class="text-center border-b-4 border-double border-black pb-3 mb-6">
+                    <h1 class="text-xl font-bold uppercase tracking-wider">Tabel Ringkasan Bank Soal Pembelajaran</h1>
+                    <p class="text-xs mt-1 text-gray-600 uppercase tracking-wide">Mata Pelajaran: <span id="print-table-mapel" class="font-bold text-black">-</span>  |  Penyusun: <span id="print-table-guru" class="font-bold text-black">-</span></p>
+                </div>
+
+                <table class="w-full border-collapse border border-black text-xs table-fixed">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-black p-2 text-center font-bold" style="width: 4%;">No.</th>
+                            <th class="border border-black p-2 text-left font-bold" style="width: 44%;">Soal</th>
+                            <th class="border border-black p-2 text-left font-bold" style="width: 11%;">A</th>
+                            <th class="border border-black p-2 text-left font-bold" style="width: 11%;">B</th>
+                            <th class="border border-black p-2 text-left font-bold" style="width: 11%;">C</th>
+                            <th class="border border-black p-2 text-left font-bold" style="width: 11%;">D</th>
+                            <th class="border border-black p-2 text-center font-bold" style="width: 8%;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="print-table-body">
+                        </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -240,11 +277,13 @@
                 currentUser = savedUser;
                 document.getElementById("user-display").innerText = currentUser;
                 document.getElementById("print-guru").innerText = currentUser;
+                document.getElementById("print-table-guru").innerText = currentUser;
                 
                 if (savedMapel) {
                     selectedMapel = savedMapel;
                     document.getElementById("mapel-display").innerText = selectedMapel;
                     document.getElementById("print-mapel").innerText = selectedMapel;
+                    document.getElementById("print-table-mapel").innerText = selectedMapel;
                     showSection("soal-section");
                     fetchDatabaseSoal();
                 } else {
@@ -279,11 +318,11 @@
                 if(result.status === "success") {
                     currentUser = result.name;
                     
-                    // Simpan identitas ke Session Storage agar tahan Refresh tab
                     sessionStorage.setItem("bank_soal_user", currentUser);
                     
                     document.getElementById("user-display").innerText = currentUser;
                     document.getElementById("print-guru").innerText = currentUser;
+                    document.getElementById("print-table-guru").innerText = currentUser;
                     await loadMapel();
                 } else { alert(result.message); }
             } catch(err) { alert("Gagal terhubung ke Server Web App."); }
@@ -302,7 +341,6 @@
                         select.appendChild(opt);
                     });
                     
-                    // Jika mapel berubah, hapus cache pilihan mapel sebelumnya
                     sessionStorage.removeItem("bank_soal_mapel");
                     showSection("mapel-section");
                 }
@@ -313,18 +351,17 @@
             selectedMapel = document.getElementById("mapel-select").value;
             if(!selectedMapel) return alert("Pilih mata pelajaran!");
             
-            // Simpan pilihan Mapel ke Session Storage
             sessionStorage.setItem("bank_soal_mapel", selectedMapel);
             
             document.getElementById("mapel-display").innerText = selectedMapel;
             document.getElementById("print-mapel").innerText = selectedMapel;
+            document.getElementById("print-table-mapel").innerText = selectedMapel;
             showSection("soal-section");
             
             await fetchDatabaseSoal();
         }
 
         function logout() { 
-            // Hapus semua data sesi di browser saat klik tombol Keluar
             sessionStorage.clear(); 
             showSection("mapel-section"); 
             checkSessionStorage();
@@ -333,11 +370,8 @@
         // SINKRONISASI DATA DAN BYPASS PROTEKSI GAMBAR DRIVE
         async function fetchDatabaseSoal() {
             const statusLabel = document.getElementById("loading-soal-status");
-            const printList = document.getElementById("print-soal-list");
-            
+            statusLabel.innerHTML = `<i class="fa-solid fa-rotate mr-1"></i> Sinkronisasi...`;
             statusLabel.classList.remove("hidden");
-            printList.innerHTML = ""; 
-            nomorSoalLokal = 1;
 
             try {
                 const res = await fetch(WEB_APP_URL, {
@@ -347,31 +381,78 @@
                 const result = await res.json();
 
                 if(result.status === "success") {
-                    const soalDiterima = result.data.filter(s => s.statusSoal.toString().trim() === "Diterima");
-                    
-                    if(soalDiterima.length === 0) {
-                        printList.innerHTML = `<p id="placeholder-print" class="text-slate-400 font-sans italic text-center no-print py-8">Belum ada bank soal berstatus 'Diterima' untuk Mata Pelajaran ini.</p>`;
-                    } else {
-                        soalDiterima.forEach(item => {
-                            renderSoalKeKertas(item.soal, item.imageId, item.opsiA, item.opsiB, item.opsiC, item.opsiD);
-                        });
-                    }
+                    // Simpan data mentah ke dalam cache lokal aplikasi
+                    rawDatabaseSoal = result.data.filter(s => s.statusSoal.toString().trim() === "Diterima");
+                    // Jalankan render awal berbasis pilihan mode yang sedang terpilih
+                    renderDataKeTampilan();
                 }
             } catch (err) {
-                printList.innerHTML = `<p class="text-rose-500 text-center font-sans py-4">Gagal mensinkronisasikan riwayat database soal.</p>`;
+                document.getElementById("print-soal-list").innerHTML = `<p class="text-rose-500 text-center font-sans py-4">Gagal mensinkronisasikan riwayat database soal.</p>`;
             } finally {
                 statusLabel.classList.add("hidden");
             }
         }
 
+        // FUNGSI BARU: SWITCH MODE & DINAMISASI ORIENTASI LAYOUT
+        function switchLayoutMode() {
+            const currentMode = document.getElementById("layout-mode-select").value;
+            const styleElement = document.getElementById("print-page-style");
+
+            if (currentMode === "landscape-table") {
+                // Setel rule media print browser menjadi LANDSCAPE
+                styleElement.innerHTML = `
+                    @page { size: A4 landscape; margin: 15mm 12mm 12mm 12mm; }
+                    #print-area-container { display: none !important; }
+                    #print-area-table-container { display: block !important; }
+                `;
+                document.getElementById("print-area-container").classList.add("hidden");
+                document.getElementById("print-area-table-container").classList.remove("hidden");
+            } else {
+                // Kembalikan ke rule aslinya PORTRAIT
+                styleElement.innerHTML = `
+                    @page { size: A4 portrait; margin: 22mm 20mm 20mm 20mm; }
+                    #print-area-table-container { display: none !important; }
+                    #print-area-container { display: block !important; }
+                `;
+                document.getElementById("print-area-table-container").classList.add("hidden");
+                document.getElementById("print-area-container").classList.remove("hidden");
+            }
+
+            renderDataKeTampilan();
+        }
+
+        // FUNGSI BARU: DISTRIBUTOR RENDER DATA SESUAI LAYOUT AKTIF
+        function renderDataKeTampilan() {
+            const mode = document.getElementById("layout-mode-select").value;
+            
+            const printList = document.getElementById("print-soal-list");
+            const tableBody = document.getElementById("print-table-body");
+            
+            printList.innerHTML = "";
+            tableBody.innerHTML = "";
+            nomorSoalLokal = 1;
+
+            if(rawDatabaseSoal.length === 0) {
+                const emptyHTML = `<p id="placeholder-print" class="text-slate-400 font-sans italic text-center no-print py-8">Belum ada bank soal berstatus 'Diterima' untuk Mata Pelajaran ini.</p>`;
+                printList.innerHTML = emptyHTML;
+                tableBody.innerHTML = `<tr><td colspan="7" class="text-center p-4 italic text-gray-400">Belum ada data.</td></tr>`;
+                return;
+            }
+
+            rawDatabaseSoal.forEach(item => {
+                if (mode === "landscape-table") {
+                    renderKeBarisTabel(item.soal, item.imageId, item.opsiA, item.opsiB, item.opsiC, item.opsiD, item.statusSoal);
+                } else {
+                    renderSoalKeKertas(item.soal, item.imageId, item.opsiA, item.opsiB, item.opsiC, item.opsiD);
+                }
+            });
+        }
+
+        // LOGIKA AMAN RENDER KARTU PORTRAIT DEFAULT (TIDAK BERUBAH)
         function renderSoalKeKertas(soal, imageId, opA, opB, opC, opD) {
             const printList = document.getElementById("print-soal-list");
-            const placeholder = document.getElementById("placeholder-print");
-            if(placeholder) placeholder.remove();
-
             let imgHtml = "";
             if (imageId && imageId !== "") {
-                // FIXED TYPO: Membersihkan prefiks '0' dan menyempurnakan dual-layer fallback render Google Drive
                 imgHtml = `
                     <div class="my-3 block">
                         <img src="https://docs.google.com/uc?export=view&id=${imageId}" 
@@ -399,6 +480,38 @@
                 </div>
             `;
             printList.insertAdjacentHTML('beforeend', htmlSoal);
+            nomorSoalLokal++;
+        }
+
+        // FITUR BARU: LOGIKA RENDER KE DATA KOLOM BARIS TABEL LANDSCAPE
+        function renderKeBarisTabel(soal, imageId, opA, opB, opC, opD, status) {
+            const tableBody = document.getElementById("print-table-body");
+            let imgHtml = "";
+            if (imageId && imageId !== "") {
+                imgHtml = `
+                    <div class="mt-2 block">
+                        <img src="https://docs.google.com/uc?export=view&id=${imageId}" 
+                             class="max-h-28 object-contain border border-gray-300 rounded bg-white p-0.5" 
+                             onerror="this.onerror=null; this.src='https://lh3.googleusercontent.com/d/${imageId}';">
+                    </div>
+                `;
+            }
+
+            let trHtml = `
+                <tr class="align-top font-sans text-black">
+                    <td class="border border-black p-2 text-center font-bold">${nomorSoalLokal}</td>
+                    <td class="border border-black p-2 text-justify whitespace-pre-line">
+                        <div>${soal}</div>
+                        ${imgHtml}
+                    </td>
+                    <td class="border border-black p-2">${opA}</td>
+                    <td class="border border-black p-2">${opB}</td>
+                    <td class="border border-black p-2">${opC}</td>
+                    <td class="border border-black p-2">${opD}</td>
+                    <td class="border border-black p-2 text-center text-[11px] font-semibold text-emerald-700">${status}</td>
+                </tr>
+            `;
+            tableBody.insertAdjacentHTML('beforeend', trHtml);
             nomorSoalLokal++;
         }
 
