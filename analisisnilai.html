@@ -46,14 +46,14 @@
     .label-kecil { font-size: 9px; color: #666; font-style: italic; }
 
     .analysis-section { margin-top: 20px; border-top: 2px solid #333; padding-top: 10px; width: 100%; clear: both; }
-    .analysis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-    .analysis-box { border: 1px solid #ccc; padding: 8px; }
+    .analysis-grid { display: flex; justify-content: space-between; margin-bottom: 15px; gap: 15px; }
+    .analysis-box { flex: 1; border: 1px solid #ccc; padding: 8px; }
     .analysis-title { font-weight: bold; background: #eee; padding: 3px 5px; margin-bottom: 5px; border-bottom: 1px solid #ccc; }
     .remedial-list { margin-top: 10px; border: 1px solid #ccc; padding: 8px; min-height: 30px; }
 
     /* Gaya tabel analisis butir soal agar stabil di layar bawah */
-    #itemAnalysisTable { table-layout: auto !important; width: 100% !important; margin-top: 10px; border-collapse: collapse; }
-    #itemAnalysisTable th, #itemAnalysisTable td { border: 1px solid black; text-align: center; padding: 4px; font-size: 10px; }
+    #itemAnalysisTable, #essayAnalysisTable { table-layout: auto !important; width: 100% !important; margin-top: 10px; border-collapse: collapse; }
+    #itemAnalysisTable th, #itemAnalysisTable td, #essayAnalysisTable th, #essayAnalysisTable td { border: 1px solid black; text-align: center; padding: 4px; font-size: 10px; }
 
     .signature-grid { display: flex; justify-content: space-between; margin-top: 30px; text-align: center; }
     .sig-col { flex: 0 0 280px; display: flex; flex-direction: column; align-items: center; }
@@ -161,7 +161,7 @@
         </div>
 
         <div class="page-break-analysis" style="margin-top: 30px; border-top: 3px double #333; padding-top: 20px;">
-            <h3 id="displayJudulButir" style="text-align:center; text-transform:uppercase; font-size:14px; margin-bottom:15px;">ANALISIS BUTIR SOAL</h3>
+            <h3 id="displayJudulButir" style="text-align:center; text-transform:uppercase; font-size:14px; margin-bottom:15px;">ANALISIS BUTIR SOAL (PILIHAN GANDA)</h3>
             <table id="itemAnalysisTable">
                 <thead>
                     <tr class="bg-header">
@@ -189,6 +189,30 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- BAGIAN BARU: ANALISIS BUTIR SOAL ESAI -->
+        <div style="margin-top: 30px; border-top: 1px dashed #333; padding-top: 20px;">
+            <h3 id="displayJudulEsai" style="text-align:center; text-transform:uppercase; font-size:14px; margin-bottom:15px;">ANALISIS BUTIR SOAL (ESAI)</h3>
+            <table id="essayAnalysisTable">
+                <thead>
+                    <tr class="bg-header">
+                        <th width="40">No.</th>
+                        <th width="60">No. Esai</th>
+                        <th width="100">Rata-rata Skor</th>
+                        <th width="100">Skor Maks</th>
+                        <th width="100">Tingkat Kesukaran (Mean/Max)</th>
+                        <th width="120">Daya Beda (r-Hitung)</th>
+                        <th width="150">Tafsiran Kesukaran</th>
+                        <th width="150">Tafsiran Daya Beda</th>
+                        <th width="150">Status Soal</th>
+                    </tr>
+                </thead>
+                <tbody id="essayAnalysisBody">
+                    <tr><td colspan="9" style="padding:10px; color:#999;">Belum ada data kalkulasi analisis esai.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
         <div class="signature-grid">
             <div class="sig-col">
                 <div>Mengetahui,</div>
@@ -225,7 +249,8 @@
     function syncJudul() {
         const text = document.getElementById('judulujian').innerText;
         document.getElementById('displayJudul').innerText = "HASIL " + text;
-        document.getElementById('displayJudulButir').innerText = text + " (ANALISIS BUTIR SOAL)";
+        document.getElementById('displayJudulButir').innerText = text + " (ANALISIS BUTIR SOAL - PILIHAN GANDA)";
+        document.getElementById('displayJudulEsai').innerText = text + " (ANALISIS BUTIR SOAL - ESAI)";
     }
 
     function initTable() {
@@ -310,6 +335,9 @@
         let totalNilaiSiswa = 0, tuntasSiswa = 0, remedialNames = [];
         let nSiswa = body.rows.length / 2;
 
+        let totalScores = [];
+        let essayScoresMatrix = Array.from({ length: nEsai }, () => []);
+
         for (let i = 0; i < body.rows.length; i += 2) {
             const r1 = body.rows[i];
             const r2 = body.rows[i+1];
@@ -328,10 +356,12 @@
             let sRowEsai = Array.from(r1.querySelectorAll('.v-esai')).map((inp, j) => {
                 let v = parseFloat(inp.value) || 0;
                 colSums[nPG + j] += v;
+                essayScoresMatrix[j].push(v);
                 return v;
             });
 
             let rowSum = [...sRowPG, ...sRowEsai].reduce((a, b) => a + b, 0);
+            totalScores.push(rowSum);
             let rowVal = totalMaks > 0 ? Math.round((rowSum / totalMaks) * 100) : 0;
             totalNilaiSiswa += rowVal;
 
@@ -354,21 +384,16 @@
 
         renderFooter(colSums, allMaks, nSiswa, totalNilaiSiswa);
 
+        // --- KALKULASI ANALISIS PILIHAN GANDA ---
         const analysisBody = document.getElementById('itemAnalysisBody');
         analysisBody.innerHTML = ''; 
 
         if (nSiswa > 0 && nPG > 0) {
-            let totalScores = [];
             let studentData = []; 
-
             for (let i = 0; i < body.rows.length; i += 2) {
-                const r1 = body.rows[i];
                 const r2 = body.rows[i+1];
-                const scoreTotal = parseFloat(r1.querySelector('.r-sum').innerText) || 0;
                 const ansString = (r2.querySelector('.v-ans-string').value || "").toUpperCase().replace(/\s/g, '');
-                
-                totalScores.push(scoreTotal);
-                studentData.push({ ans: ansString, total: scoreTotal });
+                studentData.push({ ans: ansString, total: totalScores[i/2] });
             }
 
             const Mt = totalScores.reduce((a, b) => a + b, 0) / nSiswa;
@@ -386,7 +411,6 @@
                     if (['A', 'B', 'C', 'D'].includes(pilihan)) {
                         optCounts[pilihan]++;
                     }
-
                     if (pilihan === kunciButir && kunciButir !== '') {
                         jumlahSiswaBenar++;
                         totalSkorSiswaBenar += student.total;
@@ -464,6 +488,72 @@
             }
         } else {
             analysisBody.innerHTML = '<tr><td colspan="12" style="padding:10px; color:#999;">Masukan data siswa dan soal untuk memulai perhitungan.</td></tr>';
+        }
+
+        // --- KODE BARU: KALKULASI ANALISIS BUTIR SOAL ESAI ---
+        const essayAnalysisBody = document.getElementById('essayAnalysisBody');
+        essayAnalysisBody.innerHTML = '';
+
+        if (nSiswa > 1 && nEsai > 0) {
+            const sumX = totalScores.reduce((a, b) => a + b, 0);
+            const avgX = sumX / nSiswa;
+            const varX = totalScores.reduce((a, b) => a + Math.pow(b - avgX, 2), 0);
+
+            for (let j = 0; j < nEsai; j++) {
+                const scoresY = essayScoresMatrix[j]; 
+                const maxScore = mEsai[j] || 1;
+                const sumY = scoresY.reduce((a, b) => a + b, 0);
+                const avgY = sumY / nSiswa;
+
+                // 1. Tingkat Kesukaran Esai (Mean / Skor Maksimal)
+                const ik = maxScore > 0 ? (avgY / maxScore) : 0;
+                let tafsiranKesukaranEsai = "Sedang";
+                if (ik < 0.30) tafsiranKesukaranEsai = "Sulit";
+                if (ik > 0.70) tafsiranKesukaranEsai = "Mudah";
+
+                // 2. Daya Beda Esai (Korelasi Product Moment Pearson r)
+                let rHitung = 0;
+                if (varX > 0) {
+                    let num = 0, denY = 0;
+                    for (let s = 0; s < nSiswa; s++) {
+                        num += (totalScores[s] - avgX) * (scoresY[s] - avgY);
+                        denY += Math.pow(scoresY[s] - avgY, 2);
+                    }
+                    if (denY > 0) {
+                        rHitung = num / Math.sqrt(varX * denY);
+                    }
+                }
+
+                let tafsiranDayaBedaEsai = "Dapat Membedakan (Baik)";
+                let statusSoalEsai = "Dapat diterima";
+                let statusColorEsai = "black";
+
+                if (rHitung < 0.20) {
+                    tafsiranDayaBedaEsai = "Tidak dapat membedakan";
+                    statusSoalEsai = "Ditolak / Diganti";
+                    statusColorEsai = "red";
+                } else if (rHitung >= 0.20 && rHitung < 0.30) {
+                    tafsiranDayaBedaEsai = "Kurang Baik";
+                    statusSoalEsai = "Direvisi";
+                    statusColorEsai = "orange";
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${j + 1}</td>
+                    <td class="col-esai-bg" style="font-weight:bold;">E${j + 1}</td>
+                    <td>${avgY.toFixed(2)}</td>
+                    <td>${maxScore}</td>
+                    <td>${ik.toFixed(3)}</td>
+                    <td>${rHitung.toFixed(3)}</td>
+                    <td>${tafsiranKesukaranEsai}</td>
+                    <td>${tafsiranDayaBedaEsai}</td>
+                    <td style="color:${statusColorEsai}; font-weight:bold;">${statusSoalEsai}</td>
+                `;
+                essayAnalysisBody.appendChild(tr);
+            }
+        } else {
+            essayAnalysisBody.innerHTML = '<tr><td colspan="9" style="padding:10px; color:#999;">Masukan data minimal 2 siswa dan item esai untuk kalkulasi korelasi daya beda.</td></tr>';
         }
     }
 
