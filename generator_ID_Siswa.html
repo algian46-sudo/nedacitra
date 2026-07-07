@@ -185,16 +185,16 @@
         /* PERBAIKAN UTAMA: BACKROUND GRADASI BIRU LANGIT & PUTIH ELEGAN */
         /* Ditambahkan properti pembantu agar html2canvas tidak menghilangkan latar belakang saat print */
         #id-card-render {
-            width: 500px;
-            height: 300px;
-            background: linear-gradient(135deg, #e0f2fe 0%, #f8fafc 50%, #bae6fd 100%) !important;
-            position: relative;
-            overflow: hidden;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            -webkit-print-color-adjust: exact; /* Memaksa browser mencetak warna/gradasi latar belakang */
-            print-color-adjust: exact;
-        }
+    width: 500px;
+    height: 300px;
+    background: linear-gradient(135deg, #e0f2fe 0%, #f8fafc 50%, #bae6fd 100%) !important;
+    position: relative;
+    overflow: hidden; /* Memotong paksa elemen dekorasi luar agar tidak merusak skala PDF */
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
 
         /* Garis Dekorasi Latar Belakang */
         .bg-lines-top-right, .bg-lines-bottom-left {
