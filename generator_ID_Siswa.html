@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator ID Card MPLS - SMPN 8 Cikarang Utara (V2)</title>
+    <!-- Google Fonts: Menggunakan Fredoka untuk tampilan fun/tidak kaku & Montserrat untuk kesan elegan profesional -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Montserrat:wght@600;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0066cc;
+            --primary-dark: #004da0;
+            --accent: #e6b800;
+            --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            --card-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: #334e68;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Style */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            border-bottom: 5px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        header img {
+            height: 80px;
+            object-fit: contain;
+        }
+
+        header .school-info h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            letter-spacing: 0.5px;
+        }
+
+        header .school-info p {
+            font-size: 14px;
+            color: #627d98;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* Workspace Layout */
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        @media (max-width: 992px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #f0f4f8;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #486581;
+            text-transform: uppercase;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            color: #102a43;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.15);
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+        }
+
+        .file-upload-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #f0f4f8;
+            border: 2px dashed #cbd5e1;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        input[type="file"] {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-download:hover {
+            background: var(--primary-dark);
+        }
+
+        /* PERBAIKAN UTAMA: BACKROUND GRADASI BIRU LANGIT & PUTIH ELEGAN */
+        /* Ditambahkan properti pembantu agar html2canvas tidak menghilangkan latar belakang saat print */
+        #id-card-render {
+            width: 500px;
+            height: 300px;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f8fafc 50%, #bae6fd 100%) !important;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            -webkit-print-color-adjust: exact; /* Memaksa browser mencetak warna/gradasi latar belakang */
+            print-color-adjust: exact;
+        }
+
+        /* Garis Dekorasi Latar Belakang */
+        .bg-lines-top-right, .bg-lines-bottom-left {
+            position: absolute;
+            width: 180px; height: 180px;
+            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 102, 204, 0.15) 10px, rgba(0, 102, 204, 0.15) 14px, transparent 14px, transparent 24px);
+            transform: rotate(15deg);
+        }
+        .bg-lines-top-right { top: -40px; right: -30px; }
+        .bg-lines-bottom-left { bottom: -50px; left: -40px; }
+
+        /* Header Biru Atas */
+        .card-header-block {
+            position: absolute;
+            top: 0; left: 0; width: 55%; height: 48px;
+            background-color: #0066cc !important;
+            transform: skewX(-20deg);
+            transform-origin: top left;
+            z-index: 2;
+            display: flex; align-items: center; padding-left: 30px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .card-header-content { transform: skewX(20deg); color: white; }
+        .card-title-main { 
+            font-family: 'Fredoka', sans-serif; /* Mengubah font agar menarik/tidak kaku */
+            font-size: 21px; 
+            font-weight: 700; 
+            letter-spacing: 1px; 
+        }
+
+        /* Ribbon Emas */
+        .card-header-gold {
+            position: absolute; top: 45px; left: 0; width: 52%; height: 12px;
+            background-color: #e6b800 !important;
+            transform: skewX(-20deg);
+            transform-origin: top left;
+            z-index: 1;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .card-header-gold-text {
+            position: absolute; top: 46px; left: 20px; z-index: 3;
+            font-family: 'Montserrat', sans-serif; font-size: 8px; font-weight: 800; letter-spacing: 2px; color: #004da0;
+        }
+
+        .top-yellow-squares { position: absolute; top: 10px; left: 57%; display: flex; gap: 4px; }
+        .square { width: 10px; height: 10px; background-color: #e6b800 !important; transform: skewX(-20deg); -webkit-print-color-adjust: exact; print-color-adjust: exact;}
+
+        /* Frame Pas Foto */
+        .photo-frame {
+            position: absolute; top: 68px; left: 42px; width: 115px; height: 162px;
+            background-color: #f1f5f9; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 5;
+            border: 2px solid white;
+        }
+
+        .photo-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #cbd5e1; color: #64748b; font-size: 11px; }
+
+        /* Container Nama & Perubahan Font Menjadi Dinamis Menarik (Fredoka) */
+        .name-container {
+            position: absolute; top: 78px; left: 185px; right: 25px;
+            text-align: center; z-index: 5; display: flex; flex-direction: column; justify-content: center; min-height: 70px;
+        }
+
+        .student-name { 
+            font-family: 'Fredoka', sans-serif; /* Font kasual, modern, tidak kaku, sangat cocok untuk MPLS */
+            font-size: 26px; 
+            font-weight: 700; 
+            color: #004da0; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+
+        /* Pill Asal Sekolah */
+        .school-pill {
+            position: absolute; top: 160px; left: 203px; width: 272px; height: 36px;
+            background-color: #0066cc !important; border-radius: 18px; display: flex; align-items: center; justify-content: center; z-index: 5; padding: 0 15px;
+            box-shadow: 0 4px 6px rgba(0,102,204,0.2);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .school-pill-text { 
+            color: white; 
+            font-family: 'Fredoka', sans-serif; 
+            font-size: 14px; 
+            font-weight: 500; 
+            letter-spacing: 1px; 
+        }
+
+        /* School Badge */
+        .school-badge { position: absolute; bottom: 8px; left: 165px; width: 62px; height: 62px; z-index: 6; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.2)); }
+        .school-badge img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* Footer Ribbon */
+        .card-footer-block {
+            position: absolute; bottom: 25px; right: -20px; width: 78%; height: 28px;
+            background-color: #0066cc !important; transform: skewX(-20deg); z-index: 4;
+            display: flex; align-items: center; padding-left: 45px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .card-footer-content { transform: skewX(20deg); color: white; }
+        .hosting-school-name { font-family: 'Montserrat', sans-serif; font-size: 11.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
+
+        .card-footer-subline { position: absolute; bottom: 17px; right: 0; width: 63%; height: 4px; background-color: #0066cc !important; z-index: 3; -webkit-print-color-adjust: exact; print-color-adjust: exact;}
+        .card-footer-gold-accent { position: absolute; bottom: 12px; right: 15px; width: 25px; height: 40px; background-color: #e6b800 !important; transform: skewX(-20deg); z-index: 5; -webkit-print-color-adjust: exact; print-color-adjust: exact;}
+        .bottom-yellow-squares { position: absolute; bottom: 6px; left: 275px; display: flex; gap: 4px; z-index: 5; }
+        
+        .info-note { margin-top: 15px; font-size: 12px; color: #627d98; display: flex; align-items: center; gap: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo">
+        <div class="school-info">
+            <h1>SMP NEGERI 8 CIKARANG UTARA</h1>
+            <p>Sistem Penginputan & Otomasi Kartu MPLS Berbasis Digital - NEDACITRA</p>
+        </div>
+    </header>
+
+    <div class="workspace">
+        <!-- Form Pengisian Data -->
+        <div class="panel">
+            <div class="panel-title"><i class="fa-solid fa-pen-to-square"></i><span>Isi Data Siswa</span></div>
+            <div class="form-group">
+                <label>Nama Lengkap Siswa</label>
+                <input type="text" id="input-nama" placeholder="Contoh: JOKO TRISATYO" maxlength="25">
+            </div>
+            <div class="form-group">
+                <label>Asal Sekolah (SD/MI)</label>
+                <input type="text" id="input-sekolah" placeholder="Contoh: SDN CINTA KASIH 07" maxlength="28">
+            </div>
+            <div class="form-group">
+                <label>Foto Formal Siswa</label>
+                <div class="file-upload-wrapper">
+                    <div class="file-upload-btn"><i class="fa-solid fa-cloud-arrow-up"></i><span id="file-status">Pilih Foto 3x4</span></div>
+                    <input type="file" id="input-foto" accept="image/*">
+                </div>
+            </div>
+            <button class="btn-download" id="btn-download-pdf"><i class="fa-solid fa-file-pdf"></i> Unduh ID Card (PDF)</button>
+        </div>
+
+        <!-- Preview Area -->
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <div class="panel" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <div class="panel-title" style="width: 100%;"><i class="fa-solid fa-id-card"></i><span>Live Preview Kartu</span></div>
+                
+                <!-- ID CARD RENDER TARGET -->
+                <div id="id-card-render">
+                    <div class="bg-lines-top-right"></div><div class="bg-lines-bottom-left"></div>
+                    <div class="card-header-block"><div class="card-header-content"><span class="card-title-main">ID CARD MPLS</span></div></div>
+                    <div class="card-header-gold"></div><div class="card-header-gold-text">TAHUN AJARAN 2026/2027</div>
+                    <div class="top-yellow-squares"><div class="square"></div><div class="square"></div></div>
+                    
+                    <div class="photo-frame">
+                        <div id="photo-target" class="photo-placeholder"><i class="fa-regular fa-user"></i><span>Foto 3x4</span></div>
+                    </div>
+
+                    <div class="name-container"><div id="target-nama" class="student-name">JOKO TRISATYO</div></div>
+                    <div class="school-pill"><span id="target-sekolah" class="school-pill-text">SDN CINTA KASIH 07</span></div>
+                    <div class="school-badge"><img src="https://i.imgur.com/mRmw86t.jpeg" alt="Badge"></div>
+
+                    <div class="card-footer-block"><div class="card-footer-content"><span class="hosting-school-name">SMPN 8 CIKARANG UTARA</span></div></div>
+                    <div class="card-footer-subline"></div><div class="card-footer-gold-accent"></div>
+                    <div class="bottom-yellow-squares"><div class="square"></div><div class="square"></div></div>
+                </div>
+                <div class="info-note"><i class="fa-solid fa-circle-info"></i><span>V2: Memperbaiki warna cetak & font lebih menarik.</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const inputNama = document.getElementById('input-nama');
+    const inputSekolah = document.getElementById('input-sekolah');
+    const inputFoto = document.getElementById('input-foto');
+    const targetNama = document.getElementById('target-nama');
+    const targetSekolah = document.getElementById('target-sekolah');
+    const photoTarget = document.getElementById('photo-target');
+    const fileStatus = document.getElementById('file-status');
+    const btnDownload = document.getElementById('btn-download-pdf');
+
+    inputNama.addEventListener('input', (e) => {
+        const val = e.target.value.toUpperCase();
+        targetNama.textContent = val || "JOKO TRISATYO";
+        targetNama.style.fontSize = val.length > 18 ? '18px' : val.length > 14 ? '21px' : '26px';
+    });
+
+    inputSekolah.addEventListener('input', (e) => {
+        const val = e.target.value.toUpperCase();
+        targetSekolah.textContent = val || "SDN CINTA KASIH 07";
+        targetSekolah.style.fontSize = val.length > 20 ? '11px' : '14px';
+    });
+
+    inputFoto.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            fileStatus.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #0066cc;"></i> Foto Berhasil Dimuat`;
+            reader.onload = function(e) {
+                photoTarget.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    btnDownload.addEventListener('click', () => {
+        const element = document.getElementById('id-card-render');
+        
+        // Loader status
+        btnDownload.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sedang Mengonversi PDF...`;
+        btnDownload.disabled = true;
+
+        const opt = {
+            margin: 0,
+            filename: `ID_CARD_MPLS_${(inputNama.value || 'SISWA').replace(/\s+/g, '_')}.pdf`,
+            image: { type: 'jpeg', quality: 1.0 },
+            html2canvas: { 
+                scale: 3, // Resolusi tinggi agar hasil cetak tajam
+                useCORS: true,
+                backgroundColor: null, // Mencegah pemaksaan background putih solid oleh canvas
+                logging: false
+            },
+            jsPDF: { unit: 'px', format: [500, 300], orientation: 'landscape' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            btnDownload.innerHTML = `<i class="fa-solid fa-file-pdf"></i> Unduh ID Card (PDF)`;
+            btnDownload.disabled = false;
+        }).catch(err => {
+            console.error(err);
+            btnDownload.innerHTML = `<i class="fa-solid fa-file-pdf"></i> Unduh ID Card (PDF)`;
+            btnDownload.disabled = false;
+        });
+    });
+</script>
+</body>
+</html>
