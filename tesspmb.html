@@ -21,141 +21,133 @@
         body { 
             background-color: var(--bekasi-bg); 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: #2c3e50;
         }
 
         .navbar-custom {
             background: linear-gradient(135deg, var(--bekasi-blue-dark) 0%, var(--bekasi-blue) 100%);
-            border-bottom: 4px solid var(--bekasi-gold);
-            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(10,47,77,0.15);
         }
-        .navbar-brand { font-weight: 700; letter-spacing: 1.5px; font-size: 1.35rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
-        .navbar-brand span { color: var(--bekasi-gold); }
-        
+
         .nav-link-custom {
-            color: rgba(255,255,255,0.85) !important;
+            color: rgba(255,255,255,0.75);
             font-weight: 600;
-            padding: 8px 16px !important;
+            padding: 0.6rem 1.2rem;
             border-radius: 8px;
             transition: all 0.3s ease;
-            margin: 0 4px;
+            cursor: pointer;
         }
-        .nav-link-custom:hover {
-            color: #fff !important;
-            background: rgba(255,255,255,0.1);
-        }
-        .nav-link-custom.active {
-            color: var(--bekasi-blue-dark) !important;
-            background-color: var(--bekasi-gold) !important;
-            box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3);
+
+        .nav-link-custom:hover, .nav-link-custom.active {
+            color: #ffffff !important;
+            background-color: rgba(255,255,255,0.15);
         }
 
         .card-custom {
             border: none;
             border-radius: 16px;
-            background: #ffffff;
-            box-shadow: 0 10px 30px rgba(15, 76, 117, 0.05);
-            overflow: hidden;
-            border: 1px solid rgba(15, 76, 117, 0.08);
-        }
-        .card-header-custom {
-            background: #ffffff;
-            border-bottom: 2px solid #f1f5f9;
-            padding: 20px 25px;
+            box-shadow: 0 8px 24px rgba(149,157,165,0.1);
+            background-color: #ffffff;
         }
 
-        .table-responsive-custom {
-            background: white;
-            border-radius: 12px;
-            padding: 5px;
-        }
         .table-custom thead {
             background-color: #f8fafc;
-        }
-        .table-custom th {
-            color: #475569;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.5px;
-            padding: 16px;
             border-bottom: 2px solid #e2e8f0;
         }
-        .table-custom td {
-            padding: 16px;
-            color: #334155;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        .table-custom tbody tr:hover {
-            background-color: rgba(50, 130, 184, 0.03);
-        }
-        
-        .modal-header-cbt {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border-bottom: 3px solid var(--bekasi-gold);
-            color: #fff;
-            padding: 20px 25px;
-        }
-        .soal-box {
-            background: #f8fafc;
-            border-left: 5px solid var(--bekasi-blue);
-            padding: 18px;
-            margin-bottom: 20px;
-            border-radius: 4px 12px 12px 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
-        .teks-bacaan {
-            font-size: 1.2rem;
-            line-height: 1.9;
-            text-align: justify;
-            background: #ffffff;
-            padding: 25px;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            max-height: 320px;
-            overflow-y: auto;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.03);
+
+        .table-custom th {
+            color: #475569;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 1rem;
         }
 
-        .loading-overlay {
-            display: none;
+        .table-custom td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        #loading {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 47, 77, 0.7);
-            backdrop-filter: blur(4px);
+            background: rgba(255, 255, 255, 0.85);
             z-index: 9999;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            color: #ffffff;
+        }
+
+        .spinner-custom {
+            width: 3.5rem;
+            height: 3.5rem;
+            color: var(--bekasi-blue);
+        }
+
+        .teks-bacaan {
+            background-color: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 1.25rem;
+            line-height: 1.8;
+            text-align: justify;
+            color: #1e293b;
+        }
+
+        .soal-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--bekasi-blue);
+            border-color: var(--bekasi-blue);
+        }
+
+        .btn-primary {
+            background-color: var(--bekasi-blue);
+            border-color: var(--bekasi-blue);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--bekasi-blue-dark);
+            border-color: var(--bekasi-blue-dark);
         }
     </style>
 </head>
 <body>
 
-    <div id="loading" class="loading-overlay">
-        <div class="spinner-border text-warning" role="status" style="width: 3rem; height: 3rem;"></div>
-        <span class="ms-2 fw-bold mt-3 fs-5" style="letter-spacing: 0.5px;">Sinkronisasi Server...</span>
+    <div id="loading">
+        <div class="spinner-border spinner-custom mb-3" role="status"></div>
+        <h6 class="fw-bold text-secondary">Sinkronisasi Basis Data Cloud...</h6>
     </div>
 
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom mb-4 shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom py-3 mb-4">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fa-solid fa-layer-group me-2" style="color: var(--bekasi-gold);"></i>PPDB<span>DIGITAL</span>
+            <a class="navbar-brand d-flex align-items-center fw-bold" href="#">
+                <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo" width="40" height="40" class="d-inline-block align-text-top me-3 rounded-circle border border-2 border-warning">
+                <div class="lh-sm">
+                    <span class="fs-5 d-block" style="letter-spacing: 0.5px;">PANITIA PPDB DIGITAL</span>
+                    <span class="fs-6 fw-normal text-warning">SMP Negeri 8 Cikarang Utara</span>
+                </div>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
                     <li class="nav-item">
-                        <a class="nav-link nav-link-custom active" id="btn-nav-siswa" onclick="switchView('view-siswa')">
-                            <i class="fa-solid fa-address-card me-1"></i> Dashboard Utama
+                        <a class="nav-link-custom active" id="btn-nav-siswa" onclick="switchView('view-siswa')">
+                            <i class="fa-solid fa-graduation-cap me-2"></i>Data Calon Siswa
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-custom" id="btn-nav-rekapan" onclick="switchView('view-rekapan')">
-                            <i class="fa-solid fa-chart-line me-1"></i> Rekap Nilai & Kelas
+                        <a class="nav-link-custom" id="btn-nav-rekapan" onclick="switchView('view-rekapan')">
+                            <i class="fa-solid fa-chart-line me-2"></i>Rekap Nilai & Plotting
                         </a>
                     </li>
                 </ul>
@@ -166,105 +158,97 @@
     <div class="container mb-5">
         
         <div id="view-siswa" class="view-section">
-            <div class="card card-custom">
-                <div class="card-header-custom d-flex justify-content-between align-items-center">
+            <div class="card card-custom p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                     <div>
-                        <h5 class="m-0 fw-bold text-dark" style="color: var(--bekasi-blue-dark)!important;">
-                            <i class="fa-solid fa-users-viewfinder me-2 text-primary"></i>Daftar Calon Siswa Baru
-                        </h5>
-                        <p class="text-muted small m-0 mt-1">Status pengerjaan instrumen pemetaan siswa.</p>
+                        <h4 class="fw-bold m-0" style="color: var(--bekasi-blue-dark);">Daftar Calon Peserta Didik Baru</h4>
+                        <p class="text-muted small m-0">Silakan pilih nama siswa untuk memulai alur instrumen tes diagnostik.</p>
                     </div>
-                    <button class="btn btn-outline-secondary btn-sm rounded-3 px-3" onclick="muatDaftarSiswa()">
+                    <button class="btn btn-light border fw-semibold px-3 py-2 text-secondary" style="border-radius:10px;" onclick="ambilDataAwal()">
                         <i class="fa-solid fa-rotate me-1"></i> Refresh Data
                     </button>
                 </div>
-                <div class="p-4 bg-white">
-                    <div class="table-responsive table-responsive-custom">
-                        <table class="table table-custom align-middle">
-                            <thead>
-                                <tr>
-                                    <th width="60">NO</th>
-                                    <th width="140">NISN</th>
-                                    <th>NAMA LENGKAP</th>
-                                    <th width="80">JK</th>
-                                    <th>ASAL SEKOLAH</th>
-                                    <th width="160" class="text-center">AKSI</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabel-siswa-body">
-                                <tr><td colspan="6" class="text-center text-muted py-5">Memuat data siswa...</td></tr>
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%">No</th>
+                                <th style="width: 15%">NISN</th>
+                                <th style="width: 35%">Nama Lengkap</th>
+                                <th style="width: 10%">JK</th>
+                                <th style="width: 20%">Asal Sekolah</th>
+                                <th style="width: 15%" class="text-center">Aksi Seleksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabel-siswa-body">
                             </tbody>
-                        </table>
-                    </div>
+                    </table>
                 </div>
             </div>
         </div>
 
         <div id="view-rekapan" class="view-section" style="display: none;">
-            <div class="card card-custom mb-4">
-                <div class="card-header-custom p-4">
-                    <div class="row align-items-center">
-                        <div class="col-md-7">
-                            <h5 class="fw-bold m-0" style="color: var(--bekasi-blue-dark)!important;">
-                                <i class="fa-solid fa-square-poll-vertical me-2 text-success"></i>Rekapitulasi Nilai & Hasil Seleksi
-                            </h5>
-                            <p class="text-muted small m-0 mt-1">Kalkulasi akurat gabungan aspek kecepatan, ketepatan, hitung, dan potensi akademik.</p>
-                        </div>
-                        <div class="col-md-5 text-md-end mt-3 mt-md-0">
-                            <div class="input-group d-inline-flex shadow-sm rounded-3 overflow-hidden" style="width: auto;">
-                                <span class="input-group-text bg-light border-secondary-subtle font-monospace fw-bold">Kuota Kelas</span>
-                                <input type="number" id="jumlah-kelas" class="form-control text-center border-secondary-subtle" value="3" min="1" style="width: 70px; max-width: 80px; font-weight: bold;">
-                                <button class="btn btn-success fw-bold px-3" onclick="prosesPlottingKelas()">
-                                    <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Eksekusi Kelas
-                                </button>
+            <div class="card card-custom p-4">
+                <div class="row align-items-center g-3 mb-4">
+                    <div class="col-md-6">
+                        <h4 class="fw-bold m-0" style="color: var(--bekasi-blue-dark);">Rekapitulasi Hasil Seleksi & Instrumen</h4>
+                        <p class="text-muted small m-0">Skor Gabungan dihitung proporsional otomatis dari akumulasi seluruh instrumen.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light p-3 rounded-4 border d-flex align-items-center justify-content-md-end gap-3 flex-wrap">
+                            <div class="d-flex align-items-center gap-2">
+                                <label class="fw-bold text-secondary small text-nowrap m-0"><i class="fa-solid fa-layer-group me-1"></i> Jumlah Kelas Paralel:</label>
+                                <input type="number" id="jumlah-kelas" class="form-content form-control form-control-sm text-center fw-bold px-2" value="3" min="1" max="10" style="width: 60px; border-radius: 8px;">
                             </div>
+                            <button class="btn btn-sm btn-primary fw-bold px-3 py-2" style="border-radius:8px;" onclick="prosesPlottingKelas()">
+                                <i class="fa-solid fa-shuffle me-1"></i> Eksekusi Pembagian Kelas Merata
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div class="p-4 bg-white">
-                    <div class="table-responsive table-responsive-custom">
-                        <table class="table table-custom table-striped align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>NISN</th>
-                                    <th>NAMA SISWA</th>
-                                    <th>KECEPATAN BACA</th>
-                                    <th>KETEPATAN BACA</th>
-                                    <th>HITUNG DATA</th>
-                                    <th>TES IQ</th>
-                                    <th>SKOR GABUNGAN</th>
-                                    <th class="text-center">HASIL PLOT KELAS</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabel-rekapan-body">
-                                <tr><td colspan="8" class="text-center text-muted py-5">Memuat lembar rekapitulasi nilai...</td></tr>
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>NISN</th>
+                                <th>Nama Siswa</th>
+                                <th>Kelancaran</th>
+                                <th>Ketepatan</th>
+                                <th>Numerasi</th>
+                                <th>Logika (IQ)</th>
+                                <th>Skor Akhir</th>
+                                <th class="text-center">Hasil Plotting Kelas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabel-rekapan-body">
                             </tbody>
-                        </table>
-                    </div>
+                    </table>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <div class="modal fade" id="modalTes" data-bs-backdrop="static" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 15px 40px rgba(0,0,0,0.2);">
-                <div class="modal-header modal-header-cbt">
-                    <h5 class="modal-title fw-bold" id="modalSiswaNama">Aplikasi Seleksi Komputer Mandiri</h5>
+    <div class="modal fade" id="modalTes" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0" style="border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                <div class="modal-header text-white px-4 py-3" style="background: linear-gradient(135deg, var(--bekasi-blue-dark) 0%, var(--bekasi-blue) 100%); border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                    <h5 class="modal-title fw-bold" id="modalSiswaNama">Ruang Seleksi Calon Siswa</h5>
                 </div>
-                <div class="modal-body p-4 bg-white" id="exam-stage-content" style="min-height: 250px;"></div>
-                <div class="modal-footer bg-light border-top-0 px-4 py-3" id="exam-stage-footer"></div>
+                <div class="modal-body px-4 py-4" id="exam-stage-content">
+                    </div>
+                <div class="modal-footer border-0 px-4 bg-light" id="exam-stage-footer" style="border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                    </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    
     <script>
-        // URL SCRIPT UPDATE SESUAI DEPLOYMENT BARU ANDA
-        const API_URL = "https://script.google.com/macros/s/AKfycbwNJvHsk9iWaS_HzH87TCWEgSpQNn0hYx_VuEufAESyA1ia4Fro1luJsdvSkCbgi7cs/exec";
+        // Endpoint Link API Web App Google Apps Script Aktif Milik Anda
+        const API_URL = "https://script.google.com/macros/s/AKfycbwTHYIDft99J-IUbvVbRo9FMHUazD1aZSJz0-6-OocLgLAcBuHbcoDCEeMtOU2tiI7Q/exec";
         
         let modalTesInstance;
         let currentNisn = "";
@@ -306,50 +290,46 @@
         }
 
         function muatDaftarSiswa() {
-    toggleLoading(true);
-    fetch(`${API_URL}?aksi=getDaftarSiswa`, { method: 'POST' })
-        .then(res => res.json())
-        .then(response => {
-            const tbody = document.getElementById('tabel-siswa-body');
-            tbody.innerHTML = '';
-            if (response.status === "success") {
-                let data = response.data;
-                if(data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Belum ada data siswa di database.</td></tr>';
-                    toggleLoading(false);
-                    return;
-                }
-                data.forEach((siswa, i) => {
-                    let nisnKey = siswa.NISN.toString().trim();
-                    let sudahTes = listNisnSudahTes.includes(nisnKey);
-                    
-                    let asalSekolahText = siswa.ASAL_SEKOLAH || siswa.asalSekolah || siswa["ASAL SEKOLAH"] || "-";
-                    if(asalSekolahText === "undefined" || !asalSekolahText) asalSekolahText = "-";
-                    
-                    // Perbaikan susunan string tombol aksi agar tidak bocor ke luar tag
-                    let aksiTombol = sudahTes
-                        ? `<button class="btn btn-sm btn-light text-muted px-3 border" disabled style="cursor: not-allowed; border-radius: 8px;"><i class="fa-solid fa-lock me-1"></i> Terkunci</button>`
-                        : `<button class="btn btn-sm btn-success fw-bold px-3" style="border-radius:8px;" onclick="startExamWorkflow('${siswa.NISN}', '${siswa.NAMA}')"><i class="fa-solid fa-file-signature me-1"></i> Mulai Tes</button>`;
+            toggleLoading(true);
+            fetch(`${API_URL}?aksi=getDaftarSiswa`, { method: 'POST' })
+                .then(res => res.json())
+                .then(response => {
+                    const tbody = document.getElementById('tabel-siswa-body');
+                    tbody.innerHTML = '';
+                    if (response.status === "success") {
+                        let data = response.data;
+                        if(data.length === 0) {
+                            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Belum ada data siswa di database.</td></tr>';
+                            toggleLoading(false);
+                            return;
+                        }
+                        data.forEach((siswa, i) => {
+                            let nisnKey = siswa.NISN.toString().trim();
+                            let sudahTes = listNisnSudahTes.includes(nisnKey);
+                            let asalSekolahText = siswa.ASAL_SEKOLAH || "-";
+                            
+                            let aksiTombol = sudahTes
+                                ? `<button class="btn btn-sm btn-light text-muted px-3 border" disabled style="cursor: not-allowed; border-radius: 8px;"><i class="fa-solid fa-lock me-1"></i> Terkunci</button>`
+                                : `<button class="btn btn-sm btn-success fw-bold px-3" style="border-radius:8px;" onclick="startExamWorkflow('${siswa.NISN}', '${siswa.NAMA}')"><i class="fa-solid fa-file-signature me-1"></i> Mulai Tes</button>`;
 
-                    // Menyatukan baris ke dalam template literal secara rapi
-                    tbody.insertAdjacentHTML('beforeend', `
-                        <tr>
-                            <td><span class="text-secondary font-monospace fw-bold">${i + 1}</span></td>
-                            <td><span class="badge bg-secondary-subtle text-dark border px-2 py-1 font-monospace fs-6">${siswa.NISN}</span></td>
-                            <td><span class="fw-bold" style="color: var(--bekasi-blue-dark);">${siswa.NAMA}</span></td>
-                            <td><span class="text-muted fw-semibold">${siswa.JK}</span></td>
-                            <td><span class="text-secondary small fw-medium">${asalSekolahText}</span></td>
-                            <td class="text-center">${aksiTombol}</td>
-                        </tr>
-                    `);
+                            tbody.insertAdjacentHTML('beforeend', `
+                                <tr>
+                                    <td><span class="text-secondary font-monospace fw-bold">${i + 1}</span></td>
+                                    <td><span class="badge bg-secondary-subtle text-dark border px-2 py-1 font-monospace fs-6">${siswa.NISN}</span></td>
+                                    <td><span class="fw-bold" style="color: var(--bekasi-blue-dark);">${siswa.NAMA}</span></td>
+                                    <td><span class="text-muted fw-semibold">${siswa.JK}</span></td>
+                                    <td><span class="text-secondary small fw-medium">${asalSekolahText}</span></td>
+                                    <td class="text-center">${aksiTombol}</td>
+                                </tr>
+                            `);
+                        });
+                    }
+                    toggleLoading(false);
+                }).catch(err => { 
+                    toggleLoading(false); 
+                    Swal.fire('Error!', err.toString(), 'error'); 
                 });
-            }
-            toggleLoading(false);
-        }).catch(err => { 
-            toggleLoading(false); 
-            Swal.fire('Error!', err.toString(), 'error'); 
-        });
-}
+        }
 
         function startExamWorkflow(nisn, nama) {
             currentNisn = nisn;
@@ -370,7 +350,7 @@
                     <p class="text-muted small">Instruksikan siswa fokus membaca nyaring, tekan tombol <strong>Mulai Menghitung Waktu</strong> di bawah.</p>
                 </div>
                 <div class="teks-bacaan mb-3" id="box-bacaan" style="filter: blur(6px); user-select: none; transition: filter 0.4s ease;">
-                    Indonesia merupakan negara kepulauan yang kaya akan sumber daya alam. Sebagai negara agraris, sebagian besar penduduknya bekerja di sektor pertanian dan perkebunan. Tanah yang subur mempermoubtah para petani menanam berbagai komoditas pangan seperti padi, jagung, sayur-sayuran, dan buah-buahan lokal. Selain sektor agraris, wilayah perairan Indonesia yang sangat luas juga menyimpan potensi perikanan kelautan yang luar biasa besar. Menjaga kelestarian ekosistem alam, baik di darat maupun di laut, merupakan tanggung jawab seluruh generasi muda demi masa depan bangsa yang berkelanjutan. Keseimbangan ekosistem ini sangat penting untuk mencegah terjadinya bencana alam seperti banjir bandang dan tanah longsor yang dapat merugikan pemukiman warga sekitar.
+                    Indonesia merupakan negara kepulauan yang kaya akan sumber daya alam. Sebagai negara agraris, sebagian besar penduduknya bekerja di sektor pertanian dan perkebunan. Tanah yang subur mempermudah para petani menanam berbagai komoditas pangan seperti padi, jagung, sayur-sayuran, dan buah-buahan lokal. Selain sektor agraris, wilayah perairan Indonesia yang sangat luas juga menyimpan potensi perikanan kelautan yang luar biasa besar. Menjaga kelestarian ekosistem alam, baik di darat maupun di laut, merupakan tanggung jawab seluruh generasi muda demi masa depan bangsa yang berkelanjutan. Keseimbangan ekosistem ini sangat penting untuk mencegah terjadinya bencana alam seperti banjir bandang dan tanah longsor yang dapat merugikan pemukiman warga sekitar.
                 </div>
                 <div class="text-center my-3"><span class="badge bg-dark fs-5 font-monospace text-success border border-success px-4 py-2" id="baca-timer-display"><i class="fa-regular fa-clock me-2"></i>0 detik</span></div>
             `;
@@ -544,84 +524,62 @@
         }
 
         function hitungSkorIqDanKirim() {
-    const form = document.getElementById('form-soal-iq');
-    if(!form.checkValidity()) { Swal.fire('Informasi', 'Harap isi seluruh jawaban soal IQ!', 'warning'); return; }
-    
-    let kunciIq = { iq1:'B', iq2:'A', iq3:'C', iq4:'A', iq5:'B', iq6:'A', iq7:'B', iq8:'B', iq9:'A', iq10:'B' };
-    let benar = 0;
-    const dataForm = new FormData(form);
-    
-    for(let k = 1; k <= 10; k++) {
-        if(dataForm.get(`iq${k}`) === kunciIq[`iq${k}`]) benar++;
-    }
-    
-    hasilUjianSiswa.skorIq = benar * 10;
-    modalTesInstance.hide();
-    toggleLoading(true);
+            const form = document.getElementById('form-soal-iq');
+            if(!form.checkValidity()) { Swal.fire('Informasi', 'Harap isi seluruh jawaban soal IQ!', 'warning'); return; }
+            
+            let kunciIq = { iq1:'B', iq2:'A', iq3:'C', iq4:'A', iq5:'B', iq6:'A', iq7:'B', iq8:'B', iq9:'A', iq10:'B' };
+            let benar = 0;
+            const dataForm = new FormData(form);
+            
+            for(let k = 1; k <= 10; k++) {
+                if(dataForm.get(`iq${k}`) === kunciIq[`iq${k}`]) benar++;
+            }
+            
+            hasilUjianSiswa.skorIq = benar * 10;
+            modalTesInstance.hide();
+            toggleLoading(true);
 
-    // ==========================================
-    // REVISI LOGIKA: KONVERSI KPM PROPORSIAL ANAK LULUSAN SD
-    // ==========================================
-    let kpmMurni = hasilUjianSiswa.kecepatanBaca;
-    let kpmSkala100 = 0;
+            let kpmMurni = hasilUjianSiswa.kecepatanBaca;
+            let kpmSkala100 = 0;
 
-    if (kpmMurni >= 110) {
-        kpmSkala100 = 100; // Sangat Lancar / Sempurna untuk tingkat SD
-    } else if (kpmMurni >= 90) {
-        kpmSkala100 = 90;  // Lancar (Standar rata-rata atas)
-    } else if (kpmMurni >= 70) {
-        kpmSkala100 = 80;  // Cukup Lancar
-    } else if (kpmMurni >= 50) {
-        kpmSkala100 = 70;  // Kurang Lancar
-    } else {
-        kpmSkala100 = Math.max(Math.round((kpmMurni / 50) * 60), 30); // Di bawah 50 KPM (Perlu bimbingan membaca)
-    }
-    
-    // Rumus Rata-rata Gabungan 4 Komponen Setara yang kini jauh lebih adil
-    let hitungSkorGabungan = Math.round((kpmSkala100 + hasilUjianSiswa.ketepatanBaca + hasilUjianSiswa.skorHitung + hasilUjianSiswa.skorIq) / 4);
+            if (kpmMurni >= 110) kpmSkala100 = 100;
+            else if (kpmMurni >= 90) kpmSkala100 = 90;
+            else if (kpmMurni >= 70) kpmSkala100 = 80;
+            else if (kpmMurni >= 50) kpmSkala100 = 70;
+            else kpmSkala100 = Math.max(Math.round((kpmMurni / 50) * 60), 30);
+            
+            let hitungSkorGabungan = Math.round((kpmSkala100 + hasilUjianSiswa.ketepatanBaca + hasilUjianSiswa.skorHitung + hasilUjianSiswa.skorIq) / 4);
 
-    let paketPayload = {
-        nisn: currentNisn,
-        nama: currentNama,
-        
-        kecepatanBaca: hasilUjianSiswa.kecepatanBaca,
-        KECEPATAN_BACA: hasilUjianSiswa.kecepatanBaca,
-        KECEPATAN: hasilUjianSiswa.kecepatanBaca,
-        
-        ketepatanBaca: hasilUjianSiswa.ketepatanBaca,
-        KETEPATAN_BACA: hasilUjianSiswa.ketepatanBaca,
-        
-        skorHitung: hasilUjianSiswa.skorHitung,
-        HITUNG: hasilUjianSiswa.skorHitung,
-        
-        skorIq: hasilUjianSiswa.skorIq,
-        IQ: hasilUjianSiswa.skorIq,
-        
-        skorAkhir: hitungSkorGabungan,
-        SKOR_AKHIR: hitungSkorGabungan,
-        TOTAL: hitungSkorGabungan
-    };
+            let paketPayload = {
+                nisn: currentNisn,
+                nama: currentNama,
+                kecepatanBaca: hasilUjianSiswa.kecepatanBaca,
+                ketepatanBaca: hasilUjianSiswa.ketepatanBaca,
+                skorHitung: hasilUjianSiswa.skorHitung,
+                skorIq: hasilUjianSiswa.skorIq,
+                skorAkhir: hitungSkorGabungan
+            };
 
-    fetch(`${API_URL}?aksi=simpanHasilTes`, {
-        method: 'POST',
-        body: JSON.stringify(paketPayload)
-    })
-    .then(res => res.json())
-    .then(res => {
-        toggleLoading(false);
-        if (res.status === "success") {
-            Swal.fire({ 
-                icon: 'success', 
-                title: 'Data Berhasil Disimpan!', 
-                text: 'Skor Gabungan Proporsional (' + hitungSkorGabungan + ') sukses direkam.',
-                confirmButtonColor: '#0f4c75'
-            });
-            ambilDataAwal(); 
-        } else {
-            Swal.fire('Gagal Menyimpan!', res.message, 'error');
+            fetch(`${API_URL}?aksi=simpanHasilTes`, {
+                method: 'POST',
+                body: JSON.stringify(paketPayload)
+            })
+            .then(res => res.json())
+            .then(res => {
+                toggleLoading(false);
+                if (res.status === "success") {
+                    Swal.fire({ 
+                        icon: 'success', 
+                        title: 'Data Berhasil Disimpan!', 
+                        text: 'Skor Gabungan Proporsional (' + hitungSkorGabungan + ') sukses direkam.',
+                        confirmButtonColor: '#0f4c75'
+                    });
+                    ambilDataAwal(); 
+                } else {
+                    Swal.fire('Gagal Menyimpan!', res.message, 'error');
+                }
+            }).catch(err => { toggleLoading(false); Swal.fire('System Error!', err.toString(), 'error'); });
         }
-    }).catch(err => { toggleLoading(false); Swal.fire('System Error!', err.toString(), 'error'); });
-}
 
         function muatRekapanNilai() {
             toggleLoading(true);
@@ -642,11 +600,11 @@
                                 ? `<span class="badge bg-primary px-3 py-2 fw-bold" style="background-color: var(--bekasi-blue)!important; border-radius: 6px; letter-spacing: 0.5px;"><i class="fa-solid fa-school-flag me-1"></i> ${row.KELAS_BARU}</span>` 
                                 : `<span class="text-muted small font-monospace">Unassigned</span>`;
                             
-                            let nilaiKpm = row.kecepatanBaca !== undefined ? row.kecepatanBaca : (row.KECEPATAN_BACA !== undefined ? row.KECEPATAN_BACA : (row.KECEPATAN || 0));
-                            let nilaiKetepatan = row.ketepatanBaca !== undefined ? row.ketepatanBaca : (row.KETEPATAN_BACA || 0);
-                            let nilaiHitung = row.skorHitung !== undefined ? row.skorHitung : (row.HITUNG || 0);
-                            let nilaiIq = row.skorIq !== undefined ? row.skorIq : (row.IQ || 0);
-                            let skorAkhir = row.SKOR_AKHIR || row.skorAkhir || row.TOTAL || 0;
+                            let nilaiKpm = row.KECEPATAN_MEMBACA !== undefined ? row.KECEPATAN_MEMBACA : 0;
+                            let nilaiKetepatan = row.KETEPATAN_BACA !== undefined ? row.KETEPATAN_BACA : 0;
+                            let nilaiHitung = row.HITUNG !== undefined ? row.HITUNG : 0;
+                            let nilaiIq = row.IQ !== undefined ? row.IQ : 0;
+                            let skorAkhir = row.SKOR_AKHIR !== undefined ? row.SKOR_AKHIR : 0;
 
                             tbody.insertAdjacentHTML('beforeend', `<tr>
                                 <td><span class="font-monospace text-secondary">${row.NISN}</span></td>
