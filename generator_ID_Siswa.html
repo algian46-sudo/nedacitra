@@ -183,7 +183,7 @@
             width: 100%;
         }
 
-        /* TATA LETAK AWAL ID CARD */
+        /* STRUKTUR VISUAL AWAL ID CARD */
         #id-card-render {
             width: 500px;
             height: 300px;
@@ -192,6 +192,7 @@
             overflow: hidden;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .bg-lines-top-right, .bg-lines-bottom-left {
@@ -302,25 +303,36 @@
         
         .info-note { margin-top: 15px; font-size: 12px; color: #627d98; display: flex; align-items: center; gap: 5px; }
 
-        /* NAVIGASI TOMBOL KEMBALI */
-        .btn-back-edit {
+        /* HEADER NAVIGASI MODE SCREENSHOT */
+        .screenshot-header-nav {
             display: none;
             position: fixed;
             top: 15px;
             left: 15px;
-            background: #ff3366;
-            color: white;
+            right: 15px;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 99999;
+        }
+
+        .btn-nav {
             border: none;
             padding: 12px 20px;
             border-radius: 25px;
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            z-index: 99999;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* 👑 PERBAIKAN TOTAL: CSS MODE PREVIEW SCREENSHOT FULLSCREEN */
+        #btn-kembali { background: #ff3366; }
+        #btn-putar { background: #0066cc; }
+
+        /* 👑 CSS UTAMA SCREENSHOT FULLSCREEN */
         body.screenshot-active {
             background: #ffffff !important;
             padding: 0 !important;
@@ -333,7 +345,6 @@
             overflow: hidden !important;
         }
 
-        /* Sembunyikan seluruh elemen luar secara mutlak */
         body.screenshot-active #main-header,
         body.screenshot-active #form-panel,
         body.screenshot-active #preview-title,
@@ -341,8 +352,8 @@
             display: none !important;
         }
 
-        /* Setel ulang struktur workspace agar fokus hanya pada kartu */
-        body.screenshot-active .workspace {
+        body.screenshot-active .workspace,
+        body.screenshot-active .preview-wrapper {
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
@@ -351,36 +362,37 @@
             gap: 0 !important;
         }
 
-        body.screenshot-active .preview-wrapper {
+        body.screenshot-active .screenshot-header-nav {
             display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            width: 100% !important;
-            height: 100% !important;
         }
 
-        body.screenshot-active .btn-back-edit {
-            display: block !important;
-        }
-
-        /* Pembesaran kartu agar pas di layar HP Landscape */
+        /* Ukuran Standar Preview Fullscreen */
         body.screenshot-active #id-card-render {
-            display: block !important;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1) !important;
-            transform: scale(1.3);
+            transform: scale(1.2);
             transform-origin: center center;
+        }
+
+        /* 🔄 CSS PEMUTAR ROTASI MANUAL (DIPICU VIA JAVASCRIPT) */
+        body.screenshot-active.rotated #id-card-render {
+            transform: scale(1.1) rotate(90deg); /* Memutar kartu 90 derajat jika tombol rotasi aktif */
         }
 
         @media (max-width: 768px) {
             body.screenshot-active #id-card-render {
-                transform: scale(1.1); /* Skala aman untuk layar HP agar tidak keluar batas */
+                transform: scale(0.7); /* Ukuran responsif awal di HP portrait */
+            }
+            body.screenshot-active.rotated #id-card-render {
+                transform: scale(1.1) rotate(90deg); /* Memperbesar skala saat diputar paksa */
             }
         }
     </style>
 </head>
 <body>
 
-<button class="btn-back-edit" id="btn-kembali"><i class="fa-solid fa-arrow-left"></i> Kembali Edit Data</button>
+<div class="screenshot-header-nav">
+    <button class="btn-nav" id="btn-kembali"><i class="fa-solid fa-arrow-left"></i> Kembali Edit</button>
+    <button class="btn-nav" id="btn-putar"><i class="fa-solid fa-rotate"></i> Putar Kartu (Rotasi)</button>
+</div>
 
 <div class="container">
     <header id="main-header">
@@ -396,11 +408,11 @@
             <div class="panel-title"><i class="fa-solid fa-pen-to-square"></i><span>Isi Data Siswa</span></div>
             <div class="form-group">
                 <label>Nama Lengkap Siswa</label>
-                <input type="text" id="input-nama" placeholder="Contoh: JOKO TRISATYO" maxlength="25">
+                <input type="text" id="input-nama" placeholder="Contoh: ALGIAN MANGGARA" maxlength="25">
             </div>
             <div class="form-group">
                 <label>Asal Sekolah (SD/MI)</label>
-                <input type="text" id="input-sekolah" placeholder="Contoh: SDN CINTA KASIH 07" maxlength="28">
+                <input type="text" id="input-sekolah" placeholder="Contoh: SDN 1 HALMAHERA" maxlength="28">
             </div>
             <div class="form-group">
                 <label>Foto Formal Siswa</label>
@@ -426,15 +438,15 @@
                         <div id="photo-target" class="photo-placeholder"><i class="fa-regular fa-user"></i><span>Foto 3x4</span></div>
                     </div>
 
-                    <div class="name-container"><div id="target-nama" class="student-name">JOKO TRISATYO</div></div>
-                    <div class="school-pill"><span id="target-sekolah" class="school-pill-text">SDN CINTA KASIH 07</span></div>
+                    <div class="name-container"><div id="target-nama" class="student-name">ALGIAN MANGGARA</div></div>
+                    <div class="school-pill"><span id="target-sekolah" class="school-pill-text">SDN 1 HALMAHERA</span></div>
                     <div class="school-badge"><img src="https://i.imgur.com/mRmw86t.jpeg" alt="Badge"></div>
 
                     <div class="card-footer-block"><div class="card-footer-content"><span class="hosting-school-name">SMPN 8 CIKARANG UTARA</span></div></div>
                     <div class="card-footer-subline"></div><div class="card-footer-gold-accent"></div>
                     <div class="bottom-yellow-squares"><div class="square"></div><div class="square"></div></div>
                 </div>
-                <div class="info-note" id="footer-note"><i class="fa-solid fa-circle-info"></i><span>NEDACITRA: Aktifkan rotasi layar otomatis, miringkan HP (Landscape) lalu screenshot.</span></div>
+                <div class="info-note" id="footer-note"><i class="fa-solid fa-circle-info"></i><span>NEDACITRA: Klik Buka Mode Screenshot, lalu gunakan tombol "Putar Kartu" jika ingin posisi melebar.</span></div>
             </div>
         </div>
     </div>
@@ -450,16 +462,17 @@
     const fileStatus = document.getElementById('file-status');
     const btnScreenshotMode = document.getElementById('btn-screenshot-mode');
     const btnKembali = document.getElementById('btn-kembali');
+    const btnPutar = document.getElementById('btn-putar');
 
     inputNama.addEventListener('input', (e) => {
         const val = e.target.value.toUpperCase();
-        targetNama.textContent = val || "JOKO TRISATYO";
+        targetNama.textContent = val || "ALGIAN MANGGARA";
         targetNama.style.fontSize = val.length > 18 ? '18px' : val.length > 14 ? '21px' : '26px';
     });
 
     inputSekolah.addEventListener('input', (e) => {
         const val = e.target.value.toUpperCase();
-        targetSekolah.textContent = val || "SDN CINTA KASIH 07";
+        targetSekolah.textContent = val || "SDN 1 HALMAHERA";
         targetSekolah.style.fontSize = val.length > 20 ? '11px' : '14px';
     });
 
@@ -475,14 +488,20 @@
         }
     });
 
-    // MASUK KE MODE PREVIEW SCREENSHOT FULLSCREEN
+    // MASUK MODE FULLSCREEN SCREENSHOT
     btnScreenshotMode.addEventListener('click', () => {
         document.body.classList.add('screenshot-active');
     });
 
-    // KEMBALI KE MODE EDIT FORMULIR
+    // SISTEM ROTASI MANUAL KARTU (TOGGLE CLASS)
+    btnPutar.addEventListener('click', () => {
+        document.body.classList.toggle('rotated');
+    });
+
+    // KEMBALI KE FORMULIR AWAL
     btnKembali.addEventListener('click', () => {
         document.body.classList.remove('screenshot-active');
+        document.body.classList.remove('rotated'); // Kembalikan posisi awal kartu jika keluar
     });
 </script>
 </body>
