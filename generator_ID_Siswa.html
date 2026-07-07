@@ -5,12 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generator ID Card MPLS - SMPN 8 Cikarang Utara</title>
     <link rel="icon" type="image/png" href="https://i.imgur.com/mRmw86t.jpeg">
-    <!-- Google Fonts: Menggunakan Fredoka untuk tampilan fun/tidak kaku & Montserrat untuk kesan elegan profesional -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Montserrat:wght@600;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- html2pdf.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         :root {
@@ -40,7 +36,6 @@
             margin: 0 auto;
         }
 
-        /* Header Style */
         header {
             text-align: center;
             margin-bottom: 40px;
@@ -76,7 +71,6 @@
             font-weight: 500;
         }
 
-        /* Workspace Layout */
         .workspace {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -182,21 +176,24 @@
             background: var(--primary-dark);
         }
 
-        /* PERBAIKAN UTAMA: BACKROUND GRADASI BIRU LANGIT & PUTIH ELEGAN */
-        /* Ditambahkan properti pembantu agar html2canvas tidak menghilangkan latar belakang saat print */
-        #id-card-render {
-    width: 500px;
-    height: 300px;
-    background: linear-gradient(135deg, #e0f2fe 0%, #f8fafc 50%, #bae6fd 100%) !important;
-    position: relative;
-    overflow: hidden; /* Memotong paksa elemen dekorasi luar agar tidak merusak skala PDF */
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-}
+        .preview-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
 
-        /* Garis Dekorasi Latar Belakang */
+        /* TATA LETAK AWAL ID CARD */
+        #id-card-render {
+            width: 500px;
+            height: 300px;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f8fafc 50%, #bae6fd 100%) !important;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
         .bg-lines-top-right, .bg-lines-bottom-left {
             position: absolute;
             width: 180px; height: 180px;
@@ -206,7 +203,6 @@
         .bg-lines-top-right { top: -40px; right: -30px; }
         .bg-lines-bottom-left { bottom: -50px; left: -40px; }
 
-        /* Header Biru Atas */
         .card-header-block {
             position: absolute;
             top: 0; left: 0; width: 55%; height: 48px;
@@ -215,27 +211,22 @@
             transform-origin: top left;
             z-index: 2;
             display: flex; align-items: center; padding-left: 30px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
         }
 
         .card-header-content { transform: skewX(20deg); color: white; }
         .card-title-main { 
-            font-family: 'Fredoka', sans-serif; /* Mengubah font agar menarik/tidak kaku */
+            font-family: 'Fredoka', sans-serif;
             font-size: 21px; 
             font-weight: 700; 
             letter-spacing: 1px; 
         }
 
-        /* Ribbon Emas */
         .card-header-gold {
             position: absolute; top: 45px; left: 0; width: 52%; height: 12px;
             background-color: #e6b800 !important;
             transform: skewX(-20deg);
             transform-origin: top left;
             z-index: 1;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
         }
 
         .card-header-gold-text {
@@ -244,9 +235,8 @@
         }
 
         .top-yellow-squares { position: absolute; top: 10px; left: 57%; display: flex; gap: 4px; }
-        .square { width: 10px; height: 10px; background-color: #e6b800 !important; transform: skewX(-20deg); -webkit-print-color-adjust: exact; print-color-adjust: exact;}
+        .square { width: 10px; height: 10px; background-color: #e6b800 !important; transform: skewX(-20deg); }
 
-        /* Frame Pas Foto */
         .photo-frame {
             position: absolute; top: 68px; left: 42px; width: 115px; height: 162px;
             background-color: #f1f5f9; border-radius: 12px; overflow: hidden;
@@ -256,14 +246,13 @@
 
         .photo-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #cbd5e1; color: #64748b; font-size: 11px; }
 
-        /* Container Nama & Perubahan Font Menjadi Dinamis Menarik (Fredoka) */
         .name-container {
             position: absolute; top: 78px; left: 185px; right: 25px;
             text-align: center; z-index: 5; display: flex; flex-direction: column; justify-content: center; min-height: 70px;
         }
 
         .student-name { 
-            font-family: 'Fredoka', sans-serif; /* Font kasual, modern, tidak kaku, sangat cocok untuk MPLS */
+            font-family: 'Fredoka', sans-serif;
             font-size: 26px; 
             font-weight: 700; 
             color: #004da0; 
@@ -272,13 +261,10 @@
             line-height: 1.2;
         }
 
-        /* Pill Asal Sekolah */
         .school-pill {
             position: absolute; top: 160px; left: 203px; width: 272px; height: 36px;
             background-color: #0066cc !important; border-radius: 18px; display: flex; align-items: center; justify-content: center; z-index: 5; padding: 0 15px;
             box-shadow: 0 4px 6px rgba(0,102,204,0.2);
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
         }
 
         .school-pill-text { 
@@ -289,64 +275,115 @@
             letter-spacing: 1px; 
         }
 
-        /* School Badge */
-        .school-badge { position: absolute; bottom: 8px; left: 165px; width: 62px; height: 62px; z-index: 6; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.2)); }
+        .school-badge { position: absolute; bottom: 8px; left: 150px; width: 62px; height: 62px; z-index: 6; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.2)); }
         .school-badge img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* Footer Ribbon */
-        /* PERBAIKAN STRUKTUR POSITIONING FOOTER AGAR TIDAK TERPOTONG SAAT GENERATE PDF */
-.card-footer-block {
-    position: absolute; 
-    bottom: 25px; 
-    left: 155px; /* Menggunakan batas koordinat kiri yang stabil */
-    right: 0;    /* Dikunci rapat ke sisi paling kanan kartu tanpa nilai minus */
-    height: 28px;
-    background-color: #0066cc !important; 
-    transform: skewX(-20deg); 
-    transform-origin: bottom right;
-    z-index: 4;
-    display: flex; 
-    align-items: center; 
-    padding-left: 65px; /* Jarak aman agar teks tidak bertabrakan dengan Logo */
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-}
-
-.card-footer-subline { 
-    position: absolute; 
-    bottom: 17px; 
-    left: 185px; 
-    right: 0; /* Dikunci rata kanan */
-    height: 4px; 
-    background-color: #0066cc !important; 
-    z-index: 3; 
-}
-
-.card-footer-gold-accent { 
-    position: absolute; 
-    bottom: 12px; 
-    right: 0; /* Dikunci di ujung kanan tanpa offset minus */
-    width: 25px; 
-    height: 40px; 
-    background-color: #e6b800 !important; 
-    transform: skewX(-20deg); 
-    z-index: 5; 
-}
+        .card-footer-block {
+            position: absolute; 
+            bottom: 25px; 
+            left: 155px; 
+            right: 0;
+            height: 28px;
+            background-color: #0066cc !important; 
+            transform: skewX(-20deg); 
+            transform-origin: bottom right;
+            z-index: 4;
+            display: flex; 
+            align-items: center; 
+            padding-left: 55px; 
+        }
 
         .card-footer-content { transform: skewX(20deg); color: white; }
-        .hosting-school-name { font-family: 'Montserrat', sans-serif; font-size: 11.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
+        .hosting-school-name { font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
 
-        .card-footer-subline { position: absolute; bottom: 17px; right: 0; width: 63%; height: 4px; background-color: #0066cc !important; z-index: 3; -webkit-print-color-adjust: exact; print-color-adjust: exact;}
-        .card-footer-gold-accent { position: absolute; bottom: 12px; right: 15px; width: 25px; height: 40px; background-color: #e6b800 !important; transform: skewX(-20deg); z-index: 5; -webkit-print-color-adjust: exact; print-color-adjust: exact;}
+        .card-footer-subline { position: absolute; bottom: 17px; left: 185px; right: 0; height: 4px; background-color: #0066cc !important; z-index: 3;}
+        .card-footer-gold-accent { position: absolute; bottom: 12px; right: 0; width: 25px; height: 40px; background-color: #e6b800 !important; transform: skewX(-20deg); z-index: 5;}
         .bottom-yellow-squares { position: absolute; bottom: 6px; left: 275px; display: flex; gap: 4px; z-index: 5; }
         
         .info-note { margin-top: 15px; font-size: 12px; color: #627d98; display: flex; align-items: center; gap: 5px; }
+
+        /* NAVIGASI TOMBOL KEMBALI */
+        .btn-back-edit {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background: #ff3366;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 99999;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        /* 👑 PERBAIKAN TOTAL: CSS MODE PREVIEW SCREENSHOT FULLSCREEN */
+        body.screenshot-active {
+            background: #ffffff !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100vw;
+            height: 100vh;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            overflow: hidden !important;
+        }
+
+        /* Sembunyikan seluruh elemen luar secara mutlak */
+        body.screenshot-active #main-header,
+        body.screenshot-active #form-panel,
+        body.screenshot-active #preview-title,
+        body.screenshot-active #footer-note {
+            display: none !important;
+        }
+
+        /* Setel ulang struktur workspace agar fokus hanya pada kartu */
+        body.screenshot-active .workspace {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            height: 100% !important;
+            gap: 0 !important;
+        }
+
+        body.screenshot-active .preview-wrapper {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        body.screenshot-active .btn-back-edit {
+            display: block !important;
+        }
+
+        /* Pembesaran kartu agar pas di layar HP Landscape */
+        body.screenshot-active #id-card-render {
+            display: block !important;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1) !important;
+            transform: scale(1.3);
+            transform-origin: center center;
+        }
+
+        @media (max-width: 768px) {
+            body.screenshot-active #id-card-render {
+                transform: scale(1.1); /* Skala aman untuk layar HP agar tidak keluar batas */
+            }
+        }
     </style>
 </head>
 <body>
 
+<button class="btn-back-edit" id="btn-kembali"><i class="fa-solid fa-arrow-left"></i> Kembali Edit Data</button>
+
 <div class="container">
-    <header>
+    <header id="main-header">
         <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo">
         <div class="school-info">
             <h1>SMP NEGERI 8 CIKARANG UTARA</h1>
@@ -355,16 +392,15 @@
     </header>
 
     <div class="workspace">
-        <!-- Form Pengisian Data -->
-        <div class="panel">
+        <div class="panel" id="form-panel">
             <div class="panel-title"><i class="fa-solid fa-pen-to-square"></i><span>Isi Data Siswa</span></div>
             <div class="form-group">
                 <label>Nama Lengkap Siswa</label>
-                <input type="text" id="input-nama" placeholder="Contoh: Algian Manggara" maxlength="25">
+                <input type="text" id="input-nama" placeholder="Contoh: JOKO TRISATYO" maxlength="25">
             </div>
             <div class="form-group">
                 <label>Asal Sekolah (SD/MI)</label>
-                <input type="text" id="input-sekolah" placeholder="Contoh: SDN 1 HALMAHERA" maxlength="28">
+                <input type="text" id="input-sekolah" placeholder="Contoh: SDN CINTA KASIH 07" maxlength="28">
             </div>
             <div class="form-group">
                 <label>Foto Formal Siswa</label>
@@ -373,15 +409,13 @@
                     <input type="file" id="input-foto" accept="image/*">
                 </div>
             </div>
-            <button class="btn-download" id="btn-download-pdf"><i class="fa-solid fa-file-pdf"></i> Unduh ID Card (PDF)</button>
+            <button class="btn-download" id="btn-screenshot-mode" style="background-color: #00aa66;"><i class="fa-solid fa-expand"></i> Buka Mode Screenshot (Full Screen)</button>
         </div>
 
-        <!-- Preview Area -->
-        <div style="display: flex; flex-direction: column; align-items: center;">
-            <div class="panel" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-                <div class="panel-title" style="width: 100%;"><i class="fa-solid fa-id-card"></i><span>Live Preview Kartu</span></div>
+        <div class="preview-wrapper">
+            <div class="panel" style="width: 100%; display: flex; flex-direction: column; align-items: center; border: none; box-shadow: none; background: transparent; padding: 0;">
+                <div class="panel-title" style="width: 100%; background: white; padding: 15px; border-radius: 12px; box-shadow: var(--card-shadow); margin-bottom: 25px;" id="preview-title"><i class="fa-solid fa-id-card"></i><span>Live Preview Kartu</span></div>
                 
-                <!-- ID CARD RENDER TARGET -->
                 <div id="id-card-render">
                     <div class="bg-lines-top-right"></div><div class="bg-lines-bottom-left"></div>
                     <div class="card-header-block"><div class="card-header-content"><span class="card-title-main">ID CARD MPLS</span></div></div>
@@ -392,15 +426,15 @@
                         <div id="photo-target" class="photo-placeholder"><i class="fa-regular fa-user"></i><span>Foto 3x4</span></div>
                     </div>
 
-                    <div class="name-container"><div id="target-nama" class="student-name">ALGIAN MANGGARA</div></div>
-                    <div class="school-pill"><span id="target-sekolah" class="school-pill-text">SDN 1 HALMAHERA</span></div>
+                    <div class="name-container"><div id="target-nama" class="student-name">JOKO TRISATYO</div></div>
+                    <div class="school-pill"><span id="target-sekolah" class="school-pill-text">SDN CINTA KASIH 07</span></div>
                     <div class="school-badge"><img src="https://i.imgur.com/mRmw86t.jpeg" alt="Badge"></div>
 
                     <div class="card-footer-block"><div class="card-footer-content"><span class="hosting-school-name">SMPN 8 CIKARANG UTARA</span></div></div>
                     <div class="card-footer-subline"></div><div class="card-footer-gold-accent"></div>
                     <div class="bottom-yellow-squares"><div class="square"></div><div class="square"></div></div>
                 </div>
-                <div class="info-note"><i class="fa-solid fa-circle-info"></i><span>NEDACITRA: Upload Photo Sopan dan Silahkan Input Data Dengan Sesuai.</span></div>
+                <div class="info-note" id="footer-note"><i class="fa-solid fa-circle-info"></i><span>NEDACITRA: Aktifkan rotasi layar otomatis, miringkan HP (Landscape) lalu screenshot.</span></div>
             </div>
         </div>
     </div>
@@ -414,7 +448,8 @@
     const targetSekolah = document.getElementById('target-sekolah');
     const photoTarget = document.getElementById('photo-target');
     const fileStatus = document.getElementById('file-status');
-    const btnDownload = document.getElementById('btn-download-pdf');
+    const btnScreenshotMode = document.getElementById('btn-screenshot-mode');
+    const btnKembali = document.getElementById('btn-kembali');
 
     inputNama.addEventListener('input', (e) => {
         const val = e.target.value.toUpperCase();
@@ -432,7 +467,7 @@
         const file = this.files[0];
         if (file) {
             const reader = new FileReader();
-            fileStatus.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #0066cc;"></i> Foto Berhasil Dimuat`;
+            fileStatus.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #00cc66;"></i> Foto Dimuat`;
             reader.onload = function(e) {
                 photoTarget.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
             };
@@ -440,34 +475,14 @@
         }
     });
 
-    btnDownload.addEventListener('click', () => {
-        const element = document.getElementById('id-card-render');
-        
-        // Loader status
-        btnDownload.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sedang Mengonversi PDF...`;
-        btnDownload.disabled = true;
+    // MASUK KE MODE PREVIEW SCREENSHOT FULLSCREEN
+    btnScreenshotMode.addEventListener('click', () => {
+        document.body.classList.add('screenshot-active');
+    });
 
-        const opt = {
-            margin: 0,
-            filename: `ID_CARD_MPLS_${(inputNama.value || 'SISWA').replace(/\s+/g, '_')}.pdf`,
-            image: { type: 'jpeg', quality: 1.0 },
-            html2canvas: { 
-                scale: 3, // Resolusi tinggi agar hasil cetak tajam
-                useCORS: true,
-                backgroundColor: null, // Mencegah pemaksaan background putih solid oleh canvas
-                logging: false
-            },
-            jsPDF: { unit: 'px', format: [500, 300], orientation: 'landscape' }
-        };
-
-        html2pdf().set(opt).from(element).save().then(() => {
-            btnDownload.innerHTML = `<i class="fa-solid fa-file-pdf"></i> Unduh ID Card (PDF)`;
-            btnDownload.disabled = false;
-        }).catch(err => {
-            console.error(err);
-            btnDownload.innerHTML = `<i class="fa-solid fa-file-pdf"></i> Unduh ID Card (PDF)`;
-            btnDownload.disabled = false;
-        });
+    // KEMBALI KE MODE EDIT FORMULIR
+    btnKembali.addEventListener('click', () => {
+        document.body.classList.remove('screenshot-active');
     });
 </script>
 </body>
