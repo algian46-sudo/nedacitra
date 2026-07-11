@@ -48,7 +48,6 @@
 
 <div class="container mb-5">
 
-  <!-- GERBANG LOGIN SISWA -->
   <div id="view-login" class="card card-login p-4">
     <div class="text-center mb-4">
       <i class="bi bi-person-lock text-primary" style="font-size: 3.5rem;"></i>
@@ -75,10 +74,8 @@
     </form>
   </div>
 
-  <!-- KATALOG BUKU UTAMA (MUNCUL JIKA SUDAH LOGIN) -->
   <div id="view-katalog" class="d-none">
     
-    <!-- Filter dan Pencarian -->
     <div class="card p-3 mb-4">
       <div class="row g-3 align-items-center">
         <div class="col-md-4">
@@ -87,24 +84,24 @@
             <input type="text" id="search-judul" class="form-control border-start-0" placeholder="Cari judul buku..." oninput="filterKatalog()">
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
           <select id="filter-kategori" class="form-select" onchange="filterKatalog()">
             <option value="ALL">Semua Kategori Buku</option>
           </select>
         </div>
-        <div class="col-md-4 text-md-end">
+        <div class="col-md-5 text-md-end d-flex justify-content-md-end align-items-center gap-3 justify-content-between">
           <span class="text-secondary fw-semibold small" id="total-buku-info">Memuat buku...</span>
+          <button class="btn btn-outline-primary btn-sm rounded-pill fw-bold" onclick="paksaPerbaruiKatalog()">
+            <i class="bi bi-arrow-clockwise"></i> Perbarui Katalog
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Grid Tempat Buku Tampil -->
     <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-3" id="container-buku">
-      <!-- Item buku di-render via Javascript -->
-    </div>
+      </div>
   </div>
 
-  <!-- VIEW BOX PEMBACA PDF -->
   <div id="view-reader" class="d-none">
     <div class="pdf-container">
       <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
@@ -116,7 +113,6 @@
           <i class="bi bi-arrow-left-circle me-1"></i> Baca Buku Lain
         </button>
       </div>
-      <!-- Embed PDF Box -->
       <iframe id="pdf-viewer" src="" class="pdf-frame"></iframe>
     </div>
   </div>
@@ -130,8 +126,8 @@
 </footer>
 
 <script>
-  // PASTE URL WEB APP GOOGLE APPS SCRIPT ANDA YANG BARU DI SINI
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzN0bZPLnXSk_T5YUEVWqP7sQ6qUq6SD36E-4FZNjIsxUMgLyTSEfuKSIcsCQr5gBOBDw/exec";
+  // PASTE URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzM2TYFQtlsqy5d1T7IKecMJpyRCHbLYN5NAo43GGyBbx3yaeSJ4-wQWyoQoRYFOks4Kw/exec";
 
   var sessionSiswa = null;
   var masterBuku = [];
@@ -182,42 +178,82 @@
         document.getElementById('user-badge').classList.remove('d-none');
         document.getElementById('view-login').classList.add('d-none');
         document.getElementById('view-katalog').classList.remove('d-none');
-        loadDataKatalogBuku();
+        
+        // Logika Pengecekan Cache Lokal Perangkat
+        initKatalogBuku();
       });
   }
 
-  // Load Buku dari Sheet
-  function loadDataKatalogBuku() {
+  // FUNGSI UTAMA MANAJEMEN CACHE LOKAL (localStorage)
+  function initKatalogBuku() {
+    var localBuku = localStorage.getItem("cache_master_buku");
+    var localKategori = localStorage.getItem("cache_master_kategori");
+
+    if (localBuku && localKategori) {
+      // Jika cache ada di device, langsung render instan!
+      masterBuku = JSON.parse(localBuku);
+      masterKategori = JSON.parse(localKategori);
+      buildKategoriDropdown();
+      renderKatalog(masterBuku);
+      showLoading(false);
+      console.log("Memuat data dari cache lokal komputer.");
+    } else {
+      // Jika cache kosong, ambil langsung dari server GAS
+      ambilDataDariServer();
+    }
+  }
+
+  function ambilDataDariServer() {
+    showLoading(true);
     fetch(`${WEB_APP_URL}?action=getBuku`)
       .then(res => res.json())
       .then(res => {
         masterBuku = res.buku;
         masterKategori = res.kategori;
         
-        // Isi dropdown kategori
-        var selectKategori = document.getElementById('filter-kategori');
-        selectKategori.options.length = 1;
-        masterKategori.forEach(kat => {
-          selectKategori.options.add(new Option(kat, kat));
-        });
+        // Simpan ke dalam memori komputer siswa secara permanen
+        localStorage.setItem("cache_master_buku", JSON.stringify(masterBuku));
+        localStorage.setItem("cache_master_kategori", JSON.stringify(masterKategori));
 
+        buildKategoriDropdown();
         renderKatalog(masterBuku);
         showLoading(false);
+        console.log("Memuat data baru dari Google Sheet dan memperbarui cache.");
+      }).catch(err => {
+        alert("Gagal memuat data dari server: " + err);
+        showLoading(false);
       });
+  }
+
+  // Fungsi yang dipanggil saat tombol "Perbarui Katalog" diklik siswa
+  function paksaPerbaruiKatalog() {
+    // Hapus cache lokal terlebih dahulu
+    localStorage.removeItem("cache_master_buku");
+    localStorage.removeItem("cache_master_kategori");
+    // Ambil ulang data segar dari Google Sheets
+    ambilDataDariServer();
+  }
+
+  function buildKategoriDropdown() {
+    var selectKategori = document.getElementById('filter-kategori');
+    selectKategori.options.length = 1; // reset sisa option selain "Semua Kategori"
+    masterKategori.forEach(kat => {
+      selectKategori.options.add(new Option(kat, kat));
+    });
   }
 
   // Render list buku ke dalam grid HTML
   function renderKatalog(daftarBuku) {
     var container = document.getElementById('container-buku');
     container.innerHTML = "";
-    document.getElementById('total-buku-info').innerText = `Menampilkan ${daftarBuku.length} Buku`;
+    document.getElementById('total-buku-info').innerText = `Total: ${daftarBuku.length} Buku`;
 
     if (daftarBuku.length === 0) {
       container.innerHTML = '<div class="col-11 text-center py-4 text-white opacity-75">Buku tidak ditemukan...</div>';
       return;
     }
 
-    daftarBuku.forEach((buku, index) => {
+    daftarBuku.forEach((buku) => {
       container.innerHTML += `
         <div class="col">
           <div class="card book-card p-3 d-flex flex-column justify-content-between" onclick="bukaPdfViewer('${buku.kategori}', '${buku.judul}', '${buku.linkPdf}')">
@@ -256,7 +292,6 @@
     document.getElementById('reader-kategori').innerText = kategori;
     document.getElementById('reader-judul').innerText = judul;
     
-    // Konversi link Google Drive biasa agar bisa diembed sempurna jika diperlukan
     var embedLink = link;
     if(link.includes("drive.google.com/file/d/")) {
       embedLink = link.replace("/view?usp=sharing", "/preview").replace("/view", "/preview");
@@ -267,7 +302,7 @@
   }
 
   function kembaliKeKatalog() {
-    document.getElementById('pdf-viewer').src = ""; // Bersihkan memori iframe
+    document.getElementById('pdf-viewer').src = ""; 
     document.getElementById('view-reader').classList.add('d-none');
     document.getElementById('view-katalog').classList.remove('d-none');
   }
