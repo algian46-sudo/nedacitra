@@ -129,160 +129,186 @@
   // PASTE URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI (HANYA UNTUK LOG/LOGIN)
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzN0bZPLnXSk_T5YUEVWqP7sQ6qUq6SD36E-4FZNjIsxUMgLyTSEfuKSIcsCQr5gBOBDw/exec";
 
-  var sessionSiswa = null;
-  var masterKategori = [];
+var sessionSiswa = null;
+var masterKategori = [];
+var bukuTerfilter = []; // Menyimpan hasil filter/pencarian saat ini
 
-  function showLoading(status) {
-    document.getElementById('loading').style.display = status ? 'flex' : 'none';
-  }
+// Variabel untuk fitur Lazy Loading / Paging
+var jumlahBukuPerHalaman = 20;
+var indeksBukuSaatIni = 0;
 
-  function cariNisnOtomatis(nisn) {
-    if (nisn.length < 4) { resetLoginForm(); return; }
-    
-    fetch(`${WEB_APP_URL}?action=cekNisn&nisn=${nisn}`)
-      .then(res => res.json())
-      .then(res => {
-        if (res.ditemukan) {
-          document.getElementById('login-nama').value = res.nama;
-          document.getElementById('login-kelas').value = res.kelas;
-          document.getElementById('btn-login').disabled = false;
-        } else {
-          resetLoginForm();
-        }
-      });
-  }
+function showLoading(status) {
+  document.getElementById('loading').style.display = status ? 'flex' : 'none';
+}
 
-  function resetLoginForm() {
-    document.getElementById('login-nama').value = "";
-    document.getElementById('login-kelas').value = "";
-    document.getElementById('btn-login').disabled = true;
-  }
-
-  function loginSiswa() {
-    showLoading(true);
-    var targetSiswa = {
-      action: 'login',
-      nisn: document.getElementById('login-nisn').value,
-      nama: document.getElementById('login-nama').value,
-      kelas: document.getElementById('login-kelas').value
-    };
-
-    fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(targetSiswa) })
-      .then(res => res.json())
-      .then(res => {
-        sessionSiswa = targetSiswa;
-        document.getElementById('info-user-logged').innerText = `${sessionSiswa.nama} (${sessionSiswa.kelas})`;
-        document.getElementById('user-badge').classList.remove('d-none');
-        document.getElementById('view-login').classList.add('d-none');
-        document.getElementById('view-katalog').classList.remove('d-none');
-        
-        // Memuat katalog instan dari file lokal tanpa fetch data
-        initKatalogInstan();
-      });
-  }
-
-  function initKatalogInstan() {
-    // Ambil daftar unik kategori dari DATA_MASTER_BUKU secara dinamis
-    var kategoriSet = new Set();
-    DATA_MASTER_BUKU.forEach(buku => {
-      if (buku.kategori) kategoriSet.add(buku.kategori);
-    });
-    masterKategori = Array.from(kategoriSet).sort();
-
-    // Buat Dropdown Kategori
-    var selectKategori = document.getElementById('filter-kategori');
-    selectKategori.options.length = 1;
-    masterKategori.forEach(kat => {
-      selectKategori.options.add(new Option(kat, kat));
-    });
-
-    // Tampilkan buku ke halaman secara instan (0 milidetik!)
-    renderKatalog(DATA_MASTER_BUKU);
-    showLoading(false);
-  }
-
-  function renderKatalog(daftarBuku) {
-    var container = document.getElementById('container-buku');
-    container.innerHTML = "";
-    document.getElementById('total-buku-info').innerText = `Total: ${daftarBuku.length} Buku`;
-
-    if (daftarBuku.length === 0) {
-      container.innerHTML = '<div class="col-11 text-center py-4 text-white opacity-75">Buku tidak ditemukan...</div>';
-      return;
-    }
-
-    daftarBuku.forEach((buku) => {
-      container.innerHTML += `
-        <div class="col">
-          <div class="card book-card p-3 d-flex flex-column justify-content-between" onclick="bukaPdfViewer('${buku.kategori}', '${buku.judul}', '${buku.linkPdf}')">
-            <div>
-              <span class="badge bg-light text-primary border mb-2" style="font-size:0.75rem;">${buku.kategori}</span>
-              <h6 class="fw-bold text-dark mb-1 text-capitalize text-wrap">${buku.judul}</h6>
-            </div>
-            <div class="text-end mt-3 text-primary fw-bold small">
-              Baca Buku <i class="bi bi-arrow-right-short"></i>
-            </div>
-          </div>
-        </div>
-      `;
-    });
-  }
-
-  function filterKatalog() {
-    var searchVal = document.getElementById('search-judul').value.toLowerCase();
-    var kategoriVal = document.getElementById('filter-kategori').value;
-
-    var hasilFilter = DATA_MASTER_BUKU.filter(buku => {
-      var cocokJudul = buku.judul.toLowerCase().includes(searchVal);
-      var cocokKategori = (kategoriVal === 'ALL' || buku.kategori === kategoriVal);
-      return cocokJudul && cocokKategori;
-    });
-
-    renderKatalog(hasilFilter);
-  }
-
-  function bukaPdfViewer(kategori, judul, link) {
-    document.getElementById('view-katalog').classList.add('d-none');
-    document.getElementById('view-reader').classList.remove('d-none');
-    
-    document.getElementById('reader-kategori').innerText = kategori;
-    document.getElementById('reader-judul').innerText = judul;
-    
-    var embedLink = link;
-    if(link.includes("drive.google.com/file/d/")) {
-      embedLink = link.replace("/view?usp=sharing", "/preview").replace("/view", "/preview");
-    }
-    
-    document.getElementById('pdf-viewer').src = embedLink;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function kembaliKeKatalog() {
-    document.getElementById('pdf-viewer').src = ""; 
-    document.getElementById('view-reader').classList.add('d-none');
-    document.getElementById('view-katalog').classList.remove('d-none');
-  }
-
-  function logoutSiswa() {
-    if (!sessionSiswa) return;
-    showLoading(true);
-
-    fetch(WEB_APP_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'logout', nisn: sessionSiswa.nisn })
-    })
+function cariNisnOtomatis(nisn) {
+  if (nisn.length < 4) { resetLoginForm(); return; }
+  
+  fetch(`${WEB_APP_URL}?action=cekNisn&nisn=${nisn}`)
     .then(res => res.json())
     .then(res => {
-      sessionSiswa = null;
-      document.getElementById('login-nisn').value = "";
-      resetLoginForm();
-      document.getElementById('user-badge').classList.add('d-none');
-      document.getElementById('view-reader').classList.add('d-none');
-      document.getElementById('view-katalog').classList.add('d-none');
-      document.getElementById('view-login').classList.remove('d-none');
-      showLoading(false);
+      if (res.ditemukan) {
+        document.getElementById('login-nama').value = res.nama;
+        document.getElementById('login-kelas').value = res.kelas;
+        document.getElementById('btn-login').disabled = false;
+      } else {
+        resetLoginForm();
+      }
     });
+}
+
+function resetLoginForm() {
+  document.getElementById('login-nama').value = "";
+  document.getElementById('login-kelas').value = "";
+  document.getElementById('btn-login').disabled = true;
+}
+
+function loginSiswa() {
+  showLoading(true);
+  var targetSiswa = {
+    action: 'login',
+    nisn: document.getElementById('login-nisn').value,
+    nama: document.getElementById('login-nama').value,
+    kelas: document.getElementById('login-kelas').value
+  };
+
+  fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(targetSiswa) })
+    .then(res => res.json())
+    .then(res => {
+      sessionSiswa = targetSiswa;
+      document.getElementById('info-user-logged').innerText = `${sessionSiswa.nama} (${sessionSiswa.kelas})`;
+      document.getElementById('user-badge').classList.remove('d-none');
+      document.getElementById('view-login').classList.add('d-none');
+      document.getElementById('view-katalog').classList.remove('d-none');
+      
+      initKatalogInstan();
+    });
+}
+
+function initKatalogInstan() {
+  var kategoriSet = new Set();
+  DATA_MASTER_BUKU.forEach(buku => {
+    if (buku.kategori) kategoriSet.add(buku.kategori);
+  });
+  masterKategori = Array.from(kategoriSet).sort();
+
+  var selectKategori = document.getElementById('filter-kategori');
+  selectKategori.options.length = 1;
+  masterKategori.forEach(kat => {
+    selectKategori.options.add(new Option(kat, kat));
+  });
+
+  // Salin semua data awal ke daftar terfilter
+  bukuTerfilter = [...DATA_MASTER_BUKU];
+  
+  // Tampilkan 20 buku pertama secara instan
+  indeksBukuSaatIni = 0;
+  document.getElementById('container-buku').innerHTML = "";
+  tampilkanBukuBerikutnya();
+  
+  showLoading(false);
+}
+
+// FUNGSI INTI LAZY LOADING: Hanya memuat porsi data yang dibutuhkan di layar
+function tampilkanBukuBerikutnya() {
+  var container = document.getElementById('container-buku');
+  document.getElementById('total-buku-info').innerText = `Total: ${bukuTerfilter.length} Buku`;
+
+  if (bukuTerfilter.length === 0) {
+    container.innerHTML = '<div class="col-11 text-center py-4 text-white opacity-75">Buku tidak ditemukan...</div>';
+    return;
   }
+
+  var batasMaksimal = Math.min(indeksBukuSaatIni + jumlahBukuPerHalaman, bukuTerfilter.length);
+  
+  for (var i = indeksBukuSaatIni; i < batasMaksimal; i++) {
+    var buku = bukuTerfilter[i];
+    container.innerHTML += `
+      <div class="col">
+        <div class="card book-card p-3 d-flex flex-column justify-content-between" onclick="bukaPdfViewer('${buku.kategori}', '${buku.judul}', '${buku.linkPdf}')">
+          <div>
+            <span class="badge bg-light text-primary border mb-2" style="font-size:0.75rem;">${buku.kategori}</span>
+            <h6 class="fw-bold text-dark mb-1 text-capitalize text-wrap">${buku.judul}</h6>
+          </div>
+          <div class="text-end mt-3 text-primary fw-bold small">
+            Baca Buku <i class="bi bi-arrow-right-short"></i>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
+  indeksBukuSaatIni = batasMaksimal;
+}
+
+// Deteksi otomatis jika siswa men-scroll halaman sampai bawah, muat 20 buku lagi
+window.onscroll = function() {
+  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+    if (indeksBukuSaatIni < bukuTerfilter.length) {
+      tampilkanBukuBerikutnya();
+    }
+  }
+};
+
+function filterKatalog() {
+  var searchVal = document.getElementById('search-judul').value.toLowerCase();
+  var kategoriVal = document.getElementById('filter-kategori').value;
+
+  // Filter data di memori (ini sangat cepat karena tidak menyentuh visual HTML)
+  bukuTerfilter = DATA_MASTER_BUKU.filter(buku => {
+    var cocokJudul = buku.judul.toLowerCase().includes(searchVal);
+    var cocokKategori = (kategoriVal === 'ALL' || buku.kategori === kategoriVal);
+    return cocokJudul && cocokKategori;
+  });
+
+  // Reset visual tampilan dan muat dari indeks 0 lagi
+  indeksBukuSaatIni = 0;
+  document.getElementById('container-buku').innerHTML = "";
+  tampilkanBukuBerikutnya();
+}
+
+function bukaPdfViewer(kategori, judul, link) {
+  document.getElementById('view-katalog').classList.add('d-none');
+  document.getElementById('view-reader').classList.remove('d-none');
+  
+  document.getElementById('reader-kategori').innerText = kategori;
+  document.getElementById('reader-judul').innerText = judul;
+  
+  var embedLink = link;
+  if(link.includes("drive.google.com/file/d/")) {
+    embedLink = link.replace("/view?usp=sharing", "/preview").replace("/view", "/preview");
+  }
+  
+  document.getElementById('pdf-viewer').src = embedLink;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function kembaliKeKatalog() {
+  document.getElementById('pdf-viewer').src = ""; 
+  document.getElementById('view-reader').classList.add('d-none');
+  document.getElementById('view-katalog').classList.remove('d-none');
+}
+
+function logoutSiswa() {
+  if (!sessionSiswa) return;
+  showLoading(true);
+
+  fetch(WEB_APP_URL, {
+    method: 'POST',
+    body: JSON.stringify({ action: 'logout', nisn: sessionSiswa.nisn })
+  })
+  .then(res => res.json())
+  .then(res => {
+    sessionSiswa = null;
+    document.getElementById('login-nisn').value = "";
+    resetLoginForm();
+    document.getElementById('user-badge').classList.add('d-none');
+    document.getElementById('view-reader').classList.add('d-none');
+    document.getElementById('view-katalog').classList.add('d-none');
+    document.getElementById('view-login').classList.remove('d-none');
+    showLoading(false);
+  });
+}
 </script>
 </body>
 </html>
