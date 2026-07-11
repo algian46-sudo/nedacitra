@@ -53,22 +53,22 @@
     <div class="text-center mb-4">
       <i class="bi bi-person-lock text-primary" style="font-size: 3.5rem;"></i>
       <h4 class="fw-bold mt-2">Masuk Layanan Baca</h4>
-      <p class="text-muted small">Silakan ketik nomor NISN Anda untuk verifikasi data</p>
+      <p class="text-muted small">Silakan ketik nomor NISN / KODE PENGAJAR Anda untuk verifikasi data</p>
     </div>
     <form onsubmit="event.preventDefault(); loginSiswa();">
       <div class="mb-3">
-        <label class="form-label fw-bold text-secondary">NOMOR NISN</label>
+        <label class="form-label fw-bold text-secondary">NOMOR NISN / KODE PENGAJAR</label>
         <div class="input-group">
           <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-          <input type="number" id="login-nisn" class="form-control" placeholder="Masukkan NISN Anda..." required oninput="cariNisnOtomatis(this.value)">
+          <input type="number" id="login-nisn" class="form-control" placeholder="Masukkan NISN / KDOE PENGAJAR Anda..." required oninput="cariNisnOtomatis(this.value)">
         </div>
       </div>
       <div class="mb-3">
-        <label class="form-label fw-semibold text-muted">Nama Siswa</label>
-        <input type="text" id="login-nama" class="form-control bg-light" readonly placeholder="Terisi otomatis jika NISN benar...">
+        <label class="form-label fw-semibold text-muted">Nama Siswa / Pengajar</label>
+        <input type="text" id="login-nama" class="form-control bg-light" readonly placeholder="Terisi otomatis...">
       </div>
       <div class="mb-4">
-        <label class="form-label fw-semibold text-muted">Kelas</label>
+        <label class="form-label fw-semibold text-muted">Kelas / Ruang</label>
         <input type="text" id="login-kelas" class="form-control bg-light" readonly placeholder="Terisi otomatis...">
       </div>
       <button type="submit" id="btn-login" class="btn btn-primary w-100 py-2.5 fw-bold rounded-pill" disabled>MASUK KATALOG</button>
