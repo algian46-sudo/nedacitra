@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perpustakaan Digital | SMPN 8 Cikarang Utara</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body { 
+      background: linear-gradient(135deg, #0d47a1 0%, #1976d2 50%, #64b5f6 100%); 
+      background-attachment: fixed;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .wrapper {
+      flex: 1;
+    }
+    .main-header {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      padding: 15px;
+    }
+    .school-logo {
+      height: 70px;
+      width: auto;
+      object-fit: contain;
+    }
+    .card { 
+      border: none;
+      border-radius: 16px; 
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15); 
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(5px);
+      overflow: hidden;
+    }
+    .card-header {
+      border: none;
+      padding: 15px 20px;
+      font-size: 1.1rem;
+    }
+    .btn-main { 
+      padding: 18px 20px; 
+      font-size: 1.15rem; 
+      font-weight: 700; 
+      width: 100%; 
+      border-radius: 12px; 
+      border: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .btn-main:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+    .btn-success.btn-main {
+      background: linear-gradient(135deg, #2e7d32, #4caf50);
+    }
+    .btn-warning.btn-main {
+      background: linear-gradient(135deg, #f57c00, #ffb74d);
+    }
+    .nav-tabs {
+      border-bottom: 2px solid #e0e0e0;
+    }
+    .nav-tabs .nav-link { 
+      font-weight: 600; 
+      color: #616161;
+      border: none;
+      padding: 10px 20px;
+    }
+    .nav-tabs .nav-link.active {
+      color: #1976d2;
+      border-bottom: 3px solid #1976d2;
+      background: transparent;
+    }
+    .footer {
+      background: rgba(13, 71, 161, 0.95);
+      color: rgba(255, 255, 255, 0.85);
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-top: 40px;
+      border-top: 3px solid #64b5f6;
+    }
+    .loading-overlay { 
+      display: none; 
+      position: fixed; 
+      top: 0; left: 0; 
+      width: 100%; height: 100%; 
+      background: rgba(13, 71, 161, 0.4); 
+      backdrop-filter: blur(4px);
+      z-index: 9999; 
+      justify-content: center; 
+      align-items: center; 
+    }
+  </style>
+</head>
+<body>
+
+<div id="loading" class="loading-overlay">
+  <div class="spinner-border text-white" style="width: 3rem; height: 3rem;" role="status"></div>
+</div>
+
+<div class="wrapper">
+  <header class="main-header mb-4">
+    <div class="container d-flex align-items-center justify-content-center gap-3 flex-wrap text-center text-sm-start">
+      <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo SMPN 8 Cikarang Utara" class="school-logo">
+      <div>
+        <h4 class="fw-bold text-dark m-0 tracking-wide">SMP NEGERI 8 CIKARANG UTARA</h4>
+        <small class="text-muted fw-semibold"><i class="bi bi-book-half me-1"></i> Sistem Layanan Perpustakaan Digital</small>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <div id="view-forms">
+      <div class="text-center mb-4 text-white">
+        <h4 class="fw-light m-0">Selamat Datang di Perpustakaan</h4>
+        <p class="opacity-75 small">Silakan pilih opsi menu di bawah ini untuk memulai aktivitas transaksi buku</p>
+        <button class="btn btn-light btn-sm fw-bold text-primary px-3 shadow-sm rounded-pill" onclick="switchView('dashboard')">
+          <i class="bi bi-speedometer2 me-1"></i> Buka Dashboard Data
+        </button>
+      </div>
+
+      <div class="row g-3 mb-4 justify-content-center">
+        <div class="col-6 col-md-4">
+          <button class="btn btn-success btn-main text-white" onclick="showSubForm('peminjaman')">
+            <i class="bi bi-journal-plus d-block mb-1 fs-3"></i> PEMINJAMAN
+          </button>
+        </div>
+        <div class="col-6 col-md-4">
+          <button class="btn btn-warning btn-main text-white" onclick="showSubForm('pengembalian')">
+            <i class="bi bi-journal-check d-block mb-1 fs-3"></i> PENGEMBALIAN
+          </button>
+        </div>
+      </div>
+
+      <div id="form-peminjaman" class="card d-none mb-4 mx-auto" style="max-width: 650px;">
+        <div class="card-header bg-success text-white fw-bold d-flex align-items-center gap-2">
+          <i class="bi bi-arrow-right-circle-fill"></i> FORM PEMINJAMAN BUKU
+        </div>
+        <div class="card-body p-4">
+          <form id="formPinjamObj" onsubmit="event.preventDefault(); submitPeminjaman();">
+            <div class="mb-3">
+              <label class="form-label fw-semibold text-secondary">KELAS</label>
+              <select id="pinjam-kelas" class="form-select class-dropdown" onchange="loadSiswa('pinjam')" required>
+                <option value="">-- Pilih Kelas --</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold text-secondary">NAMA SISWA</label>
+              <select id="pinjam-nama" class="form-select" required disabled>
+                <option value="">-- Pilih Nama --</option>
+              </select>
+            </div>
+            <div class="row mb-3">
+              <div class="col-6">
+                <label class="form-label fw-semibold text-secondary">TANGGAL PINJAM</label>
+                <input type="text" id="pinjam-tgl" class="form-control bg-light" readonly>
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-semibold text-secondary">WAKTU PINJAM</label>
+                <input type="text" id="pinjam-waktu" class="form-control bg-light" readonly>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label fw-semibold text-secondary">Tuliskan Judul Buku dan Pengarang</label>
+              <textarea id="pinjam-buku" class="form-control" rows="3" required placeholder="Contoh: Laskar Pelangi - Andrea Hirata"></textarea>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-secondary px-4 rounded-pill" onclick="resetAllForms()">Cancel</button>
+              <button type="submit" class="btn btn-success px-4 rounded-pill fw-bold">Save Data</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div id="form-pengembalian" class="card d-none mb-4 mx-auto" style="max-width: 650px;">
+        <div class="card-header bg-warning text-white fw-bold d-flex align-items-center gap-2">
+          <i class="bi bi-arrow-left-circle-fill"></i> FORM PENGEMBALIAN BUKU
+        </div>
+        <div class="card-body p-4">
+          <form id="formKembaliObj" onsubmit="event.preventDefault(); submitPengembalian();">
+            <div class="mb-3">
+              <label class="form-label fw-semibold text-secondary">KELAS</label>
+              <select id="kembali-kelas" class="form-select class-dropdown" onchange="loadSiswa('kembali')" required>
+                <option value="">-- Pilih Kelas --</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold text-secondary">NAMA SISWA</label>
+              <select id="kembali-nama" class="form-select" onchange="cekBukuPinjaman()" required disabled>
+                <option value="">-- Pilih Nama --</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold text-secondary">Tuliskan Judul Buku dan Pengarang</label>
+              <textarea id="kembali-buku" class="form-control bg-light" rows="3" readonly placeholder="Terisi otomatis..."></textarea>
+            </div>
+            <div class="row mb-3">
+              <div class="col-6">
+                <label class="form-label fw-semibold text-secondary">TANGGAL KEMBALI</label>
+                <input type="text" id="kembali-tgl" class="form-control bg-light" readonly>
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-semibold text-secondary">WAKTU KEMBALI</label>
+                <input type="text" id="kembali-waktu" class="form-control bg-light" readonly>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label fw-semibold text-secondary">RINGKASAN CERITA</label>
+              <textarea id="kembali-ringkasan" class="form-control" rows="4" required placeholder="Tulis esai ringkasan cerita dari buku yang dibaca..."></textarea>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-secondary px-4 rounded-pill" onclick="resetAllForms()">Cancel</button>
+              <button type="submit" id="btn-save-kembali" class="btn btn-warning text-white px-4 rounded-pill fw-bold" disabled>Save Data</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-dashboard" class="d-none">
+      <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+          <h4 class="fw-bold text-dark m-0"><i class="bi bi-grid-1x2-fill text-primary me-2"></i>Dashboard Panel</h4>
+          <button class="btn btn-primary btn-sm px-3 rounded-pill fw-semibold" onclick="switchView('forms')">
+            <i class="bi bi-arrow-left me-1"></i> Kembali ke Form
+          </button>
+        </div>
+
+        <ul class="nav nav-tabs mb-4" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#panel-data" type="button" role="tab">
+              <i class="bi bi-table me-1"></i> Data Peminjaman
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#panel-aktif" type="button" role="tab">
+              <i class="bi bi-trophy me-1"></i> Siswa Teraktif
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="panel-data" role="tabpanel">
+            <div class="row mb-3 align-items-center g-2">
+              <div class="col-auto"><span class="fw-bold text-secondary small">Filter Status:</span></div>
+              <div class="col-sm-4">
+                <select id="filter-status" class="form-select form-select-sm rounded-pill" onchange="filterDataPeminjaman()">
+                  <option value="ALL">Semua Status Data</option>
+                  <option value="DIPINJAM">DIPINJAM</option>
+                  <option value="SUDAH PENGEMBALIAN">SUDAH PENGEMBALIAN</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered align-middle" style="font-size: 0.9rem;">
+                <thead class="table-primary text-dark">
+                  <tr><th>Nama</th><th>Kelas</th><th>Tanggal Pinjam</th><th>Waktu Pinjam</th><th>Buku yang Dipinjam</th><th class="text-center">Status</th></tr>
+                </thead>
+                <tbody id="tabel-peminjaman-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="tab-pane fade" id="panel-aktif" role="tabpanel">
+            <h6 class="fw-bold mb-3 text-success"><i class="bi bi-star-fill text-warning me-1"></i> Peringkat Aktivitas Kunjungan & Pinjam Buku</h6>
+            <div class="row"><div class="col-md-7"><ol class="list-group list-group-numbered shadow-sm" id="list-teraktif"></ol></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <span>Copyright &copy; 2026 | <strong>Algian Manggara, S.Agr</strong></span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // PASTE URL MAKRO GOOGLE APPS SCRIPT ANDA DI SINI
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzKk9QtUxt7UloNQUdCSUz87bwtF6GSZSBQ2pOeo_K8Smg9z3_XqmpnjTjxbAPic3uxIg/exec";
+  
+  var masterDashboardData = [];
+
+  window.addEventListener('load', function() {
+    showLoading(true);
+    fetch(`${WEB_APP_URL}?action=getKelas`)
+      .then(res => res.json())
+      .then(listKelas => {
+        populateKelasDropdowns(listKelas);
+        showLoading(false);
+      }).catch(err => alert("Gagal mengambil data kelas: " + err));
+  });
+
+  function showLoading(status) {
+    document.getElementById('loading').style.display = status ? 'flex' : 'none';
+  }
+
+  function populateKelasDropdowns(listKelas) {
+    var dropdowns = document.querySelectorAll('.class-dropdown');
+    dropdowns.forEach(select => {
+      select.options.length = 1;
+      listKelas.forEach(kelas => select.options.add(new Option(kelas, kelas)));
+    });
+  }
+
+  function switchView(viewName) {
+    if (viewName === 'dashboard') {
+      document.getElementById('view-forms').classList.add('d-none');
+      document.getElementById('view-dashboard').classList.remove('d-none');
+      showLoading(true);
+      fetch(`${WEB_APP_URL}?action=getDashboard`)
+        .then(res => res.json())
+        .then(response => {
+          renderDashboardView(response);
+          showLoading(false);
+        });
+    } else {
+      document.getElementById('view-dashboard').classList.add('d-none');
+      document.getElementById('view-forms').classList.remove('d-none');
+      resetAllForms();
+    }
+  }
+
+  function showSubForm(tipe) {
+    resetAllForms();
+    var sekarang = new Date();
+    var formatTgl = String(sekarang.getDate()).padStart(2, '0') + '/' + String(sekarang.getMonth() + 1).padStart(2, '0') + '/' + sekarang.getFullYear();
+    var formatWaktu = String(sekarang.getHours()).padStart(2, '0') + ':' + String(sekarang.getMinutes()).padStart(2, '0') + ':' + String(sekarang.getSeconds()).padStart(2, '0');
+
+    if (tipe === 'peminjaman') {
+      document.getElementById('form-peminjaman').classList.remove('d-none');
+      document.getElementById('pinjam-tgl').value = formatTgl;
+      document.getElementById('pinjam-waktu').value = formatWaktu;
+    } else {
+      document.getElementById('form-pengembalian').classList.remove('d-none');
+      document.getElementById('kembali-tgl').value = formatTgl;
+      document.getElementById('kembali-waktu').value = formatWaktu;
+    }
+  }
+
+  function loadSiswa(prefix) {
+    var kelas = document.getElementById(prefix + '-kelas').value;
+    var namaSelect = document.getElementById(prefix + '-nama');
+    namaSelect.options.length = 1;
+    if (!kelas) { namaSelect.disabled = true; return; }
+
+    showLoading(true);
+    fetch(`${WEB_APP_URL}?action=getSiswa&kelas=${encodeURIComponent(kelas)}`)
+      .then(res => res.json())
+      .then(listSiswa => {
+        listSiswa.forEach(siswa => namaSelect.options.add(new Option(siswa, siswa)));
+        namaSelect.disabled = false;
+        showLoading(false);
+      });
+  }
+
+  function cekBukuPinjaman() {
+    var kelas = document.getElementById('kembali-kelas').value;
+    var nama = document.getElementById('kembali-nama').value;
+    var bukuText = document.getElementById('kembali-buku');
+    var btnSave = document.getElementById('btn-save-kembali');
+
+    showLoading(true);
+    fetch(`${WEB_APP_URL}?action=cekBuku&kelas=${encodeURIComponent(kelas)}&nama=${encodeURIComponent(nama)}`)
+      .then(res => res.json())
+      .then(result => {
+        if (result) {
+          bukuText.value = result.judulBuku;
+          btnSave.disabled = false;
+        } else {
+          bukuText.value = "TIDAK ADA BUKU YANG SEDANG DIPINJAM";
+          btnSave.disabled = true;
+        }
+        showLoading(false);
+      });
+  }
+
+  function submitPeminjaman() {
+    showLoading(true);
+    var payload = {
+      action: 'pinjam',
+      kelas: document.getElementById('pinjam-kelas').value,
+      nama: document.getElementById('pinjam-nama').value,
+      buku: document.getElementById('pinjam-buku').value
+    };
+
+    fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(res => res.json())
+      .then(res => {
+        showLoading(false);
+        alert(res.message);
+        resetAllForms();
+      });
+  }
+
+  function submitPengembalian() {
+    showLoading(true);
+    var payload = {
+      action: 'kembali',
+      kelas: document.getElementById('kembali-kelas').value,
+      nama: document.getElementById('kembali-nama').value,
+      ringkasan: document.getElementById('kembali-ringkasan').value
+    };
+
+    fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(res => res.json())
+      .then(res => {
+        showLoading(false);
+        alert(res.message);
+        resetAllForms();
+      });
+  }
+
+  function renderDashboardView(response) {
+    masterDashboardData = response.peminjaman;
+    filterDataPeminjaman();
+    var listOl = document.getElementById('list-teraktif');
+    listOl.innerHTML = response.teraktif.length === 0 ? "<li class='list-group-item text-muted'>Belum ada transaksi</li>" : "";
+    response.teraktif.forEach(item => {
+      listOl.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center fw-semibold text-dark">${item.nama} <span class="badge bg-success rounded-pill">${item.jumlah} Buku</span></li>`;
+    });
+  }
+
+  function filterDataPeminjaman() {
+    var filterValue = document.getElementById('filter-status').value;
+    var tbody = document.getElementById('tabel-peminjaman-body');
+    tbody.innerHTML = "";
+    var filtered = masterDashboardData.filter(item => filterValue === "ALL" || item.status === filterValue);
+    if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Tidak ada data transaksi</td></tr>'; return; }
+    filtered.forEach(item => {
+      var badgeStyle = item.status === "DIPINJAM" ? "bg-warning text-dark" : "bg-success text-white";
+      tbody.innerHTML += `<tr><td>${item.nama}</td><td>${item.kelas}</td><td>${item.tglPinjam}</td><td>${item.waktuPinjam}</td><td>${item.judul}</td><td class="text-center"><span class="badge ${badgeStyle}">${item.status}</span></td></tr>`;
+    });
+  }
+
+  function resetAllForms() {
+    document.getElementById('formPinjamObj').reset();
+    document.getElementById('formKembaliObj').reset();
+    document.getElementById('pinjam-nama').disabled = true;
+    document.getElementById('kembali-nama').disabled = true;
+    document.getElementById('btn-save-kembali').disabled = true;
+    document.getElementById('form-peminjaman').classList.add('d-none');
+    document.getElementById('form-pengembalian').classList.add('d-none');
+  }
+</script>
+</body>
+</html>
