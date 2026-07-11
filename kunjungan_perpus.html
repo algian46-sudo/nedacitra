@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Library | SMPN 8 Cikarang Utara</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body { 
+      background: linear-gradient(135deg, #0d47a1 0%, #1976d2 50%, #64b5f6 100%); 
+      background-attachment: fixed;
+      font-family: 'Segoe UI', sans-serif; 
+      min-height: 100vh; display: flex; flex-direction: column;
+    }
+    .main-header { background: rgba(255, 255, 255, 0.95); border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); padding: 15px; }
+    .school-logo { height: 60px; width: auto; }
+    .card-login { max-width: 450px; margin: 80px auto; border: none; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .book-card { border: none; border-radius: 12px; transition: transform 0.2s, box-shadow 0.2s; background: white; cursor: pointer; height: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .book-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+    .pdf-container { background: white; border-radius: 16px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 30px; }
+    .pdf-frame { width: 100%; height: 75vh; border: none; border-radius: 8px; }
+    .footer { background: rgba(13, 71, 161, 0.95); color: rgba(255, 255, 255, 0.85); text-align: center; padding: 15px; font-size: 0.9rem; margin-top: auto; border-top: 3px solid #64b5f6; }
+    .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 71, 161, 0.4); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; }
+  </style>
+</head>
+<body>
+
+<div id="loading" class="loading-overlay">
+  <div class="spinner-border text-white" style="width: 3rem; height: 3rem;" role="status"></div>
+</div>
+
+<header class="main-header mb-4">
+  <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div class="d-flex align-items-center gap-3">
+      <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo" class="school-logo">
+      <div>
+        <h5 class="fw-bold text-dark m-0">SMP NEGERI 8 CIKARANG UTARA</h5>
+        <small class="text-muted fw-semibold"><i class="bi bi-journal-bookmark-fill text-primary"></i> Perpustakaan Digital E-Book</small>
+      </div>
+    </div>
+    <div id="user-badge" class="d-none">
+      <span class="badge bg-primary p-2 me-2" id="info-user-logged">Siswa</span>
+      <button class="btn btn-danger btn-sm rounded-pill fw-bold px-3" onclick="logoutSiswa()"><i class="bi bi-box-arrow-right"></i> Keluar</button>
+    </div>
+  </div>
+</header>
+
+<div class="container mb-5">
+
+  <!-- GERBANG LOGIN SISWA -->
+  <div id="view-login" class="card card-login p-4">
+    <div class="text-center mb-4">
+      <i class="bi bi-person-lock text-primary" style="font-size: 3.5rem;"></i>
+      <h4 class="fw-bold mt-2">Masuk Layanan Baca</h4>
+      <p class="text-muted small">Silakan ketik nomor NISN Anda untuk verifikasi data</p>
+    </div>
+    <form onsubmit="event.preventDefault(); loginSiswa();">
+      <div class="mb-3">
+        <label class="form-label fw-bold text-secondary">NOMOR NISN</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+          <input type="number" id="login-nisn" class="form-control" placeholder="Masukkan NISN Anda..." required oninput="cariNisnOtomatis(this.value)">
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-semibold text-muted">Nama Siswa</label>
+        <input type="text" id="login-nama" class="form-control bg-light" readonly placeholder="Terisi otomatis jika NISN benar...">
+      </div>
+      <div class="mb-4">
+        <label class="form-label fw-semibold text-muted">Kelas</label>
+        <input type="text" id="login-kelas" class="form-control bg-light" readonly placeholder="Terisi otomatis...">
+      </div>
+      <button type="submit" id="btn-login" class="btn btn-primary w-100 py-2.5 fw-bold rounded-pill" disabled>MASUK KATALOG</button>
+    </form>
+  </div>
+
+  <!-- KATALOG BUKU UTAMA (MUNCUL JIKA SUDAH LOGIN) -->
+  <div id="view-katalog" class="d-none">
+    
+    <!-- Filter dan Pencarian -->
+    <div class="card p-3 mb-4">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+            <input type="text" id="search-judul" class="form-control border-start-0" placeholder="Cari judul buku..." oninput="filterKatalog()">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <select id="filter-kategori" class="form-select" onchange="filterKatalog()">
+            <option value="ALL">Semua Kategori Buku</option>
+          </select>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <span class="text-secondary fw-semibold small" id="total-buku-info">Memuat buku...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid Tempat Buku Tampil -->
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-3" id="container-buku">
+      <!-- Item buku di-render via Javascript -->
+    </div>
+  </div>
+
+  <!-- VIEW BOX PEMBACA PDF -->
+  <div id="view-reader" class="d-none">
+    <div class="pdf-container">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+          <span class="badge bg-secondary mb-1" id="reader-kategori">Kategori</span>
+          <h4 class="fw-bold text-dark m-0" id="reader-judul">Judul Buku</h4>
+        </div>
+        <button class="btn btn-primary rounded-pill fw-bold px-4" onclick="kembaliKeKatalog()">
+          <i class="bi bi-arrow-left-circle me-1"></i> Baca Buku Lain
+        </button>
+      </div>
+      <!-- Embed PDF Box -->
+      <iframe id="pdf-viewer" src="" class="pdf-frame"></iframe>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <span>Copyright &copy; 2026 | <strong>Algian Manggara, S.Agr</strong></span>
+  </div>
+</footer>
+
+<script>
+  // PASTE URL WEB APP GOOGLE APPS SCRIPT ANDA YANG BARU DI SINI
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzN0bZPLnXSk_T5YUEVWqP7sQ6qUq6SD36E-4FZNjIsxUMgLyTSEfuKSIcsCQr5gBOBDw/exec";
+
+  var sessionSiswa = null;
+  var masterBuku = [];
+  var masterKategori = [];
+
+  function showLoading(status) {
+    document.getElementById('loading').style.display = status ? 'flex' : 'none';
+  }
+
+  // Real-time validasi saat siswa mengetik NISN
+  function cariNisnOtomatis(nisn) {
+    if (nisn.length < 4) { resetLoginForm(); return; }
+    
+    fetch(`${WEB_APP_URL}?action=cekNisn&nisn=${nisn}`)
+      .then(res => res.json())
+      .then(res => {
+        if (res.ditemukan) {
+          document.getElementById('login-nama').value = res.nama;
+          document.getElementById('login-kelas').value = res.kelas;
+          document.getElementById('btn-login').disabled = false;
+        } else {
+          resetLoginForm();
+        }
+      });
+  }
+
+  function resetLoginForm() {
+    document.getElementById('login-nama').value = "";
+    document.getElementById('login-kelas').value = "";
+    document.getElementById('btn-login').disabled = true;
+  }
+
+  // Eksekusi Login
+  function loginSiswa() {
+    showLoading(true);
+    var targetSiswa = {
+      action: 'login',
+      nisn: document.getElementById('login-nisn').value,
+      nama: document.getElementById('login-nama').value,
+      kelas: document.getElementById('login-kelas').value
+    };
+
+    fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(targetSiswa) })
+      .then(res => res.json())
+      .then(res => {
+        sessionSiswa = targetSiswa;
+        document.getElementById('info-user-logged').innerText = `${sessionSiswa.nama} (${sessionSiswa.kelas})`;
+        document.getElementById('user-badge').classList.remove('d-none');
+        document.getElementById('view-login').classList.add('d-none');
+        document.getElementById('view-katalog').classList.remove('d-none');
+        loadDataKatalogBuku();
+      });
+  }
+
+  // Load Buku dari Sheet
+  function loadDataKatalogBuku() {
+    fetch(`${WEB_APP_URL}?action=getBuku`)
+      .then(res => res.json())
+      .then(res => {
+        masterBuku = res.buku;
+        masterKategori = res.kategori;
+        
+        // Isi dropdown kategori
+        var selectKategori = document.getElementById('filter-kategori');
+        selectKategori.options.length = 1;
+        masterKategori.forEach(kat => {
+          selectKategori.options.add(new Option(kat, kat));
+        });
+
+        renderKatalog(masterBuku);
+        showLoading(false);
+      });
+  }
+
+  // Render list buku ke dalam grid HTML
+  function renderKatalog(daftarBuku) {
+    var container = document.getElementById('container-buku');
+    container.innerHTML = "";
+    document.getElementById('total-buku-info').innerText = `Menampilkan ${daftarBuku.length} Buku`;
+
+    if (daftarBuku.length === 0) {
+      container.innerHTML = '<div class="col-11 text-center py-4 text-white opacity-75">Buku tidak ditemukan...</div>';
+      return;
+    }
+
+    daftarBuku.forEach((buku, index) => {
+      container.innerHTML += `
+        <div class="col">
+          <div class="card book-card p-3 d-flex flex-column justify-content-between" onclick="bukaPdfViewer('${buku.kategori}', '${buku.judul}', '${buku.linkPdf}')">
+            <div>
+              <span class="badge bg-light text-primary border mb-2" style="font-size:0.75rem;">${buku.kategori}</span>
+              <h6 class="fw-bold text-dark mb-1 text-capitalize text-wrap">${buku.judul}</h6>
+            </div>
+            <div class="text-end mt-3 text-primary fw-bold small">
+              Baca Buku <i class="bi bi-arrow-right-short"></i>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  // Fungsi Filter & Pencarian
+  function filterKatalog() {
+    var searchVal = document.getElementById('search-judul').value.toLowerCase();
+    var kategoriVal = document.getElementById('filter-kategori').value;
+
+    var hasilFilter = masterBuku.filter(buku => {
+      var cocokJudul = buku.judul.toLowerCase().includes(searchVal);
+      var cocokKategori = (kategoriVal === 'ALL' || buku.kategori === kategoriVal);
+      return cocokJudul && cocokKategori;
+    });
+
+    renderKatalog(hasilFilter);
+  }
+
+  // Fungsi Tampilkan Pembaca PDF (Buku diklik)
+  function bukaPdfViewer(kategori, judul, link) {
+    document.getElementById('view-katalog').classList.add('d-none');
+    document.getElementById('view-reader').classList.remove('d-none');
+    
+    document.getElementById('reader-kategori').innerText = kategori;
+    document.getElementById('reader-judul').innerText = judul;
+    
+    // Konversi link Google Drive biasa agar bisa diembed sempurna jika diperlukan
+    var embedLink = link;
+    if(link.includes("drive.google.com/file/d/")) {
+      embedLink = link.replace("/view?usp=sharing", "/preview").replace("/view", "/preview");
+    }
+    
+    document.getElementById('pdf-viewer').src = embedLink;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function kembaliKeKatalog() {
+    document.getElementById('pdf-viewer').src = ""; // Bersihkan memori iframe
+    document.getElementById('view-reader').classList.add('d-none');
+    document.getElementById('view-katalog').classList.remove('d-none');
+  }
+
+  // Proses Keluar (Logout)
+  function logoutSiswa() {
+    if (!sessionSiswa) return;
+    showLoading(true);
+
+    fetch(WEB_APP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'logout', nisn: sessionSiswa.nisn })
+    })
+    .then(res => res.json())
+    .then(res => {
+      sessionSiswa = null;
+      document.getElementById('login-nisn').value = "";
+      resetLoginForm();
+      document.getElementById('user-badge').classList.add('d-none');
+      document.getElementById('view-reader').classList.add('d-none');
+      document.getElementById('view-katalog').classList.add('d-none');
+      document.getElementById('view-login').classList.remove('d-none');
+      showLoading(false);
+    });
+  }
+</script>
+</body>
+</html>
