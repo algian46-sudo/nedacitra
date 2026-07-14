@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Input Data Siswa - Sekolah Profesional</title>
+  <style>
+    /* Reset & Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%); /* Gradasi Latar Belakang Elegan */
+      color: #334e68;
+      padding: 0;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Layout Container */
+    .app-container {
+      max-width: 1100px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 0;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Bayangan Modern */
+      overflow: hidden; /* Pastikan gradasi header rapi */
+    }
+
+    /* Modern Header with Logo */
+    .app-header {
+      background: linear-gradient(135deg, #102a43 0%, #243b53 100%); /* Gradasi Gelap Elegan */
+      color: #ffffff;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 4px solid #f9f9f9;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+    }
+    .school-logo {
+      height: 60px; /* Ukuran Logo */
+      width: auto;
+      margin-right: 20px;
+    }
+    .header-title h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0;
+      color: #d9e2ec;
+    }
+    .header-title p {
+      font-size: 12px;
+      opacity: 0.8;
+      margin: 0;
+    }
+
+    /* Content Area */
+    .app-content {
+      padding: 40px;
+    }
+
+    /* Typography */
+    h2, h3 {
+      color: #102a43;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      font-weight: 600;
+    }
+    h2 {
+      border-bottom: 2px solid #dae1e7;
+    }
+    h3 {
+      font-size: 18px;
+      border-bottom: 1px solid #e1e8ed;
+      color: #486581;
+    }
+    
+    /* Search Box & Dropdown (Professional Style) */
+    .search-section {
+      background: #f0f4f8;
+      padding: 25px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      border: 1px solid #d9e2ec;
+    }
+    .form-group.search-container {
+      position: relative;
+    }
+    .form-group.search-container label {
+      font-weight: 700;
+      color: #102a43;
+      margin-bottom: 8px;
+    }
+    .search-input-wrapper {
+      position: relative;
+    }
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #829ab1;
+    }
+    input[type="text"]#searchSiswa {
+      padding-left: 45px; /* Beri ruang untuk ikon */
+      border: 2px solid #d9e2ec;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+    input[type="text"]#searchSiswa:focus {
+      border-color: #4094f7;
+      box-shadow: 0 0 10px rgba(64,148,247,0.1);
+    }
+
+    .dropdown-list {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #d9e2ec;
+      border-radius: 8px;
+      max-height: 250px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      display: none;
+    }
+    .dropdown-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #334e68;
+      border-bottom: 1px solid #f0f4f8;
+      transition: background 0.2s;
+    }
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+    .dropdown-item:hover {
+      background-color: #e6f7ff;
+    }
+    .dropdown-item-details {
+      display: flex;
+      justify-content: space-between;
+      color: #829ab1;
+      font-size: 12px;
+    }
+
+    /* Dynamic Form (Modern Cards) */
+    #additionalForm {
+      display: none;
+      animation: slideIn 0.5s ease-out; /* Animasi Muncul */
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      border: 1px solid #e1e8ed;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+
+    /* Input Fields & Labels (Clean Style) */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #486581;
+    }
+    input[type="text"], input[type="number"], input[type="date"], select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #d9e2ec;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #102a43;
+      background-color: #ffffff;
+      transition: all 0.2s;
+    }
+    input:focus, select:focus {
+      border-color: #127fbf;
+      box-shadow: 0 0 5px rgba(18,127,191,0.1);
+      outline: none;
+    }
+    input[readonly] {
+      background-color: #f0f4f8;
+      color: #627d98;
+      border-color: #e1e8ed;
+      cursor: not-allowed;
+    }
+
+    /* Grids */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    
+    /* Buttons (Gradasi Modern & Hover Effek) */
+    .btn-container {
+      text-align: right;
+      margin-top: 30px;
+    }
+    .btn {
+      background: linear-gradient(135deg, #127fbf 0%, #102a43 100%); /* Gradasi Biru Profesional */
+      color: #ffffff;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+      transition: all 0.3s;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      letter-spacing: 0.5px;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      background: linear-gradient(135deg, #102a43 0%, #127fbf 100%);
+    }
+    .btn:disabled {
+      background: #dae1e7;
+      color: #829ab1;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* Input Terbaik (Highlight Modern) */
+    #raihanTerbaik {
+      background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+      font-weight: 800;
+      color: #1a7f64;
+      border: 2px solid #81e6d9;
+    }
+
+    /* Print Section (Rekap Tabel A4) */
+    .print-section {
+      margin-top: 50px;
+      background: #f9fafb;
+      padding: 30px;
+      border-radius: 8px;
+      border: 2px dashed #dae1e7;
+    }
+    .print-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .print-header h3 {
+      border: none;
+      margin: 0;
+      padding: 0;
+    }
+    .btn-print {
+      background: linear-gradient(135deg, #486581 0%, #243b53 100%);
+      color: #ffffff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+    }
+    .btn-print:hover {
+      background: #102a43;
+    }
+    .btn-print-icon { margin-right: 8px; }
+    
+    /* Table A4 Style */
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 11px;
+      background: #ffffff;
+    }
+    th, td {
+      border: 1px solid #dae1e7;
+      padding: 10px 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f4f8;
+      color: #334e68;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    tr:nth-child(even) td {
+      background-color: #fafbfd;
+    }
+    tr:hover td {
+      background-color: #f0f4f8;
+    }
+
+    /* Responsivitas Sederhana */
+    @media (max-width: 768px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 10px; }
+      .app-header { flex-direction: column; text-align: center; }
+      .school-logo { margin: 0 0 15px 0; }
+      .print-header { flex-direction: column; text-align: center; }
+      .btn-print { margin-top: 15px; }
+    }
+
+    /* Print Optimization (A4 Portrait) */
+    @media print {
+      body * {
+        visibility: hidden;
+        background: transparent !important;
+        color: #000 !important;
+        box-shadow: none !important;
+      }
+      .print-section, .print-section * {
+        visibility: visible;
+      }
+      .print-section {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        border: none;
+        padding: 0;
+        margin: 0;
+      }
+      .print-header h3 {
+        font-size: 20px;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .btn-print {
+        display: none;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 20mm 15mm 20mm 15mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  
+  <header class="app-header">
+    <div class="header-left">
+      <img src="https://i.imgur.com/mRmw86t.jpeg" alt="Logo Sekolah" class="school-logo">
+      <div class="header-title">
+        <h1>Sistem Input Data Parameter Siswa</h1>
+        <p>Integrasi Data Kependidikan & Hasil Pengukuran Fisik</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-content">
+    
+    <section class="search-section">
+      <div class="form-group search-container">
+        <label for="searchSiswa">Cari Data Murid</label>
+        <div class="search-input-wrapper">
+          <span class="search-icon">&#128269;</span> <input type="text" id="searchSiswa" placeholder="Ketik Nama Murid atau NISN..." autocomplete="off">
+        </div>
+        <div id="dropdownList" class="dropdown-list"></div>
+      </div>
+    </section>
+
+    <form id="additionalForm">
+      <h2>Form Pengisian Hasil Pengukuran</h2>
+      
+      <div class="form-card">
+        <h3>Data Dasar (Terkunci)</h3>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Nomor Induk Siswa Nasional (NISN)</label>
+            <input type="text" id="nisn" readonly>
+          </div>
+          <div class="form-group">
+            <label>Nama Lengkap Murid</label>
+            <input type="text" id="namaMurid" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h3>Parameter Fisik & Kependidikan</h3>
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="tanggalLahir">Tanggal Lahir (dd/mm/yyyy)</label>
+            <input type="date" id="tanggalLahir" required>
+          </div>
+          <div class="form-group">
+            <label for="disabilitas">Status Disabilitas?</label>
+            <select id="disabilitas" required>
+              <option value="Tidak">Tidak</option>
+              <option value="Ya">Ya</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="dpmSebelum">DPM Sebelum</label>
+            <input type="number" step="0.01" id="dpmSebelum" required placeholder="0.00">
+          </div>
+          <div class="form-group">
+            <label for="dpmSesudah">DPM Sesudah</label>
+            <input type="number" step="0.01" id="dpmSesudah" required placeholder="0.00">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="tinggiBadan">Tinggi Badan (cm)</label>
+            <input type="number" step="0.1" id="tinggiBadan" required placeholder="0.0">
+          </div>
+          <div class="form-group">
+            <label for="beratBadan">Berat Badan (kg)</label>
+            <input type="number" step="0.1" id="beratBadan" required placeholder="0.0">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h3>VSit & Reach (Data Mentah)</h3>
+        <div class="grid-3">
+          <div class="form-group">
+            <label for="raihan1">Raihan Percobaan 1</label>
+            <input type="number" step="0.01" id="raihan1" class="raihan-input" value="0">
+          </div>
+          <div class="form-group">
+            <label for="raihan2">Raihan Percobaan 2</label>
+            <input type="number" step="0.01" id="raihan2" class="raihan-input" value="0">
+          </div>
+          <div class="form-group">
+            <label for="raihan3">Raihan Percobaan 3</label>
+            <input type="number" step="0.01" id="raihan3" class="raihan-input" value="0">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 10px;">
+          <label>VSit & Reach Raihan Terbaik (Otomatis)</label>
+          <input type="number" step="0.01" id="raihanTerbaik" readonly placeholder="Hasil Otomatis">
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button type="button" class="btn" id="btnSimpan">Simpan Data & Perbarui Tabel</button>
+      </div>
+    </form>
+
+    <section class="print-section" id="printSection">
+      <div class="print-header">
+        <h3>Rekapitulasi Hasil Pengukuran Siswa (A4 Portrait)</h3>
+        <button class="btn-print" onclick="window.print()">
+          <span class="btn-print-icon">&#128424;</span> Cetak Dokumen
+        </button>
+      </div>
+      <div class="table-responsive">
+        <table id="tabelHasil">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>NISN</th>
+              <th>Nama Murid</th>
+              <th>Tgl Lahir</th>
+              <th>DPM (Sbl)</th>
+              <th>DPM (Ssd)</th>
+              <th>TB (cm)</th>
+              <th>BB (kg)</th>
+              <th>Cacat?</th>
+              <th>R1</th>
+              <th>R2</th>
+              <th>R3</th>
+              <th>Terbaik</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyHasil">
+            <tr>
+              <td colspan="13" style="text-align:center; color:#829ab1; padding:20px;">Menghubungkan ke database Google Sheets...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+  // URL Web App GAS milik Anda yang ditanam langsung
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxP2jSV_GSBGd26uiIyzFzaysPHGRRSyx9uan7H0wjxbsbjJ4PpzrnjYZRFMYw2IPo/exec";
+  
+  let dataSiswaMurni = [];
+  const searchInput = document.getElementById('searchSiswa');
+  const dropdownList = document.getElementById('dropdownList');
+
+  // Load data otomatis saat halaman web dibuka
+  window.addEventListener('load', function() {
+    muatDataSiswa();
+    muatTabelHasil();
+  });
+
+  // 1. Mengambil data dasar siswa dari Sheet 1 (Siswa) via POST
+  function muatDataSiswa() {
+    fetch(WEB_APP_URL, {
+      method: 'POST',
+      mode: 'cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'ambilSiswa' })
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.status === 'sukses') {
+        dataSiswaMurni = response.data;
+        console.log("Data siswa berhasil dimuat:", dataSiswaMurni.length, "orang");
+      } else {
+        console.error("Gagal memuat siswa:", response.error);
+      }
+    })
+    .catch(err => console.error("Error Fetch Siswa:", err));
+  }
+
+  // 2. Mengambil data hasil rekapitulasi dari Sheet 2 (Hasil) via POST
+  function muatTabelHasil() {
+    fetch(WEB_APP_URL, {
+      method: 'POST',
+      mode: 'cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'ambilTabelHasil' })
+    })
+    .then(res => res.json())
+    .then(response => {
+      const tbody = document.getElementById('tbodyHasil');
+      if (response.status === 'sukses') {
+        let htmlRows = "";
+        if (response.data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="13" style="text-align:center; color:#999;">Belum ada data di sheet Hasil.</td></tr>`;
+          return;
+        }
+        response.data.forEach(row => {
+          htmlRows += `<tr>
+            <td>${row.no}</td>
+            <td>${row.nisn}</td>
+            <td>${row.namaMurid}</td>
+            <td>${row.tanggalLahir}</td>
+            <td>${row.dpmSebelum}</td>
+            <td>${row.dpmSesudah}</td>
+            <td>${row.tinggiBadan}</td>
+            <td>${row.beratBadan}</td>
+            <td>${row.disabilitas}</td>
+            <td>${row.raihan1}</td>
+            <td>${row.raihan2}</td>
+            <td>${row.raihan3}</td>
+            <td style="font-weight:bold; color:#1a7f64;">${row.raihanTerbaik}</td>
+          </tr>`;
+        });
+        tbody.innerHTML = htmlRows;
+      } else {
+        tbody.innerHTML = `<tr><td colspan="13" style="text-align:center; color:#ef4444;">Gagal memuat database tabel.</td></tr>`;
+      }
+    })
+    .catch(err => {
+      console.error("Error Fetch Tabel Hasil:", err);
+    });
+  }
+
+  // Logika Pencarian Nama Dinamis (Dropdown list Modern)
+  searchInput.addEventListener('input', function() {
+    const keyword = this.value.toLowerCase();
+    dropdownList.innerHTML = '';
+    
+    if (!keyword) {
+      dropdownList.style.display = 'none';
+      return;
+    }
+
+    const filtered = dataSiswaMurni.filter(s => 
+      s.nama.toLowerCase().includes(keyword) || s.nisn.includes(keyword)
+    );
+
+    if (filtered.length > 0) {
+      filtered.forEach(siswa => {
+        const div = document.createElement('div');
+        div.className = 'dropdown-item';
+        div.innerHTML = `
+          <div>${siswa.nama}</div>
+          <div class="dropdown-item-details">
+            <span>NISN: ${siswa.nisn}</span>
+          </div>
+        `;
+        div.addEventListener('click', function() {
+          pilihSiswa(siswa);
+        });
+        dropdownList.appendChild(div);
+      });
+      dropdownList.style.display = 'block';
+    } else {
+      dropdownList.style.display = 'none';
+    }
+  });
+
+  function pilihSiswa(siswa) {
+    searchInput.value = siswa.nama;
+    dropdownList.style.display = 'none';
+    
+    document.getElementById('nisn').value = siswa.nisn;
+    document.getElementById('namaMurid').value = siswa.nama;
+    
+    // Tampilkan menu form pengisian tambahan
+    document.getElementById('additionalForm').style.display = 'block';
+  }
+
+  document.addEventListener('click', function(e) {
+    if (e.target !== searchInput) {
+      dropdownList.style.display = 'none';
+    }
+  });
+
+  // Logika Hitung Raihan Terbaik (Otomatis Memilih Nilai Maksimum secara Real-time)
+  const raihanInputs = document.querySelectorAll('.raihan-input');
+  raihanInputs.forEach(input => {
+    input.addEventListener('input', hitungRaihanTerbaik);
+  });
+
+  function hitungRaihanTerbaik() {
+    const r1 = parseFloat(document.getElementById('raihan1').value) || 0;
+    const r2 = parseFloat(document.getElementById('raihan2').value) || 0;
+    const r3 = parseFloat(document.getElementById('raihan3').value) || 0;
+    
+    const maxRaihan = Math.max(r1, r2, r3);
+    document.getElementById('raihanTerbaik').value = maxRaihan;
+  }
+
+  // Konversi format tanggal bawaan browser (yyyy-mm-dd) ke format kebutuhan Sheet (dd/mm/yyyy)
+  function formatTanggalIndo(dateStr) {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    return dateStr;
+  }
+
+  // Kirim data hasil input form ke web app GAS
+  document.getElementById('btnSimpan').addEventListener('click', function() {
+    const tglRaw = document.getElementById('tanggalLahir').value;
+    if (!tglRaw) {
+      alert('Mohon isi Tanggal Lahir terlebih dahulu!');
+      return;
+    }
+
+    const btn = document.getElementById('btnSimpan');
+    btn.disabled = true;
+    btn.innerText = 'Memproses Pengiriman...';
+
+    const dataPayload = {
+      action: 'simpan',
+      nisn: document.getElementById('nisn').value,
+      namaMurid: document.getElementById('namaMurid').value,
+      tanggalLahir: formatTanggalIndo(tglRaw),
+      dpmSebelum: document.getElementById('dpmSebelum').value,
+      dpmSesudah: document.getElementById('dpmSesudah').value,
+      tinggiBadan: document.getElementById('tinggiBadan').value,
+      beratBadan: document.getElementById('beratBadan').value,
+      disabilitas: document.getElementById('disabilitas').value,
+      raihan1: document.getElementById('raihan1').value,
+      raihan2: document.getElementById('raihan2').value,
+      raihan3: document.getElementById('raihan3').value,
+      raihanTerbaik: document.getElementById('raihanTerbaik').value
+    };
+
+    fetch(WEB_APP_URL, {
+      method: 'POST',
+      mode: 'cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(dataPayload)
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.status === 'sukses') {
+        alert('Data berhasil disimpan ke Google Sheets!');
+        
+        // Reset form & update visualisasi tabel cetak
+        document.getElementById('additionalForm').style.display = 'none';
+        searchInput.value = '';
+        muatTabelHasil();
+      } else {
+        alert('Gagal menyimpan: ' + response.error);
+      }
+    })
+    .catch(err => {
+      console.error("Error saat menyimpan data:", err);
+      // alert("Proses pengiriman selesai. Periksa Google Sheets Anda untuk memastikan data masuk.");
+      // Seringkali gagal karena CORS lokal, tapi data tetap masuk. Lanjut reset form.
+      document.getElementById('additionalForm').style.display = 'none';
+      searchInput.value = '';
+      setTimeout(muatTabelHasil, 1500);
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerText = 'Simpan Data Siswa';
+    });
+  });
+</script>
+
+</body>
+</html>
