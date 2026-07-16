@@ -574,6 +574,12 @@
                         text: 'Skor Gabungan Proporsional (' + hitungSkorGabungan + ') sukses direkam.',
                         confirmButtonColor: '#0f4c75'
                     });
+                    
+                    // TAMBAHKAN BARIS INI sebelum memanggil ambilDataAwal()
+                    if (!listNisnSudahTes.includes(currentNisn.toString().trim())) {
+                        listNisnSudahTes.push(currentNisn.toString().trim());
+                    }
+                    
                     ambilDataAwal(); 
                 } else {
                     Swal.fire('Gagal Menyimpan!', res.message, 'error');
