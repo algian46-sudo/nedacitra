@@ -173,8 +173,14 @@
     }
     .card.selected {
       border-color: #06b6d4;
-      background: rgba(6, 182, 212, 0.1);
-      box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+      background: rgba(6, 182, 212, 0.15);
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.6); /* Cahaya menyala di sekeliling gambar */
+      transform: scale(1.02);
+    }
+    
+    /* Efek opacity foto sedikit meredup saat terpilih agar tanda centang lebih kontras */
+    .card.selected img {
+      filter: brightness(0.7);
     }
     .card img {
       width: 100%;
@@ -191,19 +197,22 @@
     }
     .badge-selected {
       position: absolute;
-      top: 8px;
-      right: 8px;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       background: var(--primary-gradient);
       color: white;
       border-radius: 50%;
-      width: 26px;
-      height: 26px;
+      width: 45px;
+      height: 45px;
       display: none;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: 22px;
       font-weight: bold;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.8);
+      z-index: 2;
+      border: 2px solid #ffffff;
     }
     .card.selected .badge-selected { display: flex; }
 
@@ -380,21 +389,21 @@
       { id: "OSIS-35", nama: "Giovany Satria A", foto: "https://i.imgur.com/YiyVaDp.png" }
     ],
     guru: [
-      { id: "GURU-1", nama: "Hasanah Aisah", foto: "https://i.imgur.com/mRmw86t.jpeg" },
-      { id: "GURU-2", nama: "Purwaningsih", foto: "https://i.imgur.com/mRmw86t.jpeg" },
-      { id: "GURU-3", nama: "Euis Sa'adah", foto: "https://i.imgur.com/mRmw86t.jpeg" },
-      { id: "GURU-4", nama: "Toyib", foto: "https://i.imgur.com/mRmw86t.jpeg" },
+      { id: "GURU-1", nama: "Hasanah Aisah", foto: "https://i.imgur.com/UhjJ1WL.png" },
+      { id: "GURU-2", nama: "Purwaningsih", foto: "https://i.imgur.com/cjWovcF.png" },
+      { id: "GURU-3", nama: "Euis Sa'adah", foto: "https://i.imgur.com/TDF64rD.png" },
+      { id: "GURU-4", nama: "Toyib", foto: "https://i.imgur.com/VfBuNE5.png" },
       { id: "GURU-5", nama: "Algian Manggara", foto: "https://i.imgur.com/I6mdQTF.jpeg" },
-      { id: "GURU-6", nama: "Dapih Mahrizal", foto: "https://i.imgur.com/mRmw86t.jpeg" },
-      { id: "GURU-7", nama: "Reshamayori Alvianita", foto: "https://i.imgur.com/mRmw86t.jpeg" },
-      { id: "GURU-8", nama: "Uswatul Hasanah", foto: "https://i.imgur.com/mRmw86t.jpeg" },
-      { id: "GURU-9", nama: "Sri Yulianti", foto: "https://i.imgur.com/mRmw86t.jpeg" },
-      { id: "GURU-10", nama: "Nur Amalia", foto: "https://i.imgur.com/mRmw86t.jpeg" },
-      { id: "GURU-11", nama: "Nurul Intan S.M", foto: "https://i.imgur.com/mRmw86t.jpeg" },
-      { id: "GURU-12", nama: "Anita Sari", foto: "https://i.imgur.com/mRmw86t.jpeg" },
-      { id: "GURU-13", nama: "Sevila Della A", foto: "https://i.imgur.com/mRmw86t.jpeg" },
-      { id: "GURU-14", nama: "Siva Nurlatifah", foto: "https://i.imgur.com/mRmw86t.jpeg" },
-      { id: "GURU-15", nama: "Guru 15", foto: "https://i.imgur.com/mRmw86t.jpeg" }
+      { id: "GURU-6", nama: "Dapih Mahrizal", foto: "https://i.imgur.com/TXzDeK1.png" },
+      { id: "GURU-7", nama: "Reshamayori Alvianita", foto: "https://i.imgur.com/RR0bxBE.png" },
+      { id: "GURU-8", nama: "Uswatul Hasanah", foto: "https://i.imgur.com/eZPnepk.png" },
+      { id: "GURU-9", nama: "Sri Yulianti", foto: "https://i.imgur.com/x9Ay8q8.png" },
+      { id: "GURU-10", nama: "Nur Amalia", foto: "https://i.imgur.com/w3ALQ0h.png" },
+      { id: "GURU-11", nama: "Nurul Intan S.M", foto: "https://i.imgur.com/m2vAVB7.png" },
+      { id: "GURU-12", nama: "Anita Sari", foto: "https://i.imgur.com/BYdZb6o.png" },
+      { id: "GURU-13", nama: "Sevila Della A", foto: "https://i.imgur.com/NNvJgVT.png" },
+      { id: "GURU-14", nama: "Siva Nurlatifah", foto: "https://i.imgur.com/a8z42Kr.png" },
+      { id: "GURU-15", nama: " Ira Yulyanti", foto: "https://i.imgur.com/mvM9vBM.png" }
     ]
   };
 
@@ -457,7 +466,8 @@
     const idTerpilih = pilihanSiswa[keyPilihan];
 
     list.forEach(kand => {
-      const isSelected = kand.id === idTerpilih ? 'selected' : '';
+      // Memeriksa apakah ID kandidat ini yang sedang dipilih oleh siswa
+      const isSelected = idTerpilih && idTerpilih.includes(`(${kand.id})`) ? 'selected' : '';
       
       const htmlCard = `
         <div class="card ${isSelected}" onclick="pilihKandidat('${kand.id}', '${kand.nama}')">
