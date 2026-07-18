@@ -469,8 +469,9 @@
       // Memeriksa apakah ID kandidat ini yang sedang dipilih oleh siswa
       const isSelected = idTerpilih && idTerpilih.includes(`(${kand.id})`) ? 'selected' : '';
       
+      // PERBAIKAN: Menggunakan tanda petik dua ( \" ) untuk membungkus ID dan Nama di dalam pilihKandidat
       const htmlCard = `
-        <div class="card ${isSelected}" onclick="pilihKandidat('${kand.id}', '${kand.nama}')">
+        <div class="card ${isSelected}" onclick="pilihKandidat('${kand.id}', '${kand.nama.replace(/'/g, "\\'")}')">
           <div class="badge-selected">✓</div>
           <img src="${kand.foto}" alt="${kand.nama}">
           <div class="nama">${kand.nama}</div>
