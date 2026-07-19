@@ -488,59 +488,69 @@
     renderKandidat();
   }
 
-  function bukaModalLiveScore() {
-    const modal = document.getElementById('modalLiveScore');
-    const content = document.getElementById('modalContent');
-    
-    content.innerHTML = "<div style='color:var(--text-muted)'>Sedang mengambil data skor dari server...</div>";
-    modal.classList.add('open');
-    
-    fetch(`${GAS_WEB_APP_URL}?action=livescore`)
-      .then(res => res.json())
-      .then(scores => {
-        content.innerHTML = "";
-        
-        ['osis', 'guru'].forEach(kel => {
-          daftarKategori.forEach(kat => {
-            const key = `${kel}_${kat}`;
-            const labelGroup = `${kel.toUpperCase()} - Ter${kat.slice(3)}`;
-            
-            content.innerHTML += `<div class="score-group-title">${labelGroup}</div>`;
-            
-            let dataSuara = scores[key] || {};
-            let namaKandidatArray = Object.keys(dataSuara);
-            
-            if (namaKandidatArray.length === 0) {
-              content.innerHTML += `<div class="no-votes">Belum ada suara masuk</div>`;
-            } else {
-              namaKandidatArray.sort((a, b) => dataSuara[b] - dataSuara[a]);
-              let maxVotes = Math.max(...Object.values(dataSuara));
-              
-              namaKandidatArray.forEach(kand => {
-                let jumlahVote = dataSuara[kand];
-                let persenBar = maxVotes > 0 ? (jumlahVote / maxVotes) * 100 : 0;
-                
-                content.innerHTML += `
-                  <div>
-                    <div class="score-row">
-                      <span>${kand}</span>
-                      <strong style="color:#06b6d4">${jumlahVote} Suara</strong>
-                    </div>
-                    <div class="score-bar-bg">
-                      <div class="score-bar-fill" style="width: ${persenBar}%"></div>
-                    </div>
-                  </div>
-                `;
-              });
-            }
-          });
-        });
-      })
-      .catch(err => {
-        console.error(err);
-        content.innerHTML = "<span style='color:#ef4444;'>Gagal memuat skor. Periksa deployment GAS Anda.</span>";
-      });
+  // Flag untuk mengaktifkan/menonaktifkan Live Score
+const ENABLE_LIVE_SCORE = false; // ubah ke true jika ingin aktifkan kembali
+
+function bukaModalLiveScore() {
+  // Jika flag dimatikan, langsung keluar
+  if (!ENABLE_LIVE_SCORE) {
+    console.log("Live Score sedang dinonaktifkan");
+    return;
   }
+
+  const modal = document.getElementById('modalLiveScore');
+  const content = document.getElementById('modalContent');
+  
+  content.innerHTML = "<div style='color:var(--text-muted)'>Sedang mengambil data skor dari server...</div>";
+  modal.classList.add('open');
+  
+  fetch(`${GAS_WEB_APP_URL}?action=livescore`)
+    .then(res => res.json())
+    .then(scores => {
+      content.innerHTML = "";
+      
+      ['osis', 'guru'].forEach(kel => {
+        daftarKategori.forEach(kat => {
+          const key = `${kel}_${kat}`;
+          const labelGroup = `${kel.toUpperCase()} - Ter${kat.slice(3)}`;
+          
+          content.innerHTML += `<div class="score-group-title">${labelGroup}</div>`;
+          
+          let dataSuara = scores[key] || {};
+          let namaKandidatArray = Object.keys(dataSuara);
+          
+          if (namaKandidatArray.length === 0) {
+            content.innerHTML += `<div class="no-votes">Belum ada suara masuk</div>`;
+          } else {
+            namaKandidatArray.sort((a, b) => dataSuara[b] - dataSuara[a]);
+            let maxVotes = Math.max(...Object.values(dataSuara));
+            
+            namaKandidatArray.forEach(kand => {
+              let jumlahVote = dataSuara[kand];
+              let persenBar = maxVotes > 0 ? (jumlahVote / maxVotes) * 100 : 0;
+              
+              content.innerHTML += `
+                <div>
+                  <div class="score-row">
+                    <span>${kand}</span>
+                    <strong style="color:#06b6d4">${jumlahVote} Suara</strong>
+                  </div>
+                  <div class="score-bar-bg">
+                    <div class="score-bar-fill" style="width: ${persenBar}%"></div>
+                  </div>
+                </div>
+              `;
+            });
+          }
+        });
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      content.innerHTML = "<span style='color:#ef4444;'>Gagal memuat skor. Periksa deployment GAS Anda.</span>";
+    });
+}
+
 
   function tutupModalLiveScore(e) {
     if(!e || e.target.id === 'modalLiveScore' || e.type === 'click') {
