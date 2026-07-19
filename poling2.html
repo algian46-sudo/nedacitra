@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polling OSIS & Guru</title>
+  <style>
+    /* ======================================================== */
+    /* UTAMA & VARIABEL TEMA DARK GRADIENT CYAN-PURPLE          */
+    /* ======================================================== */
+    :root {
+      --bg: #0f172a;          
+      --card-bg: #1e293b;     
+      --card-hover: #334155;
+      --text-main: #f8fafc;   
+      --text-muted: #94a3b8;  
+      --primary-gradient: linear-gradient(135deg, #a855f7 0%, #06b6d4 100%); 
+      --accent-green: #10b981;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      margin: 0;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .header-area {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    h1 { 
+      margin: 0; 
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    
+    .btn-score-trigger {
+      background: rgba(255, 255, 255, 0.07);
+      color: #38bdf8; 
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      display: block;
+      margin: 15px auto 0 auto;
+      transition: all 0.2s ease;
+    }
+    .btn-score-trigger:hover { 
+      background: rgba(56, 189, 248, 0.15);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    }
+
+    .main-nav {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .btn-nav {
+      padding: 12px 35px;
+      font-size: 16px;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+      transition: all 0.3s ease;
+    }
+    .btn-nav:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .btn-nav.active {
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+    }
+
+    .category-container {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    .category-title {
+      font-weight: 600;
+      margin-bottom: 15px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .category-nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn-cat {
+      padding: 8px 18px;
+      font-size: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-cat:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      color: var(--text-main);
+    }
+    .btn-cat.active {
+      background: var(--accent-green);
+      color: white;
+      border-color: var(--accent-green);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    .btn-cat.filled {
+      border-color: var(--accent-green);
+      color: #34d399;
+      font-weight: 600;
+    }
+    .btn-cat.active.filled {
+      background: var(--accent-green);
+      color: white;
+    }
+
+    .grid-kandidat {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+      min-height: 200px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      background: var(--card-hover);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+    .card.selected {
+      border-color: #06b6d4;
+      background: rgba(6, 182, 212, 0.15);
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.6); /* Cahaya menyala di sekeliling gambar */
+      transform: scale(1.02);
+    }
+    
+    /* Efek opacity foto sedikit meredup saat terpilih agar tanda centang lebih kontras */
+    .card.selected img {
+      filter: brightness(0.7);
+    }
+    .card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: #1e293b;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .card .nama {
+      padding: 12px 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .badge-selected {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--primary-gradient);
+      color: white;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.8);
+      z-index: 2;
+      border: 2px solid #ffffff;
+    }
+    .card.selected .badge-selected { display: flex; }
+
+    .submit-container {
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 30px;
+    }
+    .btn-submit {
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      padding: 14px 50px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+    }
+    .btn-submit:hover { 
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+    }
+    .btn-submit:disabled { 
+      background: #475569; 
+      color: #94a3b8;
+      cursor: not-allowed; 
+      transform: none;
+      box-shadow: none;
+    }
+
+    .loading { text-align: center; font-size: 18px; padding: 40px; color: var(--text-muted); }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0; visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1; visibility: visible;
+    }
+    .modal-box {
+      background: #1e293b;
+      width: 90%;
+      max-width: 650px;
+      max-height: 80vh;
+      border-radius: 16px;
+      overflow-y: auto;
+      padding: 25px;
+      position: relative;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .modal-close {
+      position: absolute;
+      top: 15px; right: 20px;
+      font-size: 28px; cursor: pointer; color: var(--text-muted);
+    }
+    .modal-close:hover { color: var(--text-main); }
+    .modal-title {
+      font-size: 22px; font-weight: 800; 
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 25px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
+    }
+    .score-group-title {
+      background: rgba(255, 255, 255, 0.04); padding: 8px 14px; border-radius: 6px;
+      font-weight: 700; font-size: 14px; margin-top: 20px; color: #38bdf8;
+      border-left: 3px solid #a855f7;
+    }
+    .score-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 14px 4px 14px; font-size: 14px; color: var(--text-main);
+    }
+    .score-bar-bg {
+      background: #0f172a; height: 10px; width: 95%; border-radius: 5px;
+      margin: 4px auto 12px auto; overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .score-bar-fill {
+      background: var(--primary-gradient); 
+      height: 100%; width: 0%; transition: width 0.6s cubic-bezier(0.1, 1, 0.1, 1);
+    }
+    .no-votes { font-style: italic; color: var(--text-muted); padding: 10px 14px; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header-area">
+    <h1>🗳️ Polling OSIS & Guru</h1>
+    <button class="btn-score-trigger" onclick="bukaModalLiveScore()">📊 Lihat Live Score Perolehan</button>
+  </div>
+  
+  <div class="main-nav">
+    <button class="btn-nav active" onclick="switchKelompok('osis')">Kandidat OSIS</button>
+    <button class="btn-nav" onclick="switchKelompok('guru')">Kandidat Guru</button>
+  </div>
+
+  <div class="category-container">
+    <div class="category-title">Pilih Kategori Polling:</div>
+    <div class="category-nav" id="categoryNav"></div>
+  </div>
+
+  <div id="loading" class="loading" style="display:none;">Memuat data kandidat...</div>
+  <div class="grid-kandidat" id="gridKandidat"></div>
+
+  <div class="submit-container">
+    <button class="btn-submit" id="btnSubmit" onclick="kirimSemuaData()">Kirim Hasil Polling</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalLiveScore" onclick="tutupModalLiveScore(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <span class="modal-close" onclick="tutupModalLiveScore(null)">&times;</span>
+    <div class="modal-title">📈 Live Score Real-time</div>
+    <div id="modalContent">Memuat data skor terkini...</div>
+  </div>
+</div>
+
+<script>
+  // PENTING: Ganti URL Web App dari Deploy Google Apps Script Anda di sini
+  const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQDt2FnWDLEj7ApwSwf3x5jjcYLcaPbAO_BQNgMp6KR4dedDigMRwmiSlVh1BTGhNy/exec"; 
+
+  // ========================================================
+  // STRUKTUR DATA KANDIDAT YANG BISA ANDA EDIT DI VS CODE
+  // ========================================================
+  const dbKandidat = {
+    osis: [
+      { id: "OSIS-1", nama: "Dyla Agustina", foto: "https://i.imgur.com/cFjlUqy.png" },
+      { id: "OSIS-2", nama: "Sakhwa Nur S", foto: "https://i.imgur.com/izwT8P5.png" },
+      { id: "OSIS-3", nama: "M. Hafy Ridwan", foto: "https://i.imgur.com/bG2MXBK.png" },
+      { id: "OSIS-4", nama: "Zahra Aurellia", foto: "https://i.imgur.com/T41LZQk.png" },
+      { id: "OSIS-5", nama: "Refi Andriansyah", foto: "https://i.imgur.com/adEbGsT.png" },
+      { id: "OSIS-6", nama: "Nazwa Kirana R", foto: "https://i.imgur.com/wa3pOHK.png" },
+      { id: "OSIS-7", nama: "Farah Nurhafizah", foto: "https://i.imgur.com/6zFgmT1.png" },
+      { id: "OSIS-8", nama: "Umairoh Salsabilah", foto: "https://i.imgur.com/8VRUlzY.png" },
+      { id: "OSIS-9", nama: "Alesya Aurelia", foto: "https://i.imgur.com/3Re6Cdv.png" },
+      { id: "OSIS-10", nama: "Revalina Agustin", foto: "https://i.imgur.com/vDZWDuv.png" },
+      { id: "OSIS-11", nama: "Melandri Raffly F", foto: "https://i.imgur.com/cVa1sFr.png" },
+      { id: "OSIS-12", nama: "Faiz Alhafiz", foto: "https://i.imgur.com/WK1OG3r.png" },
+      { id: "OSIS-13", nama: "Intan Aulia P", foto: "https://i.imgur.com/A0ibL4o.png" },
+      { id: "OSIS-14", nama: "Ilyasa Abbas", foto: "https://i.imgur.com/bCNxEtC.png" },
+      { id: "OSIS-15", nama: "Putri Herdayanti", foto: "https://i.imgur.com/bsjgNH7.png" },
+      { id: "OSIS-16", nama: "Khoirudin Al F", foto: "https://i.imgur.com/asaWlEB.png" },
+      { id: "OSIS-17", nama: "Putri Rahmadani A", foto: "https://i.imgur.com/OWYSRW8.png" },
+      { id: "OSIS-18", nama: "M. Nur Alifiansyah", foto: "https://i.imgur.com/NZQP3h9.png" },
+      { id: "OSIS-19", nama: "Diana Febriana", foto: "https://i.imgur.com/jeRJTXO.png" },
+      { id: "OSIS-20", nama: "Nabila Azumi A", foto: "https://i.imgur.com/G3S0Mis.png" },
+      { id: "OSIS-21", nama: "Bintang Agustian", foto: "https://i.imgur.com/ZPiAq08.png" },
+      { id: "OSIS-22", nama: "Bayu Oktaviana", foto: "https://i.imgur.com/Py9r64T.png" },
+      { id: "OSIS-23", nama: "Tristan Rafliandra", foto: "https://i.imgur.com/zvkTmcm.png" },
+      { id: "OSIS-24", nama: "Ken Baltik", foto: "https://i.imgur.com/VJL5Op5.png" },
+      { id: "OSIS-25", nama: "Zaenal Hertawan", foto: "https://i.imgur.com/RLV2ja9.png" },
+      { id: "OSIS-26", nama: "Divo Arlyan S", foto: "https://i.imgur.com/tuf2b2X.png" },
+      { id: "OSIS-27", nama: "M. Faris", foto: "https://i.imgur.com/TE4nFmi.png" },
+      { id: "OSIS-28", nama: "Eka Meyla N", foto: "https://i.imgur.com/NqsBZFA.png" },
+      { id: "OSIS-29", nama: "Ifki Nahdiati M", foto: "https://i.imgur.com/AHwQNsM.png" },
+      { id: "OSIS-30", nama: "Volan Aufar", foto: "https://i.imgur.com/IsktDp0.png" },
+      { id: "OSIS-31", nama: "Caca Listiana", foto: "https://i.imgur.com/CEZp95r.png" },
+      { id: "OSIS-32", nama: "Tiara Azmi A", foto: "https://i.imgur.com/LczVdvX.png" },
+      { id: "OSIS-33", nama: "Lisna Nabila", foto: "https://i.imgur.com/W372aor.png" },
+      { id: "OSIS-34", nama: "Syamila Fahra S", foto: "https://i.imgur.com/UcxX6jB.png" },
+      { id: "OSIS-35", nama: "Giovany Satria A", foto: "https://i.imgur.com/YiyVaDp.png" }
+    ],
+    guru: [
+      { id: "GURU-1", nama: "Hasanah Aisah", foto: "asetpoling/hasanah.png" },
+      { id: "GURU-2", nama: "Purwaningsih", foto: "asetpoling/pur.png" },
+      { id: "GURU-3", nama: "Euis Sa'adah", foto: "asetpoling/euis.png" },
+      { id: "GURU-4", nama: "Toyib", foto: "asetpoling/toyib.png" },
+      { id: "GURU-5", nama: "Algian Manggara", foto: "asetpoling/algian.png" },
+      { id: "GURU-6", nama: "Dapih Mahrizal", foto: "asetpoling/dapih.png" },
+      { id: "GURU-7", nama: "Reshamayori Alvianita", foto: "asetpoling/resa.png" },
+      { id: "GURU-8", nama: "Uswatul Hasanah", foto: "asetpoling/uswa.png" },
+      { id: "GURU-9", nama: "Sri Yulianti", foto: "asetpoling/yuli.png" },
+      { id: "GURU-10", nama: "Nur Amalia", foto: "asetpoling/lia.png" },
+      { id: "GURU-11", nama: "Nurul Intan S.M", foto: "asetpoling/intangr.png" },
+      { id: "GURU-12", nama: "Anita Sari", foto: "asetpoling/anita.png" },
+      { id: "GURU-13", nama: "Sevila Della A", foto: "asetpoling/dela.png" },
+      { id: "GURU-14", nama: "Siva Nurlatifah", foto: "asetpoling/siva.png" },
+      { id: "GURU-15", nama: " Ira Yulyanti", foto: "asetpoling/ira.png" }
+    ]
+  };
+
+  let currentKelompok = 'osis'; 
+  let currentKategori = 'terfavorit'; 
+  
+  let pilihanSiswa = {
+    osis_terfavorit: null, osis_terbaik: null, osis_tercantik: null, osis_tertampan: null, osis_tergalak: null,
+    guru_terfavorit: null, guru_terbaik: null, guru_tercantik: null, guru_tertampan: null, guru_tergalak: null
+  };
+
+  const daftarKategori = ['terfavorit', 'terbaik', 'tercantik', 'tertampan', 'tergalak'];
+
+  window.onload = function() {
+    renderKategoriNav();
+    renderKandidat();
+  };
+
+  function renderKategoriNav() {
+    const nav = document.getElementById('categoryNav');
+    nav.innerHTML = '';
+    
+    daftarKategori.forEach(kat => {
+      const key = `${currentKelompok}_${kat}`;
+      const isFilled = pilihanSiswa[key] !== null;
+      const isActive = currentKategori === kat;
+      
+      let classList = 'btn-cat';
+      if(isActive) classList += ' active';
+      if(isFilled) classList += ' filled';
+      
+      let labelText = kat.charAt(0).toUpperCase() + kat.slice(1);
+      if(isFilled) labelText += ' ✓';
+
+      nav.innerHTML += `<button class="${classList}" onclick="switchKategori('${kat}')">${labelText}</button>`;
+    });
+  }
+
+  function switchKelompok(kelompok) {
+    currentKelompok = kelompok;
+    const buttons = document.querySelectorAll('.btn-nav');
+    buttons[0].classList.toggle('active', kelompok === 'osis');
+    buttons[1].classList.toggle('active', kelompok === 'guru');
+    renderKategoriNav();
+    renderKandidat();
+  }
+
+  function switchKategori(kategori) {
+    currentKategori = kategori;
+    renderKategoriNav();
+    renderKandidat();
+  }
+
+  function renderKandidat() {
+    const grid = document.getElementById('gridKandidat');
+    grid.innerHTML = '';
+    
+    const list = dbKandidat[currentKelompok];
+    const keyPilihan = `${currentKelompok}_${currentKategori}`;
+    const idTerpilih = pilihanSiswa[keyPilihan];
+
+    list.forEach(kand => {
+      // Memeriksa apakah ID kandidat ini yang sedang dipilih oleh siswa
+      const isSelected = idTerpilih && idTerpilih.includes(`(${kand.id})`) ? 'selected' : '';
+      
+      // PERBAIKAN: Menggunakan tanda petik dua ( \" ) untuk membungkus ID dan Nama di dalam pilihKandidat
+      const htmlCard = `
+        <div class="card ${isSelected}" onclick="pilihKandidat('${kand.id}', '${kand.nama.replace(/'/g, "\\'")}')">
+          <div class="badge-selected">✓</div>
+          <img src="${kand.foto}" alt="${kand.nama}">
+          <div class="nama">${kand.nama}</div>
+        </div>
+      `;
+      grid.innerHTML += htmlCard;
+    });
+  }
+
+  function pilihKandidat(id, nama) {
+    const keyPilihan = `${currentKelompok}_${currentKategori}`;
+    pilihanSiswa[keyPilihan] = `${nama} (${id})`;
+    renderKategoriNav();
+    renderKandidat();
+  }
+
+// Flag untuk mengaktifkan/menonaktifkan Live Score
+const ENABLE_LIVE_SCORE = true; // modal tetap aktif
+
+// Kode akses yang harus dimasukkan
+const ACCESS_CODE = "sikasep"; // ubah sesuai kebutuhan
+
+function bukaModalLiveScore() {
+  const modal = document.getElementById('modalLiveScore');
+  const content = document.getElementById('modalContent');
+  
+  modal.classList.add('open');
+
+  // Minta kode akses sebelum lanjut
+  let inputCode = prompt("Masukkan kode akses untuk melihat Live Score:");
+
+  if (inputCode !== ACCESS_CODE) {
+    content.innerHTML = "<span style='color:#ef4444;'>Kode salah atau tidak diisi. Akses ditolak.</span>";
+    return; // hentikan proses
+  }
+
+  // Jika kode benar, baru jalankan proses fetch
+  content.innerHTML = "<div style='color:var(--text-muted)'>Sedang mengambil data skor dari server...</div>";
+  
+  fetch(`${GAS_WEB_APP_URL}?action=livescore`)
+    .then(res => res.json())
+    .then(scores => {
+      content.innerHTML = "";
+      
+      ['osis', 'guru'].forEach(kel => {
+        daftarKategori.forEach(kat => {
+          const key = `${kel}_${kat}`;
+          const labelGroup = `${kel.toUpperCase()} - Ter${kat.slice(3)}`;
+          
+          content.innerHTML += `<div class="score-group-title">${labelGroup}</div>`;
+          
+          let dataSuara = scores[key] || {};
+          let namaKandidatArray = Object.keys(dataSuara);
+          
+          if (namaKandidatArray.length === 0) {
+            content.innerHTML += `<div class="no-votes">Belum ada suara masuk</div>`;
+          } else {
+            namaKandidatArray.sort((a, b) => dataSuara[b] - dataSuara[a]);
+            let maxVotes = Math.max(...Object.values(dataSuara));
+            
+            namaKandidatArray.forEach(kand => {
+              let jumlahVote = dataSuara[kand];
+              let persenBar = maxVotes > 0 ? (jumlahVote / maxVotes) * 100 : 0;
+              
+              content.innerHTML += `
+                <div>
+                  <div class="score-row">
+                    <span>${kand}</span>
+                    <strong style="color:#06b6d4">${jumlahVote} Suara</strong>
+                  </div>
+                  <div class="score-bar-bg">
+                    <div class="score-bar-fill" style="width: ${persenBar}%"></div>
+                  </div>
+                </div>
+              `;
+            });
+          }
+        });
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      content.innerHTML = "<span style='color:#ef4444;'>Gagal memuat skor. Periksa deployment GAS Anda.</span>";
+    });
+}
+
+
+
+  function tutupModalLiveScore(e) {
+    if(!e || e.target.id === 'modalLiveScore' || e.type === 'click') {
+      document.getElementById('modalLiveScore').classList.remove('open');
+    }
+  }
+
+  function kirimSemuaData() {
+    let belumDiisi = [];
+    for (let key in pilihanSiswa) {
+      if (pilihanSiswa[key] === null) {
+        let part = key.split('_');
+        belumDiisi.push(`${part[0].toUpperCase()} ${part[1]}`);
+      }
+    }
+
+    if (belumDiisi.length > 0) {
+      alert("Kamu belum memilih untuk kategori berikut:\n- " + belumDiisi.join("\n- ") + "\n\nHarap isi semua kategori sebelum mengirim data!");
+      return;
+    }
+
+    if (!confirm("Apakah kamu yakin dengan semua pilihanmu?")) return;
+
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled = true;
+    btn.innerText = "Mengirim...";
+
+    fetch(GAS_WEB_APP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(pilihanSiswa)
+    })
+    .then(() => {
+      alert("Terima kasih! Suara kamu berhasil direkam.");
+      location.reload();
+    })
+    .catch(err => {
+      alert("Terjadi kesalahan koneksi saat mengirim data.");
+      console.error(err);
+      btn.disabled = false;
+      btn.innerText = "Kirim Hasil Polling";
+    });
+  }
+</script>
+
+</body>
+</html>
