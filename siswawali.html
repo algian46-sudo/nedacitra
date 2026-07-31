@@ -438,7 +438,7 @@
         </div>
       </div>
 
-      <!-- DASHBOARD ORANG TUA / WALI -->
+      <!-- DASHBOARD ORANG TUA / WALI (BERURUTAN KE BAWAH) -->
       <div id="ortuDashboard" style="display: none;">
         <!-- INFORMASI SISWA -->
         <div class="card-custom p-4 bg-white mb-4">
@@ -453,48 +453,88 @@
           </div>
         </div>
 
-        <!-- METRICS CARDS -->
-        <div class="row g-3 mb-4">
-          <div class="col-md-4">
-            <div class="card-custom p-3 mb-0 text-center" style="border-left: 5px solid var(--accent-purple);">
-              <span class="text-muted small fw-semibold">Total Poin Perkembangan</span>
-              <h3 class="fw-bold mt-2 mb-0" style="color: var(--accent-purple);" id="ortuTotalPoin">0</h3>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card-custom p-3 mb-0 text-center" style="border-left: 5px solid var(--accent-teal);">
-              <span class="text-muted small fw-semibold">Saldo Tabungan</span>
-              <h3 class="fw-bold mt-2 mb-0 text-success" id="ortuTotalTabungan">Rp 0</h3>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card-custom p-3 mb-0 text-center" style="border-left: 5px solid var(--accent-amber);">
-              <span class="text-muted small fw-semibold">Status Absensi Terakhir</span>
-              <h3 class="fw-bold mt-2 mb-0 text-warning" id="ortuAbsensiTerakhir">-</h3>
-            </div>
-          </div>
-        </div>
-
-        <!-- RIWAYAT DETAIL SISWA -->
+        <!-- 1. DAFTAR KEHADIRAN / ABSENSI -->
         <div class="card-custom p-4">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i>Riwayat & Catatan Siswa</h5>
-            <select id="ortuKatRekap" class="form-select w-auto fw-medium" onchange="loadRekapOrtu()">
-              <option value="poin">Riwayat Poin</option>
-              <option value="tabungan" selected>Riwayat Tabungan</option>
-              <option value="absensi">Riwayat Absensi</option>
-              <option value="sikap">Catatan Sikap</option>
-            </select>
+          <div class="d-flex align-items-center mb-3 text-primary">
+            <i class="fa-solid fa-clipboard-user fa-lg me-2"></i>
+            <h5 class="fw-bold mb-0 text-dark">1. Daftar Kehadiran (Absensi)</h5>
           </div>
           <div class="table-responsive border rounded-3">
             <table class="table table-hover align-middle mb-0">
-              <thead style="background-color: var(--dark-navy); color: white;" id="ortuHeadRekap"></thead>
-              <tbody id="ortuBodyRekap">
-                <tr><td colspan="4" class="text-center py-3 text-muted">Memuat data...</td></tr>
+              <thead style="background-color: var(--dark-navy); color: white;">
+                <tr><th>Tanggal</th><th>Status Kehadiran</th><th>Catatan Guru</th></tr>
+              </thead>
+              <tbody id="ortuBodyAbsensi">
+                <tr><td colspan="3" class="text-center py-3 text-muted">Memuat data absensi...</td></tr>
               </tbody>
             </table>
           </div>
         </div>
+
+        <!-- 2. TABUNGAN SISWA -->
+        <div class="card-custom p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center text-success">
+              <i class="fa-solid fa-wallet fa-lg me-2"></i>
+              <h5 class="fw-bold mb-0 text-dark">2. Catatan Tabungan Siswa</h5>
+            </div>
+            <div class="badge bg-success-subtle text-success border border-success px-3 py-2 fs-6">
+              Total Saldo: <span id="ortuTotalTabunganVal" class="fw-bold">Rp 0</span>
+            </div>
+          </div>
+          <div class="table-responsive border rounded-3">
+            <table class="table table-hover align-middle mb-0">
+              <thead style="background-color: var(--dark-navy); color: white;">
+                <tr><th>Jenis Transaksi</th><th class="text-end">Nominal</th><th>Keterangan / Tanggal</th></tr>
+              </thead>
+              <tbody id="ortuBodyTabungan">
+                <tr><td colspan="3" class="text-center py-3 text-muted">Memuat data tabungan...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 3. CATATAN SIKAP -->
+        <div class="card-custom p-4">
+          <div class="d-flex align-items-center mb-3 text-warning">
+            <i class="fa-solid fa-user-gear fa-lg me-2"></i>
+            <h5 class="fw-bold mb-0 text-dark">3. Catatan Sikap & Perilaku</h5>
+          </div>
+          <div class="table-responsive border rounded-3">
+            <table class="table table-hover align-middle mb-0">
+              <thead style="background-color: var(--dark-navy); color: white;">
+                <tr><th>Tanggal</th><th>Jenis Sikap</th><th>Catatan Perkembangan</th></tr>
+              </thead>
+              <tbody id="ortuBodySikap">
+                <tr><td colspan="3" class="text-center py-3 text-muted">Memuat catatan sikap...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 4. POIN SISWA -->
+        <div class="card-custom p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center" style="color: var(--accent-purple);">
+              <i class="fa-solid fa-award fa-lg me-2"></i>
+              <h5 class="fw-bold mb-0 text-dark">4. Perolehan Poin Siswa</h5>
+            </div>
+            <div class="badge text-white px-3 py-2 fs-6" style="background-color: var(--accent-purple);">
+              Total Poin: <span id="ortuTotalPoinVal" class="fw-bold">0 Poin</span>
+            </div>
+          </div>
+          <div class="table-responsive border rounded-3">
+            <table class="table table-hover align-middle mb-0">
+              <thead style="background-color: var(--dark-navy); color: white;">
+                <tr><th>Indikator / Penilaian</th><th class="text-center">Skor / Poin</th><th>Tanggal</th></tr>
+              </thead>
+              <tbody id="ortuBodyPoin">
+                <tr><td colspan="3" class="text-center py-3 text-muted">Memuat riwayat poin...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -503,12 +543,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // URL DEPLOYMENT APPS SCRIPT TERBARU MILIK ANDA
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1B5YdlN5jtlsJs-QDxAD0OGH1b0m8W4QQGGb3zL2QrmBywbZl6jG3XMOWLJYlz8J7/exec';
 
     let currentUser = null;
     let masterSiswaCache = [];
-    let masterIndikatorCache = [];
 
     function showLoading(show) {
       document.getElementById('loading').style.display = show ? 'flex' : 'none';
@@ -574,7 +612,8 @@
             safeSetText('ortuNamaSiswa', currentUser.namaSiswa || currentUser.nama || 'Siswa');
             safeSetText('ortuNisnSiswa', currentUser.nisn || currentUser.username || '-');
             
-            loadRekapOrtu();
+            // Panggil pencatatan otomatis semua kategori
+            loadSemuaDataOrtu();
           }
         } else {
           alert(data.message || 'Login gagal!');
@@ -595,144 +634,124 @@
       document.getElementById('ortuDashboard').style.display = 'none';
     }
 
-// FUNGSI MEMUAT DAFTAR SISWA (MENGAMBIL DARI SHEET 'Siswa')
-    function loadDaftarSiswa() {
-      fetch(`${SCRIPT_URL}?action=getRekapRingkas&kategori=masterSiswa`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            masterSiswaCache = data.data || [];
-            const selIndiv = document.getElementById('inputSiswa');
-            const selFilter = document.getElementById('cetakSiswaFilter');
-            
-            if (selIndiv) selIndiv.innerHTML = '<option value="">-- Pilih Siswa --</option>';
-            if (selFilter) selFilter.innerHTML = '<option value="semua">-- Semua Siswa --</option>';
-
-            masterSiswaCache.forEach(s => {
-              if (selIndiv) selIndiv.innerHTML += `<option value="${s.nisn}" data-nama="${s.nama}">${s.nama} (${s.nisn})</option>`;
-              if (selFilter) selFilter.innerHTML += `<option value="${s.nisn}">${s.nama} (${s.nisn})</option>`;
-            });
-            renderTabelAbsensiMassal();
-          }
-        })
-        .catch(err => console.error("Gagal memuat master siswa:", err));
-    }
-
-    // FUNGSI LOAD REKAP KHUSUS ORANG TUA
-    function loadRekapOrtu() {
+    // FUNGSI MEMUAT SEMUA REKAP SECARA BERURUTAN UNTUK AKUN ORANG TUA
+    async function loadSemuaDataOrtu() {
       if (!currentUser) return;
 
       const nisnTarget = currentUser.nisn || '';
       const namaTarget = currentUser.namaSiswa || currentUser.nama || '';
 
-      const kat = document.getElementById('ortuKatRekap').value;
-      const head = document.getElementById('ortuHeadRekap');
-      const body = document.getElementById('ortuBodyRekap');
+      // Set Loading state
+      document.getElementById('ortuBodyAbsensi').innerHTML = `<tr><td colspan="3" class="text-center py-3 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>Memuat data kehadiran...</td></tr>`;
+      document.getElementById('ortuBodyTabungan').innerHTML = `<tr><td colspan="3" class="text-center py-3 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>Memuat data tabungan...</td></tr>`;
+      document.getElementById('ortuBodySikap').innerHTML = `<tr><td colspan="3" class="text-center py-3 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>Memuat catatan sikap...</td></tr>`;
+      document.getElementById('ortuBodyPoin').innerHTML = `<tr><td colspan="3" class="text-center py-3 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>Memuat data poin...</td></tr>`;
 
-      body.innerHTML = `<tr><td colspan="4" class="text-center py-3 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>Memuat data siswa...</td></tr>`;
+      const fetchKategori = (kat) => {
+        const url = `${SCRIPT_URL}?action=getRekapRingkas&kategori=${kat}&nisn=${encodeURIComponent(nisnTarget)}&namaSiswa=${encodeURIComponent(namaTarget)}`;
+        return fetch(url).then(res => res.json());
+      };
 
-      // Mengirim nisn dan namaSiswa secara paralel agar pencarian akurat
-      const url = `${SCRIPT_URL}?action=getRekapRingkas&kategori=${kat}&nisn=${encodeURIComponent(nisnTarget)}&namaSiswa=${encodeURIComponent(namaTarget)}`;
+      try {
+        const [resAbsensi, resTabungan, resSikap, resPoin] = await Promise.all([
+          fetchKategori('absensi'),
+          fetchKategori('tabungan'),
+          fetchKategori('sikap'),
+          fetchKategori('poin')
+        ]);
 
-      fetch(url)
-        .then(res => res.json())
-        .then(resData => {
-          if (!resData.success) {
-            body.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-3">Gagal mengambil data dari server.</td></tr>`;
-            return;
-          }
+        // 1. Render Absensi
+        const bodyAbs = document.getElementById('ortuBodyAbsensi');
+        bodyAbs.innerHTML = '';
+        const listAbs = resAbsensi.data || [];
+        if (listAbs.length === 0) {
+          bodyAbs.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada catatan absensi.</td></tr>`;
+        } else {
+          listAbs.forEach(item => {
+            let badgeClass = 'bg-success';
+            if (item.status === 'Sakit') badgeClass = 'bg-warning text-dark';
+            if (item.status === 'Izin') badgeClass = 'bg-info text-dark';
+            if (item.status === 'Alpa') badgeClass = 'bg-danger';
 
-          head.innerHTML = '';
-          body.innerHTML = '';
-          const myData = resData.data || [];
+            bodyAbs.innerHTML += `
+              <tr>
+                <td>${item.tanggal || '-'}</td>
+                <td><span class="badge ${badgeClass} px-2 py-1">${item.status}</span></td>
+                <td>${item.catatan || '-'}</td>
+              </tr>`;
+          });
+        }
 
-          if (kat === 'poin') {
-            head.innerHTML = `<tr><th>Indikator / Penilaian</th><th class="text-center">Skor / Poin</th><th>Tanggal</th></tr>`;
-            let total = 0;
-            if (myData.length === 0) {
-              body.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada riwayat poin untuk siswa ini.</td></tr>`;
+        // 2. Render Tabungan
+        const bodyTab = document.getElementById('ortuBodyTabungan');
+        bodyTab.innerHTML = '';
+        const listTab = resTabungan.data || [];
+        let totalSaldo = 0;
+        if (listTab.length === 0) {
+          bodyTab.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada riwayat tabungan.</td></tr>`;
+        } else {
+          listTab.forEach(item => {
+            const nominal = Number(item.nominal || 0);
+            const jns = String(item.jenis).toLowerCase();
+            if (jns.includes('masuk') || jns.includes('setor')) {
+              totalSaldo += nominal;
             } else {
-              myData.forEach(item => {
-                const skor = Number(item.skor || 0);
-                total += skor;
-                body.innerHTML += `
-                  <tr>
-                    <td><b>${item.indikator || item.jenis || 'Penilaian'}</b></td>
-                    <td class="text-center"><span class="badge px-3 py-2" style="background-color: var(--accent-purple); font-size: 0.85rem;">+${skor} Poin</span></td>
-                    <td>${item.tanggal || '-'}</td>
-                  </tr>`;
-              });
+              totalSaldo -= nominal;
             }
-            safeSetText('ortuTotalPoin', total + ' Poin');
+            bodyTab.innerHTML += `
+              <tr>
+                <td><span class="fw-semibold text-dark">${item.jenis || 'Setoran'}</span></td>
+                <td class="text-end fw-bold text-success">Rp ${nominal.toLocaleString('id-ID')}</td>
+                <td>${item.keterangan ? item.keterangan + ' (' + item.tanggal + ')' : item.tanggal}</td>
+              </tr>`;
+          });
+        }
+        safeSetText('ortuTotalTabunganVal', 'Rp ' + Number(totalSaldo).toLocaleString('id-ID'));
 
-          } else if (kat === 'tabungan') {
-            head.innerHTML = `<tr><th>Jenis Transaksi</th><th class="text-end">Nominal</th><th>Keterangan / Tanggal</th></tr>`;
-            let saldo = 0;
-            if (myData.length === 0) {
-              body.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada riwayat tabungan.</td></tr>`;
-            } else {
-              myData.forEach(item => {
-                const nominal = Number(item.nominal || 0);
-                const jns = String(item.jenis).toLowerCase();
-                if (jns.includes('masuk') || jns.includes('setor')) {
-                  saldo += nominal;
-                } else {
-                  saldo -= nominal;
-                }
-                body.innerHTML += `
-                  <tr>
-                    <td><span class="fw-semibold text-dark">${item.jenis || 'Setoran'}</span></td>
-                    <td class="text-end fw-bold text-success">Rp ${nominal.toLocaleString('id-ID')}</td>
-                    <td>${item.keterangan ? item.keterangan + ' (' + item.tanggal + ')' : item.tanggal}</td>
-                  </tr>`;
-              });
-            }
-            safeSetText('ortuTotalTabungan', 'Rp ' + Number(saldo).toLocaleString('id-ID'));
+        // 3. Render Sikap
+        const bodySikap = document.getElementById('ortuBodySikap');
+        bodySikap.innerHTML = '';
+        const listSikap = resSikap.data || [];
+        if (listSikap.length === 0) {
+          bodySikap.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada catatan sikap/perilaku.</td></tr>`;
+        } else {
+          listSikap.forEach(item => {
+            bodySikap.innerHTML += `
+              <tr>
+                <td>${item.tanggal || '-'}</td>
+                <td><span class="fw-bold text-warning">${item.jenis || 'Catatan'}</span></td>
+                <td>${item.catatan || '-'}</td>
+              </tr>`;
+          });
+        }
 
-          } else if (kat === 'absensi') {
-            head.innerHTML = `<tr><th>Tanggal</th><th>Status Kehadiran</th><th>Catatan Guru</th></tr>`;
-            if (myData.length === 0) {
-              body.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada catatan absensi.</td></tr>`;
-              safeSetText('ortuAbsensiTerakhir', '-');
-            } else {
-              safeSetText('ortuAbsensiTerakhir', myData[0].status || '-');
-              myData.forEach(item => {
-                let badgeClass = 'bg-success';
-                if (item.status === 'Sakit') badgeClass = 'bg-warning text-dark';
-                if (item.status === 'Izin') badgeClass = 'bg-info text-dark';
-                if (item.status === 'Alpa') badgeClass = 'bg-danger';
+        // 4. Render Poin
+        const bodyPoin = document.getElementById('ortuBodyPoin');
+        bodyPoin.innerHTML = '';
+        const listPoin = resPoin.data || [];
+        let totalPoin = 0;
+        if (listPoin.length === 0) {
+          bodyPoin.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada riwayat poin untuk siswa ini.</td></tr>`;
+        } else {
+          listPoin.forEach(item => {
+            const skor = Number(item.skor || 0);
+            totalPoin += skor;
+            bodyPoin.innerHTML += `
+              <tr>
+                <td><b>${item.indikator || item.jenis || 'Penilaian'}</b></td>
+                <td class="text-center"><span class="badge px-3 py-2" style="background-color: var(--accent-purple); font-size: 0.85rem;">+${skor} Poin</span></td>
+                <td>${item.tanggal || '-'}</td>
+              </tr>`;
+          });
+        }
+        safeSetText('ortuTotalPoinVal', totalPoin + ' Poin');
 
-                body.innerHTML += `
-                  <tr>
-                    <td>${item.tanggal || '-'}</td>
-                    <td><span class="badge ${badgeClass} px-2 py-1">${item.status}</span></td>
-                    <td>${item.catatan || '-'}</td>
-                  </tr>`;
-              });
-            }
-
-          } else if (kat === 'sikap') {
-            head.innerHTML = `<tr><th>Tanggal</th><th>Jenis Sikap</th><th>Catatan Perkembangan</th></tr>`;
-            if (myData.length === 0) {
-              body.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada catatan sikap/perilaku.</td></tr>`;
-            } else {
-              myData.forEach(item => {
-                body.innerHTML += `
-                  <tr>
-                    <td>${item.tanggal || '-'}</td>
-                    <td><span class="fw-bold text-warning">${item.jenis || 'Perhatian'}</span></td>
-                    <td>${item.catatan || '-'}</td>
-                  </tr>`;
-              });
-            }
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          body.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-3">Terjadi kesalahan koneksi data.</td></tr>`;
-        });
+      } catch (err) {
+        console.error('Error saat memuat data ortu:', err);
+      }
     }
 
+    // FUNGSI MEMUAT DAFTAR SISWA (MENGAMBIL DARI SHEET 'Siswa')
     function loadDaftarSiswa() {
       fetch(`${SCRIPT_URL}?action=getRekapRingkas&kategori=masterSiswa`)
         .then(res => res.json())
@@ -860,70 +879,67 @@
     }
 
     function handleSimpanAbsensiMassal() {
-  const tglInput = document.getElementById('tglAbsensi').value;
-  
-  if (!tglInput) {
-    alert('Silakan pilih tanggal absensi terlebih dahulu!');
-    return;
-  }
+      const tglInput = document.getElementById('tglAbsensi').value;
+      
+      if (!tglInput) {
+        alert('Silakan pilih tanggal absensi terlebih dahulu!');
+        return;
+      }
 
-  // Kumpulkan data absensi dari setiap baris tabel
-  const statusElements = document.querySelectorAll('.status-absen');
-  const catElements = document.querySelectorAll('.cat-absen');
-  
-  if (statusElements.length === 0) {
-    alert('Daftar siswa kosong atau belum dimuat!');
-    return;
-  }
+      const statusElements = document.querySelectorAll('.status-absen');
+      const catElements = document.querySelectorAll('.cat-absen');
+      
+      if (statusElements.length === 0) {
+        alert('Daftar siswa kosong atau belum dimuat!');
+        return;
+      }
 
-  const listAbsensi = [];
+      const listAbsensi = [];
 
-  statusElements.forEach((el, index) => {
-    const nisn = el.getAttribute('data-nisn');
-    const nama = el.getAttribute('data-nama');
-    const status = el.value;
-    const catatan = catElements[index] ? catElements[index].value : '';
+      statusElements.forEach((el, index) => {
+        const nisn = el.getAttribute('data-nisn');
+        const nama = el.getAttribute('data-nama');
+        const status = el.value;
+        const catatan = catElements[index] ? catElements[index].value : '';
 
-    listAbsensi.push({
-      nisn: nisn,
-      nama: nama,
-      status: status,
-      catatan: catatan
-    });
-  });
+        listAbsensi.push({
+          nisn: nisn,
+          nama: nama,
+          status: status,
+          catatan: catatan
+        });
+      });
 
-  showLoading(true);
+      showLoading(true);
 
-  const payload = {
-    action: 'simpanAbsensiMassal',
-    tanggal: tglInput,
-    daftarAbsensi: listAbsensi
-  };
+      const payload = {
+        action: 'simpanAbsensiMassal',
+        tanggal: tglInput,
+        daftarAbsensi: listAbsensi
+      };
 
-  fetch(SCRIPT_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(payload)
-  })
-  .then(res => res.json())
-  .then(data => {
-    showLoading(false);
-    if (data.success) {
-      alert('✅ Data absensi seluruh siswa berhasil disimpan ke Sheet!');
-      // Reset input catatan di tabel
-      document.querySelectorAll('.cat-absen').forEach(input => input.value = '');
-      // Refresh rekap samping jika sedang aktif
-      if (typeof loadSideRekap === 'function') loadSideRekap();
-    } else {
-      alert('❌ Gagal menyimpan absensi: ' + (data.message || 'Terjadi kesalahan.'));
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        showLoading(false);
+        if (data.success) {
+          alert('✅ Data absensi seluruh siswa berhasil disimpan ke Sheet!');
+          document.querySelectorAll('.cat-absen').forEach(input => input.value = '');
+          if (typeof loadSideRekap === 'function') loadSideRekap();
+        } else {
+          alert('❌ Gagal menyimpan absensi: ' + (data.message || 'Terjadi kesalahan.'));
+        }
+      })
+      .catch(err => {
+        showLoading(false);
+        console.error(err);
+        alert('❌ Terjadi kesalahan jaringan saat mengirim data absensi.');
+      });
     }
-  })
-  .catch(err => {
-    showLoading(false);
-    console.error(err);
-    alert('❌ Terjadi kesalahan jaringan saat mengirim data absensi.');
-  });
-}
 
     function loadRekapGuru() {
       const kat = document.getElementById('katRekap').value;
@@ -964,97 +980,89 @@
     }
 
     function previewLaporan() {
-  const kat = document.getElementById('cetakJenis').value;
-  const filterSiswa = document.getElementById('cetakSiswaFilter') ? document.getElementById('cetakSiswaFilter').value : 'semua';
-  
-  showLoading(true);
-
-  // Buat URL pencarian (mendukung filter siswa jika ada)
-  let url = `${SCRIPT_URL}?action=getRekapRingkas&kategori=${kat}`;
-  if (filterSiswa !== 'semua') {
-    url += `&nisn=${encodeURIComponent(filterSiswa)}`;
-  }
-
-  fetch(url)
-    .then(res => res.json())
-    .then(resData => {
-      showLoading(false);
-      const head = document.getElementById('printHead');
-      const body = document.getElementById('printBody');
-      const judul = document.getElementById('printJudul');
+      const kat = document.getElementById('cetakJenis').value;
+      const filterSiswa = document.getElementById('cetakSiswaFilter') ? document.getElementById('cetakSiswaFilter').value : 'semua';
       
-      head.innerHTML = '';
-      body.innerHTML = '';
+      showLoading(true);
 
-      const data = resData.data || [];
-
-      if (data.length === 0) {
-        body.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-3">Data tidak ditemukan / belum ada catatan.</td></tr>`;
-        return;
+      let url = `${SCRIPT_URL}?action=getRekapRingkas&kategori=${kat}`;
+      if (filterSiswa !== 'semua') {
+        url += `&nisn=${encodeURIComponent(filterSiswa)}`;
       }
 
-      // 1. LAPORAN POIN
-      if (kat === 'poin') {
-        if (judul) judul.innerText = "LAPORAN BUKU POIN SISWA";
-        head.innerHTML = `<tr><th>No</th><th>Tanggal</th><th>Nama Siswa</th><th>Indikator</th><th>Skor</th></tr>`;
-        data.forEach((item, idx) => {
-          body.innerHTML += `<tr><td>${idx+1}</td><td>${item.tanggal || '-'}</td><td><b>${item.nama || '-'}</b></td><td>${item.indikator || item.jenis || '-'}</td><td><b>${item.skor || 0} Poin</b></td></tr>`;
-        });
-      } 
-      
-      // 2. LAPORAN TABUNGAN
-      else if (kat === 'tabungan') {
-        if (judul) judul.innerText = "LAPORAN TABUNGAN SISWA";
-        head.innerHTML = `<tr><th>No</th><th>NISN</th><th>Nama Siswa</th><th>Jenis</th><th>Nominal</th></tr>`;
-        data.forEach((item, idx) => {
-          body.innerHTML += `<tr><td>${idx+1}</td><td>${item.nisn || '-'}</td><td><b>${item.nama || '-'}</b></td><td>${item.jenis || '-'}</td><td>Rp ${Number(item.nominal || 0).toLocaleString('id-ID')}</td></tr>`;
-        });
-      }
+      fetch(url)
+        .then(res => res.json())
+        .then(resData => {
+          showLoading(false);
+          const head = document.getElementById('printHead');
+          const body = document.getElementById('printBody');
+          const judul = document.getElementById('printJudul');
+          
+          head.innerHTML = '';
+          body.innerHTML = '';
 
-      // 3. LAPORAN ABSENSI (Baru Ditambahkan)
-      else if (kat === 'absensi') {
-        if (judul) judul.innerText = "LAPORAN KEHADIRAN / ABSENSI SISWA";
-        head.innerHTML = `<tr><th>No</th><th>Tanggal</th><th>NISN</th><th>Nama Siswa</th><th>Status</th><th>Catatan Guru</th></tr>`;
-        data.forEach((item, idx) => {
-          let statusBadge = item.status;
-          if (item.status === 'Sakit') statusBadge = '<span class="badge bg-warning text-dark">Sakit</span>';
-          else if (item.status === 'Izin') statusBadge = '<span class="badge bg-info text-dark">Izin</span>';
-          else if (item.status === 'Alpa') statusBadge = '<span class="badge bg-danger">Alpa</span>';
-          else if (item.status === 'Hadir') statusBadge = '<span class="badge bg-success">Hadir</span>';
+          const data = resData.data || [];
 
-          body.innerHTML += `<tr>
-            <td>${idx+1}</td>
-            <td>${item.tanggal || '-'}</td>
-            <td>${item.nisn || '-'}</td>
-            <td><b>${item.nama || '-'}</b></td>
-            <td>${statusBadge}</td>
-            <td>${item.catatan || '-'}</td>
-          </tr>`;
-        });
-      }
+          if (data.length === 0) {
+            body.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-3">Data tidak ditemukan / belum ada catatan.</td></tr>`;
+            return;
+          }
 
-      // 4. LAPORAN CATATAN SIKAP (Baru Ditambahkan)
-      else if (kat === 'sikap') {
-        if (judul) judul.innerText = "LAPORAN CATATAN SIKAP / PERILAKU SISWA";
-        head.innerHTML = `<tr><th>No</th><th>Tanggal</th><th>NISN</th><th>Nama Siswa</th><th>Jenis Sikap</th><th>Catatan Perkembangan</th></tr>`;
-        data.forEach((item, idx) => {
-          body.innerHTML += `<tr>
-            <td>${idx+1}</td>
-            <td>${item.tanggal || '-'}</td>
-            <td>${item.nisn || '-'}</td>
-            <td><b>${item.nama || '-'}</b></td>
-            <td><b>${item.jenis || '-'}</b></td>
-            <td>${item.catatan || '-'}</td>
-          </tr>`;
+          if (kat === 'poin') {
+            if (judul) judul.innerText = "LAPORAN BUKU POIN SISWA";
+            head.innerHTML = `<tr><th>No</th><th>Tanggal</th><th>Nama Siswa</th><th>Indikator</th><th>Skor</th></tr>`;
+            data.forEach((item, idx) => {
+              body.innerHTML += `<tr><td>${idx+1}</td><td>${item.tanggal || '-'}</td><td><b>${item.nama || '-'}</b></td><td>${item.indikator || item.jenis || '-'}</td><td><b>${item.skor || 0} Poin</b></td></tr>`;
+            });
+          } 
+          else if (kat === 'tabungan') {
+            if (judul) judul.innerText = "LAPORAN TABUNGAN SISWA";
+            head.innerHTML = `<tr><th>No</th><th>NISN</th><th>Nama Siswa</th><th>Jenis</th><th>Nominal</th></tr>`;
+            data.forEach((item, idx) => {
+              body.innerHTML += `<tr><td>${idx+1}</td><td>${item.nisn || '-'}</td><td><b>${item.nama || '-'}</b></td><td>${item.jenis || '-'}</td><td>Rp ${Number(item.nominal || 0).toLocaleString('id-ID')}</td></tr>`;
+            });
+          }
+          else if (kat === 'absensi') {
+            if (judul) judul.innerText = "LAPORAN KEHADIRAN / ABSENSI SISWA";
+            head.innerHTML = `<tr><th>No</th><th>Tanggal</th><th>NISN</th><th>Nama Siswa</th><th>Status</th><th>Catatan Guru</th></tr>`;
+            data.forEach((item, idx) => {
+              let statusBadge = item.status;
+              if (item.status === 'Sakit') statusBadge = '<span class="badge bg-warning text-dark">Sakit</span>';
+              else if (item.status === 'Izin') statusBadge = '<span class="badge bg-info text-dark">Izin</span>';
+              else if (item.status === 'Alpa') statusBadge = '<span class="badge bg-danger">Alpa</span>';
+              else if (item.status === 'Hadir') statusBadge = '<span class="badge bg-success">Hadir</span>';
+
+              body.innerHTML += `<tr>
+                <td>${idx+1}</td>
+                <td>${item.tanggal || '-'}</td>
+                <td>${item.nisn || '-'}</td>
+                <td><b>${item.nama || '-'}</b></td>
+                <td>${statusBadge}</td>
+                <td>${item.catatan || '-'}</td>
+              </tr>`;
+            });
+          }
+          else if (kat === 'sikap') {
+            if (judul) judul.innerText = "LAPORAN CATATAN SIKAP / PERILAKU SISWA";
+            head.innerHTML = `<tr><th>No</th><th>Tanggal</th><th>NISN</th><th>Nama Siswa</th><th>Jenis Sikap</th><th>Catatan Perkembangan</th></tr>`;
+            data.forEach((item, idx) => {
+              body.innerHTML += `<tr>
+                <td>${idx+1}</td>
+                <td>${item.tanggal || '-'}</td>
+                <td>${item.nisn || '-'}</td>
+                <td><b>${item.nama || '-'}</b></td>
+                <td><b>${item.jenis || '-'}</b></td>
+                <td>${item.catatan || '-'}</td>
+              </tr>`;
+            });
+          }
+        })
+        .catch(err => {
+          showLoading(false);
+          console.error(err);
+          alert("Gagal memuat data preview cetak laporan.");
         });
-      }
-    })
-    .catch(err => {
-      showLoading(false);
-      console.error(err);
-      alert("Gagal memuat data preview cetak laporan.");
-    });
-}
+    }
   </script>
 </body>
 </html>
