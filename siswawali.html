@@ -91,6 +91,58 @@
 
     .table-scroll { max-height: 480px; overflow-y: auto; }
 
+    /* Style Khusus Sel Absensi Mendatar */
+    .cell-absen {
+      min-width: 95px;
+      padding: 6px 4px !important;
+      font-size: 0.75rem;
+      line-height: 1.2;
+    }
+    .cell-absen.bg-danger-custom {
+      background-color: #dc3545 !important;
+      color: #ffffff !important;
+    }
+    .cell-absen.bg-warning-custom {
+      background-color: #ffc107 !important;
+      color: #212529 !important;
+    }
+    .cell-absen.bg-success-custom {
+      background-color: #198754 !important;
+      color: #ffffff !important;
+    }
+
+    /* Sticky Columns untuk No dan Nama Siswa */
+    .sticky-col-no {
+      position: sticky;
+      left: 0;
+      background-color: #ffffff;
+      z-index: 2;
+      width: 45px;
+      text-align: center;
+    }
+    .sticky-col-nama {
+      position: sticky;
+      left: 45px;
+      background-color: #ffffff;
+      z-index: 2;
+      min-width: 200px;
+    }
+
+    .sticky-header-no {
+      position: sticky;
+      left: 0;
+      background-color: #0d6efd !important;
+      z-index: 3;
+      width: 45px;
+    }
+    .sticky-header-nama {
+      position: sticky;
+      left: 45px;
+      background-color: #0d6efd !important;
+      z-index: 3;
+      min-width: 200px;
+    }
+
     @media print {
       body * { visibility: hidden; }
       #areaCetak, #areaCetak * { visibility: visible; }
@@ -109,7 +161,7 @@
     </div>
   </div>
 
-  <div class="container py-4">
+  <div class="container-fluid px-4 py-4">
 
     <!-- LOGIN FORM -->
     <div id="loginCard" class="row justify-content-center my-5">
@@ -201,7 +253,6 @@
                       </div>
 
                       <div class="row g-3">
-                        
                         <!-- TABUNGAN -->
                         <div class="col-md-4">
                           <div class="p-3 rounded-4 h-100" style="background-color: #ffffff; border: 1px solid var(--card-border);">
@@ -257,7 +308,6 @@
                             </div>
                           </div>
                         </div>
-
                       </div>
 
                       <div class="mt-4 text-end">
@@ -307,13 +357,13 @@
                 <select id="katRekap" class="form-select w-auto fw-medium" onchange="loadRekapGuru()">
                   <option value="poin">Rekap Buku Poin Siswa</option>
                   <option value="tabungan">Rekap Saldo Tabungan</option>
-                  <option value="absensi">Rekap Absensi (Live CSV)</option>
+                  <option value="absensi">Rekap Absensi Horizontal (Live CSV)</option>
                   <option value="sikap">Rekap Catatan Sikap</option>
                 </select>
               </div>
               <div id="rekapContainer" class="table-responsive border rounded-3">
-                <table class="table table-striped align-middle mb-0">
-                  <thead style="background-color: var(--dark-navy); color: white;" id="headRekap"></thead>
+                <table class="table table-bordered align-middle mb-0" id="tabelRekapFull">
+                  <thead style="background-color: #0d6efd; color: white;" id="headRekap"></thead>
                   <tbody id="bodyRekap"></tbody>
                 </table>
               </div>
@@ -330,7 +380,7 @@
                   <select id="cetakJenis" class="form-select">
                     <option value="poin">Laporan Poin Siswa</option>
                     <option value="tabungan">Laporan Tabungan</option>
-                    <option value="absensi">Laporan Absensi (CSV)</option>
+                    <option value="absensi">Laporan Absensi Horizontal (CSV)</option>
                     <option value="sikap">Laporan Catatan Sikap</option>
                   </select>
                 </div>
@@ -476,7 +526,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     // URL SCRIPT GOOGLE APPS SCRIPT
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwgPjUmUUQrsjaLFgWLuuLDFLeVRTV2DfUO7tz5BqBBVLffN_AJpDbx7piAd8v-tKAP/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwBGygIdR2lEX2PUakCZWF-Ednbqs5dHYQjRLRCXFs5Z_OSKvn4rIP43MexczF6z9lw/exec';
     
     // URL CSV PUBLIK UNTUK ABSENSI
     const ABSEN_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRm3OEXqf5PTCq1QjeC5C5budexAIzIXIZTMFErRijyT_zMCnzbNAQpl1nQjj_WGs0UT5Dqcg54LL7t/pub?gid=2116553657&single=true&output=csv';
@@ -514,12 +564,14 @@
       return result;
     }
 
-    // FUNGSI LOGIKA GABUNG ABSEN MASUK & PULANG (1 BARIS PER HARI PER SISWA)
+    // FUNGSI GABUNG ABSEN MASUK & PULANG PER HARI (SESUAIKAN SICK, PERMIT, ALPHA)
     function groupAbsensiPerSiswa(rawList) {
       const grouped = {};
 
       rawList.forEach(item => {
-        const tglOnly = item.tanggal.split(' ')[0];
+        const parts = item.tanggal.split(' ');
+        const tglOnly = parts[0] || item.tanggal;
+        const jamOnly = parts[1] ? parts[1].substring(0, 5) : '--:--';
         const key = `${tglOnly}_${item.nisn}`;
 
         if (!grouped[key]) {
@@ -527,22 +579,31 @@
             tanggal: tglOnly,
             nisn: item.nisn,
             nama: item.nama,
-            masuk: '-',
-            pulang: '-',
+            masuk: '--:--',
+            pulang: '--:--',
             catatan: item.catatan || '-'
           };
         }
 
-        const st = (item.status || '').toLowerCase();
-        const statusLabel = item.status || 'Hadir';
+        const st = (item.status || '').trim().toLowerCase();
 
-        if (st.includes('masuk')) {
-          grouped[key].masuk = statusLabel;
+        // PENANGANAN STATUS SAKIT, IZIN, ALFA
+        if (st.includes('sakit')) {
+          grouped[key].masuk = 'SAKIT';
+          grouped[key].pulang = 'SAKIT';
+        } else if (st.includes('izin') || st.includes('ijin')) {
+          grouped[key].masuk = 'IZIN';
+          grouped[key].pulang = 'IZIN';
+        } else if (st.includes('alfa') || st.includes('alpha') || st.includes('tanpa keterangan')) {
+          grouped[key].masuk = 'ALFA';
+          grouped[key].pulang = 'ALFA';
+        } else if (st.includes('masuk')) {
+          grouped[key].masuk = jamOnly !== '--:--' ? jamOnly : 'HADIR';
         } else if (st.includes('pulang')) {
-          grouped[key].pulang = statusLabel;
+          grouped[key].pulang = jamOnly !== '--:--' ? jamOnly : 'HADIR';
         } else {
-          grouped[key].masuk = statusLabel;
-          grouped[key].pulang = statusLabel;
+          grouped[key].masuk = jamOnly !== '--:--' ? jamOnly : (item.status.toUpperCase() || 'HADIR');
+          grouped[key].pulang = jamOnly !== '--:--' ? jamOnly : (item.status.toUpperCase() || 'HADIR');
         }
 
         if (item.catatan && item.catatan !== '-' && grouped[key].catatan === '-') {
@@ -575,6 +636,94 @@
       }
     }
 
+    // FUNGSI KONVERSI DATA ABSENSI KE MATRIKS MENDATAR (HORIZONTAL)
+    function buildHorizontalMatrix(flatAbsensiList) {
+      const datesSet = new Set();
+      const studentsMap = {};
+
+      flatAbsensiList.forEach(item => {
+        datesSet.add(item.tanggal);
+        if (!studentsMap[item.nisn]) {
+          studentsMap[item.nisn] = {
+            nama: item.nama,
+            nisn: item.nisn,
+            records: {}
+          };
+        }
+        studentsMap[item.nisn].records[item.tanggal] = item;
+      });
+
+      const sortedDates = Array.from(datesSet).sort();
+      return { sortedDates, studentsMap };
+    }
+
+    // GENERATE HTML UNTUK ABSENSI HORIZONTAL (URUTKAN ABJAD SISWA & KELOLA STATUS WARNA)
+    function renderHorizontalAbsensiTable(sortedDates, studentsMap) {
+      let headHtml = `<tr style="background-color: #0d6efd; color: white;">`;
+      headHtml += `<th class="text-center sticky-header-no">NO</th>`;
+      headHtml += `<th class="sticky-header-nama">NAMA SISWA</th>`;
+      
+      sortedDates.forEach(tgl => {
+        headHtml += `<th class="text-center text-uppercase" style="min-width: 100px;">${tgl}</th>`;
+      });
+      headHtml += `</tr>`;
+
+      let bodyHtml = '';
+      
+      // URUTKAN SISWA BERDASARKAN ABJAD (A -> Z)
+      const sortedStudents = Object.values(studentsMap).sort((a, b) => 
+        a.nama.localeCompare(b.nama, 'id', { sensitivity: 'base' })
+      );
+
+      if (sortedStudents.length === 0) {
+        bodyHtml = `<tr><td colspan="${sortedDates.length + 2}" class="text-center py-4 text-muted">Tidak ada data absensi.</td></tr>`;
+      } else {
+        sortedStudents.forEach((stData, index) => {
+          bodyHtml += `<tr>`;
+          bodyHtml += `<td class="fw-bold text-muted sticky-col-no border-end">${index + 1}</td>`;
+          bodyHtml += `<td class="fw-bold text-dark sticky-col-nama border-end">${stData.nama}</td>`;
+
+          sortedDates.forEach(tgl => {
+            const rec = stData.records[tgl];
+            let cellBg = 'bg-danger-custom'; 
+            let jamMasuk = 'ALFA';
+            let jamPulang = 'ALFA';
+
+            if (rec) {
+              jamMasuk = rec.masuk || '--:--';
+              jamPulang = rec.pulang || '--:--';
+
+              const invalidKeywords = ['alfa', 'izin', 'ijin', 'sakit', '--:--'];
+              const isMasukValid = !invalidKeywords.some(kw => jamMasuk.toLowerCase().includes(kw));
+              const isPulangValid = !invalidKeywords.some(kw => jamPulang.toLowerCase().includes(kw));
+
+              if (isMasukValid && isPulangValid) {
+                cellBg = 'bg-success-custom'; // Hijau jika masuk & pulang jam terisi
+              } else if (isMasukValid || isPulangValid) {
+                cellBg = 'bg-warning-custom'; // Kuning jika hanya salah satu terisi jam
+              } else {
+                cellBg = 'bg-danger-custom';  // Merah jika Sakit/Izin/Alfa/Kosong
+              }
+            }
+
+            bodyHtml += `
+              <td class="text-center align-middle cell-absen ${cellBg} border">
+                <div class="fw-normal" style="font-size: 0.62rem; opacity: 0.85;">MASUK</div>
+                <div class="fw-bold">${jamMasuk}</div>
+                <hr class="my-1 border-white opacity-25">
+                <div class="fw-normal" style="font-size: 0.62rem; opacity: 0.85;">PULANG</div>
+                <div class="fw-bold">${jamPulang}</div>
+              </td>
+            `;
+          });
+
+          bodyHtml += `</tr>`;
+        });
+      }
+
+      return { headHtml, bodyHtml };
+    }
+
     // MEMUAT DAFTAR SISWA DARI SHEET 'Siswa' (Via GAS)
     function loadDaftarSiswa() {
       const selIndiv = document.getElementById('inputSiswa');
@@ -587,7 +736,7 @@
         .then(resData => {
           if (!resData.success || !resData.data) return;
 
-          masterSiswaCache = resData.data;
+          masterSiswaCache = resData.data.sort((a, b) => a.nama.localeCompare(b.nama));
 
           if (selIndiv) selIndiv.innerHTML = '<option value="">-- Pilih Siswa --</option>';
           if (selFilter) selFilter.innerHTML = '<option value="semua">-- Semua Siswa --</option>';
@@ -760,7 +909,7 @@
       document.getElementById('ortuDashboard').style.display = 'none';
     }
 
-    // DASHBOARD ORANG TUA (Absensi via CSV, Sisanya via GAS)
+    // DASHBOARD ORANG TUA
     async function loadSemuaDataOrtu() {
       if (!currentUser) return;
 
@@ -780,15 +929,15 @@
           fetchGAS('poin')
         ]);
 
-        // 1. Render Absensi (Gabung 1 Baris)
+        // 1. Render Absensi
         const bodyAbs = document.getElementById('ortuBodyAbsensi');
         bodyAbs.innerHTML = '';
         if (listAbs.length === 0) {
           bodyAbs.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-3">Belum ada riwayat absensi.</td></tr>`;
         } else {
           listAbs.forEach(item => {
-            const badgeMasuk = item.masuk !== '-' ? `<span class="badge bg-primary px-3 py-2">${item.masuk}</span>` : '<span class="text-muted">-</span>';
-            const badgePulang = item.pulang !== '-' ? `<span class="badge bg-info text-dark px-3 py-2">${item.pulang}</span>` : '<span class="text-muted">-</span>';
+            const badgeMasuk = item.masuk !== '--:--' ? `<span class="badge bg-primary px-3 py-2">${item.masuk}</span>` : '<span class="text-muted">-</span>';
+            const badgePulang = item.pulang !== '--:--' ? `<span class="badge bg-info text-dark px-3 py-2">${item.pulang}</span>` : '<span class="text-muted">-</span>';
 
             bodyAbs.innerHTML += `<tr>
               <td>${item.tanggal}</td>
@@ -871,9 +1020,9 @@
         const data = await fetchAbsensiCSV();
         head.innerHTML = `<tr><th>Nama</th><th class="text-center">Masuk</th><th class="text-center">Pulang</th></tr>`;
         body.innerHTML = '';
-        data.forEach(item => {
-          const badgeM = item.masuk !== '-' ? `<span class="badge bg-primary">${item.masuk}</span>` : '-';
-          const badgeP = item.pulang !== '-' ? `<span class="badge bg-info text-dark">${item.pulang}</span>` : '-';
+        data.sort((a, b) => a.nama.localeCompare(b.nama)).forEach(item => {
+          const badgeM = item.masuk !== '--:--' ? `<span class="badge bg-primary">${item.masuk}</span>` : '-';
+          const badgeP = item.pulang !== '--:--' ? `<span class="badge bg-info text-dark">${item.pulang}</span>` : '-';
           body.innerHTML += `<tr><td><b>${item.nama}</b></td><td class="text-center">${badgeM}</td><td class="text-center">${badgeP}</td></tr>`;
         });
       } else {
@@ -887,17 +1036,17 @@
 
             if (kat === 'poin') {
               head.innerHTML = `<tr><th>Nama Siswa</th><th class="text-center">Skor</th></tr>`;
-              data.forEach(item => {
+              data.sort((a, b) => a.nama.localeCompare(b.nama)).forEach(item => {
                 body.innerHTML += `<tr><td><b>${item.nama}</b></td><td class="text-center"><span class="badge px-2 py-1" style="background-color: var(--accent-purple);">${item.skor || 0} Poin</span></td></tr>`;
               });
             } else if (kat === 'tabungan') {
               head.innerHTML = `<tr><th>Nama Siswa</th><th class="text-end">Saldo</th></tr>`;
-              data.forEach(item => {
+              data.sort((a, b) => a.nama.localeCompare(b.nama)).forEach(item => {
                 body.innerHTML += `<tr><td><b>${item.nama}</b></td><td class="text-end fw-bold text-success">Rp ${Number(item.nominal || 0).toLocaleString('id-ID')}</td></tr>`;
               });
             } else if (kat === 'sikap') {
               head.innerHTML = `<tr><th>Nama</th><th>Sikap</th><th>Catatan</th></tr>`;
-              data.forEach(item => {
+              data.sort((a, b) => a.nama.localeCompare(b.nama)).forEach(item => {
                 body.innerHTML += `<tr><td><b>${item.nama}</b></td><td><small class="fw-bold">${item.jenis}</small></td><td><small>${item.catatan}</small></td></tr>`;
               });
             }
@@ -914,23 +1063,14 @@
       const body = document.getElementById('bodyRekap');
 
       if (kat === 'absensi') {
-        const data = await fetchAbsensiCSV();
+        const flatList = await fetchAbsensiCSV();
         showLoading(false);
-        head.innerHTML = `<tr><th>Tanggal</th><th>NISN</th><th>Nama Siswa</th><th class="text-center">Masuk</th><th class="text-center">Pulang</th><th>Catatan</th></tr>`;
-        body.innerHTML = '';
-        data.forEach(item => {
-          const badgeMasuk = item.masuk !== '-' ? `<span class="badge bg-primary px-3 py-2">${item.masuk}</span>` : '<span class="text-muted">-</span>';
-          const badgePulang = item.pulang !== '-' ? `<span class="badge bg-info text-dark px-3 py-2">${item.pulang}</span>` : '<span class="text-muted">-</span>';
+        
+        const { sortedDates, studentsMap } = buildHorizontalMatrix(flatList);
+        const { headHtml, bodyHtml } = renderHorizontalAbsensiTable(sortedDates, studentsMap);
 
-          body.innerHTML += `<tr>
-            <td>${item.tanggal}</td>
-            <td>${item.nisn}</td>
-            <td><b>${item.nama}</b></td>
-            <td class="text-center">${badgeMasuk}</td>
-            <td class="text-center">${badgePulang}</td>
-            <td>${item.catatan || '-'}</td>
-          </tr>`;
-        });
+        head.innerHTML = headHtml;
+        body.innerHTML = bodyHtml;
       } else {
         fetch(`${SCRIPT_URL}?action=getRekapRingkas&kategori=${kat}`)
           .then(res => res.json())
@@ -942,17 +1082,17 @@
 
             if (kat === 'poin') {
               head.innerHTML = `<tr><th>Tanggal</th><th>Nama Siswa</th><th>Jenis Penilaian</th><th>Indikator</th><th>Skor</th></tr>`;
-              data.forEach(item => {
+              data.sort((a, b) => a.nama.localeCompare(b.nama)).forEach(item => {
                 body.innerHTML += `<tr><td>${item.tanggal}</td><td><b>${item.nama}</b></td><td>${item.jenis}</td><td>${item.indikator}</td><td><b style="color: var(--accent-purple);">${item.skor} Poin</b></td></tr>`;
               });
             } else if (kat === 'tabungan') {
               head.innerHTML = `<tr><th>Waktu</th><th>NISN</th><th>Nama Siswa</th><th>Jenis</th><th>Nominal</th><th>Keterangan</th></tr>`;
-              data.forEach(item => {
+              data.sort((a, b) => a.nama.localeCompare(b.nama)).forEach(item => {
                 body.innerHTML += `<tr><td>${item.tanggal}</td><td>${item.nisn}</td><td><b>${item.nama}</b></td><td>${item.jenis}</td><td class="fw-bold text-success">Rp ${Number(item.nominal).toLocaleString('id-ID')}</td><td>${item.keterangan || '-'}</td></tr>`;
               });
             } else if (kat === 'sikap') {
               head.innerHTML = `<tr><th>Waktu</th><th>NISN</th><th>Nama Siswa</th><th>Jenis Sikap</th><th>Catatan</th></tr>`;
-              data.forEach(item => {
+              data.sort((a, b) => a.nama.localeCompare(b.nama)).forEach(item => {
                 body.innerHTML += `<tr><td>${item.tanggal}</td><td>${item.nisn}</td><td><b>${item.nama}</b></td><td><b>${item.jenis}</b></td><td>${item.catatan || '-'}</td></tr>`;
               });
             }
@@ -973,23 +1113,16 @@
 
       if (kat === 'absensi') {
         const nisnFilter = filterSiswa !== 'semua' ? filterSiswa : '';
-        const data = await fetchAbsensiCSV(nisnFilter);
+        const flatList = await fetchAbsensiCSV(nisnFilter);
         showLoading(false);
 
         if (judul) judul.innerText = "LAPORAN ABSENSI / PRESENSI SISWA";
-        head.innerHTML = `<tr><th>No</th><th>Tanggal</th><th>NISN</th><th>Nama Siswa</th><th class="text-center">Masuk</th><th class="text-center">Pulang</th><th>Catatan</th></tr>`;
-        body.innerHTML = '';
-        data.forEach((item, idx) => {
-          body.innerHTML += `<tr>
-            <td>${idx+1}</td>
-            <td>${item.tanggal || '-'}</td>
-            <td>${item.nisn || '-'}</td>
-            <td><b>${item.nama || '-'}</b></td>
-            <td class="text-center">${item.masuk}</td>
-            <td class="text-center">${item.pulang}</td>
-            <td>${item.catatan || '-'}</td>
-          </tr>`;
-        });
+        
+        const { sortedDates, studentsMap } = buildHorizontalMatrix(flatList);
+        const { headHtml, bodyHtml } = renderHorizontalAbsensiTable(sortedDates, studentsMap);
+
+        head.innerHTML = headHtml;
+        body.innerHTML = bodyHtml;
       } else {
         let url = `${SCRIPT_URL}?action=getRekapRingkas&kategori=${kat}`;
         if (filterSiswa !== 'semua') {
@@ -1002,7 +1135,7 @@
             showLoading(false);
             head.innerHTML = '';
             body.innerHTML = '';
-            const data = resData.data || [];
+            const data = (resData.data || []).sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
 
             if (kat === 'poin') {
               if (judul) judul.innerText = "LAPORAN BUKU POIN SISWA";
