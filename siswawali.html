@@ -441,16 +441,15 @@
             <table class="table table-hover align-middle mb-0">
               <thead style="background-color: var(--dark-navy); color: white;">
                 <tr>
+                  <th class="text-center" style="width: 50px;">No</th>
                   <th>Tanggal</th>
-                  <th>NISN</th>
-                  <th>Nama Siswa</th>
                   <th class="text-center">Masuk</th>
                   <th class="text-center">Pulang</th>
-                  <th>Catatan / Kelas</th>
+                  <th>Catatan / Keterangan</th>
                 </tr>
               </thead>
               <tbody id="ortuBodyAbsensi">
-                <tr><td colspan="6" class="text-center py-3 text-muted">Memuat data absensi...</td></tr>
+                <tr><td colspan="5" class="text-center py-3 text-muted">Memuat data absensi...</td></tr>
               </tbody>
             </table>
           </div>
@@ -525,8 +524,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // URL SCRIPT GOOGLE APPS SCRIPT
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwBGygIdR2lEX2PUakCZWF-Ednbqs5dHYQjRLRCXFs5Z_OSKvn4rIP43MexczF6z9lw/exec';
+    // URL SCRIPT GOOGLE APPS SCRIPT DEPLOYMENT TERBARU
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyhyAcZtsxsn9fD1g5nKkIuM1QPHbFbSFlWQUXfJysujQ5mrbVUP6PZ9_v0iWoHXbx7/exec';
     
     // URL CSV PUBLIK UNTUK ABSENSI
     const ABSEN_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRm3OEXqf5PTCq1QjeC5C5budexAIzIXIZTMFErRijyT_zMCnzbNAQpl1nQjj_WGs0UT5Dqcg54LL7t/pub?gid=2116553657&single=true&output=csv';
@@ -541,6 +540,47 @@
     function safeSetText(id, value) {
       const el = document.getElementById(id);
       if (el) el.innerText = value;
+    }
+
+    // HELPER: Normalisasi NISN (Zero-padding 10 digit)
+    function normalizeNisn(nisn) {
+      if (!nisn && nisn !== 0) return '';
+      let str = String(nisn).replace(/\D/g, '');
+      if (!str) return '';
+      while (str.length < 10) {
+        str = '0' + str;
+      }
+      return str;
+    }
+
+    // HELPER: GROUPING TABUNGAN UNTUK AKUMULASI PER SISWA
+    function processTabunganSummary(dataList) {
+      const summaryMap = {};
+
+      dataList.forEach(item => {
+        const key = item.nisn || item.nama;
+        if (!summaryMap[key]) {
+          summaryMap[key] = {
+            nisn: item.nisn || '-',
+            nama: item.nama || '-',
+            totalSetor: 0,
+            totalTarik: 0,
+            saldoAkhir: 0
+          };
+        }
+
+        const nominal = Number(item.nominal || 0);
+        const jns = String(item.jenis || '').toLowerCase();
+
+        if (jns.includes('masuk') || jns.includes('setor')) {
+          summaryMap[key].totalSetor += nominal;
+        } else if (jns.includes('keluar') || jns.includes('tarik')) {
+          summaryMap[key].totalTarik += nominal;
+        }
+        summaryMap[key].saldoAkhir = summaryMap[key].totalSetor - summaryMap[key].totalTarik;
+      });
+
+      return Object.values(summaryMap).sort((a, b) => a.nama.localeCompare(b.nama));
     }
 
     // HELPER: PARSING DATA CSV MENJADI ARRAY OBJECT
@@ -564,7 +604,7 @@
       return result;
     }
 
-    // FUNGSI GABUNG ABSEN MASUK & PULANG PER HARI (SESUAIKAN SICK, PERMIT, ALPHA)
+    // FUNGSI GABUNG ABSEN MASUK & PULANG PER HARI
     function groupAbsensiPerSiswa(rawList) {
       const grouped = {};
 
@@ -587,7 +627,6 @@
 
         const st = (item.status || '').trim().toLowerCase();
 
-        // PENANGANAN STATUS SAKIT, IZIN, ALFA
         if (st.includes('sakit')) {
           grouped[key].masuk = 'SAKIT';
           grouped[key].pulang = 'SAKIT';
@@ -623,8 +662,10 @@
         let listAbs = groupAbsensiPerSiswa(rawList);
 
         if (filterNisn || filterNama) {
+          const targetNisnNorm = filterNisn ? normalizeNisn(filterNisn) : '';
           listAbs = listAbs.filter(item => {
-            const matchNisn = filterNisn ? item.nisn === filterNisn : true;
+            const itemNisnNorm = normalizeNisn(item.nisn);
+            const matchNisn = targetNisnNorm ? (itemNisnNorm === targetNisnNorm) : true;
             const matchNama = filterNama ? item.nama.toLowerCase().includes(filterNama.toLowerCase()) : true;
             return matchNisn && matchNama;
           });
@@ -643,21 +684,22 @@
 
       flatAbsensiList.forEach(item => {
         datesSet.add(item.tanggal);
-        if (!studentsMap[item.nisn]) {
-          studentsMap[item.nisn] = {
+        const nisnKey = normalizeNisn(item.nisn) || item.nisn;
+        if (!studentsMap[nisnKey]) {
+          studentsMap[nisnKey] = {
             nama: item.nama,
-            nisn: item.nisn,
+            nisn: nisnKey,
             records: {}
           };
         }
-        studentsMap[item.nisn].records[item.tanggal] = item;
+        studentsMap[nisnKey].records[item.tanggal] = item;
       });
 
       const sortedDates = Array.from(datesSet).sort();
       return { sortedDates, studentsMap };
     }
 
-    // GENERATE HTML UNTUK ABSENSI HORIZONTAL (URUTKAN ABJAD SISWA & KELOLA STATUS WARNA)
+    // GENERATE HTML UNTUK ABSENSI HORIZONTAL
     function renderHorizontalAbsensiTable(sortedDates, studentsMap) {
       let headHtml = `<tr style="background-color: #0d6efd; color: white;">`;
       headHtml += `<th class="text-center sticky-header-no">NO</th>`;
@@ -669,8 +711,6 @@
       headHtml += `</tr>`;
 
       let bodyHtml = '';
-      
-      // URUTKAN SISWA BERDASARKAN ABJAD (A -> Z)
       const sortedStudents = Object.values(studentsMap).sort((a, b) => 
         a.nama.localeCompare(b.nama, 'id', { sensitivity: 'base' })
       );
@@ -698,11 +738,11 @@
               const isPulangValid = !invalidKeywords.some(kw => jamPulang.toLowerCase().includes(kw));
 
               if (isMasukValid && isPulangValid) {
-                cellBg = 'bg-success-custom'; // Hijau jika masuk & pulang jam terisi
+                cellBg = 'bg-success-custom';
               } else if (isMasukValid || isPulangValid) {
-                cellBg = 'bg-warning-custom'; // Kuning jika hanya salah satu terisi jam
+                cellBg = 'bg-warning-custom';
               } else {
-                cellBg = 'bg-danger-custom';  // Merah jika Sakit/Izin/Alfa/Kosong
+                cellBg = 'bg-danger-custom';
               }
             }
 
@@ -909,52 +949,66 @@
       document.getElementById('ortuDashboard').style.display = 'none';
     }
 
+    // HELPER: RENDER TABEL ABSENSI UNTUK PORTAL ORTU
+    function renderTabelAbsenOrtu(listData) {
+      const container = document.getElementById('ortuBodyAbsensi');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      if (!listData || listData.length === 0) {
+        container.innerHTML = `<tr><td colspan="5" class="text-center py-3 text-muted">Belum ada riwayat presensi untuk siswa ini.</td></tr>`;
+        return;
+      }
+
+      listData.forEach((item, idx) => {
+        const badgeMasuk = (item.masuk && item.masuk !== '--:--') 
+          ? `<span class="badge bg-primary px-3 py-2">${item.masuk}</span>` 
+          : '<span class="text-muted">-</span>';
+        const badgePulang = (item.pulang && item.pulang !== '--:--') 
+          ? `<span class="badge bg-info text-dark px-3 py-2">${item.pulang}</span>` 
+          : '<span class="text-muted">-</span>';
+
+        container.innerHTML += `<tr>
+          <td class="text-center">${idx + 1}</td>
+          <td>${item.tanggal || '-'}</td>
+          <td class="text-center">${badgeMasuk}</td>
+          <td class="text-center">${badgePulang}</td>
+          <td>${item.catatan || '-'}</td>
+        </tr>`;
+      });
+    }
+
     // DASHBOARD ORANG TUA
     async function loadSemuaDataOrtu() {
       if (!currentUser) return;
 
-      const nisnTarget = String(currentUser.studentId || currentUser.username || '').trim();
+      const rawNisn = currentUser.studentId || currentUser.username || '';
+      const nisnTargetNorm = normalizeNisn(rawNisn);
       const namaTarget = currentUser.nama || '';
 
       const fetchGAS = (kat) => {
-        const url = `${SCRIPT_URL}?action=getRekapRingkas&kategori=${kat}&nisn=${encodeURIComponent(nisnTarget)}&namaSiswa=${encodeURIComponent(namaTarget)}`;
+        const url = `${SCRIPT_URL}?action=getRekapRingkas&kategori=${kat}&nisn=${encodeURIComponent(nisnTargetNorm)}&namaSiswa=${encodeURIComponent(namaTarget)}`;
         return fetch(url).then(res => res.json());
       };
 
       try {
         const [listAbs, resTabungan, resSikap, resPoin] = await Promise.all([
-          fetchAbsensiCSV(nisnTarget, namaTarget),
+          fetchAbsensiCSV(nisnTargetNorm, namaTarget),
           fetchGAS('tabungan'),
           fetchGAS('sikap'),
           fetchGAS('poin')
         ]);
 
-        // 1. Render Absensi
-        const bodyAbs = document.getElementById('ortuBodyAbsensi');
-        bodyAbs.innerHTML = '';
-        if (listAbs.length === 0) {
-          bodyAbs.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-3">Belum ada riwayat absensi.</td></tr>`;
-        } else {
-          listAbs.forEach(item => {
-            const badgeMasuk = item.masuk !== '--:--' ? `<span class="badge bg-primary px-3 py-2">${item.masuk}</span>` : '<span class="text-muted">-</span>';
-            const badgePulang = item.pulang !== '--:--' ? `<span class="badge bg-info text-dark px-3 py-2">${item.pulang}</span>` : '<span class="text-muted">-</span>';
+        // 1. Render Absensi Ortu
+        renderTabelAbsenOrtu(listAbs);
 
-            bodyAbs.innerHTML += `<tr>
-              <td>${item.tanggal}</td>
-              <td>${item.nisn}</td>
-              <td><b>${item.nama}</b></td>
-              <td class="text-center">${badgeMasuk}</td>
-              <td class="text-center">${badgePulang}</td>
-              <td>${item.catatan || '-'}</td>
-            </tr>`;
-          });
-        }
-
-        // 2. Render Tabungan
+        // 2. Render Tabungan Ortu
         const bodyTab = document.getElementById('ortuBodyTabungan');
         bodyTab.innerHTML = '';
-        const listTab = resTabungan.data || [];
+        const listTab = (resTabungan.data || []).filter(item => normalizeNisn(item.nisn) === nisnTargetNorm || !nisnTargetNorm);
         let totalSaldo = 0;
+
         if (listTab.length === 0) {
           bodyTab.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada riwayat tabungan.</td></tr>`;
         } else {
@@ -970,10 +1024,11 @@
         }
         safeSetText('ortuTotalTabunganVal', 'Rp ' + Number(totalSaldo).toLocaleString('id-ID'));
 
-        // 3. Render Sikap
+        // 3. Render Sikap Ortu
         const bodySikap = document.getElementById('ortuBodySikap');
         bodySikap.innerHTML = '';
-        const listSikap = resSikap.data || [];
+        const listSikap = (resSikap.data || []).filter(item => normalizeNisn(item.nisn) === nisnTargetNorm || !nisnTargetNorm);
+
         if (listSikap.length === 0) {
           bodySikap.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada catatan sikap.</td></tr>`;
         } else {
@@ -982,11 +1037,12 @@
           });
         }
 
-        // 4. Render Poin
+        // 4. Render Poin Ortu
         const bodyPoin = document.getElementById('ortuBodyPoin');
         bodyPoin.innerHTML = '';
-        const listPoin = resPoin.data || [];
+        const listPoin = (resPoin.data || []).filter(item => normalizeNisn(item.nisn) === nisnTargetNorm || !nisnTargetNorm);
         let totalPoin = 0;
+
         if (listPoin.length === 0) {
           bodyPoin.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada riwayat poin.</td></tr>`;
         } else {
@@ -1041,8 +1097,9 @@
               });
             } else if (kat === 'tabungan') {
               head.innerHTML = `<tr><th>Nama Siswa</th><th class="text-end">Saldo</th></tr>`;
-              data.sort((a, b) => a.nama.localeCompare(b.nama)).forEach(item => {
-                body.innerHTML += `<tr><td><b>${item.nama}</b></td><td class="text-end fw-bold text-success">Rp ${Number(item.nominal || 0).toLocaleString('id-ID')}</td></tr>`;
+              const summaryData = processTabunganSummary(data);
+              summaryData.forEach(item => {
+                body.innerHTML += `<tr><td><b>${item.nama}</b></td><td class="text-end fw-bold text-success">Rp ${Number(item.saldoAkhir).toLocaleString('id-ID')}</td></tr>`;
               });
             } else if (kat === 'sikap') {
               head.innerHTML = `<tr><th>Nama</th><th>Sikap</th><th>Catatan</th></tr>`;
@@ -1054,7 +1111,7 @@
       }
     }
 
-    // REKAP FULL GURU
+    // REKAP FULL GURU (TAB 2)
     async function loadRekapGuru() {
       const kat = document.getElementById('katRekap').value;
       showLoading(true);
@@ -1086,10 +1143,31 @@
                 body.innerHTML += `<tr><td>${item.tanggal}</td><td><b>${item.nama}</b></td><td>${item.jenis}</td><td>${item.indikator}</td><td><b style="color: var(--accent-purple);">${item.skor} Poin</b></td></tr>`;
               });
             } else if (kat === 'tabungan') {
-              head.innerHTML = `<tr><th>Waktu</th><th>NISN</th><th>Nama Siswa</th><th>Jenis</th><th>Nominal</th><th>Keterangan</th></tr>`;
-              data.sort((a, b) => a.nama.localeCompare(b.nama)).forEach(item => {
-                body.innerHTML += `<tr><td>${item.tanggal}</td><td>${item.nisn}</td><td><b>${item.nama}</b></td><td>${item.jenis}</td><td class="fw-bold text-success">Rp ${Number(item.nominal).toLocaleString('id-ID')}</td><td>${item.keterangan || '-'}</td></tr>`;
-              });
+              head.innerHTML = `<tr>
+                <th class="text-center" style="width: 50px;">No</th>
+                <th>NISN</th>
+                <th>Nama Siswa</th>
+                <th class="text-end">Total Setor</th>
+                <th class="text-end">Total Tarik</th>
+                <th class="text-end">Saldo Akhir Tabungan</th>
+              </tr>`;
+              
+              const summaryData = processTabunganSummary(data);
+
+              if (summaryData.length === 0) {
+                body.innerHTML = `<tr><td colspan="6" class="text-center py-3 text-muted">Belum ada data tabungan.</td></tr>`;
+              } else {
+                summaryData.forEach((item, idx) => {
+                  body.innerHTML += `<tr>
+                    <td class="text-center">${idx + 1}</td>
+                    <td>${item.nisn}</td>
+                    <td><b>${item.nama}</b></td>
+                    <td class="text-end text-success">Rp ${Number(item.totalSetor).toLocaleString('id-ID')}</td>
+                    <td class="text-end text-danger">Rp ${Number(item.totalTarik).toLocaleString('id-ID')}</td>
+                    <td class="text-end fw-bold text-success" style="font-size: 1.05rem;">Rp ${Number(item.saldoAkhir).toLocaleString('id-ID')}</td>
+                  </tr>`;
+                });
+              }
             } else if (kat === 'sikap') {
               head.innerHTML = `<tr><th>Waktu</th><th>NISN</th><th>Nama Siswa</th><th>Jenis Sikap</th><th>Catatan</th></tr>`;
               data.sort((a, b) => a.nama.localeCompare(b.nama)).forEach(item => {
@@ -1100,62 +1178,239 @@
       }
     }
 
-    // PREVIEW CETAK LAPORAN
+    // PREVIEW CETAK LAPORAN (TAB 3)
     async function previewLaporan() {
       const kat = document.getElementById('cetakJenis').value;
-      const filterSiswa = document.getElementById('cetakSiswaFilter').value;
+      const filterSelect = document.getElementById('cetakSiswaFilter');
+      const filterSiswa = filterSelect.value; // NISN atau 'semua'
       
-      showLoading(true);
+      // Ambil Teks Nama Siswa yang sedang dipilih dari Dropdown Filter
+      let namaSiswaSelected = '';
+      if (filterSelect.selectedIndex >= 0) {
+        namaSiswaSelected = filterSelect.options[filterSelect.selectedIndex].text;
+        // Bersihkan format "NAMA (NISN)" jika ada di text dropdown
+        namaSiswaSelected = namaSiswaSelected.replace(/\s*\(\d+\)/g, '').trim();
+      }
+
+      if (typeof showLoading === 'function') showLoading(true);
 
       const head = document.getElementById('printHead');
       const body = document.getElementById('printBody');
       const judul = document.getElementById('printJudul');
 
+      if (head) head.innerHTML = '';
+      if (body) body.innerHTML = '';
+
+      const targetNisnNorm = filterSiswa !== 'semua' ? normalizeNisn(filterSiswa) : 'semua';
+
       if (kat === 'absensi') {
-        const nisnFilter = filterSiswa !== 'semua' ? filterSiswa : '';
-        const flatList = await fetchAbsensiCSV(nisnFilter);
-        showLoading(false);
+        try {
+          const nisnFilter = filterSiswa !== 'semua' ? filterSiswa : '';
+          if (typeof fetchAbsensiCSV === 'function') {
+            const flatList = await fetchAbsensiCSV(nisnFilter);
+            
+            if (judul) {
+              judul.innerText = (targetNisnNorm !== 'semua' && namaSiswaSelected) 
+                ? `LAPORAN ABSENSI SISWA ${namaSiswaSelected.toUpperCase()}`
+                : "LAPORAN ABSENSI / PRESENSI SISWA";
+            }
 
-        if (judul) judul.innerText = "LAPORAN ABSENSI / PRESENSI SISWA";
-        
-        const { sortedDates, studentsMap } = buildHorizontalMatrix(flatList);
-        const { headHtml, bodyHtml } = renderHorizontalAbsensiTable(sortedDates, studentsMap);
-
-        head.innerHTML = headHtml;
-        body.innerHTML = bodyHtml;
-      } else {
-        let url = `${SCRIPT_URL}?action=getRekapRingkas&kategori=${kat}`;
-        if (filterSiswa !== 'semua') {
-          url += `&nisn=${encodeURIComponent(filterSiswa)}`;
+            if (typeof buildHorizontalMatrix === 'function' && typeof renderHorizontalAbsensiTable === 'function') {
+              const { sortedDates, studentsMap } = buildHorizontalMatrix(flatList);
+              const { headHtml, bodyHtml } = renderHorizontalAbsensiTable(sortedDates, studentsMap);
+              if (head) head.innerHTML = headHtml;
+              if (body) body.innerHTML = bodyHtml;
+            }
+          }
+        } catch (err) {
+          console.error("Error Absensi:", err);
+        } finally {
+          if (typeof showLoading === 'function') showLoading(false);
         }
+      } else {
+        const url = `${SCRIPT_URL}?action=getRekapRingkas&kategori=${kat}`;
 
         fetch(url)
-          .then(res => res.json())
+          .then(res => {
+            if (!res.ok) throw new Error("HTTP Status " + res.status);
+            return res.json();
+          })
           .then(resData => {
-            showLoading(false);
-            head.innerHTML = '';
-            body.innerHTML = '';
-            const data = (resData.data || []).sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
+            let data = (resData && resData.data) ? resData.data : [];
 
             if (kat === 'poin') {
-              if (judul) judul.innerText = "LAPORAN BUKU POIN SISWA";
-              head.innerHTML = `<tr><th>No</th><th>Tanggal</th><th>Nama Siswa</th><th>Indikator</th><th>Skor</th></tr>`;
-              data.forEach((item, idx) => {
-                body.innerHTML += `<tr><td>${idx+1}</td><td>${item.tanggal || '-'}</td><td><b>${item.nama || '-'}</b></td><td>${item.indikator || item.jenis || '-'}</td><td><b>${item.skor || 0} Poin</b></td></tr>`;
-              });
+              if (judul) {
+                judul.innerText = (targetNisnNorm !== 'semua' && namaSiswaSelected)
+                  ? `LAPORAN BUKU POIN SISWA ${namaSiswaSelected.toUpperCase()}`
+                  : "LAPORAN BUKU POIN SISWA";
+              }
+              
+              if (targetNisnNorm !== 'semua') {
+                data = data.filter(item => normalizeNisn(item.nisn) === targetNisnNorm);
+              }
+
+              if (head) head.innerHTML = `<tr><th>No</th><th>Tanggal</th><th>Nama Siswa</th><th>Indikator</th><th>Skor</th></tr>`;
+              if (data.length === 0) {
+                if (body) body.innerHTML = `<tr><td colspan="5" class="text-center py-3 text-muted">Belum ada riwayat poin untuk siswa ini.</td></tr>`;
+              } else {
+                // Urutkan Abjad Nama Siswa
+                data.sort((a, b) => (a.nama || '').localeCompare(b.nama || ''))
+                  .forEach((item, idx) => {
+                    if (body) body.innerHTML += `<tr><td>${idx+1}</td><td>${item.tanggal || '-'}</td><td><b>${item.nama || '-'}</b></td><td>${item.indikator || item.jenis || '-'}</td><td><b>${item.skor || 0} Poin</b></td></tr>`;
+                  });
+              }
+
             } else if (kat === 'tabungan') {
-              if (judul) judul.innerText = "LAPORAN TABUNGAN SISWA";
-              head.innerHTML = `<tr><th>No</th><th>NISN</th><th>Nama Siswa</th><th>Jenis</th><th>Nominal</th></tr>`;
-              data.forEach((item, idx) => {
-                body.innerHTML += `<tr><td>${idx+1}</td><td>${item.nisn || '-'}</td><td><b>${item.nama || '-'}</b></td><td>${item.jenis || '-'}</td><td>Rp ${Number(item.nominal || 0).toLocaleString('id-ID')}</td></tr>`;
-              });
+              if (targetNisnNorm === 'semua') {
+                // JUDUL REKAP KESELURAHAN (TANPA NAMA)
+                if (judul) judul.innerText = "LAPORAN TABUNGAN SISWA";
+
+                if (head) head.innerHTML = `<tr>
+                  <th class="text-center" style="width: 50px;">No</th>
+                  <th>NISN</th>
+                  <th>Nama Siswa</th>
+                  <th class="text-end">Total Setor</th>
+                  <th class="text-end">Total Tarik</th>
+                  <th class="text-end">Saldo Akhir</th>
+                </tr>`;
+
+                const mapSiswa = {};
+                data.forEach(item => {
+                  const nisnKey = normalizeNisn(item.nisn) || item.nisn || '-';
+                  if (!mapSiswa[nisnKey]) {
+                    mapSiswa[nisnKey] = { nisn: nisnKey, nama: item.nama || '-', totalSetor: 0, totalTarik: 0 };
+                  }
+                  const nominal = Number(item.nominal || 0);
+                  const jns = String(item.jenis || '').toLowerCase();
+                  if (jns.includes('masuk') || jns.includes('setor')) {
+                    mapSiswa[nisnKey].totalSetor += nominal;
+                  } else {
+                    mapSiswa[nisnKey].totalTarik += nominal;
+                  }
+                });
+
+                // Ambil daftar dan URUTKAN SESUAI ABJAD NAMA SISWA
+                const summaryList = Object.values(mapSiswa).sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
+                let granTotalSetor = 0, granTotalTarik = 0, granTotalSaldo = 0;
+
+                if (summaryList.length === 0) {
+                  if (body) body.innerHTML = `<tr><td colspan="6" class="text-center py-3 text-muted">Belum ada data tabungan.</td></tr>`;
+                } else {
+                  summaryList.forEach((item, idx) => {
+                    const saldo = item.totalSetor - item.totalTarik;
+                    granTotalSetor += item.totalSetor;
+                    granTotalTarik += item.totalTarik;
+                    granTotalSaldo += saldo;
+
+                    if (body) body.innerHTML += `<tr>
+                      <td class="text-center">${idx + 1}</td>
+                      <td>${item.nisn}</td>
+                      <td><b>${item.nama}</b></td>
+                      <td class="text-end text-success">Rp ${item.totalSetor.toLocaleString('id-ID')}</td>
+                      <td class="text-end text-danger">Rp ${item.totalTarik.toLocaleString('id-ID')}</td>
+                      <td class="text-end fw-bold">Rp ${saldo.toLocaleString('id-ID')}</td>
+                    </tr>`;
+                  });
+
+                  if (body) body.innerHTML += `<tr class="table-secondary fw-bold">
+                    <td colspan="3" class="text-center">TOTAL KESELURUHAN</td>
+                    <td class="text-end text-success">Rp ${granTotalSetor.toLocaleString('id-ID')}</td>
+                    <td class="text-end text-danger">Rp ${granTotalTarik.toLocaleString('id-ID')}</td>
+                    <td class="text-end">Rp ${granTotalSaldo.toLocaleString('id-ID')}</td>
+                  </tr>`;
+                }
+
+              } else {
+                // FILTER REKAP INDIVIDU SISWA (MENAMPILKAN NAMA DI JUDUL)
+                const dataSiswa = data.filter(item => normalizeNisn(item.nisn) === targetNisnNorm);
+                
+                // Ambil nama dari data transaksi jika tersedia, atau dari dropdown
+                const namaSiswa = (dataSiswa.length > 0 && dataSiswa[0].nama) ? dataSiswa[0].nama : namaSiswaSelected;
+                if (judul) judul.innerText = `LAPORAN TABUNGAN SISWA ${namaSiswa.toUpperCase()}`;
+
+                if (head) head.innerHTML = `<tr>
+                  <th class="text-center" style="width: 50px;">No</th>
+                  <th>Waktu / Tanggal</th>
+                  <th>Jenis Transaksi</th>
+                  <th class="text-end">Nominal Masuk</th>
+                  <th class="text-end">Nominal Keluar</th>
+                  <th>Keterangan</th>
+                  <th class="text-end">Saldo Akumulasi</th>
+                </tr>`;
+
+                let runningBalance = 0;
+                let totalMasuk = 0;
+                let totalKeluar = 0;
+
+                if (dataSiswa.length === 0) {
+                  if (body) body.innerHTML = `<tr><td colspan="7" class="text-center py-3 text-muted">Belum ada riwayat transaksi tabungan untuk siswa ini.</td></tr>`;
+                } else {
+                  dataSiswa.forEach((item, idx) => {
+                    const nominal = Number(item.nominal || 0);
+                    const jns = String(item.jenis || '').toLowerCase();
+                    let masuk = 0;
+                    let keluar = 0;
+
+                    if (jns.includes('masuk') || jns.includes('setor')) {
+                      masuk = nominal;
+                      totalMasuk += nominal;
+                      runningBalance += nominal;
+                    } else {
+                      keluar = nominal;
+                      totalKeluar += nominal;
+                      runningBalance -= nominal;
+                    }
+
+                    if (body) body.innerHTML += `<tr>
+                      <td class="text-center">${idx + 1}</td>
+                      <td>${item.tanggal || '-'}</td>
+                      <td><span class="badge ${masuk > 0 ? 'bg-success' : 'bg-danger'}">${item.jenis || '-'}</span></td>
+                      <td class="text-end text-success">${masuk > 0 ? 'Rp ' + masuk.toLocaleString('id-ID') : '-'}</td>
+                      <td class="text-end text-danger">${keluar > 0 ? 'Rp ' + keluar.toLocaleString('id-ID') : '-'}</td>
+                      <td>${item.keterangan || '-'}</td>
+                      <td class="text-end fw-bold">Rp ${runningBalance.toLocaleString('id-ID')}</td>
+                    </tr>`;
+                  });
+
+                  if (body) body.innerHTML += `<tr class="table-light fw-bold">
+                    <td colspan="3" class="text-center">TOTAL TRANSAKSI</td>
+                    <td class="text-end text-success">Rp ${totalMasuk.toLocaleString('id-ID')}</td>
+                    <td class="text-end text-danger">Rp ${totalKeluar.toLocaleString('id-ID')}</td>
+                    <td>-</td>
+                    <td class="text-end text-primary" style="font-size: 1.05rem;">Rp ${runningBalance.toLocaleString('id-ID')}</td>
+                  </tr>`;
+                }
+              }
+
             } else if (kat === 'sikap') {
-              if (judul) judul.innerText = "LAPORAN CATATAN SIKAP SISWA";
-              head.innerHTML = `<tr><th>No</th><th>Waktu</th><th>NISN</th><th>Nama Siswa</th><th>Jenis Sikap</th><th>Catatan</th></tr>`;
-              data.forEach((item, idx) => {
-                body.innerHTML += `<tr><td>${idx+1}</td><td>${item.tanggal || '-'}</td><td>${item.nisn || '-'}</td><td><b>${item.nama || '-'}</b></td><td><b>${item.jenis || '-'}</b></td><td>${item.catatan || '-'}</td></tr>`;
-              });
+              if (judul) {
+                judul.innerText = (targetNisnNorm !== 'semua' && namaSiswaSelected)
+                  ? `LAPORAN CATATAN SIKAP SISWA ${namaSiswaSelected.toUpperCase()}`
+                  : "LAPORAN CATATAN SIKAP SISWA";
+              }
+              
+              if (targetNisnNorm !== 'semua') {
+                data = data.filter(item => normalizeNisn(item.nisn) === targetNisnNorm);
+              }
+
+              if (head) head.innerHTML = `<tr><th>No</th><th>Waktu</th><th>NISN</th><th>Nama Siswa</th><th>Jenis Sikap</th><th>Catatan</th></tr>`;
+              if (data.length === 0) {
+                if (body) body.innerHTML = `<tr><td colspan="6" class="text-center py-3 text-muted">Belum ada catatan sikap untuk siswa ini.</td></tr>`;
+              } else {
+                // Urutkan Abjad Nama Siswa
+                data.sort((a, b) => (a.nama || '').localeCompare(b.nama || ''))
+                  .forEach((item, idx) => {
+                    if (body) body.innerHTML += `<tr><td>${idx+1}</td><td>${item.tanggal || '-'}</td><td>${item.nisn || '-'}</td><td><b>${item.nama || '-'}</b></td><td><b>${item.jenis || '-'}</b></td><td>${item.catatan || '-'}</td></tr>`;
+                  });
+              }
             }
+          })
+          .catch(err => {
+            console.error("Detail Error previewLaporan:", err);
+            alert("Gagal memuat data laporan!");
+          })
+          .finally(() => {
+            if (typeof showLoading === 'function') showLoading(false);
           });
       }
     }
