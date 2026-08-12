@@ -1414,6 +1414,22 @@
           });
       }
     }
+
+    // ==========================================
+    // AUTO-REFRESH INTERVAL DATA (OTOMATIS)
+    // ==========================================
+    setInterval(() => {
+      // Jalankan refresh otomatis hanya jika user sudah login
+      if (currentUser) {
+        if (currentUser.role === 'guru' || currentUser.role === 'admin') {
+          // Menyegarkan ringkasan data di sidebar guru secara berkala
+          loadSideRekap();
+        } else {
+          // Menyegarkan semua data tampilan portal orang tua secara berkala
+          loadSemuaDataOrtu();
+        }
+      }
+    }, 5000); // Menyegarkan data otomatis setiap 5 detik (5000 milidetik)
   </script>
 </body>
 </html>
