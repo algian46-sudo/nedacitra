@@ -1,0 +1,374 @@
+// ================= ================================================
+// SISTEM INFORMASI KELAS & BUKU POIN SISWA - BACKEND APPS SCRIPT
+// ==================================================================
+
+const SPREADSHEET_ID = SpreadsheetApp.getActiveSpreadsheet().getId();
+
+// HELPER: Normalisasi NISN agar selalu 10 digit string (zero-padding)
+function formatNisn(rawNisn) {
+  if (!rawNisn && rawNisn !== 0) return '';
+  var str = String(rawNisn).replace(/\D/g, '');
+  if (!str) return '';
+  while (str.length < 10) {
+    str = '0' + str;
+  }
+  return str;
+}
+
+// HELPER: Format Tanggal Indonesia
+function getFormattedDate() {
+  var now = new Date();
+  return Utilities.formatDate(now, "Asia/Jakarta", "yyyy-MM-dd HH:mm:ss");
+}
+
+// ==================================================================
+// ROUTING GET REQUEST (doGet)
+// ==================================================================
+function doGet(e) {
+  var action = e.parameter.action;
+  var response = { success: false, message: "Action tidak ditemukan" };
+
+  try {
+    if (action === "getSiswa") {
+      response = getDaftarSiswa();
+    } else if (action === "getIndikator") {
+      response = getIndikatorPenilaian();
+    } else if (action === "getRekapRingkas") {
+      var kat = e.parameter.kategori;
+      var nisnParam = e.parameter.nisn || "";
+      var namaParam = e.parameter.namaSiswa || "";
+      response = getRekapData(kat, nisnParam, namaParam);
+    }
+  } catch (err) {
+    response = { success: false, message: err.toString() };
+  }
+
+  return ContentService.createTextOutput(JSON.stringify(response))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ==================================================================
+// ROUTING POST REQUEST (doPost)
+// ==================================================================
+function doPost(e) {
+  var response = { success: false, message: "Gagal memproses request" };
+
+  try {
+    var postData = JSON.parse(e.postData.contents);
+    var action = postData.action;
+
+    if (action === "login") {
+      response = processLogin(postData.username, postData.password, postData.role);
+    } else if (action === "simpanIndividu") {
+      response = simpanDataIndividu(postData);
+    }
+  } catch (err) {
+    response = { success: false, message: err.toString() };
+  }
+
+  return ContentService.createTextOutput(JSON.stringify(response))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ==================================================================
+// FUNGSI 1: AMBIL DAFTAR SISWA (Sheet 'Siswa' / 'Data_Siswa')
+// ==================================================================
+function getDaftarSiswa() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName("Data_Siswa") || ss.getSheetByName("Siswa");
+  
+  if (!sheet) {
+    return { success: false, message: "Sheet Data_Siswa tidak ditemukan" };
+  }
+
+  var data = sheet.getDataRange().getDisplayValues(); // Gunakan getDisplayValues agar angka 0 di depan tetap terbaca
+  var listSiswa = [];
+
+  for (var i = 1; i < data.length; i++) {
+    var nisnRaw = data[i][0] || data[i][1]; // Cek kolom A atau B
+    var namaRaw = data[i][1] || data[i][0];
+
+    if (nisnRaw || namaRaw) {
+      listSiswa.push({
+        nisn: formatNisn(nisnRaw),
+        nama: String(namaRaw).trim()
+      });
+    }
+  }
+
+  return { success: true, data: listSiswa };
+}
+
+// ==================================================================
+// FUNGSI 2: AMBIL INDIKATOR PENILAIAN
+// ==================================================================
+function getIndikatorPenilaian() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName("Indicator_Penilaian") || ss.getSheetByName("Indikator");
+
+  if (!sheet) {
+    return { success: false, message: "Sheet Indicator_Penilaian tidak ditemukan" };
+  }
+
+  var data = sheet.getDataRange().getValues();
+  var listIndikator = [];
+
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0]) {
+      listIndikator.push({
+        jenisPenilaian: String(data[i][0]).trim(),
+        namaIndikator: String(data[i][1]).trim(),
+        bobot: Number(data[i][2] || 0)
+      });
+    }
+  }
+
+  return { success: true, data: listIndikator };
+}
+
+// ==================================================================
+// FUNGSI 3: SIMPAN DATA INDIVIDU (Tabungan, Sikap, Poin)
+// ==================================================================
+function simpanDataIndividu(payload) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var timestamp = getFormattedDate();
+  var nisnClean = formatNisn(payload.nisn);
+  var namaClean = String(payload.nama).trim();
+
+  // 1. Simpan Tabungan
+  if (payload.simpanTabungan) {
+    var sheetTab = ss.getSheetByName("Tabungan");
+    if (!sheetTab) {
+      sheetTab = ss.insertSheet("Tabungan");
+      sheetTab.appendRow(["Tanggal", "NISN", "Nama Siswa", "Jenis", "Nominal", "Keterangan"]);
+    }
+    // Set format kolom NISN sebagai Teks Biasa sebelum appendRow
+    sheetTab.getRange("B:B").setNumberFormat("@");
+    sheetTab.appendRow([
+      timestamp,
+      "'" + nisnClean, // Tanda petik tunggal memastikan disimpan sebagai string murni di Sheets
+      namaClean,
+      payload.jenisTabungan,
+      Number(payload.nominalTabungan || 0),
+      payload.ketTabungan || "-"
+    ]);
+  }
+
+  // 2. Simpan Sikap
+  if (payload.simpanSikap) {
+    var sheetSikap = ss.getSheetByName("Sikap");
+    if (!sheetSikap) {
+      sheetSikap = ss.insertSheet("Sikap");
+      sheetSikap.appendRow(["Tanggal", "NISN", "Nama Siswa", "Jenis Sikap", "Catatan"]);
+    }
+    sheetSikap.getRange("B:B").setNumberFormat("@");
+    sheetSikap.appendRow([
+      timestamp,
+      "'" + nisnClean,
+      namaClean,
+      payload.jenisSikap,
+      payload.catatanSikap || "-"
+    ]);
+  }
+
+  // 3. Simpan Poin
+  if (payload.simpanPoin) {
+    var sheetPoin = ss.getSheetByName("Poin") || ss.getSheetByName("Buku_Poin");
+    if (!sheetPoin) {
+      sheetPoin = ss.insertSheet("Poin");
+      sheetPoin.appendRow(["Tanggal", "NISN", "Nama Siswa", "Jenis Penilaian", "Indikator", "Skor"]);
+    }
+    sheetPoin.getRange("B:B").setNumberFormat("@");
+    sheetPoin.appendRow([
+      timestamp,
+      "'" + nisnClean,
+      namaClean,
+      payload.jenisPoin,
+      payload.indikatorPoin,
+      Number(payload.skorPoin || 0)
+    ]);
+  }
+
+  return { success: true, message: "Data berhasil disimpan!" };
+}
+
+// ==================================================================
+// FUNGSI 4: AMBIL DATA REKAP (Poin, Tabungan, Sikap)
+// ==================================================================
+function getRekapData(kategori, nisnFilter, namaFilter) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var targetSheetName = "";
+
+  if (kategori === "tabungan") targetSheetName = "Tabungan";
+  else if (kategori === "sikap") targetSheetName = "Sikap";
+  else if (kategori === "poin") targetSheetName = "Poin";
+
+  var sheet = ss.getSheetByName(targetSheetName);
+  if (!sheet) {
+    return { success: true, data: [] }; // Kembalikan array kosong jika sheet belum dibuat
+  }
+
+  var data = sheet.getDataRange().getDisplayValues(); // Ambil tampilan teks murni
+  var result = [];
+
+  var targetNisnNorm = formatNisn(nisnFilter);
+  var targetNamaNorm = String(namaFilter).toLowerCase().trim();
+
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    var rowNisn = formatNisn(row[1]);
+    var rowNama = String(row[2] || "").toLowerCase().trim();
+
+    // Logika pemfilteran NISN & Nama yang fleksibel
+    var matchNisn = targetNisnNorm ? (rowNisn === targetNisnNorm) : true;
+    var matchNama = targetNamaNorm ? (rowNama.indexOf(targetNamaNorm) !== -1) : true;
+
+    if (matchNisn && matchNama) {
+      if (kategori === "tabungan") {
+        result.push({
+          tanggal: row[0],
+          nisn: rowNisn,
+          nama: row[2],
+          jenis: row[3],
+          nominal: Number(row[4] || 0),
+          keterangan: row[5]
+        });
+      } else if (kategori === "sikap") {
+        result.push({
+          tanggal: row[0],
+          nisn: rowNisn,
+          nama: row[2],
+          jenis: row[3],
+          catatan: row[4]
+        });
+      } else if (kategori === "poin") {
+        result.push({
+          tanggal: row[0],
+          nisn: rowNisn,
+          nama: row[2],
+          jenis: row[3],
+          indikator: row[4],
+          skor: Number(row[5] || 0)
+        });
+      }
+    }
+  }
+
+  return { success: true, data: result };
+}function getRekapData(kategori, nisnFilter, namaFilter) {
+  try {
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var targetSheetName = "";
+
+    if (kategori === "tabungan") targetSheetName = "Tabungan";
+    else if (kategori === "sikap") targetSheetName = "Sikap";
+    else if (kategori === "poin") targetSheetName = "Poin";
+
+    var sheet = ss.getSheetByName(targetSheetName);
+    if (!sheet) {
+      return { success: true, data: [] };
+    }
+
+    var data = sheet.getDataRange().getDisplayValues();
+    if (!data || data.length <= 1) {
+      return { success: true, data: [] };
+    }
+
+    var result = [];
+    var targetNisnNorm = formatNisn(nisnFilter);
+    var targetNamaNorm = String(namaFilter || "").toLowerCase().trim();
+
+    for (var i = 1; i < data.length; i++) {
+      var row = data[i];
+      var rowNisn = formatNisn(row[1]);
+      var rowNama = String(row[2] || "").toLowerCase().trim();
+
+      var matchNisn = targetNisnNorm ? (rowNisn === targetNisnNorm) : true;
+      var matchNama = targetNamaNorm ? (rowNama.indexOf(targetNamaNorm) !== -1) : true;
+
+      if (matchNisn && matchNama) {
+        if (kategori === "tabungan") {
+          result.push({
+            tanggal: row[0] || '',
+            nisn: rowNisn,
+            nama: row[2] || '',
+            jenis: row[3] || '',
+            nominal: Number(row[4] || 0),
+            keterangan: row[5] || ''
+          });
+        } else if (kategori === "sikap") {
+          result.push({
+            tanggal: row[0] || '',
+            nisn: rowNisn,
+            nama: row[2] || '',
+            jenis: row[3] || '',
+            catatan: row[4] || ''
+          });
+        } else if (kategori === "poin") {
+          result.push({
+            tanggal: row[0] || '',
+            nisn: rowNisn,
+            nama: row[2] || '',
+            jenis: row[3] || '',
+            indikator: row[4] || '',
+            skor: Number(row[5] || 0)
+          });
+        }
+      }
+    }
+
+    return { success: true, data: result };
+  } catch (err) {
+    return { success: false, message: err.toString(), data: [] };
+  }
+}
+
+// ==================================================================
+// FUNGSI 5: AUTENTIKASI LOGIN (Sheet 'Pengguna' / 'Users')
+// ==================================================================
+function processLogin(username, password, role) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName("Pengguna") || ss.getSheetByName("Users");
+
+  if (!sheet) {
+    // Mode Default jika sheet Pengguna belum ada
+    if (username === "admin" && password === "admin") {
+      return {
+        success: true,
+        user: { username: "admin", nama: "Administrator", role: "guru" }
+      };
+    }
+    return { success: false, message: "Sheet Pengguna tidak ditemukan." };
+  }
+
+  var data = sheet.getDataRange().getDisplayValues();
+  var inputUserNorm = String(username).trim();
+  var inputNisnNorm = formatNisn(username);
+
+  for (var i = 1; i < data.length; i++) {
+    var uName = String(data[i][0]).trim();
+    var uNisn = formatNisn(data[i][0]);
+    var uPass = String(data[i][1]).trim();
+    var uRole = String(data[i][2]).toLowerCase().trim();
+    var uNama = String(data[i][3] || uName).trim();
+
+    // Cocokkan username (bisa berupa NISN 10 digit atau String biasa)
+    var isUserMatch = (uName === inputUserNorm) || (uNisn.length >= 9 && uNisn === inputNisnNorm);
+    var isPassMatch = (uPass === String(password).trim());
+    var isRoleMatch = (role === "ortu") ? true : (uRole === role.toLowerCase());
+
+    if (isUserMatch && isPassMatch && isRoleMatch) {
+      return {
+        success: true,
+        user: {
+          username: uName,
+          studentId: uNisn || uName,
+          nama: uNama,
+          role: uRole
+        }
+      };
+    }
+  }
+
+  return { success: false, message: "Username, Password, atau Peran tidak cocok!" };
+}
