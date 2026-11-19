@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super App - Perangkat Ajar AI Guru</title>
+    
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 font-sans">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function App() {
+            // STATE
+            const [apiKey, setApiKey] = useState("");
+            const [activeTab, setActiveTab] = useState("pengaturan");
+            const [isLoading, setIsLoading] = useState(false);
+            const [loadingDoc, setLoadingDoc] = useState("");
+
+            const [identitas, setIdentitas] = useState({
+                namaSekolah: "", namaGuru: "", nipGuru: "", 
+                kepsek: "", nipKepsek: "", mapel: "", fase: "", kelas: "", tahunAjar: ""
+            });
+
+            const [rasionalisasi, setRasionalisasi] = useState("");
+            const [elemenList, setElemenList] = useState([
+                { id: 1, namaElemen: "", capaian: "" }
+            ]);
+            const [kalender, setKalender] = useState("Semester 1: 18 Minggu Efektif\nSemester 2: 16 Minggu Efektif\nTotal Alokasi Waktu: 72 JP / Tahun");
+            
+            const defaultPrompt = "ketika jumlah pertemuan 3 kali, maka tujuan pembelajaran, materi pokok harus sesuai dengan jumlah pertemuan. 1 kali pertemuan durasinya adalah 2 JP (80 menit). sesuaikan juga dengan semesternya. pada alokasi di prota, harus sesuai dengan alokasi waktu yang ada di TP dan ATP yakni 2 JP., 5. Prosem S2 harusnya menggunakan format/ template yang sama dengan yang format/ template semester 1. Hasil generate KKTP harus dijabarkan per tujuan pembelajaran. Dan pada modul ajar, harus terintegrasi/ sinkron dengan TP, ATP, Prota, Prosem, KKTP.";
+            const [customPrompt, setCustomPrompt] = useState(defaultPrompt);
+            const [tpManual, setTpManual] = useState(""); 
+            
+            const [dokumen, setDokumen] = useState({});
+
+            // HELPER
+            const handleIdentitasChange = (field, value) => setIdentitas(prev => ({ ...prev, [field]: value }));
+            const addElemen = () => setElemenList([...elemenList, { id: Date.now(), namaElemen: "", capaian: "" }]);
+            const updateElemen = (id, field, value) => setElemenList(elemenList.map(el => el.id === id ? { ...el, [field]: value } : el));
+            const removeElemen = (id) => setElemenList(elemenList.filter(el => el.id !== id));
+
+            // FUNGSI UTAMA GENERATE AI
+            const runGeneration = async (docType, docName) => {
+                if (!apiKey) {
+                    alert("API Key wajib diisi di tab 'Pengaturan'!");
+                    return;
+                }
+                setIsLoading(true);
+                setLoadingDoc(docName);
+
+                // 1. INSTRUKSI UNIVERSAL
+                const universalInstruction = `
+INSTRUKSI SISTEM MUTLAK (UNIVERSAL UNTUK SEMUA DOKUMEN):
+1. TANPA HEADER/KOP SURAT: Dilarang keras membuat Kop Surat di awal dokumen karena sistem internal akan menyisipkannya secara otomatis.
+2. TANPA FOOTER/TANDA TANGAN: Dilarang keras membuat bagian Tanda Tangan (Mengetahui Kepsek/Guru) di akhir dokumen.
+3. FORMAT OUTPUT MURNI: Output HANYA berupa tag HTML murni. JANGAN dibungkus dengan markdown seperti \`\`\`html. Langsung berikan tag <div>, <table>, dll.
+4. JANGAN berikan kalimat basa-basi di awal atau di akhir. Langsung keluarkan kode HTML.
+5. Gunakan inline CSS dasar untuk merapikan tabel (contoh: <table border="1" style="width:100%; border-collapse:collapse; margin-bottom:1rem;">).
+                `;
+
+                // 2. DATA KONTEKS INPUT
+                const contextData = `
+--- DATA INPUT SINKRONISASI ---
+IDENTITAS MAPEL: Mapel: ${identitas.mapel || '-'}, Fase/Kelas: ${identitas.fase || '-'}/${identitas.kelas || '-'}, Tahun Ajaran: ${identitas.tahunAjar || '-'}
+GURU PENYUSUN: ${identitas.namaGuru || '-'} (NIP: ${identitas.nipGuru || '-'})
+SEKOLAH: ${identitas.namaSekolah || '-'}
+RASIONAL MAPEL: ${rasionalisasi || 'Belum diisi'}
+ELEMEN & CP: \n${elemenList.map(e => `- Elemen: ${e.namaElemen}\n  CP: ${e.capaian}`).join("\n")}
+KALENDER PENDIDIKAN (ALOKASI): ${kalender}
+TUJUAN PEMBELAJARAN (MANUAL GURU): ${tpManual || 'Gunakan hasil analisis AI'}
+ATURAN & PROMPT TAMBAHAN GURU: ${customPrompt}
+--------------------------------
+                `;
+
+                // 3. INSTRUKSI SPESIFIK BERDASARKAN JENIS DOKUMEN
+                let specificInstruction = "";
+                switch(docType) {
+                    case 'dok1':
+                        specificInstruction = `
+PERAN: Asisten pembuatan perangkat administrasi pembelajaran Kurikulum Merdeka yang ahli dan berpengalaman.
+TUGAS: Buat dokumen "Analisis Capaian Pembelajaran (CP)" lengkap dalam format HTML yang terbagi menjadi 7 bagian:
+A. Identitas (Tabel dua kolom).
+B. Rasional Mata Pelajaran (Tabel 3 kolom: Pentingnya mapel, Kaitan dengan 8 dimensi profil lulusan, dan Orientasi pembelajaran).
+C. Tujuan Mata Pelajaran (Minimal 3 tujuan terukur).
+D. Karakteristik Mata Pelajaran & Elemen CP (Tabel 4 kolom beserta cakupan konten utama).
+E. Capaian Pembelajaran Fase (Tabel 4 kolom: Ringkasan CP, Kompetensi Kunci, dan Materi Pokok).
+F. Penjabaran Kata Kerja Operasional (KKO) per elemen.
+G. Keterkaitan dengan 8 Dimensi Profil Lulusan.
+                        `;
+                        break;
+                    case 'dok2':
+                        specificInstruction = `
+PERAN: Asisten pembuatan perangkat administrasi pembelajaran Kurikulum Merdeka yang ahli.
+TUGAS: Buat dokumen "Tujuan Pembelajaran (TP)" lengkap yang mencakup:
+1. Panduan dan penjelasan kode TP.
+2. Tabel kode elemen.
+3. Tabel Daftar TP (6 kolom: Elemen, CP, Kompetensi KKO berjenjang C2-C6, Konten/Materi, Rumusan TP dengan prinsip ABCD, dan Alokasi Waktu). Total JP harus sama persis dengan alokasi waktu di data kalender.
+4. Tabel rekapitulasi alokasi waktu per elemen.
+                        `;
+                        break;
+                    case 'dok3':
+                        specificInstruction = `
+PERAN: Asisten pembuatan perangkat administrasi pembelajaran Kurikulum Merdeka yang ahli.
+TUGAS: Buat dokumen "Alur Tujuan Pembelajaran (ATP)" yang memuat:
+1. Diagram alur urutan TP (gunakan simbol panah HTML &rarr; untuk menunjukkan urutan).
+2. Tabel Alur Tujuan Pembelajaran (8 kolom: Semester, Elemen, Tujuan Pembelajaran, Materi Pokok, Profil Pelajar Pancasila, Glosarium, Alokasi Waktu, Asesmen).
+3. Tabel rekapitulasi alokasi waktu per semester secara mendetail.
+                        `;
+                        break;
+                    case 'dok4':
+                        specificInstruction = `
+PERAN: Asisten pembuatan perangkat administrasi pembelajaran Kurikulum Merdeka yang ahli.
+TUGAS: Buat dokumen "Program Tahunan (PROTA)" yang memuat:
+1. Tabel distribusi minggu efektif.
+2. Tabel Rencana Program Tahunan yang dikelompokkan per semester (Semester 1 dan Semester 2).
+3. Sediakan baris "Cadangan Waktu" jika ada sisa JP dari kalender pendidikan.
+Pastikan alokasi JP sinkron dengan TP dan ATP.
+                        `;
+                        break;
+                    case 'dok5_1':
+                        specificInstruction = `
+PERAN: Asisten ahli Kurikulum Merdeka.
+TUGAS: Buat dokumen "Program Semester (PROSEM) - SEMESTER 1".
+Buat berupa matriks distribusi JP per minggu yang dikelompokkan per bulan. Buat tabelnya memanjang (gunakan overflow-x pada HTML jika perlu).
+Sertakan legenda warna/penanda pada sel tabel, serta daftar keterangan minggu tidak efektif di bagian bawah tabel.
+                        `;
+                        break;
+                    case 'dok5_2':
+                        specificInstruction = `
+PERAN: Asisten ahli Kurikulum Merdeka.
+TUGAS: Buat dokumen "Program Semester (PROSEM) - SEMESTER 2".
+Buat berupa matriks distribusi JP per minggu yang dikelompokkan per bulan. Gunakan format/template yang SAMA PERSIS dengan Prosem Semester 1.
+Sertakan legenda warna/penanda pada sel tabel, serta daftar keterangan minggu tidak efektif di bagian bawah tabel.
+                        `;
+                        break;
+                    case 'dok6':
+                        specificInstruction = `
+PERAN: Asisten ahli Kurikulum Merdeka.
+TUGAS: Buat dokumen "Kriteria Ketercapaian Tujuan Pembelajaran (KKTP)".
+Gunakan pendekatan rubrik berjenjang. Dokumen mencakup:
+1. Dasar hukum / Pendahuluan singkat.
+2. Deskripsi 4 Level (Level 1 hingga Level 4) beserta tindak lanjutnya.
+3. Tabel Rubrik KKTP per Tujuan Pembelajaran yang lengkap dengan Indikator Ketercapaian Tujuan Pembelajaran (IKTP) yang spesifik. KKTP harus dijabarkan PER Tujuan Pembelajaran.
+                        `;
+                        break;
+                    case 'dok7':
+                        specificInstruction = `
+PERAN: Guru Sekolah Menengah Pertama yang expert, profesional, dan sangat berpengalaman.
+TUGAS: Buat "Modul Ajar Pembelajaran Mendalam (Deep Learning)" yang terintegrasi (Mindful, Meaningful, Joyful).
+Struktur HTML HARUS mencakup:
+1. Informasi Umum (Identitas lengkap).
+2. Tujuan Pembelajaran (Kognitif, Psikomotor, Afektif, Konteks Nasional).
+3. Identifikasi (Asesmen awal, pemetaan murid, fokus dimensi profil lulusan).
+4. Desain dan Kerangka Pembelajaran.
+5. Pengalaman Belajar (Kegiatan Awal, Kegiatan Inti yang terbagi jelas menjadi tahap: Memahami, Mengaplikasi, dan Merefleksi, serta Kegiatan Penutup).
+6. Refleksi Pembelajaran (Bagi guru dan siswa).
+7. Asesmen (Formatif dan Sumatif beserta Rubrik).
+8. Bahan Ajar dan LKPD Siap Pakai.
+9. Pengayaan dan Remedial.
+10. Lampiran Khusus: Buatkan 10 Soal Pilihan Ganda HOTS dan 5 Soal Essay HOTS beserta kunci jawabannya, ditutup dengan Daftar Pustaka.
+Modul ajar ini HARUS sinkron sepenuhnya dengan TP, ATP, Prota, Prosem, dan KKTP.
+                        `;
+                        break;
+                }
+
+                const finalMasterPrompt = universalInstruction + contextData + specificInstruction;
+
+                try {
+                    // Endpoint URL sesuai permintaan Anda
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: finalMasterPrompt }] }] })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.error) throw new Error(data.error.message);
+                    
+                    let htmlResult = data.candidates[0].content.parts[0].text;
+                    // Antisipasi jika AI masih membandel memberikan markdown
+                    htmlResult = htmlResult.replace(/```html/gi, "").replace(/```/gi, "").trim();
+
+                    setDokumen(prev => ({ ...prev, [docType]: htmlResult }));
+                } catch (error) {
+                    console.error(error);
+                    alert("Gagal generate dokumen. Pastikan API Key benar dan koneksi stabil.\n\nError: " + error.message);
+                } finally {
+                    setIsLoading(false);
+                    setLoadingDoc("");
+                }
+            };
+
+            const tabs = [
+                { id: "pengaturan", name: "1. Identitas" },
+                { id: "elemen", name: "2. Elemen & Kalender" },
+                { id: "prompt", name: "3. Aturan Tambahan" },
+                { id: "workspace", name: "4. Generate Dokumen" }
+            ];
+
+            const docList = [
+                { id: 'dok1', title: 'Analisis Capaian Pembelajaran (CP)' },
+                { id: 'dok2', title: 'Tujuan Pembelajaran (TP)' },
+                { id: 'dok3', title: 'Alur Tujuan Pembelajaran (ATP)' },
+                { id: 'dok4', title: 'Program Tahunan (Prota)' },
+                { id: 'dok5_1', title: 'Program Semester 1 (Prosem Ganjil)' },
+                { id: 'dok5_2', title: 'Program Semester 2 (Prosem Genap)' },
+                { id: 'dok6', title: 'KKTP (Kriteria Ketercapaian TP)' },
+                { id: 'dok7', title: 'Modul Ajar Deep Learning (Lengkap)' }
+            ];
+
+            return (
+                <div className="max-w-7xl mx-auto p-4">
+                    <header className="bg-slate-800 text-white p-6 rounded-t-xl shadow">
+                        <h1 className="text-3xl font-bold">Pro-Teacher Workspace (Sistem Terstruktur)</h1>
+                        <p className="mt-2 text-slate-300">Generator Perangkat Ajar Kurikulum Merdeka Berbasis AI</p>
+                    </header>
+
+                    <div className="flex bg-white shadow mb-4 rounded-b-xl overflow-x-auto border-b">
+                        {tabs.map(tab => (
+                            <button 
+                                key={tab.id} onClick={() => setActiveTab(tab.id)}
+                                className={`px-6 py-4 font-semibold whitespace-nowrap transition-colors ${activeTab === tab.id ? 'border-b-4 border-slate-800 text-slate-900 bg-slate-100' : 'text-gray-500 hover:text-slate-800'}`}
+                            >
+                                {tab.name}
+                            </button>
+                        ))}
+                    </div>
+
+                    <main className="bg-white p-6 rounded-xl shadow-lg min-h-[600px]">
+                        
+                        {/* TAB 1 */}
+                        {activeTab === "pengaturan" && (
+                            <div className="space-y-6">
+                                <div className="bg-yellow-50 p-4 rounded border-l-4 border-yellow-500">
+                                    <label className="font-bold text-yellow-800">API Key Gemini AI (Wajib)</label>
+                                    <input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} className="w-full border p-2 mt-2 rounded border-yellow-300" placeholder="Masukkan API Key Anda..." />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold border-b pb-2 mb-4 text-gray-700">Data Identitas Umum</h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        {Object.keys(identitas).map(key => (
+                                            <div key={key}>
+                                                <label className="block text-sm font-semibold capitalize text-gray-600">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
+                                                <input type="text" value={identitas[key]} onChange={e => handleIdentitasChange(key, e.target.value)} className="w-full border p-2 rounded mt-1 bg-gray-50 focus:bg-white" />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB 2 */}
+                        {activeTab === "elemen" && (
+                            <div className="space-y-6">
+                                <div>
+                                    <h2 className="text-xl font-bold border-b pb-2 mb-4 text-gray-700">Rasionalisasi Mata Pelajaran</h2>
+                                    <textarea value={rasionalisasi} onChange={e => setRasionalisasi(e.target.value)} className="w-full border p-3 rounded h-24" placeholder="Ketik manual rasionalisasi mapel di sini..."></textarea>
+                                </div>
+                                <div>
+                                    <div className="flex justify-between items-center border-b pb-2 mb-4">
+                                        <h2 className="text-xl font-bold text-gray-700">Elemen & Capaian Pembelajaran (CP)</h2>
+                                        <button onClick={addElemen} className="bg-emerald-600 text-white px-4 py-1 rounded shadow hover:bg-emerald-700">+ Tambah Elemen</button>
+                                    </div>
+                                    {elemenList.map((el, index) => (
+                                        <div key={el.id} className="bg-slate-50 p-4 border rounded mb-3 relative">
+                                            <button onClick={() => removeElemen(el.id)} className="absolute top-2 right-2 bg-red-100 text-red-600 px-2 py-1 rounded hover:bg-red-200 text-xs font-bold">Hapus</button>
+                                            <div className="mb-2 w-3/4">
+                                                <label className="block text-sm font-semibold text-slate-700">Nama Elemen {index + 1}</label>
+                                                <input type="text" value={el.namaElemen} onChange={e => updateElemen(el.id, 'namaElemen', e.target.value)} className="w-full border p-2 rounded mt-1" placeholder="Contoh: Bilangan / Al-Qur'an Hadis" />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-semibold text-slate-700">Capaian Pembelajaran (CP)</label>
+                                                <textarea value={el.capaian} onChange={e => updateElemen(el.id, 'capaian', e.target.value)} className="w-full border p-2 rounded mt-1 h-20" placeholder="Teks CP dari BSKAP Kemdikbud..."></textarea>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold border-b pb-2 mb-4 text-gray-700">Kalender Pendidikan & Alokasi Waktu</h2>
+                                    <textarea value={kalender} onChange={e => setKalender(e.target.value)} className="w-full border p-3 rounded h-32" placeholder="Rincian minggu efektif, libur, dan JP total..."></textarea>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB 3 */}
+                        {activeTab === "prompt" && (
+                            <div className="space-y-6">
+                                <div className="bg-blue-50 p-4 rounded border border-blue-200">
+                                    <h3 className="font-bold text-blue-800 mb-2">Input Tujuan Pembelajaran (Manual) - Opsional</h3>
+                                    <p className="text-xs text-blue-600 mb-2">Jika Anda sudah merumuskan TP, masukkan di sini agar AI menggunakannya sebagai acuan utama.</p>
+                                    <textarea value={tpManual} onChange={e => setTpManual(e.target.value)} className="w-full border p-2 rounded h-32" placeholder="1. Peserta didik dapat..."></textarea>
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold border-b pb-2 mb-4 text-gray-700">Aturan Khusus Sinkronisasi (Prompt Master)</h2>
+                                    <p className="mb-2 text-sm text-gray-600">Instruksi tambahan yang wajib ditaati AI saat menyusun dokumen (Bisa diedit):</p>
+                                    <textarea value={customPrompt} onChange={e => setCustomPrompt(e.target.value)} className="w-full border-2 border-slate-300 p-4 rounded h-40 font-mono text-sm bg-slate-50 focus:bg-white"></textarea>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB 4 */}
+                        {activeTab === "workspace" && (
+                            <div>
+                                <h2 className="text-2xl font-bold border-b pb-2 mb-6 text-gray-700">Dashboard Generate Dokumen</h2>
+                                
+                                {isLoading && (
+                                    <div className="fixed inset-0 bg-slate-900 bg-opacity-75 flex items-center justify-center z-50">
+                                        <div className="bg-white p-8 rounded-xl text-center shadow-2xl max-w-sm w-full">
+                                            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                                            <div className="text-slate-800 text-lg font-bold">Menyusun Dokumen</div>
+                                            <p className="text-sm text-blue-600 mt-2 font-medium">{loadingDoc}</p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="grid grid-cols-1 gap-8">
+                                    {docList.map(doc => (
+                                        <div key={doc.id} className="border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                                            <div className="bg-slate-50 p-4 border-b flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                                <h3 className="font-bold text-lg text-slate-700">{doc.title}</h3>
+                                                <button 
+                                                    onClick={() => runGeneration(doc.id, doc.title)}
+                                                    className="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2 rounded shadow transition w-full md:w-auto text-sm font-semibold"
+                                                >
+                                                    ✨ Generate Dokumen
+                                                </button>
+                                            </div>
+                                            <div className="p-0 bg-white">
+                                                {!dokumen[doc.id] ? (
+                                                    <div className="p-8 text-slate-400 text-center italic border-t border-dashed">
+                                                        Belum ada hasil generate. Klik tombol di atas untuk memulai.
+                                                    </div>
+                                                ) : (
+                                                    <div className="overflow-auto p-6" style={{ maxHeight: '700px' }}>
+                                                        <div className="prose max-w-none text-sm" dangerouslySetInnerHTML={{ __html: dokumen[doc.id] }}></div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </main>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<App />);
+    </script>
+</body>
+</html>
