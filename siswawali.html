@@ -14,84 +14,103 @@
 
   <style>
     :root {
-      --bg-app: #f1f5f9;
-      --nav-dark: #1e2538;
+      --bg-app: #eef6ff;
+      --nav-dark: linear-gradient(135deg, #1d4ed8 0%, #4f46e5 55%, #7c3aed 100%);
       --primary-violet: #4f46e5;
-      --primary-indigo: #4338ca;
-      --accent-purple: #7c3aed;
+      --primary-indigo: #2563eb;
+      --accent-purple: #8b5cf6;
+      --accent-cyan: #06b6d4;
+      --accent-amber: #f59e0b;
       --card-bg: #ffffff;
-      --border-color: #e2e8f0;
-      --text-main: #334155;
+      --border-color: #dbeafe;
+      --text-main: #1e293b;
     }
 
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: var(--bg-app);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(56, 189, 248, 0.16), transparent 36%),
+        radial-gradient(circle at 90% 15%, rgba(168, 85, 247, 0.14), transparent 38%),
+        radial-gradient(circle at 50% 95%, rgba(16, 185, 129, 0.12), transparent 40%),
+        var(--bg-app);
       color: var(--text-main);
       min-height: 100vh;
     }
 
     /* HEADER & NAVBAR */
     .top-header {
-      background-color: var(--nav-dark);
+      background: var(--nav-dark);
       color: #ffffff;
       padding: 14px 28px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.22);
     }
     .brand-title {
-      font-weight: 700;
+      font-weight: 800;
       font-size: 1.15rem;
       letter-spacing: -0.3px;
     }
     .btn-logout {
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      background: rgba(255, 255, 255, 0.12);
       color: #fff;
       border-radius: 20px;
       padding: 5px 16px;
       font-size: 0.85rem;
+      font-weight: 600;
       transition: all 0.2s ease;
     }
     .btn-logout:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.25);
       color: #fff;
+      transform: translateY(-1px);
     }
 
     /* SUB NAV / PILLS */
     .nav-main-pills .nav-link {
       background: #ffffff;
-      color: #64748b;
-      font-weight: 600;
-      border-radius: 12px;
+      color: #475569;
+      font-weight: 700;
+      border-radius: 14px;
       padding: 10px 22px;
       margin-right: 10px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      margin-bottom: 6px;
+      border: 1.5px solid var(--border-color);
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.06);
       transition: all 0.2s ease;
     }
+    .nav-main-pills .nav-link:hover {
+      transform: translateY(-2px);
+      border-color: #93c5fd;
+      color: var(--primary-indigo);
+    }
     .nav-main-pills .nav-link.active {
-      background: linear-gradient(135deg, var(--primary-violet), var(--accent-purple));
+      background: linear-gradient(135deg, #0ea5e9, #4f46e5, #8b5cf6);
       color: #ffffff;
       border-color: transparent;
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      box-shadow: 0 8px 18px rgba(79, 70, 229, 0.32);
     }
 
     /* CARDS */
     .card-panel {
       background: var(--card-bg);
-      border-radius: 16px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      border-radius: 18px;
+      border: 1.5px solid var(--border-color);
+      box-shadow: 0 10px 28px rgba(30, 64, 175, 0.07);
       overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card-panel:hover {
+      box-shadow: 0 14px 32px rgba(30, 64, 175, 0.11);
     }
     .card-panel-header {
-      background: linear-gradient(135deg, var(--primary-violet), var(--accent-purple));
+      background: linear-gradient(135deg, #0ea5e9 0%, #4f46e5 55%, #8b5cf6 100%);
       color: #ffffff;
       padding: 14px 20px;
       font-weight: 700;
       font-size: 1.05rem;
     }
     .card-panel-header-dark {
-      background-color: var(--nav-dark);
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #4338ca 100%);
       color: #ffffff;
       padding: 14px 20px;
       font-weight: 700;
@@ -101,62 +120,68 @@
     /* RADIO OPTION BOXES */
     .option-box {
       border: 1.5px solid #cbd5e1;
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 14px;
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
       gap: 10px;
-      background: #fafafa;
+      background: #f8fafc;
     }
     .option-box:hover {
-      border-color: var(--primary-violet);
-      background: #f8fafc;
+      border-color: var(--primary-indigo);
+      background: #eff6ff;
+      transform: translateY(-2px);
     }
     .option-box.active-tabungan {
       border-color: #10b981;
-      background-color: #f0fdf4;
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
       color: #047857;
       font-weight: 700;
+      box-shadow: 0 6px 14px rgba(16, 185, 129, 0.18);
     }
     .option-box.active-sikap {
       border-color: #f59e0b;
-      background-color: #fffbeb;
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
       color: #b45309;
       font-weight: 700;
+      box-shadow: 0 6px 14px rgba(245, 158, 11, 0.18);
     }
     .option-box.active-poin {
-      border-color: var(--primary-violet);
-      background-color: #f5f3ff;
-      color: var(--primary-indigo);
+      border-color: #6366f1;
+      background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+      color: #3730a3;
       font-weight: 700;
+      box-shadow: 0 6px 14px rgba(99, 102, 241, 0.18);
     }
 
     /* BUTTONS */
     .btn-simpan {
-      background: linear-gradient(135deg, var(--primary-violet), var(--accent-purple));
+      background: linear-gradient(135deg, #0ea5e9, #4f46e5, #7c3aed);
       color: #ffffff;
       font-weight: 700;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 10px 24px;
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
       transition: all 0.2s ease;
     }
     .btn-simpan:hover {
-      opacity: 0.92;
+      opacity: 0.95;
       color: #ffffff;
+      transform: translateY(-1px);
     }
 
     /* TABLES & BADGES ABSENSI */
     .table-modern th {
-      background-color: #f8fafc;
-      color: #64748b;
-      font-size: 0.8rem;
+      background: linear-gradient(180deg, #eff6ff 0%, #e0f2fe 100%);
+      color: #1e3a8a;
+      font-size: 0.78rem;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      border-bottom: 2px solid var(--border-color);
+      border-bottom: 2px solid #bfdbfe;
       padding: 12px 16px;
     }
     .table-modern td {
@@ -164,7 +189,7 @@
       vertical-align: middle;
       font-size: 0.9rem;
     }
-    
+
     table.table-laporan {
       width: 100%;
       border-collapse: collapse;
@@ -172,7 +197,7 @@
       white-space: nowrap;
     }
     table.table-laporan th {
-      background-color: #0066ff !important;
+      background: linear-gradient(135deg, #0284c7, #2563eb, #4f46e5) !important;
       color: #ffffff !important;
       padding: 10px 8px;
       border: 1px solid #cbd5e1;
@@ -195,43 +220,43 @@
       padding: 3px 2px;
       color: #ffffff;
       font-weight: 800;
-      border-radius: 2px;
+      border-radius: 4px;
       text-align: center;
       line-height: 1.1;
     }
     .badge-label {
       font-size: 7px;
-      opacity: 0.85;
+      opacity: 0.9;
       letter-spacing: 0.5px;
     }
     .badge-value {
       font-size: 10px;
     }
 
-    .bg-hadir-lengkap { background-color: #15803d !important; }
-    .bg-hadir-partial { background-color: #d97706 !important; }
-    .bg-alfa           { background-color: #dc2626 !important; }
+    .bg-hadir-lengkap { background: linear-gradient(135deg, #10b981, #15803d) !important; }
+    .bg-hadir-partial { background: linear-gradient(135deg, #fbbf24, #d97706) !important; }
+    .bg-alfa           { background: linear-gradient(135deg, #f43f5e, #dc2626) !important; }
 
     .val-positive {
-      color: #10b981;
+      color: #059669;
       font-weight: 700;
     }
 
     /* LOGIN CONTAINER & OVERLAY */
     .login-container {
       max-width: 420px;
-      margin: 80px auto;
+      margin: 70px auto;
     }
 
     .loading-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(238, 246, 255, 0.85);
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(5px);
     }
 
     /* FORMAT CETAK A4 */
@@ -294,8 +319,8 @@
   <!-- HEADER -->
   <header class="top-header d-flex justify-content-between align-items-center no-print">
     <div class="d-flex align-items-center gap-2">
-      <div class="bg-warning text-dark rounded-2 px-2 py-1 fs-6 fw-bold">
-        <i class="fa-solid fa-school"></i>
+      <div class="bg-warning text-dark rounded-3 px-2 py-1 fs-6 fw-bold shadow-sm">
+        <i class="fa-solid fa-sparkles"></i>
       </div>
       <span class="brand-title">Portal Kelas & Buku Poin</span>
     </div>
@@ -311,8 +336,11 @@
     <div id="sectionLogin" class="login-container no-print">
       <div class="card card-panel p-4">
         <div class="text-center mb-4">
-          <h4 class="fw-bold">Selamat Datang</h4>
-          <p class="text-muted small">Silakan pilih peran untuk melanjutkan</p>
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary mb-2" style="width: 54px; height: 54px;">
+            <i class="fa-solid fa-graduation-cap fs-4"></i>
+          </div>
+          <h4 class="fw-bold mb-1">Selamat Datang</h4>
+          <p class="text-muted small mb-0">Silakan pilih peran untuk melanjutkan</p>
         </div>
 
         <ul class="nav nav-pills nav-justified mb-4" id="loginTab">
@@ -341,7 +369,7 @@
 
     <!-- MAIN DASHBOARD GURU -->
     <div id="dashboardGuru" class="d-none">
-      
+
       <!-- NAV TABS MAIN -->
       <ul class="nav nav-main-pills mb-4 no-print" id="guruTab" role="tablist">
         <li class="nav-item">
@@ -365,7 +393,7 @@
         <!-- TAB 1: FORM INPUT -->
         <div class="tab-pane fade show active" id="tabInputGuru">
           <div class="row g-4">
-            
+
             <!-- PANEL KIRI: FORM PENCATATAN -->
             <div class="col-lg-7">
               <div class="card card-panel">
@@ -374,7 +402,7 @@
                 </div>
                 <div class="card-body p-4">
                   <form id="formInputGuru" onsubmit="handleSimpanGuru(event)">
-                    
+
                     <div class="row g-3 mb-4">
                       <div class="col-md-7">
                         <label class="form-label small fw-bold text-secondary">Pilih Siswa</label>
@@ -393,19 +421,19 @@
                     <div class="row g-3 mb-4">
                       <div class="col-md-4">
                         <div class="option-box" id="boxTabungan" onclick="selectModul('tabungan')">
-                          <i class="fa-solid fa-wallet fs-5"></i>
+                          <i class="fa-solid fa-wallet fs-5 text-success"></i>
                           <span>Tabungan</span>
                         </div>
                       </div>
                       <div class="col-md-4">
                         <div class="option-box" id="boxSikap" onclick="selectModul('sikap')">
-                          <i class="fa-solid fa-user-shield fs-5"></i>
+                          <i class="fa-solid fa-user-shield fs-5 text-warning"></i>
                           <span>Sikap/Kasus</span>
                         </div>
                       </div>
                       <div class="col-md-4">
                         <div class="option-box active-poin" id="boxPoin" onclick="selectModul('poin')">
-                          <i class="fa-solid fa-award fs-5"></i>
+                          <i class="fa-solid fa-award fs-5 text-primary"></i>
                           <span>Poin Siswa</span>
                         </div>
                       </div>
@@ -415,7 +443,7 @@
 
                     <!-- DYNAMIC FIELDS -->
                     <!-- 1. FIELD TABUNGAN -->
-                    <div id="fieldTabungan" style="display:none;" class="p-3 bg-light rounded-3 mb-4">
+                    <div id="fieldTabungan" style="display:none;" class="p-3 bg-light rounded-3 mb-4 border">
                       <div class="row g-3">
                         <div class="col-md-6">
                           <label class="form-label small fw-bold">Jenis Transaksi</label>
@@ -436,7 +464,7 @@
                     </div>
 
                     <!-- 2. FIELD SIKAP -->
-                    <div id="fieldSikap" style="display:none;" class="p-3 bg-light rounded-3 mb-4">
+                    <div id="fieldSikap" style="display:none;" class="p-3 bg-light rounded-3 mb-4 border">
                       <div class="mb-3">
                         <label class="form-label small fw-bold">Jenis Sikap</label>
                         <select id="jenisSikap" class="form-select">
@@ -451,7 +479,7 @@
                     </div>
 
                     <!-- 3. FIELD POIN -->
-                    <div id="fieldPoin" class="p-3 bg-light rounded-3 mb-4">
+                    <div id="fieldPoin" class="p-3 bg-light rounded-3 mb-4 border">
                       <div class="mb-3">
                         <label class="form-label small fw-bold">Indikator Penilaian</label>
                         <select id="selectIndikator" class="form-select" onchange="autoFillPoin()">
@@ -484,16 +512,20 @@
             <!-- PANEL KANAN: RINGKASAN DATA LENGKAP -->
             <div class="col-lg-5">
               <div class="card card-panel">
-                <div class="card-panel-header-dark d-flex justify-content-between align-items-center gap-2">
+                <div class="card-panel-header-dark d-flex justify-content-between align-items-center gap-2 flex-wrap">
                   <span class="text-nowrap"><i class="fa-solid fa-chart-line text-warning me-2"></i>Ringkas Data</span>
-                  <div class="d-flex align-items-center gap-1">
+                  <div class="d-flex align-items-center gap-1 flex-wrap">
+                    <select id="selectKelasAbsensi" class="form-select form-select-sm border-0 bg-info-subtle text-dark fw-bold" style="width: auto;" onchange="handleKelasAbsensiChange('side')">
+                      <option value="8.1" selected>Kelas 8.1</option>
+                      <option value="">Semua Kelas</option>
+                    </select>
                     <select id="selectFilterSide" class="form-select form-select-sm border-0 bg-light text-dark fw-bold" onchange="renderSideSummary()">
                       <option value="tabungan">Rekap Tabungan</option>
                       <option value="poin">Rekap Poin</option>
                       <option value="sikap">Rekap Sikap</option>
                       <option value="absensi">Rekap Absensi (Matriks Horizontal)</option>
                     </select>
-                    <button class="btn btn-sm btn-warning fw-bold text-nowrap" onclick="bukaModalCetak()" title="Cetak Laporan">
+                    <button type="button" class="btn btn-sm btn-warning fw-bold text-nowrap" onclick="bukaModalCetak()" title="Cetak Laporan">
                       <i class="fa-solid fa-print me-1"></i>Cetak
                     </button>
                   </div>
@@ -533,6 +565,12 @@
                   <option value="sikap">Rekap Sikap</option>
                 </select>
               </div>
+              <div class="col-md-4" id="colKelasRekap">
+                <select id="selectKelasRekap" class="form-select" onchange="handleKelasAbsensiChange('rekap')">
+                  <option value="8.1" selected>Kelas 8.1 (Default)</option>
+                  <option value="">Semua Kelas</option>
+                </select>
+              </div>
             </div>
             <div class="table-responsive">
               <table class="table table-modern align-middle" id="mainTableRekap">
@@ -546,21 +584,28 @@
         <!-- TAB 3: CETAK LAPORAN -->
         <div class="tab-pane fade" id="tabCetakLaporan">
           <div class="card card-panel p-4 mb-4">
-            <h5 class="fw-bold mb-3"><i class="fa-solid fa-sliders me-2"></i>Filter & Cetak Laporan A4</h5>
+            <h5 class="fw-bold mb-3"><i class="fa-solid fa-sliders me-2 text-primary"></i>Filter & Cetak Laporan A4</h5>
             <div class="row g-3 align-items-end">
-              <div class="col-md-4">
+              <div class="col-md-3">
+                <label class="form-label small fw-bold">Filter Kelas</label>
+                <select class="form-select" id="select-filter-kelas-view" onchange="handleKelasAbsensiChange('view')">
+                  <option value="8.1" selected>Kelas 8.1 (Default)</option>
+                  <option value="">Semua Kelas</option>
+                </select>
+              </div>
+              <div class="col-md-3">
                 <label class="form-label small fw-bold">Filter Siswa</label>
                 <select class="form-select" id="select-filter-siswa-view">
                   <option value="">-- Semua Siswa --</option>
                 </select>
               </div>
-              <div class="col-md-4">
-                <button class="btn btn-primary w-100 fw-bold" onclick="terapkanFilterAbsensiView()">
+              <div class="col-md-3">
+                <button type="button" class="btn btn-primary w-100 fw-bold" onclick="terapkanFilterAbsensiView()">
                   <i class="fa-solid fa-magnifying-glass me-1"></i> Tampilkan Laporan
                 </button>
               </div>
-              <div class="col-md-4">
-                <button class="btn btn-success w-100 fw-bold" onclick="bukaModalCetak()">
+              <div class="col-md-3">
+                <button type="button" class="btn btn-success w-100 fw-bold" onclick="bukaModalCetak()">
                   <i class="fa-solid fa-print me-1"></i> Buka Pilihan Cetak A4
                 </button>
               </div>
@@ -570,7 +615,7 @@
           <div class="card card-panel p-4">
             <div class="text-center my-3">
               <h4 class="fw-extrabold mb-1" style="letter-spacing: 0.5px;">LAPORAN ABSENSI / PRESENSI SISWA</h4>
-              <p class="text-muted small">SMP Negeri 8 Cikarang Utara</p>
+              <p class="text-muted small mb-0" id="labelSubJudulAbsensi">SMP Negeri 8 Cikarang Utara • Kelas 8.1</p>
             </div>
             <div class="table-responsive">
               <div id="container-laporan-view"></div>
@@ -585,9 +630,9 @@
     <div id="dashboardOrtu" class="d-none no-print">
       <div class="row g-4">
         <div class="col-12">
-          <div class="card card-panel p-4 bg-dark text-white">
+          <div class="card card-panel p-4 text-white" style="background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 65%, #6d28d9 100%);">
             <h4 class="fw-bold mb-1" id="ortuNamaSiswa">Nama Siswa</h4>
-            <p class="mb-0 text-muted" id="ortuNisnSiswa">NISN: -</p>
+            <p class="mb-0 text-white-50" id="ortuNisnSiswa">NISN: -</p>
           </div>
         </div>
 
@@ -627,8 +672,8 @@
   <!-- MODAL PILIHAN CETAK LAPORAN A4 -->
   <div class="modal fade no-print" id="modalCetak" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
-        <div class="modal-header bg-dark text-white" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 18px;">
+        <div class="modal-header text-white" style="background: linear-gradient(135deg, #0284c7, #4f46e5, #7c3aed); border-top-left-radius: 18px; border-top-right-radius: 18px;">
           <h5 class="modal-title fw-bold fs-6"><i class="fa-solid fa-print me-2"></i>Pilihan Cetak Laporan A4</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
@@ -645,6 +690,14 @@
               <optgroup label="Cetak Per-Siswa (Individu)">
                 <option value="persiswa">Laporan Lengkap Individu (Sikap, Poin, Tabungan, Absensi)</option>
               </optgroup>
+            </select>
+          </div>
+
+          <div class="mb-3" id="groupPilihKelasCetak">
+            <label class="form-label small fw-bold">Kelas Absensi</label>
+            <select id="selectKelasCetak" class="form-select">
+              <option value="8.1" selected>Kelas 8.1 (Default)</option>
+              <option value="">Semua Kelas</option>
             </select>
           </div>
 
@@ -667,8 +720,8 @@
   <!-- MODAL EDIT DATA -->
   <div class="modal fade no-print" id="modalEditData" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
-        <div class="modal-header bg-dark text-white" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 18px;">
+        <div class="modal-header bg-dark text-white" style="border-top-left-radius: 18px; border-top-right-radius: 18px;">
           <h5 class="modal-title fw-bold fs-6"><i class="fa-solid fa-pen-to-square me-2"></i>Edit Data Transaksi</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
@@ -743,10 +796,12 @@
 
   <script>
     // ==================================================================
-    // KONFIGURASI SCRIPT URL & CSV ABSENSI
+    // KONFIGURASI SCRIPT URL & SUPABASE ABSENSI
     // ==================================================================
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygd7l5hciJsYDZddcRfng2XLCz_gphjnr6fLQsxjXProbYbwpDuHMyMfpt4TiGBHzV/exec";
-    const ABSENSI_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRm3OEXqf5PTCq1QjeC5C5budexAIzIXIZTMFErRijyT_zMCnzbNAQpl1nQjj_WGs0UT5Dqcg54LL7t/pub?gid=2116553657&single=true&output=csv";
+    const SUPABASE_URL = "https://cwisgbufupnyacdvrloo.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3aXNnYnVmdXBueWFjZHZybG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwNTE4MzQsImV4cCI6MjExMDYyNzgzNH0.pdPSv8_V8yv5e5vZM7gJIzsdTw3yu7h-j6xMPMbFTWA";
+    const DEFAULT_KELAS_ABSENSI = "8.1";
 
     let masterSiswa = [];
     let masterIndikator = [];
@@ -755,7 +810,8 @@
     let allTabunganData = [];
     let allPoinData = [];
     let allSikapData = [];
-    let globalAbsensiCSVData = [];
+    let globalAbsensiSupabaseData = [];
+    let supabaseSiswaKelasMap = {};
 
     function showLoading(show, msg = "Memuat data...") {
       document.getElementById('loadingText').innerText = msg;
@@ -769,7 +825,7 @@
 
     function selectModul(modul) {
       document.getElementById('selectKategori').value = modul;
-      
+
       document.getElementById('boxTabungan').className = 'option-box ' + (modul === 'tabungan' ? 'active-tabungan' : '');
       document.getElementById('boxSikap').className = 'option-box ' + (modul === 'sikap' ? 'active-sikap' : '');
       document.getElementById('boxPoin').className = 'option-box ' + (modul === 'poin' ? 'active-poin' : '');
@@ -842,15 +898,15 @@
           const select = document.getElementById('selectSiswa');
           const selectCetak = document.getElementById('selectSiswaCetak');
           const selectView = document.getElementById('select-filter-siswa-view');
-          
+
           select.innerHTML = '<option value="">-- Pilih Siswa --</option>';
           selectCetak.innerHTML = '<option value="">-- Pilih Siswa --</option>';
-          if(selectView) selectView.innerHTML = '<option value="">-- Semua Siswa --</option>';
-          
+          if (selectView) selectView.innerHTML = '<option value="">-- Semua Siswa --</option>';
+
           masterSiswa.forEach(s => {
             select.innerHTML += `<option value="${s.nisn}">${s.nama}</option>`;
             selectCetak.innerHTML += `<option value="${s.nisn}">${s.nama}</option>`;
-            if(selectView) selectView.innerHTML += `<option value="${s.nama}">${s.nama}</option>`;
+            if (selectView) selectView.innerHTML += `<option value="${s.nama}">${s.nama}</option>`;
           });
         }
         if (resIndikator.success) {
@@ -866,6 +922,9 @@
         allPoinData = resPoin.data || [];
         allSikapData = resSikap.data || [];
         renderSideSummary();
+        fetchAbsensiSupabase().then(list => {
+          populateKelasDropdowns(list);
+        });
       });
     }
 
@@ -883,60 +942,146 @@
       }
     }
 
-    // CSV PARSER
-    function parseCSV(text) {
-      const lines = text.trim().split('\n');
-      return lines.map(line => {
-        const result = [];
-        let cur = '';
-        let inQuotes = false;
-        for (let i = 0; i < line.length; i++) {
-          const char = line[i];
-          if (char === '"') {
-            inQuotes = !inQuotes;
-          } else if (char === ',' && !inQuotes) {
-            result.push(cur.trim().replace(/^"|"$/g, ''));
-            cur = '';
-          } else {
-            cur += char;
-          }
+    // ==================================================================
+    // ALUR REKAP ABSENSI DARI SUPABASE (DEFAULT KELAS 8.1)
+    // ==================================================================
+    async function fetchSupabaseRest(endpoint) {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
+        headers: {
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+          "Accept": "application/json"
         }
-        result.push(cur.trim().replace(/^"|"$/g, ''));
-        return result;
+      });
+      if (!res.ok) {
+        throw new Error(`Supabase HTTP ${res.status}`);
+      }
+      return res.json();
+    }
+
+    function normalizeKelasStr(val) {
+      return String(val || '').trim();
+    }
+
+    function populateKelasDropdowns(flatList) {
+      const kelasSet = new Set([DEFAULT_KELAS_ABSENSI]);
+      (flatList || []).forEach(item => {
+        if (item.kelas) kelasSet.add(item.kelas);
+      });
+      Object.values(supabaseSiswaKelasMap).forEach(k => {
+        if (k) kelasSet.add(k);
+      });
+
+      const sortedKelas = Array.from(kelasSet).sort((a, b) => {
+        if (a === DEFAULT_KELAS_ABSENSI) return -1;
+        if (b === DEFAULT_KELAS_ABSENSI) return 1;
+        return a.localeCompare(b, 'id', { numeric: true });
+      });
+
+      const dropdownIds = ['selectKelasAbsensi', 'selectKelasRekap', 'select-filter-kelas-view', 'selectKelasCetak'];
+      dropdownIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const currentVal = el.value !== undefined ? el.value : DEFAULT_KELAS_ABSENSI;
+        let opts = `<option value="">Semua Kelas</option>`;
+        sortedKelas.forEach(k => {
+          const label = k === DEFAULT_KELAS_ABSENSI ? `Kelas ${k} (Default)` : `Kelas ${k}`;
+          opts += `<option value="${k}">${label}</option>`;
+        });
+        el.innerHTML = opts;
+        if (Array.from(el.options).some(o => o.value === currentVal)) {
+          el.value = currentVal;
+        } else {
+          el.value = DEFAULT_KELAS_ABSENSI;
+        }
       });
     }
 
-    async function fetchAbsensiCSV() {
+    function handleKelasAbsensiChange(source) {
+      const mapIds = {
+        side: 'selectKelasAbsensi',
+        rekap: 'selectKelasRekap',
+        view: 'select-filter-kelas-view',
+        cetak: 'selectKelasCetak'
+      };
+      const activeId = mapIds[source];
+      const chosenKelas = activeId ? document.getElementById(activeId).value : DEFAULT_KELAS_ABSENSI;
+
+      // Sinkronkan pilihan kelas antar kontrol absensi agar tetap konsisten
+      Object.values(mapIds).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = chosenKelas;
+      });
+
+      const subJudul = document.getElementById('labelSubJudulAbsensi');
+      if (subJudul) {
+        subJudul.innerText = chosenKelas
+          ? `SMP Negeri 8 Cikarang Utara • Kelas ${chosenKelas}`
+          : `SMP Negeri 8 Cikarang Utara • Semua Kelas`;
+      }
+
+      if (source === 'side') {
+        if (document.getElementById('selectFilterSide').value === 'absensi') {
+          renderSideSummary();
+        }
+      } else if (source === 'rekap') {
+        if (document.getElementById('katRekap').value === 'absensi') {
+          loadRekapGuru();
+        }
+      } else if (source === 'view') {
+        terapkanFilterAbsensiView();
+      }
+    }
+
+    async function fetchAbsensiSupabase(forceRefresh = false) {
+      if (!forceRefresh && globalAbsensiSupabaseData.length > 0) {
+        return globalAbsensiSupabaseData;
+      }
+
       try {
-        const response = await fetch(ABSENSI_CSV_URL);
-        const csvText = await response.text();
-        const rows = parseCSV(csvText);
-        if (rows.length < 2) return [];
+        const [absenRows, siswaRows] = await Promise.all([
+          fetchSupabaseRest("absensi?select=id,timestamp,id_siswa,nama_siswa,status,kelas,trigger_suara&order=id.asc&limit=10000"),
+          fetchSupabaseRest("siswa?select=id_siswa,nama_siswa,kelas&limit=5000").catch(() => [])
+        ]);
 
-        const header = rows[0].map(h => h.trim().toLowerCase());
-        
-        const idxTimestamp = header.findIndex(h => h.includes('timestamp'));
-        const idxIdSiswa = header.findIndex(h => h.includes('id_siswa'));
-        const idxNama = header.findIndex(h => h.includes('nama_siswa') || h.includes('nama'));
-        const idxStatus = header.findIndex(h => h.includes('status'));
+        const siswaById = {};
+        const siswaByName = {};
+        (siswaRows || []).forEach(s => {
+          const sid = String(s.id_siswa || '').trim();
+          const snama = String(s.nama_siswa || '').trim();
+          const skelas = normalizeKelasStr(s.kelas);
+          if (sid) {
+            if (skelas) supabaseSiswaKelasMap[sid] = skelas;
+            siswaById[sid] = { nama: snama, kelas: skelas };
+          }
+          if (snama) {
+            if (skelas) supabaseSiswaKelasMap[snama.toLowerCase()] = skelas;
+            siswaByName[snama.toLowerCase()] = { id_siswa: sid, kelas: skelas };
+          }
+        });
 
-        let result = [];
-        for (let i = 1; i < rows.length; i++) {
-          const row = rows[i];
-          if (!row || row.length === 0) continue;
+        const result = [];
+        (absenRows || []).forEach(row => {
+          const rawTimestamp = String(row.timestamp || '').trim();
+          const idSiswa = String(row.id_siswa || '').trim();
+          const nama = String(row.nama_siswa || (siswaById[idSiswa] && siswaById[idSiswa].nama) || '').trim();
+          const rawStatus = String(row.status || 'HADIR').trim().toUpperCase();
+          const triggerSuara = String(row.trigger_suara || '').trim().toUpperCase();
 
-          const rawTimestamp = row[idxTimestamp] || '';
-          const nama = row[idxNama] || '';
-          const idSiswa = idxIdSiswa !== -1 ? row[idxIdSiswa] : '';
-          const rawStatus = (row[idxStatus] || 'ALFA').toUpperCase();
+          let kelas = normalizeKelasStr(row.kelas);
+          if (!kelas && idSiswa && siswaById[idSiswa]) {
+            kelas = siswaById[idSiswa].kelas;
+          }
+          if (!kelas && nama && siswaByName[nama.toLowerCase()]) {
+            kelas = siswaByName[nama.toLowerCase()].kelas;
+          }
 
-          if (!nama || !rawTimestamp) continue;
+          if (!nama || !rawTimestamp) return;
 
-          const parts = rawTimestamp.split(' ');
-          const tanggal = parts[0]; 
+          const tanggal = rawTimestamp.split(' ')[0];
 
           let tipeSesi = 'MASUK';
-          if (rawStatus.includes('PULANG')) {
+          if (rawStatus.includes('PULANG') || triggerSuara.includes('PULANG')) {
             tipeSesi = 'PULANG';
           }
 
@@ -949,24 +1094,29 @@
             tanggal: tanggal,
             idSiswa: idSiswa,
             nama: nama,
+            kelas: kelas,
             tipeSesi: tipeSesi,
             statusVal: statusVal
           });
-        }
-        globalAbsensiCSVData = result;
+        });
+
+        globalAbsensiSupabaseData = result;
+        populateKelasDropdowns(result);
         return result;
       } catch (err) {
-        console.error(err);
+        console.error("Gagal mengambil absensi Supabase:", err);
         return [];
       }
     }
 
-    function buildHorizontalMatrix(flatList, filterNama = '') {
+    function buildHorizontalMatrix(flatList, filterNama = '', filterKelas = DEFAULT_KELAS_ABSENSI) {
       const datesSet = new Set();
       const studentsMap = {};
+      const targetKelas = normalizeKelasStr(filterKelas);
 
       flatList.forEach(item => {
         if (!item.nama) return;
+        if (targetKelas && normalizeKelasStr(item.kelas) !== targetKelas) return;
         if (filterNama && item.nama.toLowerCase() !== filterNama.toLowerCase()) return;
 
         const tgl = item.tanggal;
@@ -977,6 +1127,7 @@
           studentsMap[sKey] = {
             namaOriginal: item.nama,
             idSiswa: item.idSiswa || '',
+            kelas: item.kelas || targetKelas || '',
             attendance: {}
           };
         }
@@ -1002,7 +1153,7 @@
       const head = document.getElementById('headSideSummary');
       const body = document.getElementById('bodySideSummary');
       const foot = document.getElementById('footSideSummary');
-      
+
       body.innerHTML = '';
       foot.innerHTML = '';
 
@@ -1083,10 +1234,11 @@
         </tr>`;
 
       } else if (filter === 'absensi') {
-        body.innerHTML = '<tr><td colspan="2" class="text-center py-3 text-muted">Mengambil data absensi...</td></tr>';
-        const flatList = await fetchAbsensiCSV();
-        const { sortedDates, studentsMap } = buildHorizontalMatrix(flatList);
-        
+        const kelasDipilih = document.getElementById('selectKelasAbsensi') ? document.getElementById('selectKelasAbsensi').value : DEFAULT_KELAS_ABSENSI;
+        body.innerHTML = '<tr><td colspan="2" class="text-center py-3 text-muted">Mengambil data absensi dari Supabase...</td></tr>';
+        const flatList = await fetchAbsensiSupabase(true);
+        const { sortedDates, studentsMap } = buildHorizontalMatrix(flatList, '', kelasDipilih);
+
         let subHead = `<tr><th>Nama Siswa</th>`;
         sortedDates.forEach(d => {
           subHead += `<th class="text-center">${d}</th>`;
@@ -1095,13 +1247,19 @@
         head.innerHTML = subHead;
 
         body.innerHTML = '';
-        Object.keys(studentsMap).sort().forEach(sKey => {
+        const keys = Object.keys(studentsMap).sort();
+        if (keys.length === 0) {
+          body.innerHTML = `<tr><td colspan="${sortedDates.length + 1}" class="text-center py-3 text-muted">Belum ada data absensi${kelasDipilih ? ' untuk kelas ' + kelasDipilih : ''}.</td></tr>`;
+          return;
+        }
+
+        keys.forEach(sKey => {
           const student = studentsMap[sKey];
           let cells = '';
 
           sortedDates.forEach(d => {
             const att = student.attendance[d] || { masuk: 'ALFA', pulang: '--:--' };
-            
+
             let bgM = 'bg-alfa';
             if (att.masuk === 'HADIR') bgM = (att.pulang === 'HADIR') ? 'bg-hadir-lengkap' : 'bg-hadir-partial';
 
@@ -1180,14 +1338,17 @@
       const kat = document.getElementById('katRekap').value;
       const head = document.getElementById('headRekap');
       const body = document.getElementById('bodyRekap');
+      const colKelas = document.getElementById('colKelasRekap');
+      if (colKelas) colKelas.style.display = kat === 'absensi' ? 'block' : 'none';
 
       if (kat === 'absensi') {
-        showLoading(true, "Mengambil CSV Absensi...");
-        const flatList = await fetchAbsensiCSV();
+        const kelasDipilih = document.getElementById('selectKelasRekap') ? document.getElementById('selectKelasRekap').value : DEFAULT_KELAS_ABSENSI;
+        showLoading(true, "Mengambil data absensi dari Supabase...");
+        const flatList = await fetchAbsensiSupabase(true);
         showLoading(false);
 
-        const { sortedDates, studentsMap } = buildHorizontalMatrix(flatList);
-        
+        const { sortedDates, studentsMap } = buildHorizontalMatrix(flatList, '', kelasDipilih);
+
         let headHtml = `<tr><th style="width: 40px;">NO</th><th>NAMA SISWA</th>`;
         sortedDates.forEach(d => {
           headHtml += `<th>${d}</th>`;
@@ -1197,13 +1358,19 @@
 
         let bodyHtml = '';
         let no = 1;
-        Object.keys(studentsMap).sort().forEach(sKey => {
+        const keys = Object.keys(studentsMap).sort();
+        if (keys.length === 0) {
+          body.innerHTML = `<tr><td colspan="${sortedDates.length + 2}" class="text-center py-4 text-muted">Belum ada data absensi${kelasDipilih ? ' untuk kelas ' + kelasDipilih : ''}.</td></tr>`;
+          return;
+        }
+
+        keys.forEach(sKey => {
           const student = studentsMap[sKey];
           let cells = '';
 
           sortedDates.forEach(d => {
             const att = student.attendance[d] || { masuk: 'ALFA', pulang: '--:--' };
-            
+
             let bgM = 'bg-alfa';
             if (att.masuk === 'HADIR') bgM = (att.pulang === 'HADIR') ? 'bg-hadir-lengkap' : 'bg-hadir-partial';
 
@@ -1298,23 +1465,25 @@
 
     // VIEW TAB 3: CETAK LAPORAN
     async function loadCetakAbsensiView() {
-      showLoading(true, "Memuat Data Absensi...");
-      const flatList = await fetchAbsensiCSV();
+      const kelasDipilih = document.getElementById('select-filter-kelas-view') ? document.getElementById('select-filter-kelas-view').value : DEFAULT_KELAS_ABSENSI;
+      showLoading(true, "Memuat Data Absensi dari Supabase...");
+      const flatList = await fetchAbsensiSupabase(true);
       showLoading(false);
-      renderTableAbsensiView(flatList, '');
+      renderTableAbsensiView(flatList, '', kelasDipilih);
     }
 
     function terapkanFilterAbsensiView() {
       const filterNama = document.getElementById('select-filter-siswa-view').value;
-      renderTableAbsensiView(globalAbsensiCSVData, filterNama);
+      const filterKelas = document.getElementById('select-filter-kelas-view') ? document.getElementById('select-filter-kelas-view').value : DEFAULT_KELAS_ABSENSI;
+      renderTableAbsensiView(globalAbsensiSupabaseData, filterNama, filterKelas);
     }
 
-    function renderTableAbsensiView(flatList, filterNama) {
+    function renderTableAbsensiView(flatList, filterNama, filterKelas = DEFAULT_KELAS_ABSENSI) {
       const container = document.getElementById('container-laporan-view');
-      const { sortedDates, studentsMap } = buildHorizontalMatrix(flatList, filterNama);
+      const { sortedDates, studentsMap } = buildHorizontalMatrix(flatList, filterNama, filterKelas);
 
       if (Object.keys(studentsMap).length === 0) {
-        container.innerHTML = '<div class="alert alert-warning text-center">Tidak ada data absensi yang sesuai filter.</div>';
+        container.innerHTML = `<div class="alert alert-warning text-center">Tidak ada data absensi untuk filter${filterKelas ? ' kelas ' + filterKelas : ''} ini.</div>`;
         return;
       }
 
@@ -1335,7 +1504,7 @@
 
         sortedDates.forEach(d => {
           const att = student.attendance[d] || { masuk: 'ALFA', pulang: '--:--' };
-          
+
           let bgM = 'bg-alfa';
           if (att.masuk === 'HADIR') bgM = (att.pulang === 'HADIR') ? 'bg-hadir-lengkap' : 'bg-hadir-partial';
 
@@ -1378,6 +1547,7 @@
 
     async function prosesCetak() {
       const tipe = document.getElementById('tipeCetak').value;
+      const kelasCetak = document.getElementById('selectKelasCetak') ? document.getElementById('selectKelasCetak').value : DEFAULT_KELAS_ABSENSI;
       const printArea = document.getElementById('printArea');
       printArea.innerHTML = '';
       printArea.classList.remove('is-landscape');
@@ -1394,10 +1564,10 @@
       if (tipe === 'rekap_absen') {
         printArea.classList.add('is-landscape');
         showLoading(true, "Menyiapkan Laporan Absensi A4...");
-        const flatList = await fetchAbsensiCSV();
+        const flatList = await fetchAbsensiSupabase(true);
         showLoading(false);
 
-        const { sortedDates, studentsMap } = buildHorizontalMatrix(flatList);
+        const { sortedDates, studentsMap } = buildHorizontalMatrix(flatList, '', kelasCetak);
 
         let thDates = '';
         sortedDates.forEach(d => thDates += `<th style="text-align:center; font-size:7pt;">${d}</th>`);
@@ -1423,7 +1593,7 @@
 
         printArea.innerHTML = `
           ${kopHeader}
-          <h4 style="text-align:center; margin-bottom:12px; font-size:11pt; font-weight:bold;">REKAPITULASI PRESENSI / ABSENSI SISWA</h4>
+          <h4 style="text-align:center; margin-bottom:12px; font-size:11pt; font-weight:bold;">REKAPITULASI PRESENSI / ABSENSI SISWA${kelasCetak ? ' - KELAS ' + kelasCetak : ''}</h4>
           <table>
             <thead>
               <tr>
@@ -1574,7 +1744,7 @@
         if (!siswa) return alert('Pilih siswa terlebih dahulu!');
 
         showLoading(true, "Menyiapkan Dokumen Individu...");
-        const flatList = await fetchAbsensiCSV();
+        const flatList = await fetchAbsensiSupabase(true);
         showLoading(false);
 
         // 1. DATA TABUNGAN
@@ -1623,8 +1793,8 @@
         });
 
         // 4. DATA ABSENSI
-        const userAbsensi = flatList.filter(i => 
-          (i.idSiswa && siswa.nisn && String(i.idSiswa).trim() === String(siswa.nisn).trim()) || 
+        const userAbsensi = flatList.filter(i =>
+          (i.idSiswa && siswa.nisn && String(i.idSiswa).trim() === String(siswa.nisn).trim()) ||
           (i.nama && siswa.nama && i.nama.toLowerCase().trim() === siswa.nama.toLowerCase().trim())
         );
 
@@ -1845,11 +2015,11 @@
 
     async function loadOrtuAbsensi() {
       showLoading(true);
-      const flatList = await fetchAbsensiCSV();
+      const flatList = await fetchAbsensiSupabase(true);
       showLoading(false);
 
-      const filtered = flatList.filter(i => 
-        (i.idSiswa && currentUser.nisn && String(i.idSiswa).trim() === String(currentUser.nisn).trim()) || 
+      const filtered = flatList.filter(i =>
+        (i.idSiswa && currentUser.nisn && String(i.idSiswa).trim() === String(currentUser.nisn).trim()) ||
         (i.nama && currentUser.namaSiswa && i.nama.toLowerCase().trim() === currentUser.namaSiswa.toLowerCase().trim())
       );
 
